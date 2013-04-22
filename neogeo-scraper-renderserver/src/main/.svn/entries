@@ -1,0 +1,44 @@
+10
+
+dir
+120
+http://svn.ewi.utwente.nl/repos/neogeo/neogeo-scraper-renderserver/trunk/src/main
+http://svn.ewi.utwente.nl/repos/neogeo
+
+
+
+2012-07-24T11:56:57.490920Z
+113
+graaffv
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+fbd17aaa-46c2-0410-8886-c8267df16dee
+
+
+
+
+
+
+0
+
+java
+dir
+
+resources
+dir
+
+webapp
+dir
+

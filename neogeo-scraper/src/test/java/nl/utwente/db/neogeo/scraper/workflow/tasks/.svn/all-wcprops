@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/repos/neogeo/!svn/ver/101/neogeo-scraper/trunk/src/test/java/nl/utwente/db/neogeo/scraper/workflow/tasks
+END
+GeoDetailedInformationMappingTaskTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 147
+/repos/neogeo/!svn/ver/65/neogeo-scraper/trunk/src/test/java/nl/utwente/db/neogeo/scraper/workflow/tasks/GeoDetailedInformationMappingTaskTest.java
+END
+PersistenceTaskTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 129
+/repos/neogeo/!svn/ver/63/neogeo-scraper/trunk/src/test/java/nl/utwente/db/neogeo/scraper/workflow/tasks/PersistenceTaskTest.java
+END
+ScraperTaskTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 125
+/repos/neogeo/!svn/ver/85/neogeo-scraper/trunk/src/test/java/nl/utwente/db/neogeo/scraper/workflow/tasks/ScraperTaskTest.java
+END
+BaseScraperTaskTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 129
+/repos/neogeo/!svn/ver/85/neogeo-scraper/trunk/src/test/java/nl/utwente/db/neogeo/scraper/workflow/tasks/BaseScraperTaskTest.java
+END
+SearchResultExtractionTaskTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 141
+/repos/neogeo/!svn/ver/101/neogeo-scraper/trunk/src/test/java/nl/utwente/db/neogeo/scraper/workflow/tasks/SearchResultExtractionTaskTest.java
+END

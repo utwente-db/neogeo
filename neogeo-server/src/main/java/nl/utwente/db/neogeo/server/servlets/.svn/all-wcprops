@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/repos/neogeo/!svn/ver/114/neogeo-server/trunk/src/main/java/nl/utwente/db/neogeo/server/servlets
+END
+NeoGeoServlet.java
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/repos/neogeo/!svn/ver/87/neogeo-server/trunk/src/main/java/nl/utwente/db/neogeo/server/servlets/NeoGeoServlet.java
+END
+NeoGeoResponse.java
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/repos/neogeo/!svn/ver/114/neogeo-server/trunk/src/main/java/nl/utwente/db/neogeo/server/servlets/NeoGeoResponse.java
+END
+NeoGeoRequest.java
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/repos/neogeo/!svn/ver/87/neogeo-server/trunk/src/main/java/nl/utwente/db/neogeo/server/servlets/NeoGeoRequest.java
+END

@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/repos/neogeo/!svn/ver/129/neogeo-scraper/trunk
+END
+proxyservers.sql
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/repos/neogeo/!svn/ver/130/neogeo-scraper/trunk/proxyservers.sql
+END
+log4j.properties
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/repos/neogeo/!svn/ver/85/neogeo-scraper/trunk/log4j.properties
+END
+pom.xml
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/repos/neogeo/!svn/ver/102/neogeo-scraper/trunk/pom.xml
+END
+tmp.txt
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/repos/neogeo/!svn/ver/69/neogeo-scraper/trunk/tmp.txt
+END
+failedcategories.txt
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/repos/neogeo/!svn/ver/85/neogeo-scraper/trunk/failedcategories.txt
+END
+todos.txt
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/repos/neogeo/!svn/ver/99/neogeo-scraper/trunk/todos.txt
+END

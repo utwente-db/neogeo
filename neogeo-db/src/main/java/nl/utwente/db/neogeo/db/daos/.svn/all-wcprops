@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/repos/neogeo/!svn/ver/123/neogeo-db/trunk/src/main/java/nl/utwente/db/neogeo/db/daos
+END
+TownDAO.java
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/repos/neogeo/!svn/ver/69/neogeo-db/trunk/src/main/java/nl/utwente/db/neogeo/db/daos/TownDAO.java
+END
+AddressDAO.java
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/repos/neogeo/!svn/ver/131/neogeo-db/trunk/src/main/java/nl/utwente/db/neogeo/db/daos/AddressDAO.java
+END
+PointOfInterestCategoryDAO.java
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/repos/neogeo/!svn/ver/69/neogeo-db/trunk/src/main/java/nl/utwente/db/neogeo/db/daos/PointOfInterestCategoryDAO.java
+END
+PointOfInterestDAO.java
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/repos/neogeo/!svn/ver/123/neogeo-db/trunk/src/main/java/nl/utwente/db/neogeo/db/daos/PointOfInterestDAO.java
+END

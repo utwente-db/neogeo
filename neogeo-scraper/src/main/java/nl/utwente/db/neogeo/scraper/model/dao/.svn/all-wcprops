@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/repos/neogeo/!svn/ver/65/neogeo-scraper/trunk/src/main/java/nl/utwente/db/neogeo/scraper/model/dao
+END
+SearchCategoryDAO.java
+K 25
+svn:wc:ra_dav:version-url
+V 122
+/repos/neogeo/!svn/ver/65/neogeo-scraper/trunk/src/main/java/nl/utwente/db/neogeo/scraper/model/dao/SearchCategoryDAO.java
+END
+SearchTownDAO.java
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/repos/neogeo/!svn/ver/65/neogeo-scraper/trunk/src/main/java/nl/utwente/db/neogeo/scraper/model/dao/SearchTownDAO.java
+END
+ScrapedPageDAO.java
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/repos/neogeo/!svn/ver/65/neogeo-scraper/trunk/src/main/java/nl/utwente/db/neogeo/scraper/model/dao/ScrapedPageDAO.java
+END

@@ -1,0 +1,89 @@
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/repos/neogeo/!svn/ver/128/neogeo-utils/trunk/src/main/java/nl/utwente/db/neogeo/utils
+END
+StringUtils.java
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/repos/neogeo/!svn/ver/187/neogeo-utils/trunk/src/main/java/nl/utwente/db/neogeo/utils/StringUtils.java
+END
+GeoUtils.java
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/repos/neogeo/!svn/ver/128/neogeo-utils/trunk/src/main/java/nl/utwente/db/neogeo/utils/GeoUtils.java
+END
+WebUtils.java
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/repos/neogeo/!svn/ver/187/neogeo-utils/trunk/src/main/java/nl/utwente/db/neogeo/utils/WebUtils.java
+END
+BasePool.java
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/repos/neogeo/!svn/ver/131/neogeo-utils/trunk/src/main/java/nl/utwente/db/neogeo/utils/BasePool.java
+END
+NeoGeoProperties.java
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/repos/neogeo/!svn/ver/116/neogeo-utils/trunk/src/main/java/nl/utwente/db/neogeo/utils/NeoGeoProperties.java
+END
+PropertyContainer.java
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/repos/neogeo/!svn/ver/63/neogeo-utils/trunk/src/main/java/nl/utwente/db/neogeo/utils/PropertyContainer.java
+END
+Pool.java
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/repos/neogeo/!svn/ver/87/neogeo-utils/trunk/src/main/java/nl/utwente/db/neogeo/utils/Pool.java
+END
+BasePropertyContainer.java
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/repos/neogeo/!svn/ver/69/neogeo-utils/trunk/src/main/java/nl/utwente/db/neogeo/utils/BasePropertyContainer.java
+END
+CommandLineToolUtils.java
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/repos/neogeo/!svn/ver/87/neogeo-utils/trunk/src/main/java/nl/utwente/db/neogeo/utils/CommandLineToolUtils.java
+END
+FileUtils.java
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/repos/neogeo/!svn/ver/131/neogeo-utils/trunk/src/main/java/nl/utwente/db/neogeo/utils/FileUtils.java
+END
+MapUtils.java
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/repos/neogeo/!svn/ver/29/neogeo-utils/trunk/src/main/java/nl/utwente/db/neogeo/utils/MapUtils.java
+END
+SpringUtils.java
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/repos/neogeo/!svn/ver/87/neogeo-utils/trunk/src/main/java/nl/utwente/db/neogeo/utils/SpringUtils.java
+END
+XPathUtils.java
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/repos/neogeo/!svn/ver/121/neogeo-utils/trunk/src/main/java/nl/utwente/db/neogeo/utils/XPathUtils.java
+END
+CollectionUtils.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/repos/neogeo/!svn/ver/87/neogeo-utils/trunk/src/main/java/nl/utwente/db/neogeo/utils/CollectionUtils.java
+END

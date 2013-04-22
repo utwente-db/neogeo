@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/repos/neogeo/!svn/ver/19/neogeo-social-server/trunk/src/main/java/nl/utwente/db/neogeo/social/server/facebook/friends
+END
+FacebookFriendsResponse.java
+K 25
+svn:wc:ra_dav:version-url
+V 147
+/repos/neogeo/!svn/ver/19/neogeo-social-server/trunk/src/main/java/nl/utwente/db/neogeo/social/server/facebook/friends/FacebookFriendsResponse.java
+END
+FacebookFriendsRequest.java
+K 25
+svn:wc:ra_dav:version-url
+V 146
+/repos/neogeo/!svn/ver/19/neogeo-social-server/trunk/src/main/java/nl/utwente/db/neogeo/social/server/facebook/friends/FacebookFriendsRequest.java
+END
+FacebookFriendsServlet.java
+K 25
+svn:wc:ra_dav:version-url
+V 146
+/repos/neogeo/!svn/ver/19/neogeo-social-server/trunk/src/main/java/nl/utwente/db/neogeo/social/server/facebook/friends/FacebookFriendsServlet.java
+END

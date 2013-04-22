@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/repos/neogeo/!svn/ver/120/neogeo-scraper/trunk/src/main/java/nl/utwente/db/neogeo/scraper
+END
+Scraper.java
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/repos/neogeo/!svn/ver/99/neogeo-scraper/trunk/src/main/java/nl/utwente/db/neogeo/scraper/Scraper.java
+END
+ScraperWorkflow.java
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/repos/neogeo/!svn/ver/96/neogeo-scraper/trunk/src/main/java/nl/utwente/db/neogeo/scraper/ScraperWorkflow.java
+END
+ScraperRunnable.java
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/repos/neogeo/!svn/ver/96/neogeo-scraper/trunk/src/main/java/nl/utwente/db/neogeo/scraper/ScraperRunnable.java
+END
+ScraperWorkflowExecution.java
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/repos/neogeo/!svn/ver/96/neogeo-scraper/trunk/src/main/java/nl/utwente/db/neogeo/scraper/ScraperWorkflowExecution.java
+END
+ScraperMessage.java
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/repos/neogeo/!svn/ver/65/neogeo-scraper/trunk/src/main/java/nl/utwente/db/neogeo/scraper/ScraperMessage.java
+END
+ScrapingNotAllowedException.java
+K 25
+svn:wc:ra_dav:version-url
+V 122
+/repos/neogeo/!svn/ver/96/neogeo-scraper/trunk/src/main/java/nl/utwente/db/neogeo/scraper/ScrapingNotAllowedException.java
+END
+ScraperTask.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/repos/neogeo/!svn/ver/96/neogeo-scraper/trunk/src/main/java/nl/utwente/db/neogeo/scraper/ScraperTask.java
+END
+ScraperException.java
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/repos/neogeo/!svn/ver/22/neogeo-scraper/trunk/src/main/java/nl/utwente/db/neogeo/scraper/ScraperException.java
+END

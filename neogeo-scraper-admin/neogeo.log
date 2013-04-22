@@ -1,0 +1,594 @@
+14:18:24,408  WARN IncorrectnessListenerImpl:38 - Obsolete content type encountered: 'application/x-javascript'.
+14:18:24,490  WARN IncorrectnessListenerImpl:38 - Obsolete content type encountered: 'text/javascript'.
+14:18:24,626  WARN IncorrectnessListenerImpl:38 - Obsolete content type encountered: 'text/javascript'.
+14:18:24,677  WARN IncorrectnessListenerImpl:38 - Obsolete content type encountered: 'text/javascript'.
+14:18:24,751  WARN IncorrectnessListenerImpl:38 - Obsolete content type encountered: 'text/javascript'.
+14:18:24,786  WARN IncorrectnessListenerImpl:38 - Obsolete content type encountered: 'application/x-javascript'.
+14:18:24,812  WARN IncorrectnessListenerImpl:38 - Obsolete content type encountered: 'text/javascript'.
+14:18:24,891  WARN IncorrectnessListenerImpl:38 - Obsolete content type encountered: 'text/javascript'.
+14:18:24,910  WARN IncorrectnessListenerImpl:38 - Obsolete content type encountered: 'text/javascript'.
+14:18:24,993  WARN IncorrectnessListenerImpl:38 - Obsolete content type encountered: 'text/javascript'.
+14:18:25,040  WARN IncorrectnessListenerImpl:38 - Obsolete content type encountered: 'text/javascript'.
+14:18:25,103  WARN IncorrectnessListenerImpl:38 - Obsolete content type encountered: 'application/x-javascript'.
+14:18:25,672  WARN IncorrectnessListenerImpl:38 - Obsolete content type encountered: 'text/javascript'.
+14:18:25,942  WARN IncorrectnessListenerImpl:38 - Obsolete content type encountered: 'text/javascript'.
+14:18:26,881  WARN DefaultCssErrorHandler:39 - CSS error: [1:24728] Error in style rule. Invalid token ")". Was expecting one of: <S>, "}", <COMMA>, ";", "/", <PLUS>, "-", <HASH>, <STRING>, <URI>, "!", "inherit", <EMS>, <EXS>, <LENGTH_PX>, <LENGTH_CM>, <LENGTH_MM>, <LENGTH_IN>, <LENGTH_PT>, <LENGTH_PC>, <ANGLE_DEG>, <ANGLE_RAD>, <ANGLE_GRAD>, <TIME_MS>, <TIME_S>, <FREQ_HZ>, <FREQ_KHZ>, <DIMENSION>, <PERCENTAGE>, <NUMBER>, <FUNCTION>, <IDENT>.
+14:18:26,881  WARN DefaultCssErrorHandler:53 - CSS warning: [1:24728] Ignoring the following declarations in this rule.
+14:18:26,887  WARN DefaultCssErrorHandler:39 - CSS error: [1:25337] Error in expression. Invalid token ".". Was expecting one of: <S>, <COMMA>, "/", <PLUS>, "-", <HASH>, <STRING>, ")", <URI>, "inherit", <EMS>, <EXS>, <LENGTH_PX>, <LENGTH_CM>, <LENGTH_MM>, <LENGTH_IN>, <LENGTH_PT>, <LENGTH_PC>, <ANGLE_DEG>, <ANGLE_RAD>, <ANGLE_GRAD>, <TIME_MS>, <TIME_S>, <FREQ_HZ>, <FREQ_KHZ>, <DIMENSION>, <PERCENTAGE>, <NUMBER>, <FUNCTION>, <IDENT>.
+14:18:26,888  WARN DefaultCssErrorHandler:39 - CSS error: [4:8] Error in style rule. Invalid token "right". Was expecting one of: "}", ";".
+14:18:26,888  WARN DefaultCssErrorHandler:53 - CSS warning: [4:8] Ignoring the following declarations in this rule.
+14:18:26,889  WARN DefaultCssErrorHandler:39 - CSS error: [4:266] Error in expression. Invalid token ".". Was expecting one of: <S>, <COMMA>, "/", <PLUS>, "-", <HASH>, <STRING>, ")", <URI>, "inherit", <EMS>, <EXS>, <LENGTH_PX>, <LENGTH_CM>, <LENGTH_MM>, <LENGTH_IN>, <LENGTH_PT>, <LENGTH_PC>, <ANGLE_DEG>, <ANGLE_RAD>, <ANGLE_GRAD>, <TIME_MS>, <TIME_S>, <FREQ_HZ>, <FREQ_KHZ>, <DIMENSION>, <PERCENTAGE>, <NUMBER>, <FUNCTION>, <IDENT>.
+14:18:26,890  WARN DefaultCssErrorHandler:39 - CSS error: [7:8] Error in style rule. Invalid token "right". Was expecting one of: "}", ";".
+14:18:26,890  WARN DefaultCssErrorHandler:53 - CSS warning: [7:8] Ignoring the following declarations in this rule.
+14:18:26,893  WARN DefaultCssErrorHandler:39 - CSS error: [7:425] Error in expression. Invalid token ".". Was expecting one of: <S>, <COMMA>, "/", <PLUS>, "-", <HASH>, <STRING>, ")", <URI>, "inherit", <EMS>, <EXS>, <LENGTH_PX>, <LENGTH_CM>, <LENGTH_MM>, <LENGTH_IN>, <LENGTH_PT>, <LENGTH_PC>, <ANGLE_DEG>, <ANGLE_RAD>, <ANGLE_GRAD>, <TIME_MS>, <TIME_S>, <FREQ_HZ>, <FREQ_KHZ>, <DIMENSION>, <PERCENTAGE>, <NUMBER>, <FUNCTION>, <IDENT>.
+14:18:26,894  WARN DefaultCssErrorHandler:39 - CSS error: [10:169] Error in expression. Invalid token ".". Was expecting one of: <S>, <COMMA>, "/", <PLUS>, "-", <HASH>, <STRING>, ")", <URI>, "inherit", <EMS>, <EXS>, <LENGTH_PX>, <LENGTH_CM>, <LENGTH_MM>, <LENGTH_IN>, <LENGTH_PT>, <LENGTH_PC>, <ANGLE_DEG>, <ANGLE_RAD>, <ANGLE_GRAD>, <TIME_MS>, <TIME_S>, <FREQ_HZ>, <FREQ_KHZ>, <DIMENSION>, <PERCENTAGE>, <NUMBER>, <FUNCTION>, <IDENT>.
+14:18:26,906  WARN DefaultCssErrorHandler:39 - CSS error: [13:1835] Error in expression. Invalid token "=". Was expecting one of: <S>, <COMMA>, "/", <PLUS>, "-", <HASH>, <STRING>, ")", <URI>, "inherit", <EMS>, <EXS>, <LENGTH_PX>, <LENGTH_CM>, <LENGTH_MM>, <LENGTH_IN>, <LENGTH_PT>, <LENGTH_PC>, <ANGLE_DEG>, <ANGLE_RAD>, <ANGLE_GRAD>, <TIME_MS>, <TIME_S>, <FREQ_HZ>, <FREQ_KHZ>, <DIMENSION>, <PERCENTAGE>, <NUMBER>, <FUNCTION>, <IDENT>.
+14:18:26,906  WARN DefaultCssErrorHandler:39 - CSS error: [13:1840] Error in style rule. Invalid token "background-color". Was expecting one of: "}", ";".
+14:18:26,907  WARN DefaultCssErrorHandler:53 - CSS warning: [13:1840] Ignoring the following declarations in this rule.
+14:18:26,909  WARN DefaultCssErrorHandler:39 - CSS error: [13:2377] Error in expression. Invalid token "=". Was expecting one of: <S>, <COMMA>, "/", <PLUS>, "-", <HASH>, <STRING>, ")", <URI>, "inherit", <EMS>, <EXS>, <LENGTH_PX>, <LENGTH_CM>, <LENGTH_MM>, <LENGTH_IN>, <LENGTH_PT>, <LENGTH_PC>, <ANGLE_DEG>, <ANGLE_RAD>, <ANGLE_GRAD>, <TIME_MS>, <TIME_S>, <FREQ_HZ>, <FREQ_KHZ>, <DIMENSION>, <PERCENTAGE>, <NUMBER>, <FUNCTION>, <IDENT>.
+14:18:27,025  WARN DefaultCssErrorHandler:39 - CSS error: [1:649] Error in expression. Invalid token "=". Was expecting one of: <S>, <COMMA>, "/", <PLUS>, "-", <HASH>, <STRING>, ")", <URI>, "inherit", <EMS>, <EXS>, <LENGTH_PX>, <LENGTH_CM>, <LENGTH_MM>, <LENGTH_IN>, <LENGTH_PT>, <LENGTH_PC>, <ANGLE_DEG>, <ANGLE_RAD>, <ANGLE_GRAD>, <TIME_MS>, <TIME_S>, <FREQ_HZ>, <FREQ_KHZ>, <DIMENSION>, <PERCENTAGE>, <NUMBER>, <FUNCTION>, <IDENT>.
+14:18:27,025  WARN DefaultCssErrorHandler:39 - CSS error: [1:654] Error in style rule. Invalid token "background-color". Was expecting one of: "}", ";".
+14:18:27,025  WARN DefaultCssErrorHandler:53 - CSS warning: [1:654] Ignoring the following declarations in this rule.
+14:18:27,027  WARN DefaultCssErrorHandler:39 - CSS error: [1:1191] Error in expression. Invalid token "=". Was expecting one of: <S>, <COMMA>, "/", <PLUS>, "-", <HASH>, <STRING>, ")", <URI>, "inherit", <EMS>, <EXS>, <LENGTH_PX>, <LENGTH_CM>, <LENGTH_MM>, <LENGTH_IN>, <LENGTH_PT>, <LENGTH_PC>, <ANGLE_DEG>, <ANGLE_RAD>, <ANGLE_GRAD>, <TIME_MS>, <TIME_S>, <FREQ_HZ>, <FREQ_KHZ>, <DIMENSION>, <PERCENTAGE>, <NUMBER>, <FUNCTION>, <IDENT>.
+14:18:27,233  WARN DefaultCssErrorHandler:39 - CSS error: [1:3842] Error in expression. Invalid token ".". Was expecting one of: <S>, <COMMA>, "/", <PLUS>, "-", <HASH>, <STRING>, ")", <URI>, "inherit", <EMS>, <EXS>, <LENGTH_PX>, <LENGTH_CM>, <LENGTH_MM>, <LENGTH_IN>, <LENGTH_PT>, <LENGTH_PC>, <ANGLE_DEG>, <ANGLE_RAD>, <ANGLE_GRAD>, <TIME_MS>, <TIME_S>, <FREQ_HZ>, <FREQ_KHZ>, <DIMENSION>, <PERCENTAGE>, <NUMBER>, <FUNCTION>, <IDENT>.
+14:18:27,303  WARN DefaultCssErrorHandler:39 - CSS error: [4:18886] Error in expression. Invalid token ".". Was expecting one of: <S>, <COMMA>, "/", <PLUS>, "-", <HASH>, <STRING>, ")", <URI>, "inherit", <EMS>, <EXS>, <LENGTH_PX>, <LENGTH_CM>, <LENGTH_MM>, <LENGTH_IN>, <LENGTH_PT>, <LENGTH_PC>, <ANGLE_DEG>, <ANGLE_RAD>, <ANGLE_GRAD>, <TIME_MS>, <TIME_S>, <FREQ_HZ>, <FREQ_KHZ>, <DIMENSION>, <PERCENTAGE>, <NUMBER>, <FUNCTION>, <IDENT>.
+14:18:27,330  WARN DefaultCssErrorHandler:39 - CSS error: [4:25265] Error in expression. Invalid token "=". Was expecting one of: <S>, <COMMA>, "/", <PLUS>, "-", <HASH>, <STRING>, ")", <URI>, "inherit", <EMS>, <EXS>, <LENGTH_PX>, <LENGTH_CM>, <LENGTH_MM>, <LENGTH_IN>, <LENGTH_PT>, <LENGTH_PC>, <ANGLE_DEG>, <ANGLE_RAD>, <ANGLE_GRAD>, <TIME_MS>, <TIME_S>, <FREQ_HZ>, <FREQ_KHZ>, <DIMENSION>, <PERCENTAGE>, <NUMBER>, <FUNCTION>, <IDENT>.
+14:18:27,334  WARN DefaultCssErrorHandler:39 - CSS error: [4:26150] Error in expression. Invalid token "=". Was expecting one of: <S>, <COMMA>, "/", <PLUS>, "-", <HASH>, <STRING>, ")", <URI>, "inherit", <EMS>, <EXS>, <LENGTH_PX>, <LENGTH_CM>, <LENGTH_MM>, <LENGTH_IN>, <LENGTH_PT>, <LENGTH_PC>, <ANGLE_DEG>, <ANGLE_RAD>, <ANGLE_GRAD>, <TIME_MS>, <TIME_S>, <FREQ_HZ>, <FREQ_KHZ>, <DIMENSION>, <PERCENTAGE>, <NUMBER>, <FUNCTION>, <IDENT>.
+14:18:27,335  WARN DefaultCssErrorHandler:39 - CSS error: [5:20] Error in expression. Invalid token ".". Was expecting one of: <S>, <COMMA>, "/", <PLUS>, "-", <HASH>, <STRING>, ")", <URI>, "inherit", <EMS>, <EXS>, <LENGTH_PX>, <LENGTH_CM>, <LENGTH_MM>, <LENGTH_IN>, <LENGTH_PT>, <LENGTH_PC>, <ANGLE_DEG>, <ANGLE_RAD>, <ANGLE_GRAD>, <TIME_MS>, <TIME_S>, <FREQ_HZ>, <FREQ_KHZ>, <DIMENSION>, <PERCENTAGE>, <NUMBER>, <FUNCTION>, <IDENT>.
+14:18:27,338  WARN DefaultCssErrorHandler:39 - CSS error: [12:476] Error in expression. Invalid token ".". Was expecting one of: <S>, <COMMA>, "/", <PLUS>, "-", <HASH>, <STRING>, ")", <URI>, "inherit", <EMS>, <EXS>, <LENGTH_PX>, <LENGTH_CM>, <LENGTH_MM>, <LENGTH_IN>, <LENGTH_PT>, <LENGTH_PC>, <ANGLE_DEG>, <ANGLE_RAD>, <ANGLE_GRAD>, <TIME_MS>, <TIME_S>, <FREQ_HZ>, <FREQ_KHZ>, <DIMENSION>, <PERCENTAGE>, <NUMBER>, <FUNCTION>, <IDENT>.
+14:18:28,112  WARN IncorrectnessListenerImpl:38 - Obsolete content type encountered: 'text/javascript'.
+14:18:28,441  WARN IncorrectnessListenerImpl:38 - Obsolete content type encountered: 'text/javascript'.
+14:18:28,777  WARN IncorrectnessListenerImpl:38 - Obsolete content type encountered: 'text/javascript'.
+14:18:29,023  WARN IncorrectnessListenerImpl:38 - Obsolete content type encountered: 'text/javascript'.
+14:18:29,813  WARN IncorrectnessListenerImpl:38 - Obsolete content type encountered: 'application/x-javascript'.
+14:18:31,785  WARN IncorrectnessListenerImpl:38 - Obsolete content type encountered: 'text/javascript'.
+14:18:31,899  WARN IncorrectnessListenerImpl:38 - Obsolete content type encountered: 'text/javascript'.
+14:18:32,080  INFO WebClient:496 - statusCode=[404] contentType=[text/html]
+14:18:32,080  INFO WebClient:497 - <!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://developers.facebook.com/schema/" xml:lang="nl-NL" lang="nl-NL">
+
+<head>
+    <title>Zoek Bestemming</title>
+    
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="imagetoolbar" content="false" />
+    <link rel='stylesheet' type='text/css' href="/rs/lm_common.css" />
+<link rel='stylesheet' type='text/css' href="/content/css/global.css" />
+    <link rel='stylesheet' type='text/safari' href="/rs/css/safari.css" media='all' />
+
+    <link rel='stylesheet' type='text/css' href='/rs/css/print.css' media='print' />
+    <link rel='shortcut icon' href='/img/favicon.ico' type='image/x-icon' />
+
+    <meta name="msapplication-task" content="name=De Telefoongids; action-uri=http://www.detelefoongids.nl/?edsacid=sitepin1; icon-uri=/img/favicon.ico" />
+    <meta name="msapplication-task" content="name=Bedrijven; action-uri=http://www.detelefoongids.nl/bedrijven.html?edsacid=sitepin2; icon-uri=/img/favicon.ico" />
+    <meta name="msapplication-task" content="name=Personen; action-uri=http://www.detelefoongids.nl/personen.html?edsacid=sitepin3; icon-uri=/img/favicon.ico" />
+    <meta name="msapplication-task" content="name=Producten; action-uri=http://producten.detelefoongids.nl?edsacid=sitepin4; icon-uri=/img/favicon.ico" />
+    <meta name="msapplication-task" content="name=Kaart & Route; action-uri=http://www.detelefoongids.nl/bedrijf/?edsacid=sitepin5; icon-uri=/img/favicon.ico" />
+</head><!--[if IE 6]><body id='notfound' class='ie ie6 NONE nl_NL variant_A'><![endif]-->
+<!--[if IE 7]><body id='notfound' class='ie ie7 NONE nl_NL variant_A'><![endif]-->
+<!--[if IE 8]><body id='notfound' class='ie8 NONE nl_NL variant_A'><![endif]-->
+<!--[if (!IE)|(gt IE 8)]><!--><body id="notfound" class='NONE nl_NL variant_A'><!--<![endif]-->
+
+    <div id='hdr' class='tabbed'>
+            <div id="grandiant"></div>
+<ul id='langSwitchLinks' class='linkList horizontalLinkList'>
+<li class="langSwitch currentLang first">
+                 <a href="http://www.detelefoongids.nl/crossdomain.xml?locale=nl_NL&amp;newSession=true" title="Nederlands">
+                    <img src="/img/icon_flag_nl_NL_active.gif" alt="Nederlands" />
+                    </a>
+             </li>
+        <li class="langSwitch">
+                 <a href="http://en.detelefoongids.nl/crossdomain.xml?locale=en_NL&amp;newSession=true" rel="nofollow" title="English">
+                    <img src="/img/icon_flag_en_NL_inactive.gif" alt="English" />
+                    </a>
+             </li>
+        </ul>
+
+<ul id='userLinks' class='linkList horizontalLinkList'>
+        <li><a href="#loginLinks" id="loginLinksTrigger">Log in</a>
+            <div id="loginLinks" class="ddNewStyle hidden">
+                <ul>
+                    <li class="first"><a href="#"><span>Log in</span></a></li>
+            
+                    <li><a href="/login.ds" rel="login nofollow">Gebruikers</a></li>
+                    <li><a href="http://selfservice.detelefoongids.nl/" rel="nofollow">Adverteerders</a></li>
+                </ul>
+            </div>
+        </li>
+		
+</ul>
+<ul id="hdrNavLinks" class="linkList horizontalLinkList">
+            </ul>
+
+        <div class='hdrContainer'>
+<ul class='linkList horizontalLinkList hdrNav'>
+    <li class="aiosTab active"><a href='/'>Alles-in-1</a>
+<span class="carrot"></span></li>
+    <li class="yellowTab"><a href='/bedrijven.html'>Gouden Gids</a>
+    <span class="carrot"></span></li>
+    <li class="whiteTab"><a href='/personen.html'><span>De Telefoongids</span></a>
+    <span class="carrot"></span></li>
+    <li class="beslistTab"><a href="http://producten.detelefoongids.nl/"><span>ProductenVinder</span></a>
+<span class="carrot"></span></li>
+    <li class="mapTab"><a href="/bedrijf/">Kaart &amp; Route</a>
+    <span class="carrot"></span></li>
+    <li class="vacaturesTab"><a href="http://www.goudengidsbanen.nl"><span>GoudenGidsbanen.nl</span></a>
+<span class="carrot"></span></li>
+    <li class="myTab">
+    <a href="#" id="myPlacesTrigger" rel="nofollow"><span>Mijn Telefoongids</span></a>
+	
+	
+	
+    <div id="myPlacesLinks" class="hidden">
+        <span class="carrot"></span>
+        <ul>
+            <li><a href="/myplaces.ds" rel="nofollow">Mijn Locaties</a></li>
+				<li><a href="/mymaps.ds" rel="nofollow">Mijn Kaarten</a></li>
+			
+			<li><a href="/login.ds" rel="nofollow login">Mijn Account</a></li>
+        </ul>
+    </div>
+    <div class="carrot"></div>
+</li>
+    </ul>
+</div>
+</div>
+            <div class='searchForm'>
+    <div class='leftEdge'></div>
+    <div class='rightEdge'></div>
+
+    <ul id="hdrLinks" class="linkList horizontalLinkList">
+    <li class="email_permaLink">
+		<li class="email"><a id="emailResultsLink" href="/email.ds" target='_blank' rel='nofollow'><span>E-mail</span></a></li>
+</li>
+        <li class="print"><a href='#' rel="print nofollow">
+   Afdrukken</a></li>
+        <li class="help"><a href='http://statisch.detelefoongids.nl/static/nl_NL/aios_help.html' rel='nofollow'>Help</a>
+</li>
+        </ul>
+<form action='/search.ds' id='topSearchForm' class='wwwCont'>
+        
+<a href="/" class="logo">De Telefoongids & Gouden Gids</a>
+<input type='hidden' name='defaultCountry' id='defaultCountry' value='' />
+<input type="hidden" id="activeMapTab" value="" />
+<div class='whatInput inputCont '>
+    <a class="chooseCategory" id="chooseCategoryLink" href="/goudengids/rubriek-az/" title="Kies een rubriek">
+                Kies een Rubriek</a><label for='what' class='homeLabel'>Wat/Wie</label>
+        <div class='formInp'>
+        <div class='inputWrap'>
+            <input type='text' class='text' name='what' id='what' value='' tabindex='1' />
+        </div>
+    </div>
+    <label for='what' class='hint'>Trefwoord, Naam, Telefoonnummer of Rubriek</label>
+            </div>
+<div class='whereInput inputCont'>
+    <label for='where' class='homeLabel'>Waar</label>
+
+    <div class='formInp'>
+        <div class='inputWrap'>
+            <input type='text' class='text' name='where' id='where' value='' tabindex='2' />
+        </div>
+    </div>
+
+    <label for='where' class='hint'>Straat, Plaats, Postcode of Regio</label>
+
+    <input type="hidden" name="regionSearch" value="false" id="entireRegion" />
+</div>
+
+<div class="wwwSubmit">
+    <a href='#' class='searchButton' id='searchFormSubmit' tabindex='3'><span>Zoek</span></a>
+    <input type='submit' value='Zoek' class='topSearchFormSubmit' />
+    <a class='openProximity' href="#" rel='nofollow'>Toon afstand</a>
+        </div>
+<div class='radiusInput inputCont'>
+            <label for='radius' class='homeLabel'>Afstand</label>
+            <select name='distance' id='radius' class='customEl cumstomL1'>
+                <option value='0' selected='selected'>Alle afstanden...</option>
+                <option value='1'>Afstand: &lt;1 km</option>
+                <option value='5'>Afstand: &lt;5 km</option>
+                <option value='10'>Afstand: &lt;10 km</option>
+                <option value='15'>Afstand: &lt;15 km</option>
+                <option value='25'>Afstand: &lt;25 km</option>
+                <option value='50'>Afstand: &lt;50 km</option>
+                <option value='75'>Afstand: &lt;75 km</option>
+            </select>
+            <a href='#' class='removeRadius'>Afstand verwijderen</a>
+        </div>
+    </form>
+</div>
+<div id="DSContents">
+    <div id='nfCont'>
+    <div id='nfBody'>
+        <h3>Wat Zoekt U?</h3>
+        <p>Als u zelf de URL heeft getypt, controleer of deze goed is geschreven. Als u een link heeft gevolgd vanaf een andere site: deze is wellicht verlopen.</p>
+        <p><a href='/'>terugkeren naar onze homepage</a></p>
+        <p>Webmasters:&nbsp;<a href="http://statisch.detelefoongids.nl/static/nl_NL/tools.html">Download de nieuwste Telefoongids Tools.</a></p>
+    </div>
+</div></div>
+
+<div id="footCont">
+        <div id="foot">
+            <div class='rightEdge'></div>
+            <div class='leftEdge'></div>
+            <ul class='linkList horizontalLinkList'>
+                    <li class="about"><a href="http://over.detelefoongids.nl/onsbedrijf.html">Over ons</a></li>
+                    <li class="contact"><a href="http://over.detelefoongids.nl/corporate/show/id=41131">Contact</a></li>
+                    <li class="careers"><a href="http://www.werkenbijdetelefoongids.nl/">Vacatures</a></li>
+                    <li class="colophon"><a href="http://www.detelefoongids.nl/bg_colofon.html">Colofon</a></li>
+                    <li class="news"><a href="http://over.detelefoongids.nl/persbericht.html">Nieuws</a></li>
+                    <li class="mobile"><a href="http://mobiel.detelefoongids.nl" rel="nofollow">Mobiel</a></li>
+                    <li class="downloads">
+<a href="http://statisch.detelefoongids.nl/static/nl_NL/tools.html" rel="nofollow">Downloads</a></li>
+                    <li class="advertise"><a href='http://zakelijk.detelefoongids.nl'>Online Adverteren</a></li>
+                    <li class="customerservice">
+<a href="http://over.detelefoongids.nl/klantenservice.html" rel="nofollow">Klantenservice</a></li>
+                    <li class="productinfo"><a href="http://over.detelefoongids.nl/onzegidsen.html">Onze Media</a></li>
+                    <li class="terms"><a href="http://over.detelefoongids.nl/voorwaarden.html">Voorwaarden</a></li></ul>
+            <div class='copyright'>
+                &copy; 2012 De Telefoongids BV &ndash; KvK-nummer: 27198207</div>
+
+            </div>
+    </div>
+<script type='text/javascript'>
+// <![CDATA[
+    var LMI={};LMI.Data={enableAutoSuggest:true,maxWhatLength:120,state:{visitorVO:{loggedInVisitor:false}},recentLocations:[{locationValue:"enschede"}],pageType:"NONE",showAdditionalInfo:false,fancySendToMobile:false,listingEventLoggingEnabled:false,locale:"nl_NL_A",strings:{},sessionPreferences:null,requestHiddens:null,sessionHiddens:null,Urls:{suggest:"/suggest.ds",whereSuggest:"/suggestwhere.ds",ddArrow:"/img/pull-down1.gif",ddArrowError:"/img/dd_arrow_error.gif",signin:"/login.ds",ie6Notice:"/ie6notice.ds",ie6NoticeScript:"/rs/popup_dialog.js",ie6NoticeHomeScript:"/rs/popup_dialog_home.js",ie6NoticeStyle:"/rs/ie6Notice.css",loginHomeScript:"/rs/login_dialog_home.js",loginScript:"/rs/login_dialog.js",loginStyle:"/rs/login_dialog.css",removeLocations:"/removerecentlocations.ds",removeSearches:"/removerecentsearches.ds",mapLocation:"/mapalocation.ds",scsDocsBase:"http://statisch.detelefoongids.nl",findOnMapTermsUrl:"static/map_terms.html",defaultIcon:"mapping/nodes/red/map_icon_blank.png"},baseUrl:"/",baseFullUrl:"http://www.detelefoongids.nl",findOnMapEnabled:"true",omnitureEnabled:"true",whiteSearchEnabled:true,reviewsEnabled:true,reviewPromoEnabled:false,mywwwEnabled:true};
+// ]]>
+</script>
+<script type='text/javascript' src='/localization.ds?locale=nl_NL&amp;pageType=NONE&amp;messageDebug=false'></script>
+
+<script type='text/javascript' src='/rs/lm_common.js'></script>
+
+<!--[if IE 6]>
+    <script type='text/javascript' src='/js/ie6win.js'></script>
+    <script type='text/javascript' src='/rs/ie6Notice.js'></script>
+<![endif]-->
+<!-- SiteCatalyst code version: H.14.
+    Copyright 1997-2008 Omniture, Inc. More info available at
+    http://www.omniture.com -->
+
+    <script type="text/javascript"><!--
+    var sessionId = "D26949F3222FA5DA6FED1B6F5677A220";
+    var s_account="edsadetelefoongidsnl";
+
+    
+    if (typeof LMI == 'undefined') { var LMI = {}; }
+    LMI.omnitureDomain="prod.eurodir.eu";
+    //--></script>
+
+    <script type='text/javascript' src="/content/js/3rdparty/s_code.js"></script>
+    <script type='text/javascript'><!--
+    s.pageName="";s.pageName="empty_string";s.channel="error";s.pageType="errorPage";s.prop25="404_error_page";s.prop26="unregistered";s.server=window.location.host;
+
+    /************* DO NOT ALTER ANYTHING BELOW THIS LINE ! **************/
+    var s_code=s.t();if(s_code)document.write(s_code);
+
+    //--></script>
+    <script type='text/javascript'><!--
+    if(navigator.appVersion.indexOf('MSIE')>=0)document.write(unescape('%3C')+'\!-'+'-')
+    //--></script><noscript><a href="http://www.omniture.com" title="Web Analytics"><img
+    src="http://edsadetelefoongidsnl.122.2o7.net/b/ss/edsadetelefoongidsnl/1/H.15.1--NS/..."
+    height="1" width="1" border="0" alt="" /></a></noscript><!--/DO NOT REMOVE/-->
+    <!-- End SiteCatalyst code version: H.14. -->
+
+    <!-- Begin Sitestat4 code -->
+    <script language='JavaScript1.1' type='text/javascript'>
+    <!--
+        function sitestat(ns_l){ns_l+='&amp;ns__t='+(new Date()).getTime();ns_pixelUrl=ns_l;
+        ns_0=document.referrer;
+        ns_0=(ns_0.lastIndexOf('/')==ns_0.length-1)?ns_0.substring(ns_0.lastIndexOf('/'),0):ns_0;
+        if(ns_0.length>0)ns_l+='&amp;ns_referrer='+escape(ns_0);
+        if(document.images){ns_1=new Image();ns_1.src=ns_l;}else
+        document.write('<img src="'+ns_l+'" width="1" height="1" alt="">');}
+        if(document.cookie.indexOf('ns_Cfilter')!=-1)
+        sitestat( "http://nl.sitestat.com/tgi/tgi/s?stir&amp;ns_channel=naw_directories");
+    //-->
+    </script>
+    <!-- End Sitestat4 code --><!-- Begin comScore Tag --> 
+<script type="text/javascript"> 
+ document.write(unescape("%3Cscript src='" + (document.location.protocol == "https:" ? "https://sb" : "http://b") 
++ ".scorecardresearch.com/beacon.js' %3E%3C/script%3E")); 
+</script> 
+<script type="text/javascript"> 
+ COMSCORE.beacon({ 
+  c1:2, 
+  c2:"6035178", 
+  c3:"", 
+  c4:"", 
+  c5:"", 
+  c6:"", 
+  c15:"" 
+ }); 
+</script> 
+<noscript> 
+ <img src="http://b.scorecardresearch.com/b?c1=2&amp;c2=6035178&amp;c3=&amp;c4=&amp;c5=&amp;c6=&amp;c15=&amp;cv=1.3&amp;cj=1" style="display:none" width="0" height="0" alt="" /> 
+</noscript> 
+<!-- End comScore Tag --> </body>
+</html>
+
+14:18:32,259  INFO WebClient:496 - statusCode=[404] contentType=[text/html]
+14:18:32,259  INFO WebClient:497 - <!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://developers.facebook.com/schema/" xml:lang="nl-NL" lang="nl-NL">
+
+<head>
+    <title>Zoek Bestemming</title>
+    
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="imagetoolbar" content="false" />
+    <link rel='stylesheet' type='text/css' href="/rs/lm_common.css" />
+<link rel='stylesheet' type='text/css' href="/content/css/global.css" />
+    <link rel='stylesheet' type='text/safari' href="/rs/css/safari.css" media='all' />
+
+    <link rel='stylesheet' type='text/css' href='/rs/css/print.css' media='print' />
+    <link rel='shortcut icon' href='/img/favicon.ico' type='image/x-icon' />
+
+    <meta name="msapplication-task" content="name=De Telefoongids; action-uri=http://www.detelefoongids.nl/?edsacid=sitepin1; icon-uri=/img/favicon.ico" />
+    <meta name="msapplication-task" content="name=Bedrijven; action-uri=http://www.detelefoongids.nl/bedrijven.html?edsacid=sitepin2; icon-uri=/img/favicon.ico" />
+    <meta name="msapplication-task" content="name=Personen; action-uri=http://www.detelefoongids.nl/personen.html?edsacid=sitepin3; icon-uri=/img/favicon.ico" />
+    <meta name="msapplication-task" content="name=Producten; action-uri=http://producten.detelefoongids.nl?edsacid=sitepin4; icon-uri=/img/favicon.ico" />
+    <meta name="msapplication-task" content="name=Kaart & Route; action-uri=http://www.detelefoongids.nl/bedrijf/?edsacid=sitepin5; icon-uri=/img/favicon.ico" />
+</head><!--[if IE 6]><body id='notfound' class='ie ie6 NONE nl_NL variant_A'><![endif]-->
+<!--[if IE 7]><body id='notfound' class='ie ie7 NONE nl_NL variant_A'><![endif]-->
+<!--[if IE 8]><body id='notfound' class='ie8 NONE nl_NL variant_A'><![endif]-->
+<!--[if (!IE)|(gt IE 8)]><!--><body id="notfound" class='NONE nl_NL variant_A'><!--<![endif]-->
+
+    <div id='hdr' class='tabbed'>
+            <div id="grandiant"></div>
+<ul id='langSwitchLinks' class='linkList horizontalLinkList'>
+<li class="langSwitch currentLang first">
+                 <a href="http://www.detelefoongids.nl/crossdomain.xml?locale=nl_NL&amp;newSession=true" title="Nederlands">
+                    <img src="/img/icon_flag_nl_NL_active.gif" alt="Nederlands" />
+                    </a>
+             </li>
+        <li class="langSwitch">
+                 <a href="http://en.detelefoongids.nl/crossdomain.xml?locale=en_NL&amp;newSession=true" rel="nofollow" title="English">
+                    <img src="/img/icon_flag_en_NL_inactive.gif" alt="English" />
+                    </a>
+             </li>
+        </ul>
+
+<ul id='userLinks' class='linkList horizontalLinkList'>
+        <li><a href="#loginLinks" id="loginLinksTrigger">Log in</a>
+            <div id="loginLinks" class="ddNewStyle hidden">
+                <ul>
+                    <li class="first"><a href="#"><span>Log in</span></a></li>
+            
+                    <li><a href="/login.ds" rel="login nofollow">Gebruikers</a></li>
+                    <li><a href="http://selfservice.detelefoongids.nl/" rel="nofollow">Adverteerders</a></li>
+                </ul>
+            </div>
+        </li>
+		
+</ul>
+<ul id="hdrNavLinks" class="linkList horizontalLinkList">
+            </ul>
+
+        <div class='hdrContainer'>
+<ul class='linkList horizontalLinkList hdrNav'>
+    <li class="aiosTab active"><a href='/'>Alles-in-1</a>
+<span class="carrot"></span></li>
+    <li class="yellowTab"><a href='/bedrijven.html'>Gouden Gids</a>
+    <span class="carrot"></span></li>
+    <li class="whiteTab"><a href='/personen.html'><span>De Telefoongids</span></a>
+    <span class="carrot"></span></li>
+    <li class="beslistTab"><a href="http://producten.detelefoongids.nl/"><span>ProductenVinder</span></a>
+<span class="carrot"></span></li>
+    <li class="mapTab"><a href="/bedrijf/">Kaart &amp; Route</a>
+    <span class="carrot"></span></li>
+    <li class="vacaturesTab"><a href="http://www.goudengidsbanen.nl"><span>GoudenGidsbanen.nl</span></a>
+<span class="carrot"></span></li>
+    <li class="myTab">
+    <a href="#" id="myPlacesTrigger" rel="nofollow"><span>Mijn Telefoongids</span></a>
+	
+	
+	
+    <div id="myPlacesLinks" class="hidden">
+        <span class="carrot"></span>
+        <ul>
+            <li><a href="/myplaces.ds" rel="nofollow">Mijn Locaties</a></li>
+				<li><a href="/mymaps.ds" rel="nofollow">Mijn Kaarten</a></li>
+			
+			<li><a href="/login.ds" rel="nofollow login">Mijn Account</a></li>
+        </ul>
+    </div>
+    <div class="carrot"></div>
+</li>
+    </ul>
+</div>
+</div>
+            <div class='searchForm'>
+    <div class='leftEdge'></div>
+    <div class='rightEdge'></div>
+
+    <ul id="hdrLinks" class="linkList horizontalLinkList">
+    <li class="email_permaLink">
+		<li class="email"><a id="emailResultsLink" href="/email.ds" target='_blank' rel='nofollow'><span>E-mail</span></a></li>
+</li>
+        <li class="print"><a href='#' rel="print nofollow">
+   Afdrukken</a></li>
+        <li class="help"><a href='http://statisch.detelefoongids.nl/static/nl_NL/aios_help.html' rel='nofollow'>Help</a>
+</li>
+        </ul>
+<form action='/search.ds' id='topSearchForm' class='wwwCont'>
+        
+<a href="/" class="logo">De Telefoongids & Gouden Gids</a>
+<input type='hidden' name='defaultCountry' id='defaultCountry' value='' />
+<input type="hidden" id="activeMapTab" value="" />
+<div class='whatInput inputCont '>
+    <a class="chooseCategory" id="chooseCategoryLink" href="/goudengids/rubriek-az/" title="Kies een rubriek">
+                Kies een Rubriek</a><label for='what' class='homeLabel'>Wat/Wie</label>
+        <div class='formInp'>
+        <div class='inputWrap'>
+            <input type='text' class='text' name='what' id='what' value='' tabindex='1' />
+        </div>
+    </div>
+    <label for='what' class='hint'>Trefwoord, Naam, Telefoonnummer of Rubriek</label>
+            </div>
+<div class='whereInput inputCont'>
+    <label for='where' class='homeLabel'>Waar</label>
+
+    <div class='formInp'>
+        <div class='inputWrap'>
+            <input type='text' class='text' name='where' id='where' value='' tabindex='2' />
+        </div>
+    </div>
+
+    <label for='where' class='hint'>Straat, Plaats, Postcode of Regio</label>
+
+    <input type="hidden" name="regionSearch" value="false" id="entireRegion" />
+</div>
+
+<div class="wwwSubmit">
+    <a href='#' class='searchButton' id='searchFormSubmit' tabindex='3'><span>Zoek</span></a>
+    <input type='submit' value='Zoek' class='topSearchFormSubmit' />
+    <a class='openProximity' href="#" rel='nofollow'>Toon afstand</a>
+        </div>
+<div class='radiusInput inputCont'>
+            <label for='radius' class='homeLabel'>Afstand</label>
+            <select name='distance' id='radius' class='customEl cumstomL1'>
+                <option value='0' selected='selected'>Alle afstanden...</option>
+                <option value='1'>Afstand: &lt;1 km</option>
+                <option value='5'>Afstand: &lt;5 km</option>
+                <option value='10'>Afstand: &lt;10 km</option>
+                <option value='15'>Afstand: &lt;15 km</option>
+                <option value='25'>Afstand: &lt;25 km</option>
+                <option value='50'>Afstand: &lt;50 km</option>
+                <option value='75'>Afstand: &lt;75 km</option>
+            </select>
+            <a href='#' class='removeRadius'>Afstand verwijderen</a>
+        </div>
+    </form>
+</div>
+<div id="DSContents">
+    <div id='nfCont'>
+    <div id='nfBody'>
+        <h3>Wat Zoekt U?</h3>
+        <p>Als u zelf de URL heeft getypt, controleer of deze goed is geschreven. Als u een link heeft gevolgd vanaf een andere site: deze is wellicht verlopen.</p>
+        <p><a href='/'>terugkeren naar onze homepage</a></p>
+        <p>Webmasters:&nbsp;<a href="http://statisch.detelefoongids.nl/static/nl_NL/tools.html">Download de nieuwste Telefoongids Tools.</a></p>
+    </div>
+</div></div>
+
+<div id="footCont">
+        <div id="foot">
+            <div class='rightEdge'></div>
+            <div class='leftEdge'></div>
+            <ul class='linkList horizontalLinkList'>
+                    <li class="about"><a href="http://over.detelefoongids.nl/onsbedrijf.html">Over ons</a></li>
+                    <li class="contact"><a href="http://over.detelefoongids.nl/corporate/show/id=41131">Contact</a></li>
+                    <li class="careers"><a href="http://www.werkenbijdetelefoongids.nl/">Vacatures</a></li>
+                    <li class="colophon"><a href="http://www.detelefoongids.nl/bg_colofon.html">Colofon</a></li>
+                    <li class="news"><a href="http://over.detelefoongids.nl/persbericht.html">Nieuws</a></li>
+                    <li class="mobile"><a href="http://mobiel.detelefoongids.nl" rel="nofollow">Mobiel</a></li>
+                    <li class="downloads">
+<a href="http://statisch.detelefoongids.nl/static/nl_NL/tools.html" rel="nofollow">Downloads</a></li>
+                    <li class="advertise"><a href='http://zakelijk.detelefoongids.nl'>Online Adverteren</a></li>
+                    <li class="customerservice">
+<a href="http://over.detelefoongids.nl/klantenservice.html" rel="nofollow">Klantenservice</a></li>
+                    <li class="productinfo"><a href="http://over.detelefoongids.nl/onzegidsen.html">Onze Media</a></li>
+                    <li class="terms"><a href="http://over.detelefoongids.nl/voorwaarden.html">Voorwaarden</a></li></ul>
+            <div class='copyright'>
+                &copy; 2012 De Telefoongids BV &ndash; KvK-nummer: 27198207</div>
+
+            </div>
+    </div>
+<script type='text/javascript'>
+// <![CDATA[
+    var LMI={};LMI.Data={enableAutoSuggest:true,maxWhatLength:120,state:{visitorVO:{loggedInVisitor:false}},recentLocations:[{locationValue:"enschede"}],pageType:"NONE",showAdditionalInfo:false,fancySendToMobile:false,listingEventLoggingEnabled:false,locale:"nl_NL_A",strings:{},sessionPreferences:null,requestHiddens:null,sessionHiddens:null,Urls:{suggest:"/suggest.ds",whereSuggest:"/suggestwhere.ds",ddArrow:"/img/pull-down1.gif",ddArrowError:"/img/dd_arrow_error.gif",signin:"/login.ds",ie6Notice:"/ie6notice.ds",ie6NoticeScript:"/rs/popup_dialog.js",ie6NoticeHomeScript:"/rs/popup_dialog_home.js",ie6NoticeStyle:"/rs/ie6Notice.css",loginHomeScript:"/rs/login_dialog_home.js",loginScript:"/rs/login_dialog.js",loginStyle:"/rs/login_dialog.css",removeLocations:"/removerecentlocations.ds",removeSearches:"/removerecentsearches.ds",mapLocation:"/mapalocation.ds",scsDocsBase:"http://statisch.detelefoongids.nl",findOnMapTermsUrl:"static/map_terms.html",defaultIcon:"mapping/nodes/red/map_icon_blank.png"},baseUrl:"/",baseFullUrl:"http://www.detelefoongids.nl",findOnMapEnabled:"true",omnitureEnabled:"true",whiteSearchEnabled:true,reviewsEnabled:true,reviewPromoEnabled:false,mywwwEnabled:true};
+// ]]>
+</script>
+<script type='text/javascript' src='/localization.ds?locale=nl_NL&amp;pageType=NONE&amp;messageDebug=false'></script>
+
+<script type='text/javascript' src='/rs/lm_common.js'></script>
+
+<!--[if IE 6]>
+    <script type='text/javascript' src='/js/ie6win.js'></script>
+    <script type='text/javascript' src='/rs/ie6Notice.js'></script>
+<![endif]-->
+<!-- SiteCatalyst code version: H.14.
+    Copyright 1997-2008 Omniture, Inc. More info available at
+    http://www.omniture.com -->
+
+    <script type="text/javascript"><!--
+    var sessionId = "FAB4AA86E8F42DB6A64174E4C87A450D";
+    var s_account="edsadetelefoongidsnl";
+
+    
+    if (typeof LMI == 'undefined') { var LMI = {}; }
+    LMI.omnitureDomain="prod.eurodir.eu";
+    //--></script>
+
+    <script type='text/javascript' src="/content/js/3rdparty/s_code.js"></script>
+    <script type='text/javascript'><!--
+    s.pageName="";s.pageName="empty_string";s.channel="error";s.pageType="errorPage";s.prop25="404_error_page";s.prop26="unregistered";s.server=window.location.host;
+
+    /************* DO NOT ALTER ANYTHING BELOW THIS LINE ! **************/
+    var s_code=s.t();if(s_code)document.write(s_code);
+
+    //--></script>
+    <script type='text/javascript'><!--
+    if(navigator.appVersion.indexOf('MSIE')>=0)document.write(unescape('%3C')+'\!-'+'-')
+    //--></script><noscript><a href="http://www.omniture.com" title="Web Analytics"><img
+    src="http://edsadetelefoongidsnl.122.2o7.net/b/ss/edsadetelefoongidsnl/1/H.15.1--NS/..."
+    height="1" width="1" border="0" alt="" /></a></noscript><!--/DO NOT REMOVE/-->
+    <!-- End SiteCatalyst code version: H.14. -->
+
+    <!-- Begin Sitestat4 code -->
+    <script language='JavaScript1.1' type='text/javascript'>
+    <!--
+        function sitestat(ns_l){ns_l+='&amp;ns__t='+(new Date()).getTime();ns_pixelUrl=ns_l;
+        ns_0=document.referrer;
+        ns_0=(ns_0.lastIndexOf('/')==ns_0.length-1)?ns_0.substring(ns_0.lastIndexOf('/'),0):ns_0;
+        if(ns_0.length>0)ns_l+='&amp;ns_referrer='+escape(ns_0);
+        if(document.images){ns_1=new Image();ns_1.src=ns_l;}else
+        document.write('<img src="'+ns_l+'" width="1" height="1" alt="">');}
+        if(document.cookie.indexOf('ns_Cfilter')!=-1)
+        sitestat( "http://nl.sitestat.com/tgi/tgi/s?stir&amp;ns_channel=naw_directories");
+    //-->
+    </script>
+    <!-- End Sitestat4 code --><!-- Begin comScore Tag --> 
+<script type="text/javascript"> 
+ document.write(unescape("%3Cscript src='" + (document.location.protocol == "https:" ? "https://sb" : "http://b") 
++ ".scorecardresearch.com/beacon.js' %3E%3C/script%3E")); 
+</script> 
+<script type="text/javascript"> 
+ COMSCORE.beacon({ 
+  c1:2, 
+  c2:"6035178", 
+  c3:"", 
+  c4:"", 
+  c5:"", 
+  c6:"", 
+  c15:"" 
+ }); 
+</script> 
+<noscript> 
+ <img src="http://b.scorecardresearch.com/b?c1=2&amp;c2=6035178&amp;c3=&amp;c4=&amp;c5=&amp;c6=&amp;c15=&amp;cv=1.3&amp;cj=1" style="display:none" width="0" height="0" alt="" /> 
+</noscript> 
+<!-- End comScore Tag --> </body>
+</html>
+
+14:18:32,393  WARN IncorrectnessListenerImpl:38 - Obsolete content type encountered: 'text/javascript'.
+14:19:42,319  WARN DefaultCssErrorHandler:39 - CSS error: [1:24728] Error in style rule. Invalid token ")". Was expecting one of: <S>, "}", <COMMA>, ";", "/", <PLUS>, "-", <HASH>, <STRING>, <URI>, "!", "inherit", <EMS>, <EXS>, <LENGTH_PX>, <LENGTH_CM>, <LENGTH_MM>, <LENGTH_IN>, <LENGTH_PT>, <LENGTH_PC>, <ANGLE_DEG>, <ANGLE_RAD>, <ANGLE_GRAD>, <TIME_MS>, <TIME_S>, <FREQ_HZ>, <FREQ_KHZ>, <DIMENSION>, <PERCENTAGE>, <NUMBER>, <FUNCTION>, <IDENT>.
+14:19:42,321  WARN DefaultCssErrorHandler:53 - CSS warning: [1:24728] Ignoring the following declarations in this rule.
+14:19:42,325  WARN DefaultCssErrorHandler:39 - CSS error: [1:25337] Error in expression. Invalid token ".". Was expecting one of: <S>, <COMMA>, "/", <PLUS>, "-", <HASH>, <STRING>, ")", <URI>, "inherit", <EMS>, <EXS>, <LENGTH_PX>, <LENGTH_CM>, <LENGTH_MM>, <LENGTH_IN>, <LENGTH_PT>, <LENGTH_PC>, <ANGLE_DEG>, <ANGLE_RAD>, <ANGLE_GRAD>, <TIME_MS>, <TIME_S>, <FREQ_HZ>, <FREQ_KHZ>, <DIMENSION>, <PERCENTAGE>, <NUMBER>, <FUNCTION>, <IDENT>.
+14:19:42,325  WARN DefaultCssErrorHandler:39 - CSS error: [4:8] Error in style rule. Invalid token "right". Was expecting one of: "}", ";".
+14:19:42,326  WARN DefaultCssErrorHandler:53 - CSS warning: [4:8] Ignoring the following declarations in this rule.
+14:19:42,326  WARN DefaultCssErrorHandler:39 - CSS error: [4:266] Error in expression. Invalid token ".". Was expecting one of: <S>, <COMMA>, "/", <PLUS>, "-", <HASH>, <STRING>, ")", <URI>, "inherit", <EMS>, <EXS>, <LENGTH_PX>, <LENGTH_CM>, <LENGTH_MM>, <LENGTH_IN>, <LENGTH_PT>, <LENGTH_PC>, <ANGLE_DEG>, <ANGLE_RAD>, <ANGLE_GRAD>, <TIME_MS>, <TIME_S>, <FREQ_HZ>, <FREQ_KHZ>, <DIMENSION>, <PERCENTAGE>, <NUMBER>, <FUNCTION>, <IDENT>.
+14:19:42,327  WARN DefaultCssErrorHandler:39 - CSS error: [7:8] Error in style rule. Invalid token "right". Was expecting one of: "}", ";".
+14:19:42,327  WARN DefaultCssErrorHandler:53 - CSS warning: [7:8] Ignoring the following declarations in this rule.
+14:19:42,328  WARN DefaultCssErrorHandler:39 - CSS error: [7:425] Error in expression. Invalid token ".". Was expecting one of: <S>, <COMMA>, "/", <PLUS>, "-", <HASH>, <STRING>, ")", <URI>, "inherit", <EMS>, <EXS>, <LENGTH_PX>, <LENGTH_CM>, <LENGTH_MM>, <LENGTH_IN>, <LENGTH_PT>, <LENGTH_PC>, <ANGLE_DEG>, <ANGLE_RAD>, <ANGLE_GRAD>, <TIME_MS>, <TIME_S>, <FREQ_HZ>, <FREQ_KHZ>, <DIMENSION>, <PERCENTAGE>, <NUMBER>, <FUNCTION>, <IDENT>.
+14:19:42,329  WARN DefaultCssErrorHandler:39 - CSS error: [10:169] Error in expression. Invalid token ".". Was expecting one of: <S>, <COMMA>, "/", <PLUS>, "-", <HASH>, <STRING>, ")", <URI>, "inherit", <EMS>, <EXS>, <LENGTH_PX>, <LENGTH_CM>, <LENGTH_MM>, <LENGTH_IN>, <LENGTH_PT>, <LENGTH_PC>, <ANGLE_DEG>, <ANGLE_RAD>, <ANGLE_GRAD>, <TIME_MS>, <TIME_S>, <FREQ_HZ>, <FREQ_KHZ>, <DIMENSION>, <PERCENTAGE>, <NUMBER>, <FUNCTION>, <IDENT>.
+14:19:42,336  WARN DefaultCssErrorHandler:39 - CSS error: [13:1835] Error in expression. Invalid token "=". Was expecting one of: <S>, <COMMA>, "/", <PLUS>, "-", <HASH>, <STRING>, ")", <URI>, "inherit", <EMS>, <EXS>, <LENGTH_PX>, <LENGTH_CM>, <LENGTH_MM>, <LENGTH_IN>, <LENGTH_PT>, <LENGTH_PC>, <ANGLE_DEG>, <ANGLE_RAD>, <ANGLE_GRAD>, <TIME_MS>, <TIME_S>, <FREQ_HZ>, <FREQ_KHZ>, <DIMENSION>, <PERCENTAGE>, <NUMBER>, <FUNCTION>, <IDENT>.
+14:19:42,336  WARN DefaultCssErrorHandler:39 - CSS error: [13:1840] Error in style rule. Invalid token "background-color". Was expecting one of: "}", ";".
+14:19:42,336  WARN DefaultCssErrorHandler:53 - CSS warning: [13:1840] Ignoring the following declarations in this rule.
+14:19:42,338  WARN DefaultCssErrorHandler:39 - CSS error: [13:2377] Error in expression. Invalid token "=". Was expecting one of: <S>, <COMMA>, "/", <PLUS>, "-", <HASH>, <STRING>, ")", <URI>, "inherit", <EMS>, <EXS>, <LENGTH_PX>, <LENGTH_CM>, <LENGTH_MM>, <LENGTH_IN>, <LENGTH_PT>, <LENGTH_PC>, <ANGLE_DEG>, <ANGLE_RAD>, <ANGLE_GRAD>, <TIME_MS>, <TIME_S>, <FREQ_HZ>, <FREQ_KHZ>, <DIMENSION>, <PERCENTAGE>, <NUMBER>, <FUNCTION>, <IDENT>.
+14:19:42,443  WARN DefaultCssErrorHandler:39 - CSS error: [1:649] Error in expression. Invalid token "=". Was expecting one of: <S>, <COMMA>, "/", <PLUS>, "-", <HASH>, <STRING>, ")", <URI>, "inherit", <EMS>, <EXS>, <LENGTH_PX>, <LENGTH_CM>, <LENGTH_MM>, <LENGTH_IN>, <LENGTH_PT>, <LENGTH_PC>, <ANGLE_DEG>, <ANGLE_RAD>, <ANGLE_GRAD>, <TIME_MS>, <TIME_S>, <FREQ_HZ>, <FREQ_KHZ>, <DIMENSION>, <PERCENTAGE>, <NUMBER>, <FUNCTION>, <IDENT>.
+14:19:42,444  WARN DefaultCssErrorHandler:39 - CSS error: [1:654] Error in style rule. Invalid token "background-color". Was expecting one of: "}", ";".
+14:19:42,448  WARN DefaultCssErrorHandler:53 - CSS warning: [1:654] Ignoring the following declarations in this rule.
+14:19:42,451  WARN DefaultCssErrorHandler:39 - CSS error: [1:1191] Error in expression. Invalid token "=". Was expecting one of: <S>, <COMMA>, "/", <PLUS>, "-", <HASH>, <STRING>, ")", <URI>, "inherit", <EMS>, <EXS>, <LENGTH_PX>, <LENGTH_CM>, <LENGTH_MM>, <LENGTH_IN>, <LENGTH_PT>, <LENGTH_PC>, <ANGLE_DEG>, <ANGLE_RAD>, <ANGLE_GRAD>, <TIME_MS>, <TIME_S>, <FREQ_HZ>, <FREQ_KHZ>, <DIMENSION>, <PERCENTAGE>, <NUMBER>, <FUNCTION>, <IDENT>.
+14:19:42,663  WARN DefaultCssErrorHandler:39 - CSS error: [1:3842] Error in expression. Invalid token ".". Was expecting one of: <S>, <COMMA>, "/", <PLUS>, "-", <HASH>, <STRING>, ")", <URI>, "inherit", <EMS>, <EXS>, <LENGTH_PX>, <LENGTH_CM>, <LENGTH_MM>, <LENGTH_IN>, <LENGTH_PT>, <LENGTH_PC>, <ANGLE_DEG>, <ANGLE_RAD>, <ANGLE_GRAD>, <TIME_MS>, <TIME_S>, <FREQ_HZ>, <FREQ_KHZ>, <DIMENSION>, <PERCENTAGE>, <NUMBER>, <FUNCTION>, <IDENT>.
+14:19:42,716  WARN DefaultCssErrorHandler:39 - CSS error: [4:18886] Error in expression. Invalid token ".". Was expecting one of: <S>, <COMMA>, "/", <PLUS>, "-", <HASH>, <STRING>, ")", <URI>, "inherit", <EMS>, <EXS>, <LENGTH_PX>, <LENGTH_CM>, <LENGTH_MM>, <LENGTH_IN>, <LENGTH_PT>, <LENGTH_PC>, <ANGLE_DEG>, <ANGLE_RAD>, <ANGLE_GRAD>, <TIME_MS>, <TIME_S>, <FREQ_HZ>, <FREQ_KHZ>, <DIMENSION>, <PERCENTAGE>, <NUMBER>, <FUNCTION>, <IDENT>.
+14:19:42,737  WARN DefaultCssErrorHandler:39 - CSS error: [4:25265] Error in expression. Invalid token "=". Was expecting one of: <S>, <COMMA>, "/", <PLUS>, "-", <HASH>, <STRING>, ")", <URI>, "inherit", <EMS>, <EXS>, <LENGTH_PX>, <LENGTH_CM>, <LENGTH_MM>, <LENGTH_IN>, <LENGTH_PT>, <LENGTH_PC>, <ANGLE_DEG>, <ANGLE_RAD>, <ANGLE_GRAD>, <TIME_MS>, <TIME_S>, <FREQ_HZ>, <FREQ_KHZ>, <DIMENSION>, <PERCENTAGE>, <NUMBER>, <FUNCTION>, <IDENT>.
+14:19:42,740  WARN DefaultCssErrorHandler:39 - CSS error: [4:26150] Error in expression. Invalid token "=". Was expecting one of: <S>, <COMMA>, "/", <PLUS>, "-", <HASH>, <STRING>, ")", <URI>, "inherit", <EMS>, <EXS>, <LENGTH_PX>, <LENGTH_CM>, <LENGTH_MM>, <LENGTH_IN>, <LENGTH_PT>, <LENGTH_PC>, <ANGLE_DEG>, <ANGLE_RAD>, <ANGLE_GRAD>, <TIME_MS>, <TIME_S>, <FREQ_HZ>, <FREQ_KHZ>, <DIMENSION>, <PERCENTAGE>, <NUMBER>, <FUNCTION>, <IDENT>.
+14:19:42,742  WARN DefaultCssErrorHandler:39 - CSS error: [5:20] Error in expression. Invalid token ".". Was expecting one of: <S>, <COMMA>, "/", <PLUS>, "-", <HASH>, <STRING>, ")", <URI>, "inherit", <EMS>, <EXS>, <LENGTH_PX>, <LENGTH_CM>, <LENGTH_MM>, <LENGTH_IN>, <LENGTH_PT>, <LENGTH_PC>, <ANGLE_DEG>, <ANGLE_RAD>, <ANGLE_GRAD>, <TIME_MS>, <TIME_S>, <FREQ_HZ>, <FREQ_KHZ>, <DIMENSION>, <PERCENTAGE>, <NUMBER>, <FUNCTION>, <IDENT>.
+14:19:42,744  WARN DefaultCssErrorHandler:39 - CSS error: [12:476] Error in expression. Invalid token ".". Was expecting one of: <S>, <COMMA>, "/", <PLUS>, "-", <HASH>, <STRING>, ")", <URI>, "inherit", <EMS>, <EXS>, <LENGTH_PX>, <LENGTH_CM>, <LENGTH_MM>, <LENGTH_IN>, <LENGTH_PT>, <LENGTH_PC>, <ANGLE_DEG>, <ANGLE_RAD>, <ANGLE_GRAD>, <TIME_MS>, <TIME_S>, <FREQ_HZ>, <FREQ_KHZ>, <DIMENSION>, <PERCENTAGE>, <NUMBER>, <FUNCTION>, <IDENT>.

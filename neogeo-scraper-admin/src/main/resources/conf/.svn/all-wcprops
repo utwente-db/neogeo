@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/repos/neogeo/!svn/ver/116/neogeo-scraper-admin/trunk/src/main/resources/conf
+END
+neogeo.properties
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/repos/neogeo/!svn/ver/116/neogeo-scraper-admin/trunk/src/main/resources/conf/neogeo.properties
+END
+hibernate.cfg.xml
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/repos/neogeo/!svn/ver/96/neogeo-scraper-admin/trunk/src/main/resources/conf/hibernate.cfg.xml
+END
+neogeo.properties.template
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/repos/neogeo/!svn/ver/116/neogeo-scraper-admin/trunk/src/main/resources/conf/neogeo.properties.template
+END

@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/repos/neogeo/!svn/ver/69/neogeo-social-server/trunk/src/main/java/nl/utwente/db/neogeo/social/server
+END
+NeoGeoSocialServlet.java
+K 25
+svn:wc:ra_dav:version-url
+V 126
+/repos/neogeo/!svn/ver/66/neogeo-social-server/trunk/src/main/java/nl/utwente/db/neogeo/social/server/NeoGeoSocialServlet.java
+END
+NeoGeoSocialRequest.java
+K 25
+svn:wc:ra_dav:version-url
+V 126
+/repos/neogeo/!svn/ver/66/neogeo-social-server/trunk/src/main/java/nl/utwente/db/neogeo/social/server/NeoGeoSocialRequest.java
+END
+NeoGeoSocialResponse.java
+K 25
+svn:wc:ra_dav:version-url
+V 127
+/repos/neogeo/!svn/ver/66/neogeo-social-server/trunk/src/main/java/nl/utwente/db/neogeo/social/server/NeoGeoSocialResponse.java
+END

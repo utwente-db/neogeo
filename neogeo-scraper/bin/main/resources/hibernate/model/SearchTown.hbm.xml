@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="nl.utwente.db.neogeo.scraper.model.SearchTown" table="searchtowns">
+		<!-- BaseModelObject fields -->
+		<id name="id" column="id">
+			<generator class="org.hibernate.id.UUIDGenerator"/>
+		</id>
+		
+		<timestamp name="timestamp" column="timestamp"/>
+		<property name="name" column="name" />
+		
+		<!-- Relationships -->
+		<list name="pointsOfInterest" cascade="all">
+			<key column="town" />
+			<index column="id" />
+			<one-to-many class="nl.utwente.db.neogeo.core.model.PointOfInterest" />
+		</list>
+	</class>
+</hibernate-mapping>

@@ -1,0 +1,121 @@
+@CHARSET "UTF-8";
+* {
+	border:			0px;
+	text-decoration:none;
+	font-family: 	DejaVu Sans,Arial,Verdana;
+	font-size:		12px;
+	margin:			0;
+	padding:		0;
+	color:			#584941;
+}
+
+body { 
+	background: 	#FFFFFF url(../images/background.jpg); 
+}
+
+h1 {
+	font-size: 		45px; 
+	margin-bottom: 	4px; 
+	color: 			#62412e; 
+	text-shadow: 	0 1px 1px rgba(255,255,255,.5);
+}
+
+h2 {
+	font-size: 		18px;
+	line-height: 	24px;
+	margin-bottom: 	15px;
+	text-shadow: 	0 1px 1px rgba(255,255,255,.5);
+}
+
+a {
+	font-weight: 	bold;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+#wrapper {
+	padding:		30px;
+}
+
+#menu {
+	height:			100px;
+	background-color: rgba(0, 0, 0, 0.5);
+	text-align:		center;
+	padding-left: 	30px;
+}
+
+#menu a {
+	width:			80px;
+	height:			70px;
+	padding:		15px;
+	float:			left;
+	color:			#ffffff;
+	text-align: 	center;
+}
+
+#menu a:hover {
+	background-color: rgba(0, 0, 0, 0.4);
+	text-decoration: none;
+}
+
+#menu img {
+	max-height:		40px;
+}
+
+#resultsContainer {
+	background-color: rgba(255, 255, 255, 0.4);
+	width:			80%;
+	height:			500px;
+}
+
+#results {
+	height:			460px;
+	padding:		10px;
+	overflow-y: 	scroll;
+}
+
+#progressBar {
+	background-color: rgba(255, 255, 255, 0.4);
+	width:			100%;
+}
+
+#progressBar, #progressBar * {
+	height:			20px;
+}
+
+#progressBarCompleted {
+	width:			0%;
+	background-color: green;
+}
+
+#results table {
+	text-align:		left;
+	width:			100%;
+}
+
+#results td, th {
+	padding-right:	25px;
+}
+
+#results tr:nth-child(odd) {
+	background-color: rgba(255, 255, 255, 0.4);
+}
+
+.stopURI {
+	height:			32px;
+	padding:		2px;
+}
+
+.stopURI a {
+    background-image: url(../images/stop.png);
+	background-repeat: no-repeat;
+	
+	height:			28px;
+	width:			32px;
+    
+    /* This shows the background image but hides the link text */
+    font-size:		0px;
+    padding:		16px;
+}

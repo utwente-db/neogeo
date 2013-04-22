@@ -1,0 +1,30 @@
+Bugs:
+Major:
+- TransientObjectException keeps popping up every now and then
+
+Minor:
+- Admin panel not working for scraper:
+  - Progress indicator is incorrect (~ 0.15 while over halfway the categories)
+  - No harvested results are shown in browser
+- No table headers get sent in proxy test response
+- Error message in log "Bad value for int": unclear why, other behaviour is correct
+
+New features:
+Must haves:
+- Filter out search result items (1 - ...)
+- POI duplicate detection
+- Multiple addresses for one detail page (e.g. http://www.enschedesezwembaden.nl/default.asp?id=1122162034)
+
+Nice to haves:
+- Add new features to address detector, use model inspection
+- Improve stability xPaths by finding several xPaths and ranking
+- Translate search categories and field names (see TranslationTest)
+
+Polishing:
+- Let the ModelEntity be filled on the way (name, sourceUrl, etc)
+- Hibernate mapping resources loaded with wildcard
+- Only one location for hibernate.cfg.xml
+- Make workflows thread-safe (use workflowexecution for the not thread-safe part) 
+
+Maintainability:
+- Code generator for classes, daos, hbm

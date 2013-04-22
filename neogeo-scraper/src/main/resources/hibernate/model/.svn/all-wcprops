@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/repos/neogeo/!svn/ver/122/neogeo-scraper/trunk/src/main/resources/hibernate/model
+END
+Town.hbm.xml
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/repos/neogeo/!svn/ver/99/neogeo-scraper/trunk/src/main/resources/hibernate/model/Town.hbm.xml
+END
+Address.hbm.xml
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/repos/neogeo/!svn/ver/131/neogeo-scraper/trunk/src/main/resources/hibernate/model/Address.hbm.xml
+END
+SearchCategory.hbm.xml
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/repos/neogeo/!svn/ver/99/neogeo-scraper/trunk/src/main/resources/hibernate/model/SearchCategory.hbm.xml
+END
+SearchTown.hbm.xml
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/repos/neogeo/!svn/ver/99/neogeo-scraper/trunk/src/main/resources/hibernate/model/SearchTown.hbm.xml
+END
+ScrapedPage.hbm.xml
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/repos/neogeo/!svn/ver/99/neogeo-scraper/trunk/src/main/resources/hibernate/model/ScrapedPage.hbm.xml
+END
+PointOfInterestCategory.hbm.xml
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/repos/neogeo/!svn/ver/99/neogeo-scraper/trunk/src/main/resources/hibernate/model/PointOfInterestCategory.hbm.xml
+END
+PointOfInterest.hbm.xml
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/repos/neogeo/!svn/ver/122/neogeo-scraper/trunk/src/main/resources/hibernate/model/PointOfInterest.hbm.xml
+END
+Translation.hbm.xml
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/repos/neogeo/!svn/ver/99/neogeo-scraper/trunk/src/main/resources/hibernate/model/Translation.hbm.xml
+END
+ProxyServer.hbm.xml
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/repos/neogeo/!svn/ver/65/neogeo-scraper/trunk/src/main/resources/hibernate/model/ProxyServer.hbm.xml
+END

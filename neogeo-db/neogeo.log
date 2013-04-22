@@ -1,0 +1,13 @@
+11:22:00,293  INFO Version:37 - HCANN000001: Hibernate Commons Annotations {4.0.1.Final}
+11:22:00,304  INFO Version:41 - HHH000412: Hibernate Core {4.1.4.Final}
+11:22:00,309  INFO Environment:239 - HHH000206: hibernate.properties not found
+11:22:00,311  INFO Environment:342 - HHH000021: Bytecode provider name : javassist
+11:22:00,339  INFO Configuration:1985 - HHH000042: Configuring from file: hibernate.cfg.xml
+11:22:37,209  INFO Version:37 - HCANN000001: Hibernate Commons Annotations {4.0.1.Final}
+11:22:37,218  INFO Version:41 - HHH000412: Hibernate Core {4.1.4.Final}
+11:22:37,222  INFO Environment:239 - HHH000206: hibernate.properties not found
+11:22:37,224  INFO Environment:342 - HHH000021: Bytecode provider name : javassist
+10:32:50,215  INFO Version:37 - HCANN000001: Hibernate Commons Annotations {4.0.1.Final}
+10:32:50,224  INFO Version:41 - HHH000412: Hibernate Core {4.1.4.Final}
+10:32:50,227  INFO Environment:239 - HHH000206: hibernate.properties not found
+10:32:50,229  INFO Environment:342 - HHH000021: Bytecode provider name : javassist

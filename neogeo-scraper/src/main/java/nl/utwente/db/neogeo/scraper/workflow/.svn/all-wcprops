@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/repos/neogeo/!svn/ver/116/neogeo-scraper/trunk/src/main/java/nl/utwente/db/neogeo/scraper/workflow
+END
+BaseWorkflow.java
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/repos/neogeo/!svn/ver/96/neogeo-scraper/trunk/src/main/java/nl/utwente/db/neogeo/scraper/workflow/BaseWorkflow.java
+END
+BaseWorkflowExecution.java
+K 25
+svn:wc:ra_dav:version-url
+V 125
+/repos/neogeo/!svn/ver/99/neogeo-scraper/trunk/src/main/java/nl/utwente/db/neogeo/scraper/workflow/BaseWorkflowExecution.java
+END

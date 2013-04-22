@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/repos/neogeo/!svn/ver/120/neogeo-scraper/trunk/src/main/java/nl/utwente/db/neogeo/scraper/utils
+END
+ModelMapper.java
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/repos/neogeo/!svn/ver/63/neogeo-scraper/trunk/src/main/java/nl/utwente/db/neogeo/scraper/utils/ModelMapper.java
+END
+NeoGeoScraperWebClient.java
+K 25
+svn:wc:ra_dav:version-url
+V 124
+/repos/neogeo/!svn/ver/131/neogeo-scraper/trunk/src/main/java/nl/utwente/db/neogeo/scraper/utils/NeoGeoScraperWebClient.java
+END
+BaseModelMapper.java
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/repos/neogeo/!svn/ver/65/neogeo-scraper/trunk/src/main/java/nl/utwente/db/neogeo/scraper/utils/BaseModelMapper.java
+END
+NeoGeoScraperWebClientPool.java
+K 25
+svn:wc:ra_dav:version-url
+V 128
+/repos/neogeo/!svn/ver/120/neogeo-scraper/trunk/src/main/java/nl/utwente/db/neogeo/scraper/utils/NeoGeoScraperWebClientPool.java
+END
+PhoneNumberHelper.java
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/repos/neogeo/!svn/ver/65/neogeo-scraper/trunk/src/main/java/nl/utwente/db/neogeo/scraper/utils/PhoneNumberHelper.java
+END
+ScraperUtils.java
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/repos/neogeo/!svn/ver/131/neogeo-scraper/trunk/src/main/java/nl/utwente/db/neogeo/scraper/utils/ScraperUtils.java
+END
+AddressHelper.java
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/repos/neogeo/!svn/ver/49/neogeo-scraper/trunk/src/main/java/nl/utwente/db/neogeo/scraper/utils/AddressHelper.java
+END
