@@ -1,4 +1,0 @@
-Must haves:
-
-Nice to haves:
-- Remove all createEmptyRequest() and createEmptyResponse() functions from servlets

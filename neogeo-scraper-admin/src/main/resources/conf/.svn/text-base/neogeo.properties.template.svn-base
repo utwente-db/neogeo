@@ -1,5 +1,0 @@
-# Necessary for using MicrosoftTranslator
-translate.microsoft.clientid=
-translate.microsoft.clientsecret=
-
-searchresultdetectionservice.url=http://ewi805.ewi.utwente.nl:8080/neogeo-scraper-renderserver/srf?key=secretKey&url=
