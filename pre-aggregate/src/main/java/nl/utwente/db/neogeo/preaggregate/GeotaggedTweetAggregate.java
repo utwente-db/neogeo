@@ -7,8 +7,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 
-import org.postgresql.geometric.PGbox;
-
 public class GeotaggedTweetAggregate extends PreAggregate {
 
 	/*
@@ -55,7 +53,7 @@ public class GeotaggedTweetAggregate extends PreAggregate {
 		return query(aggr,ranges);
 	}
 	
-	public void createAggrGrid(String newtable, String aggr, double cellSize, double x1, double y1, double x2, double y2) throws SQLException {	
+/**	public void createAggrGrid(String newtable, String aggr, double cellSize, double x1, double y1, double x2, double y2) throws SQLException {	
 		// first, the cellSize should be a multiple of BASEBOXSIZE
 		double BASEBLOCKSIZE = ((Double)axis[0].BASEBLOCKSIZE()).doubleValue();
 		int cellElements = (int)(cellSize/BASEBLOCKSIZE);
@@ -130,4 +128,5 @@ public class GeotaggedTweetAggregate extends PreAggregate {
 		c.setAutoCommit(true);  
 		System.out.println("+ grid table ["+xcount +"x" + ycount +"] with " + ncells +" cells written!");
 	}
+	**/
 }
