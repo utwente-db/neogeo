@@ -36,7 +36,7 @@ public class PermutationGenerator {
 	int permutation[] = null;
 	int curDim = -1;
 	
-	void start() {
+	public void start() {
 		permutation = new int[dimensions];
 		for(int i=0; i<dimensions; i++)
 			permutation[i] = range_low[i];
@@ -44,7 +44,7 @@ public class PermutationGenerator {
 		permutation[curDim]--;
 	}
 	
-	boolean next() {
+	public boolean next() {
 		if ( ++permutation[curDim] >= range_high[curDim] ) {
 			while ( curDim >0 ) {
 				permutation[curDim] = range_low[curDim];
@@ -62,7 +62,7 @@ public class PermutationGenerator {
 		return true;
 	}
 	
-	int[] permutation() {
+	public int[] permutation() {
 		return permutation;
 	}
 	

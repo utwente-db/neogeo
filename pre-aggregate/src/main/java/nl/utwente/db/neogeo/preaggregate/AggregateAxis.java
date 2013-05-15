@@ -506,7 +506,8 @@ class  TimestampAxisIndexer implements AxisIndexer {
 	}
 	
 	public short maxLevels() {
-		return (short)Math.ceil(Math.pow(axisSize(), 1.0/(double)N()));
+		//return (short)Math.ceil(Math.pow(axisSize(), 1.0/(double)N()));
+		return (short)Math.ceil(Math.log(axisSize()) / Math.log(N()));
 	}
 	
 	public static final short log2(int base) {

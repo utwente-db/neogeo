@@ -1,4 +1,4 @@
-package nl.utwente.db.neogeo.preaggregate;
+package nl.utwente.db.neogeo.preaggregate.postgres;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class PostgresConnection {
-	private static final String CONFIG_FILENAME = "database.properties";
+	private static final String CONFIG_FILENAME = "database_postgres.properties";
 
 	private String hostname;
 	private String port;

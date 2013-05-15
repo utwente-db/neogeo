@@ -1,4 +1,4 @@
-package nl.utwente.db.neogeo.preaggregate;
+package nl.utwente.db.neogeo.preaggregate.mysql;
 
 import java.sql.*;
 
@@ -10,7 +10,7 @@ public class SqlUtils {
 
 		Statement st;
 		ResultSet rs;
-		String sql = "SELECT COUNT(*) from FROM information_schema.Tables WHERE table_schema='"
+		String sql = "SELECT COUNT(*) from information_schema.TABLES WHERE table_schema=\'"
 				+ schema + "\' AND table_name=\'" + table + "\';";
 
 		st = c.createStatement();
