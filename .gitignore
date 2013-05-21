@@ -32,6 +32,9 @@ local.properties
 *.war
 *.ear
 
+# Property files #
+*.properties
+
 ############
    MAVEN
 ############
