@@ -34,8 +34,10 @@ public class MysqlConnectionOrder {
 		{1167627060,1312732140} // pre-aggregate 11
 	};
 
-	public static long[][] factorQuery = {{1167606600,1312737480,1410720} 
-	};
+	public static long[][] factorQuery = {
+		{1167606600,1312737480,1410720}, // pre-aggregate 8 
+		{1167607020,1167657420, 5040} // pre-aggregate 4
+		};
 
 	public static byte[] coding = {1,1,1,1,2,2,2,2,3,3,3,3,3};
 
@@ -137,6 +139,7 @@ public class MysqlConnectionOrder {
 		
 		Vector<OrderQuery> queries = new Vector<OrderQuery>();
 		long l0 = Math.round(Math.ceil(Math.log(userFactor/60.0)/Math.log(4)));
+		
 		double factor = Math.pow(4, l0);
 		if((factor*60)/userFactor>2)
 			System.out.println("optimization possible since userFactor occurs multiple times in a factor!");
@@ -175,7 +178,7 @@ public class MysqlConnectionOrder {
 		}
 		for(int i=0;i<queries.size();i++){
 			OrderQuery q = queries.get(i);
-			System.out.println(q.getL0()+","+q.getI0()+","+q.getSoff()+","+q.getEoff());
+			System.out.println((i+1)+","+q.getL0()+","+q.getI0()+","+q.getSoff()+","+q.getEoff());
 		}
 		//long cnt = pegel.timeQuery("count", 1167606600, 1312737480);
 		String query1 = "select i0,base_id,cnt,order_map from _ipfx_level0_order_"+l0+" where l0="+l0+" and ("+constr+")";
@@ -327,7 +330,7 @@ public class MysqlConnectionOrder {
 //		end = System.currentTimeMillis();
 //		System.out.println("query "+i+"   standard query time [ms]: "+(end-start));
 
-		i=0;
+		i=1;
 		start = System.currentTimeMillis();
 		psqlCon.factorQuery(con, factorQuery[i][0], factorQuery[i][1], factorQuery[i][2]);
 		end = System.currentTimeMillis();
