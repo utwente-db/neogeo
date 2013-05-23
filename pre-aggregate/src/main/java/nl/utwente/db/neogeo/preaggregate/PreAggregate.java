@@ -323,6 +323,7 @@ public class PreAggregate {
 			System.out.println("\n#! SCRIPT:\n"+pre_script+post_script);
 		
 		SqlUtils.executeSCRIPT(c, pre_script.toString() + post_script.toString());
+		//SqlUtils.executeSCRIPT(c, pre_script.toString() );
 		create_time_ms = new Date().getTime() - create_time_ms;
 		
 		if (showAxisAndKey) {
