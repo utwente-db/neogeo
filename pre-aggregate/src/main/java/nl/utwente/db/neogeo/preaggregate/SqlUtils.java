@@ -67,50 +67,11 @@ public class SqlUtils {
 			executeNORES(c,sql);
 			break;
 		case MYSQL:
-			executeMySQLScript(c,sql);
+			executeNORES(c,sql);
 			break;
 		}	
 	}
-	private static void executeMySQLBatch(Connection c, String sql) throws SQLException{
-		StringBuffer nsql = new StringBuffer();
-		String[] sArr = sql.split("\n");
-		for(int i=0;i<sArr.length;i++){
-			if(!sArr[i].isEmpty())
-				nsql.append(sArr[i]+"\n");
-		}
-		Statement st = c.createStatement();
-		st.addBatch(nsql.toString());
-		st.executeBatch();
-	}
 
-	private static void executeMySQLScript(Connection c, String sql)
-	throws SQLException {
-		String[] sArr = sql.split("DELIMITER ");
-		int i=0;
-//		if(!sArr[i].isEmpty())
-			executeMySQLBatch(c,sArr[i]);
-		i++;
-		while(i<sArr.length){
-			// this is the part with the modified delimiter
-			String sep = sArr[i].substring(0,sArr[i].indexOf('\n'));
-			String[] cmdArr = sArr[i].split(sep+'\n');
-			// interpret the mysql demiliter client command
-			for(int j=1;j<cmdArr.length;j++){
-//				if(!cmdArr[j].isEmpty())
-					executeMySQLBatch(c,cmdArr[j]);
-			}
-			i++;
-			// this is the part where the delimiter has been set back to ;
-			sArr[i] = sArr[i].substring(sArr[i].indexOf('\n')+1);
-			cmdArr = sArr[i].split(";\n");
-			for(int j=1;j<cmdArr.length;j++){
-//				if(!cmdArr[j].isEmpty())
-					executeMySQLBatch(c,cmdArr[j]);
-			}
-			i++;
-		}
-	}
-	
 	public static void executeNORES(Connection c, String sql)
 	throws SQLException {
 		Statement st = c.createStatement();
