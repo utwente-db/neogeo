@@ -8,6 +8,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import nl.utwente.db.neogeo.preaggregate.PegelAndelfingen2Aggregate;
+
 
 public class MysqlConnection {
 	private static final String CONFIG_FILENAME = "database.properties";
@@ -74,7 +76,11 @@ public class MysqlConnection {
 		// to create the pre-aggregate
 		//PegelAndelfingen2Aggregate pegel = new PegelAndelfingen2Aggregate(con, "datagraph" , "pegel_andelfingen2", "andelfingen2", "timed");
 		// to operate the pre-aggregate
-		PegelAndelfingen2Aggregate pegel = new PegelAndelfingen2Aggregate(con, "datagraph" , "pegel_andelfingen2", "andelfingen2");
+//		PegelAndelfingen2Aggregate pegel = new PegelAndelfingen2Aggregate(c, "public" , "andelfingen2", "pegel_andelfingen2", "timed");
+		// PegelAndelfingen2Aggregate pegel = new PegelAndelfingen2Aggregate(c, "public" , "andelfingen2", "pegel_andelfingen2");
+//		pegel.timeQuery("count", 1167606600, 1312737480);
+
+		PegelAndelfingen2Aggregate pegel = new PegelAndelfingen2Aggregate(con, "datagraph" , "pegel_andelfingen2", "andelfingen2", "timed");
 		pegel.timeQuery("count", 1167606600, 1312737480);
 	}
 }
