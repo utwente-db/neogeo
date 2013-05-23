@@ -8,6 +8,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
+
 public class MysqlConnection {
 	private static final String CONFIG_FILENAME = "database.properties";
 

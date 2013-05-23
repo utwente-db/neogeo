@@ -510,8 +510,8 @@ class  TimestampAxisIndexer implements AxisIndexer {
 		return (short)Math.ceil(Math.log(axisSize()) / Math.log(N()));
 	}
 	
-	public static final short log2(int base) {
-		return (short) Math.ceil(Math.log(base) / Math.log(2));
+	public static final short log2(long base) {
+		return (short) Math.ceil(Math.log(base) / Math.log((long)2));
 	}
 	
 	public static final short pow2(int base) {

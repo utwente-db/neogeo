@@ -49,8 +49,8 @@ public class PreAggregate {
 		if ( do_assert ) {
 			if ( l != li_l(key) )
 				throw new RuntimeException("li_l(): " + l + "<>" + li_l(key));
-			if ( i != li_i(key) )
-				throw new RuntimeException("li_i(): " + i + "<>" + li_i(key));
+			if ( i != li_i(key) ) 
+				throw new RuntimeException("li_i(): i=" + i + "<> li=" + li_i(key));
 			
 		}
 		return key;

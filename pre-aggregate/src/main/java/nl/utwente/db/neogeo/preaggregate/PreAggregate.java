@@ -34,18 +34,17 @@ public class PreAggregate {
 	private static final boolean useDirect = true; // do direct texting in postgis without aggregate
 	
 	public static final boolean do_assert		= true;
-	public static final long    indexMask		= 0x000FFFFF;
+	public static final long    indexMask		= 0x00FFFFFFFFFFFFFFL; // warning, should match with levStart
 	public static final int		levStart 		= 56; // the first 8 bits
 	
 	public static final long li_key(short l, int i) {
-		long key = (((long)l)<<levStart) | ((long)i);
+		long key = (((long)l)<<levStart) | (long)i;
 		
 		if ( do_assert ) {
 			if ( l != li_l(key) )
 				throw new RuntimeException("li_l(): " + l + "<>" + li_l(key));
 			if ( i != li_i(key) )
-				throw new RuntimeException("li_i(): " + i + "<>" + li_i(key));
-			
+				throw new RuntimeException("li_i(l="+l+", i="+i+"): i=" + i + "<> li()=" + li_i(key) + ", bits="+AggregateAxis.log2(i));
 		}
 		return key;
 	}

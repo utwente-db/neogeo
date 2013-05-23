@@ -4,15 +4,44 @@ import java.sql.*;
 
 public class SqlUtils {
 
+	protected enum DbType {
+		POSTGRES, 
+	    MYSQL
+	}
+	
+	protected static String databaseType(Connection c) throws SQLException {
+		return c.getMetaData().getDatabaseProductName();
+	}
+	
+	protected static DbType dbType(Connection c) throws SQLException {
+		String s = databaseType(c);
+		
+		if ( s.equals("PostgreSQL") )
+			return DbType.POSTGRES;
+		else if ( s.equals("MySQL") )
+			return DbType.MYSQL;
+		else
+			throw new SQLException("Unknown database type: "+s);
+	}
+	
 	public static boolean existsTable(Connection c, String schema, String table)
 			throws SQLException {
 		boolean res;
 
 		Statement st;
 		ResultSet rs;
-		String sql = "SELECT COUNT(*) from FROM information_schema.Tables WHERE table_schema='"
+		
+		String sql = null;
+		switch ( dbType(c) ) {
+		case POSTGRES:
+			sql = "SELECT COUNT(*) from pg_tables WHERE schemaname=\'"
+				+ schema + "\' AND tablename=\'" + table + "\';";
+			break;
+		case MYSQL:
+			sql = "SELECT COUNT(*) from FROM information_schema.Tables WHERE table_schema='"
 				+ schema + "\' AND table_name=\'" + table + "\';";
-
+			break;
+		}
 		st = c.createStatement();
 		rs = st.executeQuery(sql);
 		rs.next();
