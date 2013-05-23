@@ -5,13 +5,13 @@ import java.sql.*;
 public class SqlUtils {
 
 	public static boolean existsTable(Connection c, String schema, String table)
-			throws SQLException {
+	throws SQLException {
 		boolean res;
 
 		Statement st;
 		ResultSet rs;
 		String sql = "SELECT COUNT(*) from information_schema.TABLES WHERE table_schema=\'"
-				+ schema + "\' AND table_name=\'" + table + "\';";
+			+ schema + "\' AND table_name=\'" + table + "\';";
 
 		st = c.createStatement();
 		rs = st.executeQuery(sql);
@@ -23,9 +23,9 @@ public class SqlUtils {
 	}
 
 	public static void executeNORES(Connection c, String sql)
-			throws SQLException {
+	throws SQLException {
 		Statement st = c.createStatement();
-		st.executeUpdate(sql, Statement.NO_GENERATED_KEYS);
+		st.execute(sql);
 		st.close();
 	}
 
@@ -33,22 +33,58 @@ public class SqlUtils {
 	throws SQLException {
 		executeNORES(c,"DROP TABLE "+schema+"."+table+";");
 	}
-	
+
 	public static ResultSet execute(Connection c, String sql)
-			throws SQLException {
+	throws SQLException {
 		Statement st = c.createStatement();
 		ResultSet rs = st.executeQuery(sql);
 		return rs;
 	}
-	
+
+	/**
+	 * This function is required to handle client commands which are not supported
+	 * by JDBC drivers. A conrete example is the DELIMITER command of MySQL, which is 
+	 * required for defining functions, stored procedures etc.
+	 * @param c
+	 * @param sql
+	 * @throws SQLException
+	 */
+	public static void executeScript(Connection c, String sql)
+	throws SQLException {
+		String[] sArr = sql.split("DELIMITER ");
+		int i=0;
+		if(!sArr[i].isEmpty())
+			executeNORES(c,sArr[i]);
+		i++;
+		while(i<sArr.length){
+			// this is the part with the modified delimiter
+			String sep = sArr[i].substring(0,sArr[i].indexOf('\n'));
+			String[] cmdArr = sArr[i].split(sep+'\n');
+			// interpret the mysql demiliter client command
+			for(int j=1;j<cmdArr.length;j++){
+				if(!cmdArr[j].isEmpty())
+					executeNORES(c,cmdArr[j]);
+			}
+			i++;
+			// this is the part where the delimiter has been set back to ;
+			sArr[i] = sArr[i].substring(sArr[i].indexOf('\n')+1);
+			cmdArr = sArr[i].split(";\n");
+			for(int j=1;j<cmdArr.length;j++){
+				if(!cmdArr[j].isEmpty())
+					executeNORES(c,cmdArr[j]);
+			}
+			i++;
+		}
+	}
+
 	public static ResultSet execute_big_read(Connection c, String sql)
-			throws SQLException {
+	throws SQLException {
 		Statement st = c.createStatement(ResultSet.TYPE_FORWARD_ONLY,ResultSet.CONCUR_READ_ONLY);
 		st.setFetchSize(1);
 		ResultSet rs = st.executeQuery(sql);
 		return rs;
 	}
-	
+
 
 	public static ResultSet get_result(Connection c, String resname,
 			String restable, int fromPos, int toPos) throws SQLException {
@@ -58,7 +94,7 @@ public class SqlUtils {
 		if (fromPos >= 0)
 			between = " AND (pos BETWEEN " + fromPos + " AND " + toPos + ")";
 		sql = "SELECT * FROM " + restable + " WHERE resname=\'" + resname
-				+ "\'" + between + " ORDER BY pos;";
+		+ "\'" + between + " ORDER BY pos;";
 		return execute(c, sql);
 	}
 
@@ -73,7 +109,7 @@ public class SqlUtils {
 	}
 
 	public static int execute_1int(Connection c, String psql)
-			throws SQLException {
+	throws SQLException {
 		ResultSet rs = execute(c, psql);
 
 		if (!rs.next())
@@ -81,9 +117,9 @@ public class SqlUtils {
 		int res = rs.getInt(1);
 		return res;
 	}
-	
+
 	public static long execute_1long(Connection c, String psql)
-			throws SQLException {
+	throws SQLException {
 		ResultSet rs = execute(c, psql);
 
 		if (!rs.next())
@@ -91,23 +127,23 @@ public class SqlUtils {
 		long res = rs.getLong(1);
 		return res;
 	}
-	
+
 	public static long count(Connection c, String schema, String table,String column)
-			throws SQLException {
+	throws SQLException {
 		return execute_1long(c,"SELECT COUNT("+column+") FROM "+schema+"."+table+";");
 	}
-	
+
 	public static String execute_1str(Connection c, String psql)
-			throws SQLException {
+	throws SQLException {
 		ResultSet rs = execute(c, psql);
 
 		if (!rs.next())
 			return null;
 		return rs.getString(1);
 	}
-	
+
 	public static String execute_1str(Connection c, PreparedStatement st)
-			throws SQLException {
+	throws SQLException {
 		ResultSet rs = st.executeQuery();
 
 		if (!rs.next())
@@ -116,7 +152,7 @@ public class SqlUtils {
 	}
 
 	public static boolean has1result(Connection c, String psql)
-			throws SQLException {
+	throws SQLException {
 		ResultSet rs = execute(c, psql);
 
 		if (!rs.next())
@@ -129,18 +165,18 @@ public class SqlUtils {
 				"CREATE INDEX "+table+"_"+column+" on "+schema+"."+table+" USING "+kind+"("+column+");"
 		);
 	}
-	
+
 	public static long queryCount(Connection c, String q) throws SQLException {
 		return execute_1long(c,"SELECT COUNT(*) FROM (" + q + ") as countExpr;");
-		
+
 	}
-	
+
 	public static String bbox(double x1,double y1, double x2, double y2, String srid) {
 		return "ST_SetSRID(ST_MakeBox2D(ST_Point("+x1+","+y1+")," + "ST_Point("+x2+","+y2+")),"+srid+")";
 	}
-	
+
 	public static String bbox_linestr(double x1,double y1, double x2, double y2) {
 		return "LINESTRING("+x1+" "+y1+","+x2+" "+y1+","+x2+" "+y2+","+x1+" "+y2+","+x1+" "+y1+")";
 	}
-	
+
 }

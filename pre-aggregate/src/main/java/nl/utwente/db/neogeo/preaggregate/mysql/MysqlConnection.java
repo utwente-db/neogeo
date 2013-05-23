@@ -49,6 +49,7 @@ public class MysqlConnection {
 		}
 		return connection;
 	}
+	
 	private void readProperties(String propFilename) {
 		Properties prop = new Properties();
 		try {

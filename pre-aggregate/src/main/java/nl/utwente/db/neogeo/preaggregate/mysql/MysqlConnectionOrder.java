@@ -1,6 +1,7 @@
 package nl.utwente.db.neogeo.preaggregate.mysql;
 
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -16,8 +17,12 @@ import java.util.TreeMap;
 import java.util.Vector;
 import java.util.Map.Entry;
 
+import nl.utwente.db.neogeo.preaggregate.AggregateAxis;
+
 public class MysqlConnectionOrder {
 	private static final String CONFIG_FILENAME = "database.properties";
+	public static final int  	DFLT_TIME = 60; // corresponds to ten minutes
+	public static final short	DFLT_N = 4;
 
 	private String hostname;
 	private String port;
@@ -37,9 +42,7 @@ public class MysqlConnectionOrder {
 	public static long[][] factorQuery = {
 		{1167606600,1312737480,1410720}, // pre-aggregate 8 
 		{1167607020,1167657420, 5040} // pre-aggregate 4
-		};
-
-	public static byte[] coding = {1,1,1,1,2,2,2,2,3,3,3,3,3};
+	};
 
 	public MysqlConnectionOrder(){
 		readProperties(CONFIG_FILENAME);
@@ -98,34 +101,78 @@ public class MysqlConnectionOrder {
 		return 1167606600 + i0*60;
 	}
 
-	private void standardQuery(Connection con, long start, long end) throws SQLException{
-		String query2 = "select id from pegel_andelfingen2 B, (SELECT @vcurRow := 0) r where B.timed >= ? and timed<=? order by B.PEGEL asc;";
-		PreparedStatement stmt2 = con.prepareStatement(query2);
-		stmt2.setLong(1, start);
-		stmt2.setLong(2, end);
-		stmt2.execute();
-		ResultSet rs = stmt2.getResultSet();
+	private void completeIndex(Connection con) throws SQLException, IOException{
+		String query0 = "select base_id, cnt, order_map from pegel_andelfingen2_pa_order;";
+		String query1 = "update pegel_andelfingen2_pa_order set median_start=? ,median_end=?;";
+		PreparedStatement stmt1 = con.prepareStatement(query1);
+		Statement stmt0 = con.createStatement();
+		stmt0.execute(query0);
+		ResultSet rs = stmt0.getResultSet();
 		int i=0;
-		while(rs.next()){
-			int ret = rs.getInt(1);
-			//System.out.print(ret+",");
-			i++;
+		rs.next();
+		long base_id = rs.getLong("base_id");
+		int cnt = rs.getInt("cnt");
+		byte[] buf = new byte[cnt*4];
+		InputStream is = rs.getBinaryStream("order_map");
+		is.read(buf, 0, cnt*4);
+
+		int[] data = new int[cnt];
+		for(int ii=0;ii<cnt;ii++){
+			data[ii]=(buf[ii*4] & 0xFF)*0x1000000 + (buf[ii*4+1] & 0xFF)*0x10000 + (buf[ii*4+2] & 0xFF)*0x100 + (buf[ii*4+3] & 0xFF);
 		}
-		System.out.println();
-		System.out.println("size: "+i);
+		byte[] start_buf = new byte[cnt*4];
+		byte[] end_buf = new byte[cnt*4];
+		int start_cnt = 0;
+		int end_cnt = 0;
+		int median = cnt/2;
+		for(int ii=0;ii<cnt;ii++){
+			if(data[ii]>median) start_cnt++;
+			else if(data[ii]<median) start_cnt--;
+			// otherwise the start_cnt is not changing.
+			if(data[cnt-1-ii]>median) end_cnt--;
+			else if(data[cnt-1-ii]<median) end_cnt++;
+			// otherwise the start_cnt is not changing.
+			start_buf[4*ii]= (byte) ((byte) (Math.abs(start_cnt) & 0x7F000000) | (start_cnt<0 ? 0x80 : 0));
+			start_buf[4*ii+1]=(byte) (Math.abs(start_cnt) & 0xFF0000);
+			start_buf[4*ii+2]=(byte) (Math.abs(start_cnt) & 0xFF00);
+			start_buf[4*ii+3]=(byte) (Math.abs(start_cnt) & 0xFF);
+			end_buf[4*(cnt-1-ii)]=(byte) ((byte) (Math.abs(end_cnt) & 0x7F000000)| (start_cnt<0 ? 0x80 : 0));
+			end_buf[4*(cnt-1-ii)+1]=(byte) (Math.abs(end_cnt) & 0xFF0000);
+			end_buf[4*(cnt-1-ii)+2]=(byte) (Math.abs(end_cnt) & 0xFF00);
+			end_buf[4*(cnt-1-ii)+3]=(byte) (Math.abs(end_cnt) & 0xFF);
+		}
+		// debug code to check an assertion
+		int a,b,sa,sb;
+		int max = 469763;
+		for(int ii=0;ii<cnt;ii++){
+			sa = (start_buf[4*ii]&0x80)>0 ?-1 :1 ;
+			sb = (end_buf[4*ii]&0x80)>0 ?-1 :1 ;
+			a = (start_buf[4*ii]&0x7F)*0x1000000 +
+				start_buf[4*ii+1]*0x10000+start_buf[4*ii+2]*0x100+start_buf[4*ii+3];
+			b = (end_buf[4*ii]&0x7F)*0x1000000 +
+			end_buf[4*ii+1]*0x10000+end_buf[4*ii+2]*0x100+end_buf[4*ii+3];
+			assert(max - sa*a == sb*b);
+		}
+		InputStream is_start = new ByteArrayInputStream(start_buf);
+		InputStream is_end = new ByteArrayInputStream(end_buf);
+		stmt1.setBinaryStream(1, is_start, start_buf.length);
+		stmt1.setBinaryStream(2, is_end, end_buf.length);
+		System.out.println(end_buf.length);
+		stmt1.executeUpdate();
+		is_start.close();
+		is_end.close();
 	}
 
-	private void compareQueryResults(long start, long end) throws SQLException{
-		Connection con = getConnection();
-		String query2 = "select pegel, timed, id, @vcurRow := @vcurRow + 1 AS rank_new from pegel_andelfingen2 B, (SELECT @vcurRow := 0) r where B.timed >= ? and timed<=? order by B.PEGEL asc;";
-		PreparedStatement stmt2 = con.prepareStatement(query2);
-		stmt2.setLong(1, start);
-		stmt2.setLong(2, end);
-		stmt2.execute();
-		ResultSet rs = stmt2.getResultSet();
-		while(rs.next()){
-
-		}
+	private String createOrderPreAggregateStart(Connection c, String schema,
+			String table, String label, AggregateAxis axis[],
+			int aggregates) 
+	throws SQLException {
+		StringBuffer sb = new StringBuffer();
+		sb.append(MysqlOrderQueryBuilder.getLongBlobToIntFunctionDefinition());
+		sb.append(MysqlOrderQueryBuilder.getPAOrderTable(aggregates));
+		long cnt = SqlUtils.count(c, schema, table, "*");
+		sb.append(MysqlOrderQueryBuilder.fillPreaggregateTable(cnt));
+		return sb.toString();
 	}
 
 	private void factorQuery(Connection con, long start, long end, long userFactor) throws Exception {
@@ -136,10 +183,10 @@ public class MysqlConnectionOrder {
 		if(end-start<userFactor) userFactor=end-start;
 		if(userFactor%60!=0) 
 			System.out.println("userFactor is not conform with the base granularity of the pre-aggregate,w hich is 60.");
-		
+
 		Vector<OrderQuery> queries = new Vector<OrderQuery>();
 		long l0 = Math.round(Math.ceil(Math.log(userFactor/60.0)/Math.log(4)));
-		
+
 		double factor = Math.pow(4, l0);
 		if((factor*60)/userFactor>2)
 			System.out.println("optimization possible since userFactor occurs multiple times in a factor!");
@@ -212,71 +259,38 @@ public class MysqlConnectionOrder {
 	private void query(Connection con, long start, long end) throws Exception {
 		long s = ipfx_d0rf(start);
 		long e = ipfx_d0rf(end);
-		int l0 = (int) Math.round(Math.ceil(Math.log(e-s)/Math.log(4)));
-		int v0;
-		System.out.println("aggregation level:"+l0);
-		System.out.println("difference in buckets: "+(e-s));
-		boolean flag = false;
-		double factor = Math.pow(4, l0);
-		long offset = 0;
-		double offsetBase = Math.pow(4, l0-1);
-		while (!flag){
-			flag = Math.floor((s-offset*offsetBase) / factor) == Math.floor((e-offset*offsetBase) / factor);
-			if(!flag) offset++;
-		}
-		v0=(int) Math.round(Math.floor((s-offset*offsetBase) / factor)*4+offset);
-		System.out.println("l0:"+l0+"     v0:"+v0);
-		long st = ipfx_d0rf_inv(Math.round((v0-offset)/4*Math.round(factor)+offset*offsetBase));
-		long et = ipfx_d0rf_inv(Math.round((v0+4-offset)/4*Math.round(factor)+offset*offsetBase))-1;
-		if(st>start || et<end) 
-			throw new Exception("things go wrong");
-
-		String query0 = "select count(*) from pegel_andelfingen2 where timed>=? and timed<=?";
-		String query1 = "select base_id,cnt,order_map from _ipfx_level0_order_"+l0+" where l0="+l0+" and i0="+v0;
-		PreparedStatement stmt = con.prepareStatement(query0);
-		stmt.setLong(1, st);
-		stmt.setLong(2, start-1);
-		stmt.execute();
-		ResultSet rs = stmt.getResultSet();
-		rs.next();
-		int soff = rs.getInt(1);
-
-		stmt.setLong(1, end+1);
-		stmt.setLong(2, et);
-		stmt.execute();
-		rs = stmt.getResultSet();
-		rs.next();
-		int eoff = rs.getInt(1);
-
-		Statement stmt1 = con.createStatement();
-		stmt1.execute(query1);
-		rs = stmt1.getResultSet();
+		
+		String query0 = "select count(*) from pegel_andelfingen2 where timed<=";
+		//String query2 = "select count(*) from pegel_andelfingen2";
+		String query1 = "select base_id,cnt,substring(order_map,?,?), substring(order_map,-4) from pegel_andelfingen2_pa_order";
+		
+		int soff = SqlUtils.execute_1int(con, query0+start);
+		int eoff = SqlUtils.execute_1int(con, query0+end);
+		//int cnt = SqlUtils.execute_1int(con, query3);
+		
+		PreparedStatement stmt1 = con.prepareStatement(query1);
+		stmt1.setInt(1, soff+1);
+		stmt1.setInt(2, eoff-soff+1);
+		stmt1.execute();
+		ResultSet rs = stmt1.getResultSet();
 		rs.next();
 		long base_id = rs.getLong(1);
 		int cnt = rs.getInt(2);
 		InputStream is = rs.getBinaryStream(3);
-		byte[] b = new byte[MysqlConnectionOrder.coding[l0]*(cnt+1)];
+		byte[] b = new byte[4*(eoff-soff+1)];
 		int ret = is.read(b);
-		int[] data = new int[cnt+1];
+		int[] data = new int[eoff-soff+1];
 		is.read(b);
 		for(int i=soff;i<cnt-eoff;i++){
-			switch (MysqlConnectionOrder.coding[l0]){
-			case 1: data[(b[i] & 0xFF)]= i;
-			break;
-			case 2: data[(b[i*2] & 0xFF)*0x100 + (b[i*2+1] & 0xFF)]= i;
-			break;
-			case 3: data[(b[i*3] & 0xFF)*0x10000 + (b[i*3+1] & 0xFF)*0x100 + (b[i*3+2] & 0xFF)]= i;
-			break;
-			case 4: data[(b[i*4] & 0xFF)*0x1000000 + (b[i*4+1] & 0xFF)*0x10000 + (b[i*4+2] & 0xFF)*0x100 + (b[i*4+3] & 0xFF)]= i;
-			break;
-			}
+			int si = (b[i*4] & 0x80)>0 ? -1 : 1;
+			data[si*((b[i*4] & 0x7F)*0x1000000 + (b[i*4+1] & 0xFF)*0x10000 + (b[i*4+2] & 0xFF)*0x100 + (b[i*4+3] & 0xFF))]= i;
 		}
 		long pos = (cnt-soff-eoff)/2;
 		int c=0;
 		int med = -1;
 		for(int i=0;i<cnt;i++){
 			if(data[i]>0){
-//				System.out.print(base_id+data[i]+",");
+				//				System.out.print(base_id+data[i]+",");
 				c++;
 				if(c==pos) med=data[i];
 			}
@@ -300,11 +314,11 @@ public class MysqlConnectionOrder {
 		//		end = System.currentTimeMillis();
 		//		System.out.println("query "+i+"   standard query time [ms]: "+(end-start));
 		//
-//		i=1;
-//		start = System.currentTimeMillis();
-//		psqlCon.standardQuery(con, query[i][0], query[i][1]);
-//		end = System.currentTimeMillis();
-//		System.out.println("query "+i+"   standard query time [ms]: "+(end-start));
+		//		i=1;
+		//		start = System.currentTimeMillis();
+		//		psqlCon.standardQuery(con, query[i][0], query[i][1]);
+		//		end = System.currentTimeMillis();
+		//		System.out.println("query "+i+"   standard query time [ms]: "+(end-start));
 		//		
 		//		i=0;
 		//		start = System.currentTimeMillis();
@@ -312,32 +326,38 @@ public class MysqlConnectionOrder {
 		//		end = System.currentTimeMillis();
 		//		System.out.println("query "+i+"   pre-aggregate time [ms]: "+(end-start));
 
-//		i=1;
-//		start = System.currentTimeMillis();
-//		psqlCon.query(con, query[i][0], query[i][1]);
-//		end = System.currentTimeMillis();
-//		System.out.println("query "+i+"   pre-aggregate time [ms]: "+(end-start));
+		//		i=1;
+		//		start = System.currentTimeMillis();
+		//		psqlCon.query(con, query[i][0], query[i][1]);
+		//		end = System.currentTimeMillis();
+		//		System.out.println("query "+i+"   pre-aggregate time [ms]: "+(end-start));
 
-//		i=3;
-//		start = System.currentTimeMillis();
-//		psqlCon.query(con, query[i][0], query[i][1]);
-//		end = System.currentTimeMillis();
-//		System.out.println("query "+i+"   pre-aggregate time [ms]: "+(end-start));
-//
-//		i=3;
-//		start = System.currentTimeMillis();
-//		psqlCon.standardQuery(con, query[i][0], query[i][1]);
-//		end = System.currentTimeMillis();
-//		System.out.println("query "+i+"   standard query time [ms]: "+(end-start));
+				i=3;
+				start = System.currentTimeMillis();
+				psqlCon.query(con, query[i][0], query[i][1]);
+				end = System.currentTimeMillis();
+				System.out.println("query "+i+"   pre-aggregate time [ms]: "+(end-start));
+		//
+		//		i=3;
+		//		start = System.currentTimeMillis();
+		//		psqlCon.standardQuery(con, query[i][0], query[i][1]);
+		//		end = System.currentTimeMillis();
+		//		System.out.println("query "+i+"   standard query time [ms]: "+(end-start));
 
-		i=1;
-		start = System.currentTimeMillis();
-		psqlCon.factorQuery(con, factorQuery[i][0], factorQuery[i][1], factorQuery[i][2]);
-		end = System.currentTimeMillis();
-		System.out.println("factorQuery "+i+"   pre-aggregate time [ms]: "+(end-start));
-
-
-
+//				i=1;
+//				start = System.currentTimeMillis();
+//				psqlCon.factorQuery(con, factorQuery[i][0], factorQuery[i][1], factorQuery[i][2]);
+//				end = System.currentTimeMillis();
+//				System.out.println("factorQuery "+i+"   pre-aggregate time [ms]: "+(end-start));
+//		AggregateAxis axis[] = {
+//				new AggregateAxis("timed","long",DFLT_TIME ,DFLT_N)
+//		};
+//		String txt = psqlCon.createOrderPreAggregateStart(con, "datagraph" , "pegel_andelfingen2", "andelfingen2", axis,MysqlOrderQueryBuilder.MEDIAN);
+//		System.out.println(txt);
+//		Statement stmt = con.createStatement();
+//		stmt.addBatch(txt);
+//		
+//		psqlCon.completeIndex(con);
 	}
 
 }

@@ -22,7 +22,7 @@ public class PreAggregate {
 	 * Experiment setup variables
 	 * 
 	 */
-	public static final boolean showAxisAndKey		= true;
+	public static final boolean showAxisAndKey		= false;
 	public static final boolean	doResultCorrection	= true;
 	public static final boolean	serversideStairwalk	= false;
 	public static final char	DEFAULT_KD			= AggrKeyDescriptor.KD_CROSSPRODUCT_LONG;
@@ -39,7 +39,7 @@ public class PreAggregate {
 	private static final boolean usePostgis = true; // WARNING false for testing only
 	private static final boolean useDirect = true; // do direct texting in postgis without aggregate
 	
-	public static final boolean do_assert		= true;
+	public static final boolean do_assert		= false;
 	public static final long    indexMask		= 0x000FFFFF;
 	public static final int		levStart 		= 56; // the first 8 bits
 	
