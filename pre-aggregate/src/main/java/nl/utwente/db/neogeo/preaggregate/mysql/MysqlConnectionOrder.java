@@ -36,7 +36,8 @@ public class MysqlConnectionOrder {
 		{1278480120,1279979820}, // pre-aggregate 8
 		{1278480120,1312732140}, // pre-aggregate 10
 		{1260481440,1312732140}, // pre-aggregate 10
-		{1167627060,1312732140} // pre-aggregate 11
+		{1167627060,1312732140}, // pre-aggregate 11
+		{1167606600,1167606780}  // query only contains 4 values
 	};
 
 	public static long[][] factorQuery = {
@@ -251,6 +252,9 @@ public class MysqlConnectionOrder {
 				i++;
 				if(i>=queries.size()) break;
 				q = queries.get(i);
+//				int si = (b[i*4] & 0x80)>0 ? -1 : 1;
+//				data[i]=si*((b[i*4] & 0x7F)*0x1000000 + (b[i*4+1] & 0xFF)*0x10000 + (b[i*4+2] & 0xFF)*0x100 + (b[i*4+3] & 0xFF));
+
 			}
 		}
 	}
@@ -260,42 +264,52 @@ public class MysqlConnectionOrder {
 		long s = ipfx_d0rf(start);
 		long e = ipfx_d0rf(end);
 		
-		String query0 = "select count(*) from pegel_andelfingen2 where timed<=";
+		long start_time = System.currentTimeMillis();
+		
+		String query0 = "select count(*) from pegel_andelfingen2 where timed<";
 		//String query2 = "select count(*) from pegel_andelfingen2";
 		String query1 = "select base_id,cnt,substring(order_map,?,?), substring(order_map,-4) from pegel_andelfingen2_pa_order";
 		
 		int soff = SqlUtils.execute_1int(con, query0+start);
 		int eoff = SqlUtils.execute_1int(con, query0+end);
 		//int cnt = SqlUtils.execute_1int(con, query3);
+		System.out.println("count query: "+(System.currentTimeMillis()-start_time));
+		
+		long start_time2 = System.currentTimeMillis();
 		
 		PreparedStatement stmt1 = con.prepareStatement(query1);
-		stmt1.setInt(1, soff+1);
-		stmt1.setInt(2, eoff-soff+1);
+		stmt1.setInt(1, 4*soff+1);
+		stmt1.setInt(2, 4*(eoff-soff));
 		stmt1.execute();
 		ResultSet rs = stmt1.getResultSet();
 		rs.next();
 		long base_id = rs.getLong(1);
 		int cnt = rs.getInt(2);
 		InputStream is = rs.getBinaryStream(3);
-		byte[] b = new byte[4*(eoff-soff+1)];
+		byte[] b = new byte[4*(eoff-soff)];
 		int ret = is.read(b);
-		int[] data = new int[eoff-soff+1];
-		is.read(b);
-		for(int i=soff;i<cnt-eoff;i++){
-			int si = (b[i*4] & 0x80)>0 ? -1 : 1;
-			data[si*((b[i*4] & 0x7F)*0x1000000 + (b[i*4+1] & 0xFF)*0x10000 + (b[i*4+2] & 0xFF)*0x100 + (b[i*4+3] & 0xFF))]= i;
+		System.out.println("median query: "+(System.currentTimeMillis()-start_time2));
+		long start_time4 = System.currentTimeMillis();
+		
+		int[] data = new int[cnt+1];
+		for(int i=0;i<eoff-soff;i++){
+			data[((b[i*4] & 0xFF)*0x1000000 + (b[i*4+1] & 0xFF)*0x10000 + (b[i*4+2] & 0xFF)*0x100 + (b[i*4+3] & 0xFF))]=soff+i;
 		}
-		long pos = (cnt-soff-eoff)/2;
+		System.out.println("parsing the binatry: "+(System.currentTimeMillis()-start_time4));
+		
+		int pos = (eoff-soff)/2;
 		int c=0;
 		int med = -1;
-		for(int i=0;i<cnt;i++){
+		long start_time3 = System.currentTimeMillis();
+		for(int i=0;i<cnt+1;i++){
 			if(data[i]>0){
 				//				System.out.print(base_id+data[i]+",");
 				c++;
 				if(c==pos) med=data[i];
 			}
 		}		
-		System.out.println();
+		System.out.println("calculate median"+(System.currentTimeMillis()-start_time3));
+		System.out.println("median: "+med);
 		System.out.println("size: "+c);
 	}
 
@@ -332,7 +346,7 @@ public class MysqlConnectionOrder {
 		//		end = System.currentTimeMillis();
 		//		System.out.println("query "+i+"   pre-aggregate time [ms]: "+(end-start));
 
-				i=3;
+				i=6;
 				start = System.currentTimeMillis();
 				psqlCon.query(con, query[i][0], query[i][1]);
 				end = System.currentTimeMillis();

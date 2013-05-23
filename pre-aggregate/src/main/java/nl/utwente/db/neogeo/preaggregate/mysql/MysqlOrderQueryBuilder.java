@@ -96,10 +96,10 @@ public class MysqlOrderQueryBuilder {
 		sb.append("insert into datagraph.pegel_andelfingen2_pa_order (base_id,cnt,order_map)\n");
 		sb.append("Select min(id) as base_id, count(*) as cnt, \n");
 		sb.append("    group_concat(concat(\n");
-		sb.append("              char(rank_new div 256*256*256),\n");
-		sb.append("              char(rank_new div 256*256),\n");
-		sb.append("              char(rank_new div 256),\n");
-		sb.append("              char(rank_new mod 256)) order by id separator '')\n");
+		sb.append("              char((rank_new  & 0xFF000000) >> 24),\n");
+		sb.append("              char((rank_new  & 0xFF0000) >> 16),\n");
+		sb.append("              char((rank_new  & 0xFF00) >> 8),\n");
+		sb.append("              char(rank_new & 0xFF)) order by id separator '')\n");
 		sb.append("from \n");
 		sb.append("   (select id,\n");
 		sb.append("      ( @vcurRow := @vcurRow + 1) AS rank_new, pegel\n");
