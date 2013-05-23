@@ -199,7 +199,7 @@ public class PreAggregate {
 			sql = axis[i].sqlRangeFunction(c, rangeFunName(i));
 			pre_script.append(sql + "\n");
 			
-			sql = "DROP FUNCTION "+rangeFunName(i)+"("+axis[i].sqlType()+");\n";
+			sql = SqlUtils.gen_DROP_FUNCTION(c, rangeFunName(i),axis[i].sqlType());
 			post_script.append(sql);
 			
 			// generate the dimension level/factor value table

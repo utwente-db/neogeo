@@ -280,4 +280,14 @@ public class SqlUtils {
 		}	
 		throw new SQLException("UNEXPECTED");
 	}
+	
+	public static String gen_DROP_FUNCTION(Connection c, String fun, String par_type) throws SQLException {
+		switch ( dbType(c) ) {
+		case POSTGRES:
+			return  "DROP FUNCTION "+fun+"("+par_type+");\n";
+		case MYSQL:
+			return  "DROP FUNCTION IF EXISTS "+fun+";\n";
+		}	
+		throw new SQLException("UNEXPECTED");
+	}
 }
