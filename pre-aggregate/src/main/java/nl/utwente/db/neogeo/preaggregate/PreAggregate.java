@@ -132,24 +132,17 @@ public class PreAggregate {
 		return indexPrefix + "d"+dim+"rf";
 	}
 	
-	private String create_dimTable(String schema, int dim, int N, int levels, StringBuilder pre_script, StringBuilder post_script) {
-		String sql = null;
+	private String create_dimTable(String schema, int dim, int N, int levels, SqlScriptBuilder sql_build) throws SQLException {
 		String tableName = indexPrefix + "dim"+dim;
 		
-		sql = "DROP TABLE IF EXISTS " + schema + "." + tableName + ";\n";
-		pre_script.append(sql);
-		sql = "CREATE TABLE " + schema + "." + tableName + " (" + "level int," + "factor int" + ");\n";
-		pre_script.append(sql);
+		sql_build.add("DROP TABLE IF EXISTS " + schema + "." + tableName + ";\n");
+		sql_build.add("CREATE TABLE " + schema + "." + tableName + " (" + "level int," + "factor int" + ");\n");
 		int factor = 0;
 		for (int i=0; i<levels; i++) {
 			factor = (i==0) ? 1 : (factor*N);
-			sql = "INSERT INTO " + schema + "." + tableName + "  (level,factor) VALUES("+i+","+factor+");\n";
-			pre_script.append(sql);
+			sql_build.add("INSERT INTO " + schema + "." + tableName + "  (level,factor) VALUES("+i+","+factor+");\n");
 		}
-		pre_script.append("\n");
-		//
-		sql = "DROP TABLE " + schema + "." + tableName + ";\n";
-		post_script.append(sql);
+		sql_build.addPost("DROP TABLE " + schema + "." + tableName + ";\n");
 		return tableName;
 	}
 	
@@ -191,19 +184,20 @@ public class PreAggregate {
 		 * The main code is generated in pre_script. The cleanup code is generated 
 		 * in post_script.
 		 */
-		StringBuilder pre_script = new StringBuilder();
-		StringBuilder post_script = new StringBuilder();
+		// StringBuilder pre_script = new StringBuilder();
+		// StringBuilder post_script = new StringBuilder();
+		SqlScriptBuilder sql_build = new SqlScriptBuilder(c);
 		
 		for(i=0; i<axis.length; i++) {
 			// generate the range conversion function for the dimension
-			sql = axis[i].sqlRangeFunction(c, rangeFunName(i));
-			pre_script.append(sql + "\n");
+			sql_build.add(axis[i].sqlRangeFunction(c, rangeFunName(i)));
+			sql_build.newLine();
 			
-			sql = SqlUtils.gen_DROP_FUNCTION(c, rangeFunName(i),axis[i].sqlType());
-			post_script.append(sql);
+			sql_build.addPost(SqlUtils.gen_DROP_FUNCTION(c, rangeFunName(i),axis[i].sqlType()));
 			
 			// generate the dimension level/factor value table
-			dimTable[i] = create_dimTable(schema,i,axis[i].N(),axis[i].maxLevels(), pre_script, post_script);
+			dimTable[i] = create_dimTable(schema,i,axis[i].N(),axis[i].maxLevels(), sql_build);
+			sql_build.newLine();
 			
 			// generate the select and group-by lists for the level 0 table
 			if (i>0) {
@@ -217,29 +211,31 @@ public class PreAggregate {
 		// generate the function which converts all dimension levels/range indices into one value
 		String genKey = indexPrefix+"genKey";
 		sql = kd.crossproductLongKeyFunction(c, genKey);
-		pre_script.append(sql+"\n");
+		sql_build.add(sql);
+		sql_build.newLine();
 		
 		/*
 		 * Generate the table which contains the final index
 		 */
 		String table_pa = table + PA_EXTENSION;
 		
-		sql = "DROP TABLE IF EXISTS " + schema + "." + table_pa + ";\n";
-		pre_script.append(sql);
-		sql = "CREATE TABLE " + schema + "." + table_pa + " (\n" +
-					 "\tckey bigint NOT NULL PRIMARY KEY,\n" + 
-					 "\tcval bigint,\n" + 
-					 "\tsval "+aggregateType+",\n" +
-					 "\tminval "+aggregateType+",\n" +
-					 "\tmaxval "+aggregateType+"\n" +
-					 ");\n\n";
-		pre_script.append(sql);
+		sql_build.add("DROP TABLE IF EXISTS " + schema + "." + table_pa + ";\n");
+		
+		sql_build.add(
+				"CREATE TABLE " + schema + "." + table_pa + " (\n" +
+				 "\tckey bigint NOT NULL PRIMARY KEY,\n" + 
+				 "\tcval bigint,\n" + 
+				 "\tsval "+aggregateType+",\n" +
+				 "\tminval "+aggregateType+",\n" +
+				 "\tmaxval "+aggregateType+"\n" +
+				 ");\n");
+		sql_build.newLine();
 		
 		/*
 		 * Generate the level 0 table
 		 */
 		String level0_table = schema + "." + indexPrefix + "level0";
-		pre_script.append("DROP TABLE IF EXISTS " + level0_table + ";\n");
+		sql_build.add("DROP TABLE IF EXISTS " + level0_table + ";\n");
 		String level0 = SqlUtils.gen_Select_INTO(c, 
 				level0_table,
 				"SELECT\t" + select + ",\n\tCOUNT(" + aggregateColumn + ") AS cval" +
@@ -248,8 +244,9 @@ public class PreAggregate {
 				",\n\tMAX(" + aggregateColumn + ") AS maxval"
 				, 
 				"FROM " + schema + "." + table + "\nGROUP BY "+gb);
-		pre_script.append(level0 + "\n");
-		post_script.append("DROP TABLE "+level0_table+";\n");
+		sql_build.add(level0);
+		sql_build.newLine();
+		sql_build.addPost("DROP TABLE "+level0_table+";\n");
 		level0 = level0_table;
 		
 		/* 
@@ -311,19 +308,20 @@ public class PreAggregate {
 					"SELECT \t" + gk + " as ckey" + ",\n\tcval,\n\tsval"
 					, 
 					"FROM\t(" + subindexQ + ") AS siq"); // incomplete
-			pre_script.append("DROP TABLE IF EXISTS " + delta_table + ";\n");
-			pre_script.append(delta + "\n");
-			post_script.append("DROP TABLE "+delta_table+";\n");
+			sql_build.add("DROP TABLE IF EXISTS " + delta_table + ";\n");
+			sql_build.add(delta);
+			sql_build.newLine();
+			sql_build.addPost("DROP TABLE "+delta_table+";\n");
+			//
 			sql = "INSERT INTO " + schema + "." + table + PA_EXTENSION + " (\n\tSELECT * FROM " + delta_table + "\n);";
 		}
 		
-		pre_script.append(sql+"\n\n");
+		sql_build.add(sql);
+		sql_build.newLine();
 		
 		if ( true )
-			System.out.println("\n#! SCRIPT:\n"+pre_script+post_script);
-		
-		SqlUtils.executeSCRIPT(c, pre_script.toString() + post_script.toString());
-		//SqlUtils.executeSCRIPT(c, pre_script.toString() );
+			System.out.println("\n#! SCRIPT:\n"+sql_build.getScript());
+		sql_build.executeBatch();
 		create_time_ms = new Date().getTime() - create_time_ms;
 		
 		if (showAxisAndKey) {
@@ -345,6 +343,8 @@ public class PreAggregate {
 		 */
 		_init(c, schema, table, label);
 	}
+	
+	
 	
 	/*
 	 * 

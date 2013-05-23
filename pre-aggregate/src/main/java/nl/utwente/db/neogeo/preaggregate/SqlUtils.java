@@ -217,7 +217,7 @@ public class SqlUtils {
 			"END\n"+
 			"$$ LANGUAGE plpgsql;\n";
 		case MYSQL:
-			return	"DELIMITER //\n\n" +
+			return	"DELIMITER //\n" +
 			"DROP FUNCTION IF EXISTS " + name + " //\n" +
 			"CREATE FUNCTION " + name +  "(" + par + ") RETURNS " + restype + " DETERMINISTIC\n"+
 			"BEGIN\n"+
