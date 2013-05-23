@@ -13,15 +13,24 @@ public class SqlUtils {
 		return c.getMetaData().getDatabaseProductName();
 	}
 	
-	protected static DbType dbType(Connection c) throws SQLException {
-		String s = databaseType(c);
-		
-		if ( s.equals("PostgreSQL") )
-			return DbType.POSTGRES;
-		else if ( s.equals("MySQL") )
-			return DbType.MYSQL;
-		else
-			throw new SQLException("Unknown database type: "+s);
+	protected static Connection cached_connection = null;
+	protected static DbType	 cached_dbtype = DbType.POSTGRES;
+	
+	protected synchronized static DbType dbType(Connection c)
+			throws SQLException {
+		if (false) return DbType.MYSQL;
+		if (c == cached_connection)
+			return cached_dbtype;
+		else {
+			String s = databaseType(c);
+
+			cached_connection = c;
+			if (s.equals("PostgreSQL"))
+				return cached_dbtype = DbType.POSTGRES;
+			else if (s.equals("MySQL"))
+				return cached_dbtype = DbType.MYSQL;
+			throw new SQLException("Unknown database type: " + s);
+		}
 	}
 	
 	public static boolean existsTable(Connection c, String schema, String table)
@@ -51,6 +60,19 @@ public class SqlUtils {
 		return res;
 	}
 
+	public static void executeSCRIPT(Connection c, String sql)
+	throws SQLException {
+		switch ( dbType(c) ) {
+		case POSTGRES:
+			executeNORES(c,sql);
+			break;
+		case MYSQL:
+			Statement st = c.createStatement();
+			st.addBatch(sql);
+			break;
+		}	
+	}
+	
 	public static void executeNORES(Connection c, String sql)
 			throws SQLException {
 		Statement st = c.createStatement();
@@ -172,4 +194,52 @@ public class SqlUtils {
 		return "LINESTRING("+x1+" "+y1+","+x2+" "+y1+","+x2+" "+y2+","+x1+" "+y2+","+x1+" "+y1+")";
 	}
 	
+	/*
+	 * 
+	 * 
+	 */
+	
+	public static String gen_DIV(Connection c, String l, String r) throws SQLException {
+		switch ( dbType(c) ) {
+		case POSTGRES:
+			return "DIV("+l+","+r+")";
+		case MYSQL:
+			return "("+l+") div ("+r+")";
+		}	
+		throw new SQLException("UNEXPECTED");
+	}
+	
+	public static String gen_Create_Or_Replace_Function(Connection c, String name, String par, String restype, String body) throws SQLException {
+		switch ( dbType(c) ) {
+		case POSTGRES:
+			return "CREATE OR REPLACE FUNCTION " + name +  "(" + par + ") RETURNS " + restype + " AS $$\n"+
+					"BEGIN\n"+
+					body + "\n" +
+					"END\n"+
+					"$$ LANGUAGE plpgsql;\n";
+		case MYSQL:
+			return	"DELIMITER //\n\n" +
+					"DROP FUNCTION IF EXISTS " + name + " //\n" +
+					"CREATE FUNCTION " + name +  "(" + par + ") RETURNS " + restype + " DETERMINISTIC\n"+
+					"BEGIN\n"+
+					body + "\n" +
+					"END //\n"+
+					"//\n";
+		}	
+		throw new SQLException("UNEXPECTED");
+	}
+	
+	public static String gen_Select_INTO(Connection c, String table, String select_head, String select_tail) throws SQLException {
+		switch ( dbType(c) ) {
+		case POSTGRES:
+			return  select_head +"\n"+
+					"INTO "+ table +"\n" +
+					select_tail + ";\n";
+		case MYSQL:
+			return	"CREATE TABLE table\n"+
+					select_head + "\n"+
+					select_tail + ";\n";
+		}	
+		throw new SQLException("UNEXPECTED");
+	}
 }

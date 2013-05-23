@@ -4,10 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Vector;
 
 public class PreAggregate {
@@ -198,8 +196,8 @@ public class PreAggregate {
 		
 		for(i=0; i<axis.length; i++) {
 			// generate the range conversion function for the dimension
-			sql = "CREATE OR REPLACE FUNCTION "+axis[i].sqlRangeFunction(rangeFunName(i))+";";
-			pre_script.append(sql + "\n\n");
+			sql = axis[i].sqlRangeFunction(c, rangeFunName(i));
+			pre_script.append(sql + "\n");
 			
 			sql = "DROP FUNCTION "+rangeFunName(i)+"("+axis[i].sqlType()+");\n";
 			post_script.append(sql);
@@ -218,8 +216,8 @@ public class PreAggregate {
 		
 		// generate the function which converts all dimension levels/range indices into one value
 		String genKey = indexPrefix+"genKey";
-		sql = "CREATE OR REPLACE FUNCTION " + kd.crossproductLongKeyFunction(genKey) + ";";
-		pre_script.append(sql+"\n\n");
+		sql = kd.crossproductLongKeyFunction(c, genKey);
+		pre_script.append(sql+"\n");
 		
 		/*
 		 * Generate the table which contains the final index
@@ -229,7 +227,7 @@ public class PreAggregate {
 		sql = "DROP TABLE IF EXISTS " + schema + "." + table_pa + ";\n";
 		pre_script.append(sql);
 		sql = "CREATE TABLE " + schema + "." + table_pa + " (\n" +
-					 "\tkey bigint NOT NULL PRIMARY KEY,\n" + 
+					 "\tckey bigint NOT NULL PRIMARY KEY,\n" + 
 					 "\tcval bigint,\n" + 
 					 "\tsval "+aggregateType+",\n" +
 					 "\tminval "+aggregateType+",\n" +
@@ -241,14 +239,16 @@ public class PreAggregate {
 		 * Generate the level 0 table
 		 */
 		String level0_table = schema + "." + indexPrefix + "level0";
-		String level0 = 
+		pre_script.append("DROP TABLE IF EXISTS " + level0_table + ";\n");
+		String level0 = SqlUtils.gen_Select_INTO(c, 
+				level0_table,
 				"SELECT\t" + select + ",\n\tCOUNT(" + aggregateColumn + ") AS cval" +
 				",\n\tSUM(" + aggregateColumn + ") AS sval" +
 				",\n\tMIN(" + aggregateColumn + ") AS minval" +
-				",\n\tMAX(" + aggregateColumn + ") AS maxval" +
-				"\nINTO "+ level0_table + "\nFROM " + schema + "." + table + "\nGROUP BY "+gb;
-		pre_script.append("DROP TABLE IF EXISTS " + level0_table + ";\n");
-		pre_script.append(level0 + ";\n\n");
+				",\n\tMAX(" + aggregateColumn + ") AS maxval"
+				, 
+				"FROM " + schema + "." + table + "\nGROUP BY "+gb);
+		pre_script.append(level0 + "\n");
 		post_script.append("DROP TABLE "+level0_table+";\n");
 		level0 = level0_table;
 		
@@ -299,16 +299,20 @@ public class PreAggregate {
 		// incomplete, generate in delta table
 		boolean use_delta = true;
 		if ( !use_delta ) {
-			sql = "SELECT \t" + gk + " as key" + ",\n\tcval,\n\tsval \nFROM\t("
+			sql = "SELECT \t" + gk + " as ckey" + ",\n\tcval,\n\tsval \nFROM\t("
 					+ subindexQ + ") AS siq"; // incomplete
 			sql = "INSERT INTO " + schema + "." + table + PA_EXTENSION + " (\n" + sql + "\n);";
 		} else {
 			// first update, then insert to prevent problems
 			String delta_table = schema + "." + indexPrefix + "delta";
-			String delta = "SELECT \t" + gk + " as key" + ",\n\tcval,\n\tsval \nINTO "+delta_table+"\nFROM\t("
-			+ subindexQ + ") AS siq"; // incomplete
+			
+			String delta = SqlUtils.gen_Select_INTO(c, 
+					delta_table,
+					"SELECT \t" + gk + " as ckey" + ",\n\tcval,\n\tsval"
+					, 
+					"FROM\t(" + subindexQ + ") AS siq"); // incomplete
 			pre_script.append("DROP TABLE IF EXISTS " + delta_table + ";\n");
-			pre_script.append(delta + ";\n\n");
+			pre_script.append(delta + "\n");
 			post_script.append("DROP TABLE "+delta_table+";\n");
 			sql = "INSERT INTO " + schema + "." + table + PA_EXTENSION + " (\n\tSELECT * FROM " + delta_table + "\n);";
 		}
@@ -318,7 +322,7 @@ public class PreAggregate {
 		if ( true )
 			System.out.println("\n#! SCRIPT:\n"+pre_script+post_script);
 		
-		SqlUtils.executeNORES(c, pre_script.toString() + post_script.toString());
+		SqlUtils.executeSCRIPT(c, pre_script.toString() + post_script.toString());
 		create_time_ms = new Date().getTime() - create_time_ms;
 		
 		if (showAxisAndKey) {
@@ -430,13 +434,13 @@ public class PreAggregate {
 				pa_grid_str = "pa_grid_cell('"+range_paGridQuery(ranges)+"') AS pakey "; // 2 times faster
 			qb.append(", ");
 			qb.append(pa_grid_str);
-			qb.append(" WHERE key=pakey");
+			qb.append(" WHERE ckey=pakey");
 			
 		} else {
-			System.out.println("#!create WHERE {key=v} query: #keys="+resKeys.size());
+			System.out.println("#!create WHERE {ckey=v} query: #keys="+resKeys.size());
 			qb.append(" WHERE ");
 			for (i = 0; i < resKeys.size(); i++) {
-				qb.append(((i > 0) ? " OR " : "") + "key="
+				qb.append(((i > 0) ? " OR " : "") + "ckey="
 						+ resKeys.elementAt(i).toKey());
 				if (internalHash != null) {
 					AggrRec r = internalHash.get(resKeys.elementAt(i));
@@ -800,7 +804,8 @@ public class PreAggregate {
 		}
 	}
 	
-	private boolean read_repository(Connection c, String schema, String tableName, String label) throws SQLException {	
+	private boolean read_repository(Connection c, String schema, String tableName, String label) throws SQLException {
+		if(!SqlUtils.existsTable(c, schema, tableName)) return false; // CHECK Andreas Change
 		ResultSet rs = SqlUtils.execute(c,
 				"SELECT " + "*" +
 				" FROM " + schema + "." + aggregateRepositoryName +

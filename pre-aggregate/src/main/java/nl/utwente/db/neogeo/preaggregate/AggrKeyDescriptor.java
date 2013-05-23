@@ -1,5 +1,8 @@
 package nl.utwente.db.neogeo.preaggregate;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
 public class AggrKeyDescriptor {
 	
 	public static final boolean defaultSubindexed	= true;
@@ -76,7 +79,26 @@ public class AggrKeyDescriptor {
 			throw new RuntimeException("no of bits in key > 63");
 	}
 	
-	public String crossproductLongKeyFunction(String fun) {	
+	public String crossproductLongKeyFunction(Connection c, String fun) throws SQLException {	
+		String sres = "0";
+		StringBuilder pars = new StringBuilder();
+		
+		for(short i=0; i<dimensions; i++) {
+			if (i>0)
+				pars.append(',');
+			pars.append("l"+i+" int,i"+i+" int");
+			sres = "("+sres+")" + "*" +  (int)Math.pow(2,levelBits) + "+" + "l"+i;
+			sres = "("+sres+")" + "*" +  (int)Math.pow(2,dimBits[i]) + "+" + "i"+i;
+
+		}
+		return SqlUtils.gen_Create_Or_Replace_Function(
+							c, fun, pars.toString(), "bigint",
+							// "\tDECLARE start bigint := 0;\n" +
+							"\tRETURN "+sres+";\n"
+				);	
+	}
+	
+	public String crossproductLongKeyFunctionOLD(String fun) {	
 		String sres = "start";
 		StringBuilder pars = new StringBuilder();
 		

@@ -1,5 +1,7 @@
 package nl.utwente.db.neogeo.preaggregate;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 
 public class AggregateAxis {
@@ -14,7 +16,7 @@ public class AggregateAxis {
 		public Object 	reverseValue(int index);
 		public String   storageFormat(Object o);
 		public String	sqlType();
-		public String   sqlRangeFunction(String name);
+		public String   sqlRangeFunction(Connection c, String name) throws SQLException ;
 	}
 	
 class  IntegerAxisIndexer implements AxisIndexer {
@@ -92,7 +94,7 @@ class  IntegerAxisIndexer implements AxisIndexer {
 			return "integer";
 		}
 		
-		public String sqlRangeFunction(String fun) {
+		public String sqlRangeFunction(Connection c, String fun) {
 			StringBuilder res = new StringBuilder();
 			
 			res.append(fun);
@@ -181,16 +183,11 @@ class  LongAxisIndexer implements AxisIndexer {
 			return "bigint";
 		}
 		
-		public String sqlRangeFunction(String fun) {
-			StringBuilder res = new StringBuilder();
-			
-			res.append(fun);
-			res.append("(v "+sqlType()+") RETURNS integer AS $$\n");
-			res.append("BEGIN\n");
-			res.append("\tRETURN CAST( ( (v - " + this.low + ") / " + this.BASEBLOCKSIZE + ") AS integer);\n");
-			res.append("END\n");
-			res.append("$$ LANGUAGE plpgsql");
-			return res.toString();	
+		public String sqlRangeFunction(Connection c, String fun) throws SQLException {
+			return SqlUtils.gen_Create_Or_Replace_Function(
+							c, fun, "v "+sqlType(), "integer",
+							"\tRETURN " + SqlUtils.gen_DIV(c,"v - " + this.low, ""+this.BASEBLOCKSIZE) + ";"
+					);	
 		}
 		
 	}
@@ -271,7 +268,7 @@ class  LongAxisIndexer implements AxisIndexer {
 			return "double precision";
 		}
 		
-		public String sqlRangeFunction(String fun) {
+		public String sqlRangeFunction(Connection c, String fun) {
 			StringBuilder res = new StringBuilder();
 			
 			res.append(fun);
@@ -364,7 +361,7 @@ class  TimestampAxisIndexer implements AxisIndexer {
 			return "timestamp with time zone";
 		}
 		
-		public String sqlRangeFunction(String fun) {
+		public String sqlRangeFunction(Connection c, String fun) {
 			StringBuilder res = new StringBuilder();
 			
 			res.append(fun);
@@ -534,8 +531,8 @@ class  TimestampAxisIndexer implements AxisIndexer {
 	}
 	
 	
-	public String sqlRangeFunction(String fun) {
-		return indexer.sqlRangeFunction(fun);	
+	public String sqlRangeFunction(Connection c, String fun) throws SQLException {
+		return indexer.sqlRangeFunction(c, fun);	
 	}
 	
 	public String toString() {

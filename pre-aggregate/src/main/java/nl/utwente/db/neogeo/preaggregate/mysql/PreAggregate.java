@@ -205,7 +205,7 @@ public class PreAggregate {
 		
 		for(i=0; i<axis.length; i++) {
 			// generate the range conversion function for the dimension
-			sql = "CREATE OR REPLACE FUNCTION "+axis[i].sqlRangeFunction(rangeFunName(i))+";";
+			sql = "CREATE OR REPLACE FUNCTION "+axis[i].sqlRangeFunction(c, rangeFunName(i))+";";
 			pre_script.append(sql + "\n\n");
 			
 			sql = "DROP FUNCTION "+rangeFunName(i)+"("+axis[i].sqlType()+");\n";
@@ -225,7 +225,7 @@ public class PreAggregate {
 		
 		// generate the function which converts all dimension levels/range indices into one value
 		String genKey = indexPrefix+"genKey";
-		sql = "CREATE OR REPLACE FUNCTION " + kd.crossproductLongKeyFunction(genKey) + ";";
+		sql = "CREATE OR REPLACE FUNCTION " + kd.crossproductLongKeyFunction(c, genKey) + ";";
 		pre_script.append(sql+"\n\n");
 		
 		/*
