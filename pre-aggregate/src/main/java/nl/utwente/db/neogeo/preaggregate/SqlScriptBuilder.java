@@ -37,7 +37,9 @@ public class SqlScriptBuilder {
 		if ( debug ) {
 			System.out.println("|----- EXECUTE:\n"+s+"|-----\n");
 			System.out.flush();
-			SqlUtils.executeNORES(c, s);
+			pre_stat.addBatch(s);
+			pre_stat.executeBatch();
+			pre_stat = c.createStatement();
 		} else {
 			pre_stat.addBatch(s);
 		}
