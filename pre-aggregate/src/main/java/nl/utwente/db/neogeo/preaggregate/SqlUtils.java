@@ -29,6 +29,7 @@ public class SqlUtils {
 				return cached_dbtype = DbType.POSTGRES;
 			else if (s.equals("MySQL"))
 				return cached_dbtype = DbType.MYSQL;
+			cached_connection = null;
 			throw new SQLException("Unknown database type: " + s);
 		}
 	}

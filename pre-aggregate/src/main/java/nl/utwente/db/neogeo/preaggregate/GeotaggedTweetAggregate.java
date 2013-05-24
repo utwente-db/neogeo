@@ -30,7 +30,7 @@ public class GeotaggedTweetAggregate extends PreAggregate {
 				new AggregateAxis("ST_Y("+point_column+")","double",""+DFLT_BASEBOXSIZE,DFLT_N)
 				// , new AggregateAxis("time","timestamp with time zone","3600000" /*=1 hour*/,DFLT_N)
 			};
-		createPreAggregate(c,schema,table,label,axis,"char_length(tweet)","bigint");
+		createPreAggregate(c,schema,table,label,axis,"char_length(tweet)","bigint",AGGR_ALL);
 	}
 	
 	public long boxQuery(String aggr, double x1, double y1, double x2, double y2) throws SQLException {		
@@ -39,7 +39,9 @@ public class GeotaggedTweetAggregate extends PreAggregate {
 		ranges[0][1] = new Double(Math.max(x1,x2));
 		ranges[1][0] = new Double(Math.min(y1,y2));
 		ranges[1][1] = new Double(Math.max(y1,y2));
-		return query(aggr,ranges);
+		long res = query(aggr,ranges);
+		if (false) SQLquery((AGGR_COUNT|AGGR_MIN),ranges);
+		return res;
 	}
 	
 	public long boxQuery3d(String aggr, double x1, double y1, double x2, double y2, Timestamp z1, Timestamp z2) throws SQLException {		

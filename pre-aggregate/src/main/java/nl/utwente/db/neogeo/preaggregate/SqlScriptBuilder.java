@@ -13,6 +13,8 @@ public class SqlScriptBuilder {
 
 	private Connection c;
 	
+	private final boolean debug = false;
+	
 	private Statement pre_stat;
 	private Statement post_stat;
 	
@@ -32,8 +34,13 @@ public class SqlScriptBuilder {
 	}
 	
 	public void add(String s) throws SQLException {
-		// System.out.println("|-----\n"+s+"|-----\n");
-		pre_stat.addBatch(s);
+		if ( debug ) {
+			System.out.println("|----- EXECUTE:\n"+s+"|-----\n");
+			System.out.flush();
+			SqlUtils.executeNORES(c, s);
+		} else {
+			pre_stat.addBatch(s);
+		}
 		pre_str.append(s);
 	}
 	

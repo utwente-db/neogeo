@@ -19,6 +19,14 @@ public class PreAggregate {
 	public static final boolean	serversideStairwalk	= false;
 	public static final char	DEFAULT_KD			= AggrKeyDescriptor.KD_CROSSPRODUCT_LONG;
 
+	private	static final int	AGGR_BASE			= 0x01;
+	public static final	int		AGGR_COUNT			= AGGR_BASE;
+	public static final	int		AGGR_SUM			= AGGR_BASE << 1;
+	public static final	int		AGGR_MIN			= AGGR_BASE << 2;
+	public static final	int		AGGR_MAX			= AGGR_BASE << 3;
+	public static final int		AGGR_ALL			= (AGGR_COUNT|AGGR_SUM|AGGR_MIN|AGGR_MAX);
+	
+	private int	aggregateMask = 0;
 	
 	/* only N dimensional solution so far is running the key generator next to the H-tree or B-tree */
 	
@@ -87,9 +95,9 @@ public class PreAggregate {
 		this.internalHash = internalHash;
 	}
 	
-	public PreAggregate(Connection c, String schema, String table, String label, AggregateAxis axis[], String aggregateColumn, String aggregateType) 
+	public PreAggregate(Connection c, String schema, String table, String label, AggregateAxis axis[], String aggregateColumn, String aggregateType, int aggregateMask) 
 			throws SQLException {
-		createPreAggregate(c,schema,table,label,axis,aggregateColumn,aggregateType);
+		createPreAggregate(c,schema,table,label,axis,aggregateColumn,aggregateType,aggregateMask);
 	}
 	
 	private void _init(Connection c, String schema, String table, String label)
@@ -148,7 +156,7 @@ public class PreAggregate {
 	
 	protected void createPreAggregate(Connection c, String schema,
 			String table, String label, AggregateAxis axis[],
-			String aggregateColumn, String aggregateType) throws SQLException {
+			String aggregateColumn, String aggregateType, int aggregateMask) throws SQLException {
 		int i;
 		String sql;
 		StringBuilder select = new StringBuilder();
@@ -221,14 +229,14 @@ public class PreAggregate {
 		
 		sql_build.add("DROP TABLE IF EXISTS " + schema + "." + table_pa + ";\n");
 		
-		sql_build.add(
-				"CREATE TABLE " + schema + "." + table_pa + " (\n" +
-				 "\tckey bigint NOT NULL PRIMARY KEY,\n" + 
-				 "\tcval bigint,\n" + 
-				 "\tsval "+aggregateType+",\n" +
-				 "\tminval "+aggregateType+",\n" +
-				 "\tmaxval "+aggregateType+"\n" +
-				 ");\n");
+		sql = 	"CREATE TABLE " + schema + "." + table_pa + " (\n" +
+		 		"\tckey bigint NOT NULL PRIMARY KEY,\n" + 
+		 		((aggregateMask&AGGR_COUNT)!=0 ? "\tcountAggr bigint,\n" : "") + 
+		 		((aggregateMask&AGGR_SUM) !=0 ? "\tsumAggr "  +aggregateType+",\n" : "") +
+		 		((aggregateMask&AGGR_MIN)!=0 ? "\tminAggr "+aggregateType+",\n" : "") +
+		 		((aggregateMask&AGGR_MAX)!=0 ? "\tmaxAggr "+aggregateType+"\n" : "") +
+		 		");\n";
+		sql_build.add(sql);
 		sql_build.newLine();
 		
 		/*
@@ -238,10 +246,11 @@ public class PreAggregate {
 		sql_build.add("DROP TABLE IF EXISTS " + level0_table + ";\n");
 		String level0 = SqlUtils.gen_Select_INTO(c, 
 				level0_table,
-				"SELECT\t" + select + ",\n\tCOUNT(" + aggregateColumn + ") AS cval" +
-				",\n\tSUM(" + aggregateColumn + ") AS sval" +
-				",\n\tMIN(" + aggregateColumn + ") AS minval" +
-				",\n\tMAX(" + aggregateColumn + ") AS maxval"
+				"SELECT\t" + select +
+				((aggregateMask&AGGR_COUNT)!=0 ? ",\n\tCOUNT(" + aggregateColumn + ") AS countAggr" : "") +
+				((aggregateMask&AGGR_SUM) !=0 ? ",\n\tSUM(" + aggregateColumn + ") AS sumAggr" : "") +
+				((aggregateMask&AGGR_MIN) !=0 ? ",\n\tMIN(" + aggregateColumn + ") AS minAggr" : "") +
+				((aggregateMask&AGGR_MAX) !=0 ? ",\n\tMAX(" + aggregateColumn + ") AS maxAggr" : "")
 				, 
 				"FROM " + schema + "." + table + "\nGROUP BY "+gb);
 		sql_build.add(level0);
@@ -276,10 +285,10 @@ public class PreAggregate {
 			gb.append("l"+i+",v"+i);
 		}
 		gk.append(")");
-		select.append(",\n\t\tSUM(level0.cval) AS cval");
-		select.append(",\n\t\tSUM(level0.sval) AS sval");
-		select.append(",\n\t\tMIN(level0.minval) AS minval");
-		select.append(",\n\t\tMAX(level0.maxval) AS maxval");
+		if ((aggregateMask&AGGR_COUNT)!=0) select.append(",\n\t\tSUM(level0.countAggr) AS countAggr");
+		if ((aggregateMask&AGGR_SUM)!=0) select.append(",\n\t\tSUM(level0.sumAggr) AS sumAggr");
+		if ((aggregateMask&AGGR_MIN)!=0) select.append(",\n\t\tMIN(level0.minAggr) AS minAggr");
+		if ((aggregateMask&AGGR_MAX)!=0) select.append(",\n\t\tMAX(level0.maxAggr) AS maxAggr");
 		String DATA = level0 + " AS level0";
 		from.append(",\n\t\t"+DATA);
 		
@@ -293,10 +302,15 @@ public class PreAggregate {
 //		else
 //			no_subindexQ = subindexQ;	
 		
+		String aggrAttr =	((aggregateMask&AGGR_COUNT)!=0 ? ",\n\tcountAggr" : "") +
+							((aggregateMask&AGGR_SUM)!=0 ?",\n\tsumAggr" : "") +
+							((aggregateMask&AGGR_MIN)!=0 ?",\n\tminAggr" : "") +
+							((aggregateMask&AGGR_MAX)!=0 ?",\n\tmaxAggr" : "")
+							;
 		// incomplete, generate in delta table
 		boolean use_delta = true;
 		if ( !use_delta ) {
-			sql = "SELECT \t" + gk + " as ckey" + ",\n\tcval,\n\tsval \nFROM\t("
+			sql = "SELECT \t" + gk + " as ckey" + aggrAttr+" \nFROM\t("
 					+ subindexQ + ") AS siq"; // incomplete
 			sql = "INSERT INTO " + schema + "." + table + PA_EXTENSION + " (\n" + sql + "\n);";
 		} else {
@@ -305,7 +319,7 @@ public class PreAggregate {
 			
 			String delta = SqlUtils.gen_Select_INTO(c, 
 					delta_table,
-					"SELECT \t" + gk + " as ckey" + ",\n\tcval,\n\tsval"
+					"SELECT \t" + gk + " as ckey" + aggrAttr
 					, 
 					"FROM\t(" + subindexQ + ") AS siq"); // incomplete
 			sql_build.add("DROP TABLE IF EXISTS " + delta_table + ";\n");
@@ -336,7 +350,7 @@ public class PreAggregate {
 		}
 		
 		// add the index to the repository
-		update_repository(c, schema, table, label, kd, axis);
+		update_repository(c, schema, table, label, kd, axis, aggregateMask);
 		
 		/*
 		 * run the constructor initialization code for the PreAggregate Object
@@ -351,6 +365,71 @@ public class PreAggregate {
 	 * The Query section
 	 * 
 	 */
+	
+	public ResultSet SQLquery(int queryAggregateMask, Object obj_range[][]) throws SQLException {
+		int		i;
+		int		ranges[][] = new int[axis.length][2];
+		short	axisN[] = new short[axis.length];
+		
+		if ( obj_range.length != axis.length )
+			throw new SQLException("PreAggregate.query(): dimension index and query do not match");
+		boolean needsCorrection = false;
+		for(i=0; i<axis.length; i++) {
+			axisN[i] = axis[i].N();
+			ranges[i][RMIN] = axis[i].getIndex(obj_range[i][RMIN]);
+			ranges[i][RMAX] = axis[i].getIndex(obj_range[i][RMAX]);
+			if (	doResultCorrection && (
+						!axis[i].exactIndex(obj_range[i][RMIN]) ||
+						!axis[i].exactIndex(obj_range[i][RMAX])
+					)) {
+				needsCorrection = true;
+			}
+		}
+		Vector<AggrKey> resKeys;
+		resKeys = computePaCells(kd,ranges,axisN);
+
+		if ( queryAggregateMask == 0)
+			throw new SQLException("pre aggregate query without aggregates");
+		else {
+			// incomplete, check if the query_aggregates are in the pre_aggregate cells
+		}
+		System.out.println("#!AGGR_MASK="+aggregateMask+", QueryMask="+queryAggregateMask);
+		StringBuilder b_sqlaggr = new StringBuilder();
+		if ((queryAggregateMask&AGGR_COUNT)!=0) b_sqlaggr.append(",SUM(countAggr) AS countAggr");
+		if ((queryAggregateMask&AGGR_SUM)!=0) b_sqlaggr.append(",SUM(sumAggr) AS sumAggr");
+		if ((queryAggregateMask&AGGR_MIN)!=0) b_sqlaggr.append(",MIN(minAggr) AS minAggr");
+		if ((queryAggregateMask&AGGR_MAX)!=0) b_sqlaggr.append(",MAX(maxAggr) AS maxAggr");
+		String sqlaggr = b_sqlaggr.substring(1); // rome heading ,
+		
+		StringBuffer qb = new StringBuffer("SELECT "+sqlaggr+" FROM "+schema+"."+table+PA_EXTENSION);
+		System.out.println("$ pa-command = "+range_paGridQuery(ranges));
+		
+		if ( serversideStairwalk ) {
+			// use Postgres internal pacells2d function
+			String pa_grid_str;
+			
+			if ( false )
+				pa_grid_str = "pa_grid('"+range_paGridQuery(ranges)+"')";
+			else
+				pa_grid_str = "pa_grid_cell('"+range_paGridQuery(ranges)+"') AS pakey "; // 2 times faster
+			qb.append(", ");
+			qb.append(pa_grid_str);
+			qb.append(" WHERE ckey=pakey");
+			
+		} else {
+			System.out.println("#!create WHERE {ckey=v} query: #keys="+resKeys.size());
+			qb.append(" WHERE ");
+			for (i = 0; i < resKeys.size(); i++) {
+				qb.append(((i > 0) ? " OR " : "") + "ckey="
+						+ resKeys.elementAt(i).toKey());
+			}
+		}
+		qb.append(";");		
+		ResultSet result = null;
+		System.out.println("# main query=\n" + qb);
+		result = SqlUtils.execute(c, qb.toString());
+		return result;
+	}
 	
 	public long query(String aggr, Object obj_range[][]) throws SQLException {
 		int		i;
@@ -377,8 +456,8 @@ public class PreAggregate {
 			String daggr = "x"; 
 			if ( aggr.equals("count") )
 				daggr = "count(*)";
-			else if ( aggr.equals("sval") )
-				daggr = "sum(sval)";
+			else if ( aggr.equals("sumAggr") )
+				daggr = "sum(sumAggr)";
 			else
 				throw new SQLException("unexpected aggr: "+aggr);
 			String cond = "";
@@ -413,13 +492,13 @@ public class PreAggregate {
 
 		String sqlaggr;
 		if ( aggr.equals("count") )
-			sqlaggr = "sum(cval)";
+			sqlaggr = "sum(countAggr)";
 		else if ( aggr.equals("sum") )
-			sqlaggr = "sum(sval)";
+			sqlaggr = "sum(sumAggr)";
 		else if ( aggr.equals("min") )
-			sqlaggr = "min(minval)";
+			sqlaggr = "min(minAggr)";
 		else if ( aggr.equals("max") )
-			sqlaggr = "max(maxval)";
+			sqlaggr = "max(maxAggr)";
 		else
 			throw new SQLException("unexpected aggr: "+aggr);
 		StringBuffer qb = new StringBuffer("SELECT "+sqlaggr+" FROM "+schema+"."+table+PA_EXTENSION);
@@ -782,7 +861,8 @@ public class PreAggregate {
 							"tableName TEXT," +
 							"label TEXT," +
 							"dimensions int," +
-							"keyflag char" +
+							"keyflag char," +
+							"aggregateMask int" +
 						");"
 			);
 		}
@@ -816,6 +896,7 @@ public class PreAggregate {
 			return false;
 		int dimensions = rs.getInt(3);
 		char keyFlag = rs.getString(4).charAt(0);
+		aggregateMask = rs.getInt(5);
 		AggregateAxis read_axis[] = new AggregateAxis[dimensions];
 		
 		ResultSet rsi = SqlUtils.execute(c,
@@ -843,7 +924,7 @@ public class PreAggregate {
 		return true;
 	}
 	
-	private static void update_repository(Connection c, String schema, String tableName, String label, AggrKeyDescriptor kd, AggregateAxis axis[])
+	private static void update_repository(Connection c, String schema, String tableName, String label, AggrKeyDescriptor kd, AggregateAxis axis[], int aggregateMask)
 		throws SQLException {
 		checkRepository(c,schema);
 		SqlUtils.executeNORES(c,
@@ -858,8 +939,9 @@ public class PreAggregate {
 				"tableName," +
 				"label," +
 				"dimensions," +
-				"keyflag" +
-		") VALUES(?,?,?,?);");
+				"keyflag," +
+				"aggregateMask" +
+		") VALUES(?,?,?,?,?);");
 		PreparedStatement psi = c.prepareStatement("INSERT INTO " + schema + "." + aggregateRepositoryDimName + "  (" +
 				"tableName," +
 				"label," +
@@ -877,6 +959,7 @@ public class PreAggregate {
 		ps.setString(2,label);
 		ps.setInt(3,axis.length);
 		ps.setString(4,String.valueOf(kd.kind())); // INCOMPLETE
+		ps.setInt(5,aggregateMask);
 		for(int i=0; i<axis.length; i++) {
 			psi.setString(1,tableName);
 			psi.setString(2,label);

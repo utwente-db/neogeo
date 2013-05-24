@@ -271,8 +271,7 @@ class  LongAxisIndexer implements AxisIndexer {
 		public String sqlRangeFunction(Connection c, String fun) {
 			StringBuilder res = new StringBuilder();
 			
-			res.append(fun);
-			res.append("(v "+sqlType()+") RETURNS integer AS $$\n");
+			res.append("CREATE OR REPLACE FUNCTION "+ fun +"(v "+sqlType()+") RETURNS integer AS $$\n");
 			res.append("BEGIN\n");
 			res.append("\tRETURN CAST( ( (v - " + this.low + ") / " + this.BASEBLOCKSIZE + ") AS integer);\n");
 			res.append("END\n");

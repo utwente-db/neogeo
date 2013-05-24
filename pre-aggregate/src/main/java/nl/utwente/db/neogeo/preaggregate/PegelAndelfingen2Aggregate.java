@@ -30,7 +30,7 @@ public class PegelAndelfingen2Aggregate extends PreAggregate {
 		AggregateAxis axis[] = {
 				new AggregateAxis(time_column,"long",DFLT_TIME ,DFLT_N)
 			};
-		createPreAggregate(c,schema,table,label,axis,"PEGEL","double precision");
+		createPreAggregate(c,schema,table,label,axis,"PEGEL","double precision",AGGR_ALL);
 	}
 		
 	public long timeQuery(String aggr, long t1, long t2) throws SQLException {		
