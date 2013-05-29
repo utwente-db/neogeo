@@ -222,8 +222,8 @@ public class SqlUtils {
 			return	"DELIMITER //\n" +
 			"DROP FUNCTION IF EXISTS " + name + " //\n" +
 			"CREATE FUNCTION " + name +  "(" + par + ") RETURNS " + restype + " DETERMINISTIC\n"+
-			declare + 
 			"BEGIN\n"+
+			declare +
 			body + "\n" +
 			"END //\n"+
 			"DELIMITER ;\n";
