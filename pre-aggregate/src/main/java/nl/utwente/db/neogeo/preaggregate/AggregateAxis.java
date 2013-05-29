@@ -186,7 +186,7 @@ class  LongAxisIndexer implements AxisIndexer {
 		public String sqlRangeFunction(Connection c, String fun) throws SQLException {
 			return SqlUtils.gen_Create_Or_Replace_Function(
 							c, fun, "v "+sqlType(), "integer",
-							"\tRETURN " + SqlUtils.gen_DIV(c,"v - " + this.low, ""+this.BASEBLOCKSIZE) + ";"
+							"", "\tRETURN " + SqlUtils.gen_DIV(c,"v - " + this.low, ""+this.BASEBLOCKSIZE) + ";"
 					);	
 		}
 		

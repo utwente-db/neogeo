@@ -80,7 +80,7 @@ public class AggrKeyDescriptor {
 	}
 	
 	public String crossproductLongKeyFunction(Connection c, String fun) throws SQLException {	
-		String sres = "0";
+		String sres = "start";
 		StringBuilder pars = new StringBuilder();
 		
 		for(short i=0; i<dimensions; i++) {
@@ -93,7 +93,8 @@ public class AggrKeyDescriptor {
 		}
 		return SqlUtils.gen_Create_Or_Replace_Function(
 							c, fun, pars.toString(), "bigint",
-							// "\tDECLARE start bigint := 0;\n" +
+							"DECLARE start bigint;\n",
+							"\tstart := 0;\n" +
 							"\tRETURN "+sres+";\n"
 				);	
 	}

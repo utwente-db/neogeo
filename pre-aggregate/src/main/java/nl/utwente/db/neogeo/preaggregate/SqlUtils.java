@@ -209,10 +209,11 @@ public class SqlUtils {
 		throw new SQLException("UNEXPECTED");
 	}
 
-	public static String gen_Create_Or_Replace_Function(Connection c, String name, String par, String restype, String body) throws SQLException {
+	public static String gen_Create_Or_Replace_Function(Connection c, String name, String par, String restype, String declare, String body) throws SQLException {
 		switch ( dbType(c) ) {
 		case POSTGRES:
 			return "CREATE OR REPLACE FUNCTION " + name +  "(" + par + ") RETURNS " + restype + " AS $$\n"+
+			declare +
 			"BEGIN\n"+
 			body + "\n" +
 			"END\n"+
@@ -221,6 +222,7 @@ public class SqlUtils {
 			return	"DELIMITER //\n" +
 			"DROP FUNCTION IF EXISTS " + name + " //\n" +
 			"CREATE FUNCTION " + name +  "(" + par + ") RETURNS " + restype + " DETERMINISTIC\n"+
+			declare + 
 			"BEGIN\n"+
 			body + "\n" +
 			"END //\n"+
