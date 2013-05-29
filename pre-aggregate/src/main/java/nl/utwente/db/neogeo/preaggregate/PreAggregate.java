@@ -365,8 +365,36 @@ public class PreAggregate {
 	 * The Query section
 	 * 
 	 */
+	public ResultSet SQLquery_interval(int queryAggregateMask, Object obj_range_interval[][][]) throws SQLException {
+		ResultSet result = null;
+		
+		StringBuilder qb = new StringBuilder();
+		
+		for(int i=0; i<obj_range_interval.length; i++) {
+			Object obj_range[][] = obj_range_interval[i];
+			
+			if ( i > 0 )
+				qb.append("UNION\n");
+			qb.append("(");
+			qb.append(SQLquery_string(queryAggregateMask,obj_range));
+			qb.append(")\n");
+		}
+		String sql = qb + ";";
+		System.out.println("# interval query=\n" + sql);
+		result = SqlUtils.execute(c, sql);
+		return result;
+	}
 	
 	public ResultSet SQLquery(int queryAggregateMask, Object obj_range[][]) throws SQLException {
+		ResultSet result = null;
+		
+		String sql = SQLquery_string(queryAggregateMask,obj_range) + ";";
+		System.out.println("# main query=\n" + sql);
+		result = SqlUtils.execute(c, sql);
+		return result;
+	}
+	
+	private String SQLquery_string(int queryAggregateMask, Object obj_range[][]) throws SQLException {
 		int		i;
 		int		ranges[][] = new int[axis.length][2];
 		short	axisN[] = new short[axis.length];
@@ -424,11 +452,7 @@ public class PreAggregate {
 						+ resKeys.elementAt(i).toKey());
 			}
 		}
-		qb.append(";");		
-		ResultSet result = null;
-		System.out.println("# main query=\n" + qb);
-		result = SqlUtils.execute(c, qb.toString());
-		return result;
+		return qb.toString();
 	}
 	
 	public long query(String aggr, Object obj_range[][]) throws SQLException {

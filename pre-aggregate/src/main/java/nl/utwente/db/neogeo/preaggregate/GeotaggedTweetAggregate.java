@@ -40,8 +40,29 @@ public class GeotaggedTweetAggregate extends PreAggregate {
 		ranges[1][0] = new Double(Math.min(y1,y2));
 		ranges[1][1] = new Double(Math.max(y1,y2));
 		long res = query(aggr,ranges);
-		if (false) SQLquery((AGGR_COUNT|AGGR_MIN),ranges);
+		if (true) SQLquery((AGGR_COUNT|AGGR_MIN),ranges);
 		return res;
+	}
+	
+	public long boxQuery_multi(String aggr, double x1, double y1, double x2, double y2) throws SQLException {		
+		Object multi_ranges[][][] = new Object[2][2][2];
+		Object ranges[][];
+		ranges = new Object[2][2];
+		ranges[0][0] = new Double(Math.min(x1,x2));
+		ranges[0][1] = new Double(Math.max(x1,x2));
+		ranges[1][0] = new Double(Math.min(y1,y2));
+		ranges[1][1] = new Double(Math.max(y1,y2));
+		multi_ranges[0] = ranges;
+		
+		ranges = new Object[2][2];
+		ranges[0][0] = new Double(Math.min(x1,x2)+0.5);
+		ranges[0][1] = new Double(Math.max(x1,x2)+0.5);
+		ranges[1][0] = new Double(Math.min(y1,y2)+0.5);
+		ranges[1][1] = new Double(Math.max(y1,y2)+0.5);
+		multi_ranges[1] = ranges;
+		
+		SQLquery_interval((AGGR_COUNT|AGGR_MIN),multi_ranges);
+		return 0;
 	}
 	
 	public long boxQuery3d(String aggr, double x1, double y1, double x2, double y2, Timestamp z1, Timestamp z2) throws SQLException {		
