@@ -40,7 +40,13 @@ public class GeotaggedTweetAggregate extends PreAggregate {
 		ranges[1][0] = new Double(Math.min(y1,y2));
 		ranges[1][1] = new Double(Math.max(y1,y2));
 		long res = query(aggr,ranges);
-		if (true) SQLquery((AGGR_COUNT|AGGR_MIN),ranges);
+		if ( false ) SQLquery((AGGR_COUNT|AGGR_MIN),ranges);
+		if ( true ) {
+			int count[] = new int[axis.length];
+			for(int i=0; i<axis.length; i++)
+				count[i] = 2;
+			SQLquery_grid((AGGR_COUNT|AGGR_MIN),ranges,count);
+		}
 		return res;
 	}
 	

@@ -385,6 +385,61 @@ public class PreAggregate {
 		return result;
 	}
 	
+	public ResultSet SQLquery_grid(int queryAggregateMask, Object iv_first_obj[][], int iv_count[]) throws SQLException {
+		ResultSet result = null;
+		int i;
+		
+		if ( iv_first_obj.length != axis.length )
+			throw new SQLException("SQLquery_grid: dimension of first interval does not meet axis");
+		if ( iv_count.length != axis.length )
+			throw new SQLException("SQLquery_grid: dimension of interval count does not meet axis");
+		int iv_size[] = new int[axis.length];
+		int iv_first[] = new int[axis.length];
+		for(i=0; i<axis.length; i++) {
+			AggregateAxis ax = axis[i];
+			
+			if ( !ax.exactIndex(iv_first_obj[i][RMIN]) )
+				throw new SQLException("SQLquery_grid: start of first interval in dim "+i+" not on boundary: "+iv_first_obj[i][RMIN]);
+			if ( !ax.exactIndex(iv_first_obj[i][RMAX]) )
+				throw new SQLException("SQLquery_grid: end of first interval in dim "+i+" not on boundary: "+iv_first_obj[i][RMAX]);
+			iv_first[i] = ax.getIndex(iv_first_obj[i][RMIN]);
+			iv_size[i] = ax.getIndex(iv_first_obj[i][RMAX]) - iv_first[i];
+		}
+		// now have all the info we need
+		// what do do in the sql case ?
+		if ( serversideStairwalk ) {
+			// not impl yet
+		} else {
+			// explode it
+			PermutationGenerator p = new PermutationGenerator(axis.length);
+			for(i=0; i<axis.length; i++) {
+				p.setRange(i,0,iv_count[i]);
+			}
+			int		ranges[][] = new int[axis.length][2];
+			StringBuilder qb = new StringBuilder();
+			p.start();
+			while ( p.next() ) {
+				StringBuilder ib = new StringBuilder();
+				
+				for(i=0; i<axis.length; i++) {
+					ranges[i][RMIN] = iv_first[i] + iv_size[i] * (p.permutation[i] + 0);
+					ranges[i][RMAX] = iv_first[i] + iv_size[i] * (p.permutation[i] + 1);
+			
+					ib.append( p.permutation[i] + " AS d"+i+", ");
+				}
+				if ( qb.length() > 0 )
+					qb.append("UNION\n");
+				qb.append( SQLquery_string(queryAggregateMask,ib.toString(),ranges) + "\n");
+				// incomplete
+			}
+			qb.append(';');
+			System.out.println("#! executing Grid Query:\n"+qb);
+			result = SqlUtils.execute(c, qb.toString());
+			
+		}
+		return result;
+	}
+	
 	public ResultSet SQLquery(int queryAggregateMask, Object obj_range[][]) throws SQLException {
 		ResultSet result = null;
 		
@@ -397,13 +452,11 @@ public class PreAggregate {
 	private String SQLquery_string(int queryAggregateMask, Object obj_range[][]) throws SQLException {
 		int		i;
 		int		ranges[][] = new int[axis.length][2];
-		short	axisN[] = new short[axis.length];
 		
 		if ( obj_range.length != axis.length )
 			throw new SQLException("PreAggregate.query(): dimension index and query do not match");
 		boolean needsCorrection = false;
 		for(i=0; i<axis.length; i++) {
-			axisN[i] = axis[i].N();
 			ranges[i][RMIN] = axis[i].getIndex(obj_range[i][RMIN]);
 			ranges[i][RMAX] = axis[i].getIndex(obj_range[i][RMAX]);
 			if (	doResultCorrection && (
@@ -413,9 +466,10 @@ public class PreAggregate {
 				needsCorrection = true;
 			}
 		}
-		Vector<AggrKey> resKeys;
-		resKeys = computePaCells(kd,ranges,axisN);
-
+		return SQLquery_string(queryAggregateMask,"",ranges);
+	}
+	
+	private String SQLquery_string(int queryAggregateMask, String extra_select, int ranges[][]) throws SQLException {
 		if ( queryAggregateMask == 0)
 			throw new SQLException("pre aggregate query without aggregates");
 		else {
@@ -429,9 +483,13 @@ public class PreAggregate {
 		if ((queryAggregateMask&AGGR_MAX)!=0) b_sqlaggr.append(",MAX(maxAggr) AS maxAggr");
 		String sqlaggr = b_sqlaggr.substring(1); // rome heading ,
 		
-		StringBuffer qb = new StringBuffer("SELECT "+sqlaggr+" FROM "+schema+"."+table+PA_EXTENSION);
+		StringBuffer qb = new StringBuffer("SELECT " + extra_select + sqlaggr + " FROM "+schema+"."+table+PA_EXTENSION);
 		System.out.println("$ pa-command = "+range_paGridQuery(ranges));
-		
+		qb.append(cellCondition(ranges));
+		return qb.toString();
+	}
+	
+	private String cellCondition(int ranges[][]) {
 		if ( serversideStairwalk ) {
 			// use Postgres internal pacells2d function
 			String pa_grid_str;
@@ -440,31 +498,30 @@ public class PreAggregate {
 				pa_grid_str = "pa_grid('"+range_paGridQuery(ranges)+"')";
 			else
 				pa_grid_str = "pa_grid_cell('"+range_paGridQuery(ranges)+"') AS pakey "; // 2 times faster
-			qb.append(", ");
-			qb.append(pa_grid_str);
-			qb.append(" WHERE ckey=pakey");
-			
+			return ", " + pa_grid_str + " WHERE ckey=pakey";
 		} else {
+			StringBuilder qb = new StringBuilder();
+			
+			Vector<AggrKey> resKeys = computePaCells(kd,ranges,axis);
 			System.out.println("#!create WHERE {ckey=v} query: #keys="+resKeys.size());
 			qb.append(" WHERE ");
-			for (i = 0; i < resKeys.size(); i++) {
+			for (int i = 0; i < resKeys.size(); i++) {
 				qb.append(((i > 0) ? " OR " : "") + "ckey="
 						+ resKeys.elementAt(i).toKey());
 			}
+			return qb.toString();
 		}
-		return qb.toString();
 	}
 	
 	public long query(String aggr, Object obj_range[][]) throws SQLException {
+		// only for legacy and code examples
 		int		i;
 		int		ranges[][] = new int[axis.length][2];
-		short	axisN[] = new short[axis.length];
 		
 		if ( obj_range.length != axis.length )
 			throw new SQLException("PreAggregate.query(): dimension index and query do not match");
 		boolean needsCorrection = false;
 		for(i=0; i<axis.length; i++) {
-			axisN[i] = axis[i].N();
 			ranges[i][RMIN] = axis[i].getIndex(obj_range[i][RMIN]);
 			ranges[i][RMAX] = axis[i].getIndex(obj_range[i][RMAX]);
 			if (	doResultCorrection && (
@@ -512,7 +569,7 @@ public class PreAggregate {
 		// kd.switchSubindexOff();
 
 		Vector<AggrKey> resKeys;
-		resKeys = computePaCells(kd,ranges,axisN);
+		resKeys = computePaCells(kd,ranges,axis);
 
 		String sqlaggr;
 		if ( aggr.equals("count") )
@@ -737,28 +794,12 @@ public class PreAggregate {
 		return sb.toString();
 	}
 	
-//	private static Vector<AggrKey> pacellsN(AggrKeyDescriptor kd, int range[][], short axisN[]) {
-//		Vector<Vector<Long>> stairs = new Vector<Vector<Long>>();
-//		
-//		for(int i=0; i<axisN.length; i++) {
-//			stairs.add(stairwalk(range[i][RMIN], range[i][RMAX], axisN[0]));
-//		}
-//		Vector<AggrKey> res = joinStairsN(kd,stairs,axisN);
-//		if (qverbose) {
-//			System.out.println("- RESULT(" + res.size() + ") = {");
-//			for (int i = 0; i < res.size(); i++)
-//				System.out.println("\t" + res.elementAt(i));
-//			System.out.println("}");
-//		}
-//		return res;
-//	}
-	
-	private static Vector<AggrKey> computePaCells(AggrKeyDescriptor kd, int range[][], short axisN[]) {
+	private static Vector<AggrKey> computePaCells(AggrKeyDescriptor kd, int range[][], AggregateAxis axis[]) {
 		Vector<Vector<Long>> stairs = new Vector<Vector<Long>>();
 		
-		PermutationGenerator p = new PermutationGenerator(axisN.length);
-		for(int i=0; i<axisN.length; i++) {
-			Vector<Long> sw_res = stairwalk(range[i][RMIN], range[i][RMAX], axisN[i]);
+		PermutationGenerator p = new PermutationGenerator(axis.length);
+		for(int i=0; i<axis.length; i++) {
+			Vector<Long> sw_res = stairwalk(range[i][RMIN], range[i][RMAX], axis[i].N());
 			stairs.add(sw_res);
 			p.setRange(i,0,sw_res.size());
 		}
@@ -768,7 +809,7 @@ public class PreAggregate {
 		while ( p.next() ) {
 			// incomplete, analyze permutation levels in no subindexing case
 			K.reset();
-			for(short i=0; i<axisN.length; i++) {
+			for(short i=0; i<axis.length; i++) {
 				long lk = stairs.elementAt(i).elementAt(p.permutation()[i]);
 				K.setIndex(i, li_i(lk));
 				K.setLevel(i, li_l(lk));
@@ -783,96 +824,6 @@ public class PreAggregate {
 		}
 		return res;
 	}
-
-//	private static final Vector<AggrKey> joinStairsN(AggrKeyDescriptor kd, Vector<Vector<Long>> stairs, short axisN[]) {
-//		Vector<AggrKey> res = new Vector<AggrKey>();
-//		
-//		if ( stairs.size() != axisN.length )
-//			System.out.println("Dimensions of stairs and axis do not match");		
-//		AggrKey K = new AggrKey(kd);
-//		traverseStairsN(res,stairs,axisN,(short)0,K);
-//		return res;
-//	}
-	
-//	private static void traverseStairsN(Vector<AggrKey> res, Vector<Vector<Long>> stairs, short axisN[], short D, AggrKey K) {
-//		boolean last_dimension = (D  == (stairs.size() - 1));
-//		
-//		if ( qverbose )
-//			System.out.println("* traverseStairsN(...,D="+D+", K="+K+")");
-//		Vector<Long> stair = stairs.elementAt(D);
-//		
-//		for (int iD = 0; iD < stair.size(); iD++) {
-//			long step_key = stair.elementAt(iD);
-//			short level = li_l(step_key);
-//			int index = li_i(step_key);
-//
-//			if (D == 0) {
-//				// set initial level the first time
-//				K.set_l(level);
-//				// b-tree-sp = root
-//			} else {
-//				// btree-sp = find_btree_sp(K)
-//			}
-//			K.set_i(D, index);
-//			if (K.l() == level) {
-//				// no problem, same level
-//				if (last_dimension)
-//					releaseCandidate("tvs", res, K);
-//				else
-//					traverseStairsN(res, stairs, axisN,(short)(D + 1), K);
-//			} else {
-//				// cells are on different level
-//				if ( K.isSubindexed() ) { // use subindex optimization fro 2D case
-//					if ( (D!=1) || (!last_dimension) )
-//						throw new RuntimeException("Unexpected dimension values for 2D subindex");
-//					if (level > K.l())
-//						releaseCandidate("tvs", res, new AggrKey(K.kd(), K.l(), level, K.i((short)0), (short)0, K.i((short)1)));
-//					else
-//						releaseCandidate("tvs", res, new AggrKey(K.kd(), level, (short)0, K.i((short)0), K.l(), K.i((short)1)));
-//				} else {
-//					short level_delta = (short)Math.abs(level - K.l());
-//					if (level > K.l())
-//						downgradeDimensionsN(res, stairs, axisN, D, (short)(D + 1),
-//								level_delta, K.copy(), (short)(D + 1));
-//					else {
-//						AggrKey new_K = K.copy();
-//						new_K.set_l(level);
-//						downgradeDimensionsN(res, stairs, axisN, (short)0, D,
-//								level_delta, new_K, (short)(D + 1));
-//					}
-//				}
-//			}
-//		}
-//	}
-
-//	private static final void downgradeDimensionsN(Vector<AggrKey> res, Vector<Vector<Long>> stairs, short axisN[], 
-//			short fromD, short toD, short level_delta, AggrKey K, short nextD) {
-//		boolean last_dimension = (nextD  == (stairs.size()));
-//		if ( qverbose )
-//			System.out.println("* downgradeDimensionsN(...,fromD="+fromD+",toD="+toD+",ldelta="+level_delta+", K="+K+",nextD="+nextD+")");
-//		for(short iD=fromD; iD<toD; iD++) {
-//			boolean last_downgrade = (iD  == (toD - 1));
-//			int step = (int) Math.pow(axisN[iD], level_delta);
-//			int start = K.i(iD) * step;
-//			int to	  = start + step;
-//			for(int new_i=start; new_i<to; new_i++) {
-//		    	K.set_i(iD, new_i);
-//		    	if ( last_downgrade ) {
-//		    		if ( last_dimension )
-//		    			releaseCandidate("dgP",res,K);
-//		    		else
-//		    			traverseStairsN(res,stairs,axisN,nextD,K);
-//		    	} else 
-//		    		downgradeDimensionsN(res,stairs,axisN,(short)(fromD+1),toD,level_delta,K,nextD);
-//			}
-//		}
-//	}
-//	
-//	private static final void releaseCandidate(String label, Vector<AggrKey> res, AggrKey K) {
-//		res.add(K.copy());
-//		if ( qverbose )
-//			System.out.println("+\t"+label+": "+res.lastElement());
-//	}
 
 	/*
 	 * The repository management section.
