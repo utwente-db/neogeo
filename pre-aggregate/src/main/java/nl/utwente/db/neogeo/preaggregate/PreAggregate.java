@@ -277,7 +277,7 @@ public class PreAggregate {
 			if ( i > 1 )
 				where.append(" AND ");
 			select.append("\n\t\tdim"+i+".level" +" AS l"+i);
-			select.append(",\n\t\tlevel0.i"+i+"/dim"+i+".factor"+ " AS v"+i);
+			select.append(",\n\t\t"+SqlUtils.gen_DIV(c,"level0.i"+i,"dim"+i+".factor")+ " AS v"+i);
 			from.append("\n\t\t"+dimTable[i] +" AS dim"+i);
 			gk.append("l"+i+","+"v"+i);
 			if ( i > 0 )
@@ -333,8 +333,10 @@ public class PreAggregate {
 		sql_build.add(sql);
 		sql_build.newLine();
 		
-		if ( true )
+		if ( true ) {
 			System.out.println("\n#! SCRIPT:\n"+sql_build.getScript());
+			System.out.flush();
+		}
 		sql_build.executeBatch();
 		create_time_ms = new Date().getTime() - create_time_ms;
 		

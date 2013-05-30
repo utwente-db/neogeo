@@ -7,10 +7,6 @@ import java.sql.Statement;
 
 public class SqlScriptBuilder {
 	
-//	Statement st = c.createStatement();
-//	st.addBatch(nsql.toString());
-//	st.executeBatch();
-
 	private Connection c;
 	
 	private final boolean debug = false;
