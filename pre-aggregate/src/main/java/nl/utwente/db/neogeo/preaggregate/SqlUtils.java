@@ -209,6 +209,16 @@ public class SqlUtils {
 		throw new SQLException("UNEXPECTED");
 	}
 
+	public static String sql_assign(Connection c, String name, String value) throws SQLException {
+		switch ( dbType(c) ) {
+		case POSTGRES:
+			return name + " := " + value;
+		case MYSQL:
+			return "SET " + name + " := " + value;
+		}
+		throw new SQLException("Unknonwn Database type");
+	}
+
 	public static String gen_Create_Or_Replace_Function(Connection c, String name, String par, String restype, String declare, String body) throws SQLException {
 		switch ( dbType(c) ) {
 		case POSTGRES:

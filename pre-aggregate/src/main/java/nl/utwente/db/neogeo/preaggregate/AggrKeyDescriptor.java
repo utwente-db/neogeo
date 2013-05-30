@@ -94,7 +94,7 @@ public class AggrKeyDescriptor {
 		return SqlUtils.gen_Create_Or_Replace_Function(
 							c, fun, pars.toString(), "bigint",
 							"DECLARE start bigint;\n",
-							"\tstart := 0;\n" +
+							"\t" + SqlUtils.sql_assign(c,"start","0")+";\n" +
 							"\tRETURN "+sres+";\n"
 				);	
 	}
