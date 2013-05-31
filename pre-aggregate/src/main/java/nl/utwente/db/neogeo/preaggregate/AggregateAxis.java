@@ -94,16 +94,12 @@ class  IntegerAxisIndexer implements AxisIndexer {
 			return "integer";
 		}
 		
-		public String sqlRangeFunction(Connection c, String fun) {
-			StringBuilder res = new StringBuilder();
-			
-			res.append(fun);
-			res.append("(v "+sqlType()+") RETURNS integer AS $$\n");
-			res.append("BEGIN\n");
-			res.append("\tRETURN CAST( ( (v - " + this.low + ") / " + this.BASEBLOCKSIZE + ") AS integer);\n");
-			res.append("END\n");
-			res.append("$$ LANGUAGE plpgsql");
-			return res.toString();	
+		public String sqlRangeFunction(Connection c, String fun) throws SQLException {
+			return SqlUtils.gen_Create_Or_Replace_Function(
+							c, fun, "v "+sqlType(), "integer",
+							"", "\tRETURN FLOOR((v - " + this.low + ") / " + this.BASEBLOCKSIZE + ");\n"
+
+					);	
 		}
 		
 	}
@@ -268,15 +264,12 @@ class  LongAxisIndexer implements AxisIndexer {
 			return "double precision";
 		}
 		
-		public String sqlRangeFunction(Connection c, String fun) {
-			StringBuilder res = new StringBuilder();
-			
-			res.append("CREATE OR REPLACE FUNCTION "+ fun +"(v "+sqlType()+") RETURNS integer AS $$\n");
-			res.append("BEGIN\n");
-			res.append("\tRETURN CAST( ( (v - " + this.low + ") / " + this.BASEBLOCKSIZE + ") AS integer);\n");
-			res.append("END\n");
-			res.append("$$ LANGUAGE plpgsql");
-			return res.toString();	
+		public String sqlRangeFunction(Connection c, String fun) throws SQLException {
+			return SqlUtils.gen_Create_Or_Replace_Function(
+							c, fun, "v "+sqlType(), "integer",
+							"", "\tRETURN FLOOR((v - " + this.low + ") / " + this.BASEBLOCKSIZE + ");\n"
+
+					);	
 		}
 		
 	}
@@ -360,7 +353,7 @@ class  TimestampAxisIndexer implements AxisIndexer {
 			return "timestamp with time zone";
 		}
 		
-		public String sqlRangeFunction(Connection c, String fun) {
+		public String OLDsqlRangeFunction(Connection c, String fun) {
 			StringBuilder res = new StringBuilder();
 			
 			res.append(fun);
@@ -374,6 +367,17 @@ class  TimestampAxisIndexer implements AxisIndexer {
 			res.append("$$ LANGUAGE plpgsql");
 			return res.toString();	
 		}
+		
+		public String sqlRangeFunction(Connection c, String fun) throws SQLException {
+			double base = this.low / 1000; // epoch is in seconds, not milliseconds
+			double bbs  = this.BASEBLOCKSIZE / 1000; // epoch is in seconds not milliseconds
+			return SqlUtils.gen_Create_Or_Replace_Function(
+							c, fun, "v "+sqlType(), "integer",
+							"", "\tRETURN FLOOR((EXTRACT(EPOCH FROM v) - " + base + ") / " + bbs + ");\n"
+
+					);	
+		}
+		
 		
 	}
 
