@@ -378,7 +378,7 @@ public class PreAggregate {
 			if ( i > 0 )
 				qb.append("UNION\n");
 			qb.append("(");
-			qb.append(SQLquery_string(queryAggregateMask,obj_range));
+			qb.append(SQLquery_string(queryAggregateMask,obj_range,i + " AS i, "));
 			qb.append(")\n");
 		}
 		String sql = qb + ";";
@@ -445,13 +445,13 @@ public class PreAggregate {
 	public ResultSet SQLquery(int queryAggregateMask, Object obj_range[][]) throws SQLException {
 		ResultSet result = null;
 		
-		String sql = SQLquery_string(queryAggregateMask,obj_range) + ";";
+		String sql = SQLquery_string(queryAggregateMask,obj_range,"") + ";";
 		System.out.println("# main query=\n" + sql);
 		result = SqlUtils.execute(c, sql);
 		return result;
 	}
 	
-	private String SQLquery_string(int queryAggregateMask, Object obj_range[][]) throws SQLException {
+	private String SQLquery_string(int queryAggregateMask, Object obj_range[][], String extra) throws SQLException {
 		int		i;
 		int		ranges[][] = new int[axis.length][2];
 		
@@ -468,7 +468,7 @@ public class PreAggregate {
 				needsCorrection = true;
 			}
 		}
-		return SQLquery_string(queryAggregateMask,"",ranges);
+		return SQLquery_string(queryAggregateMask,extra,ranges);
 	}
 	
 	private String SQLquery_string(int queryAggregateMask, String extra_select, int ranges[][]) throws SQLException {
