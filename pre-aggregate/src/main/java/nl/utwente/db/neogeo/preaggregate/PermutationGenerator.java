@@ -4,11 +4,13 @@ public class PermutationGenerator {
 	
 	// incomplete, should implement a step and a including ub
 	
+	// incomplete, implement this in C with a pmut prefix
+	
 	private static final boolean verbose = false;
 	
 	private int dimensions;
-	int		range_low[]		= null;
-	int		range_high[]	= null;
+	private int	range_low[]		= null;
+	private int	range_high[]	= null;
 	
 	public PermutationGenerator(int dimensions) {
 		if ( verbose )
@@ -62,8 +64,8 @@ public class PermutationGenerator {
 		return true;
 	}
 	
-	public int[] permutation() {
-		return permutation;
+	public int permutation(int i) {
+		return permutation[i];
 	}
 	
 	public int cardinality() {
@@ -73,17 +75,18 @@ public class PermutationGenerator {
 		return res;
 	}
 	
-	public static void main(String[] argv) {
-		PermutationGenerator p = new PermutationGenerator(3);
-		
-		p.setRange(0,0,5);
-		p.setRange(1,11,14);
-		p.setRange(2,101,104);
-		p.start();
-		while ( p.next() ) {
-			System.out.println("> "+p.permutation()[0]+" "+p.permutation()[1]+" "+p.permutation()[2]);
-		}
-		System.out.println("The number of permutations is "+p.cardinality());
-	}
+//	public static void main(String[] argv) {
+//		PermutationGenerator p = new PermutationGenerator(3);
+//		
+//		p.setRange(0,0,5);
+//		p.setRange(1,11,14);
+//		p.setRange(2,101,104);
+//		p.start();
+//		while ( p.next() ) {
+//			System.out.println("> "+p.permutation(0)+" "+p.permutation(1)+" "+p.permutation(2));
+//		}
+//		System.out.println("The number of permutations is "+p.cardinality());
+//	}
+//	
 	
 }

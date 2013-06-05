@@ -16,7 +16,7 @@ public class PreAggregate {
 	 */
 	public static final boolean showAxisAndKey		= true;
 	public static final boolean	doResultCorrection	= true;
-	public static final boolean	serversideStairwalk	= false;
+	public static final boolean	serversideStairwalk	= true;
 	public static final char	DEFAULT_KD			= AggrKeyDescriptor.KD_CROSSPRODUCT_LONG;
 
 	private	static final int	AGGR_BASE			= 0x01;
@@ -785,7 +785,8 @@ public class PreAggregate {
 			throw new RuntimeException("Dimensions for grid_paQuery wrong");
 		StringBuffer sb = new StringBuffer();
 		sb.append("#G|"+kd.kind()+"|");
-		sb.append((kd.isSubindexed()?"T":"F")+"|");
+		// sb.append((kd.isSubindexed()?"T":"F")+"|");
+		sb.append(kd.levelBits+"|");
 		sb.append(kd.dimensions()+"|");
 		for(int i=0; i<swgc.length; i++) {
 			sb.append(axis[i].N()+",");
@@ -812,7 +813,7 @@ public class PreAggregate {
 			// incomplete, analyze permutation levels in no subindexing case
 			K.reset();
 			for(short i=0; i<axis.length; i++) {
-				long lk = stairs.elementAt(i).elementAt(p.permutation()[i]);
+				long lk = stairs.elementAt(i).elementAt(p.permutation(i));
 				K.setIndex(i, li_i(lk));
 				K.setLevel(i, li_l(lk));
 			}

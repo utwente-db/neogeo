@@ -669,7 +669,7 @@ public class PreAggregate {
 			// incomplete, analyze permutation levels in no subindexing case
 			K.reset();
 			for(short i=0; i<axisN.length; i++) {
-				long lk = stairs.elementAt(i).elementAt(p.permutation()[i]);
+				long lk = stairs.elementAt(i).elementAt(p.permutation(i));
 				K.setIndex(i, li_i(lk));
 				K.setLevel(i, li_l(lk));
 			}

@@ -41,7 +41,7 @@ public class GeotaggedTweetAggregate extends PreAggregate {
 		ranges[1][1] = new Double(Math.max(y1,y2));
 		long res = query(aggr,ranges);
 		if ( false ) SQLquery((AGGR_COUNT|AGGR_MIN),ranges);
-		if ( true ) {
+		if ( false ) {
 			int count[] = new int[axis.length];
 			for(int i=0; i<axis.length; i++)
 				count[i] = 2;
