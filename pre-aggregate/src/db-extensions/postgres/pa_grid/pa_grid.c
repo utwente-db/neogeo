@@ -89,7 +89,7 @@ compute_pa_grid(PG_FUNCTION_ARGS)
     }
     else    /* do when there is no more left */
     {
-        destroy_pa_grid(grid); // free the grid
+        free_pa_grid(grid); // free the grid
 	funcctx->user_fctx = NULL;
 	//
         SRF_RETURN_DONE(funcctx);
@@ -149,7 +149,7 @@ compute_pa_grid_cell(PG_FUNCTION_ARGS)
     }
     else    /* do when there is no more left */
     {
-        destroy_pa_grid(grid); // free the grid
+        free_pa_grid(grid); // free the grid
 	funcctx->user_fctx = NULL;
 	//
         SRF_RETURN_DONE(funcctx);

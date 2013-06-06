@@ -1,0 +1,3 @@
+This directory contains a Postgres extension for fast generating pre-aggregate
+keys. The functions are called when the PreAggregate.serversideStairwalk
+boolean is set to true in Java.

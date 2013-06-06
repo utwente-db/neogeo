@@ -48,7 +48,7 @@ int main() {
       fprintf(stdout,"%ld\n",grid->cellKey);
     }
     fprintf(stdout,"}[count=%d]\n",count);
-    destroy_pa_grid(grid);
+    free_pa_grid(grid);
   }
   return(0);
 }

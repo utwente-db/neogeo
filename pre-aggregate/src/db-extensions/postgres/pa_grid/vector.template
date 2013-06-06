@@ -16,7 +16,7 @@ static void VFUN(resetVector)(VECTORNAME* v) {
   v->size = 0;
 }
 
-static void VFUN(destroyVector)(VECTORNAME* v) {
+static void VFUN(freeVector)(VECTORNAME* v) {
   MYFREE(v->values);
   MYFREE(v);
 }
