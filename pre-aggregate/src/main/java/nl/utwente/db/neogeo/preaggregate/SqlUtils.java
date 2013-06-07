@@ -225,7 +225,7 @@ public class SqlUtils {
 			return "CREATE OR REPLACE FUNCTION " + name +  "(" + par + ") RETURNS " + restype + " AS $$\n"+
 			declare +
 			"BEGIN\n"+
-			body + "\n" +
+			body +
 			"END\n"+
 			"$$ LANGUAGE plpgsql;\n";
 		case MYSQL:
@@ -235,7 +235,7 @@ public class SqlUtils {
 			"CREATE FUNCTION " + name +  "(" + par + ") RETURNS " + restype + " DETERMINISTIC\n"+
 			"BEGIN\n"+
 			declare +
-			body + "\n" +
+			body +
 			"END //\n"+
 			"DELIMITER ;\n";
 		}	

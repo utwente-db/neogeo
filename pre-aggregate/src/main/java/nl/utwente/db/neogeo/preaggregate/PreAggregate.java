@@ -184,8 +184,6 @@ public class PreAggregate {
 		 * The main code is generated in pre_script. The cleanup code is generated 
 		 * in post_script.
 		 */
-		// StringBuilder pre_script = new StringBuilder();
-		// StringBuilder post_script = new StringBuilder();
 		SqlScriptBuilder sql_build = new SqlScriptBuilder(c);
 		
 		for(i=0; i<axis.length; i++) {
@@ -209,6 +207,7 @@ public class PreAggregate {
 		 * Generate the table which contains the final index
 		 */
 		String table_pa = schema + "." + table + PA_EXTENSION;
+		sql_build.add("-- create the table containg the pre aggregate index\n");
 		sql_build.add("DROP TABLE IF EXISTS " + table_pa + ";\n");
 		sql_build.add(
 		    	"CREATE TABLE " + table_pa + " (\n" +
@@ -221,47 +220,89 @@ public class PreAggregate {
 		);
 		sql_build.newLine();
 		
-		/*
-		 * Generate the level 0 table
-		 */
-		String level0_table = schema + "." + indexPrefix + "level0";
-		sql_build.add("DROP TABLE IF EXISTS " + level0_table + ";\n");
-		//
-		sql_build.add(generate_level0(c, level0_table, schema+"."+table, null, axis, aggregateColumn,aggregateMask));
-		sql_build.newLine();
-		sql_build.addPost("DROP TABLE "+level0_table+";\n");
-		String level0 = level0_table;
-		
-		/* 
-		 * Now generate the index levels 0 + n-1
-		 */
-		String level0_n_table = schema + "." + indexPrefix + "0_n";
-		sql_build.add("DROP TABLE IF EXISTS " + level0_n_table + ";\n");
-		String level0_n = generate_level0_n(c,level0_n_table,level0,axis,dimTable,genKey,aggregateMask);
-		sql_build.add(level0_n);
-		sql_build.newLine();
-		sql_build.addPost("DROP TABLE "+level0_n_table+";\n");
-		//		
-		if ( true ) {
-			sql_build.add("INSERT INTO " + table_pa + " (\n\tSELECT * FROM " + level0_n_table + "\n);");
-			sql_build.newLine();
-		} else {
-			StringBuilder add_aggr = new StringBuilder();
-			
-			if ((aggregateMask&AGGR_COUNT)!=0) add_aggr.append(",countAggr = pa_table.countAggr + pa_delta.countAggr");
-			if ((aggregateMask&AGGR_SUM)!=0)   add_aggr.append(",sumAggr = pa_table.sumAggr + pa_delta.sumAggr");
-			if ((aggregateMask&AGGR_MIN)!=0)   add_aggr.append(",minAggr = LEAST(pa_table.minAggr,pa_delta.minAggr)");
-			if ((aggregateMask&AGGR_MAX)!=0)   add_aggr.append(",maxAggr = GREATEST(pa_table.maxAggr,pa_delta.maxAggr)");
-			
-			sql_build.add("UPDATE " + table_pa + " AS pa_table \n\tSET " + add_aggr.substring(1) + " \n\tFROM "+level0_n_table + " AS pa_delta WHERE pa_delta.ckey = pa_table.ckey;\n\n");
-
-			sql_build.add("INSERT INTO " + table_pa + " (\n\tSELECT * FROM " + level0_n_table + " AS pa_delta \n\tWHERE NOT EXISTS (SELECT * FROM "+table_pa+" AS pa_table WHERE pa_delta.ckey = pa_table.ckey));");
-			sql_build.newLine();
+		int axisToSplit = -1;
+		int nChunks = 1;
+		Object ro[][] = null;
+		if ( axisToSplit >= 0 ) {
+			long chunkSize = 3000;
+			long nTuples = SqlUtils.count(c,schema,table,"*");
+			nChunks = (int) (nTuples / chunkSize);
+			ro = axis[axisToSplit].split(nChunks);
 		}
-		
+		for (i = 0; i < nChunks; i++) {
+			/*
+			 * Generate the level 0 table
+			 */
+			String where = null;
+			if ( nChunks > 1 ) {
+				where = "("+axis[axisToSplit].columnExpression()+">="+ro[i][0]+" AND "+axis[axisToSplit].columnExpression()+"<"+ro[i][1]+")";
+				System.out.println("#WHERE: "+where);
+				sql_build.add("-- adding increment "+i+" to pa index\n");
+			} else {
+				sql_build.add("-- computing pa_index in one step\n");
+			}
+			String level0_table = schema + "." + indexPrefix + "level0";
+			sql_build.add("DROP TABLE IF EXISTS " + level0_table + ";\n");
+			//
+			sql_build.add(generate_level0(c, level0_table,
+					schema + "." + table, where, axis, aggregateColumn,
+					aggregateMask));
+			sql_build.newLine();
+			if ( i == 0 ) // drop this table only once
+				sql_build.addPost("DROP TABLE " + level0_table + ";\n");
+			String level0 = level0_table;
+
+			/*
+			 * Now generate the index levels 0 + n-1
+			 */
+			String level0_n_table = schema + "." + indexPrefix + "0_n";
+			sql_build.add("DROP TABLE IF EXISTS " + level0_n_table + ";\n");
+			String level0_n = generate_level0_n(c, level0_n_table, level0,
+					axis, dimTable, genKey, aggregateMask);
+			sql_build.add(level0_n);
+			sql_build.newLine();
+			if ( i == 0 ) // drop this table only once 
+				sql_build.addPost("DROP TABLE " + level0_n_table + ";\n");
+			//
+			if ( nChunks == 1 ) {
+				sql_build.add("INSERT INTO " + table_pa
+						+ " (\n\tSELECT * FROM " + level0_n_table + "\n);");
+				sql_build.newLine();
+			} else {
+				StringBuilder add_aggr = new StringBuilder();
+
+				if ((aggregateMask & AGGR_COUNT) != 0)
+					add_aggr.append(",countAggr = pa_table.countAggr + pa_delta.countAggr");
+				if ((aggregateMask & AGGR_SUM) != 0)
+					add_aggr.append(",sumAggr = pa_table.sumAggr + pa_delta.sumAggr");
+				if ((aggregateMask & AGGR_MIN) != 0)
+					add_aggr.append(",minAggr = LEAST(pa_table.minAggr,pa_delta.minAggr)");
+				if ((aggregateMask & AGGR_MAX) != 0)
+					add_aggr.append(",maxAggr = GREATEST(pa_table.maxAggr,pa_delta.maxAggr)");
+				sql_build
+						.add("UPDATE "
+								+ table_pa
+								+ " AS pa_table \n\tSET "
+								+ add_aggr.substring(1) // remove leading ','
+								+ " \n\tFROM "
+								+ level0_n_table
+								+ " AS pa_delta WHERE pa_delta.ckey = pa_table.ckey;\n\n");
+
+				sql_build
+						.add("INSERT INTO "
+								+ table_pa
+								+ " (\n\tSELECT * FROM "
+								+ level0_n_table
+								+ " AS pa_delta \n\tWHERE NOT EXISTS (SELECT * FROM "
+								+ table_pa
+								+ " AS pa_table WHERE pa_delta.ckey = pa_table.ckey));\n");
+				sql_build.newLine();
+			}
+		}
+
 		if ( true ) {
 			System.out.println("\n#! SCRIPT:\n"+sql_build.getScript());
-			System.out.flush();
+			System.out.flush(); // flush before possible crash
 		}
 		sql_build.executeBatch();
 		create_time_ms = new Date().getTime() - create_time_ms;
@@ -284,57 +325,6 @@ public class PreAggregate {
 		 * run the constructor initialization code for the PreAggregate Object
 		 */
 		_init(c, schema, table, label);
-	}
-	
-	public String generate_level0_n(Connection c, String delta_table, String level0, AggregateAxis axis[], String dimTable[], String genKey, int aggregateMask) 
-			throws SQLException {
-		int i;
-		StringBuilder select = new StringBuilder();
-		StringBuilder from = new StringBuilder();
-		StringBuilder where = new StringBuilder();
-		StringBuilder gb = new StringBuilder();
-		StringBuilder gk = new StringBuilder();
-		gk.append(genKey+"(");
-		for(i=0; i<axis.length; i++) {
-			if (i>0) {
-				select.append(',');
-				from.append(',');
-				gb.append(',');
-				gk.append(',');
-			}
-			if ( i > 1 )
-				where.append(" AND ");
-			select.append("\n\t\tdim"+i+".level" +" AS l"+i);
-			select.append(",\n\t\t"+SqlUtils.gen_DIV(c,"level0.i"+i,"dim"+i+".factor")+ " AS v"+i);
-			from.append("\n\t\t"+dimTable[i] +" AS dim"+i);
-			gk.append("l"+i+","+"v"+i);
-			if ( i > 0 )
-				where.append("dim0.level=dim"+i+".level");
-			gb.append("l"+i+",v"+i);
-		}
-		gk.append(")");
-		if ((aggregateMask&AGGR_COUNT)!=0) select.append(",\n\t\tSUM(level0.countAggr) AS countAggr");
-		if ((aggregateMask&AGGR_SUM)!=0) select.append(",\n\t\tSUM(level0.sumAggr) AS sumAggr");
-		if ((aggregateMask&AGGR_MIN)!=0) select.append(",\n\t\tMIN(level0.minAggr) AS minAggr");
-		if ((aggregateMask&AGGR_MAX)!=0) select.append(",\n\t\tMAX(level0.maxAggr) AS maxAggr");
-		String DATA = level0 + " AS level0";
-		from.append(",\n\t\t"+DATA);
-		
-		String subindexQ = "SELECT "+select + "\n\t FROM\t" + from + "\n\tGROUP BY "+gb;
-		
-		String aggrAttr =	((aggregateMask&AGGR_COUNT)!=0 ? ",\n\tcountAggr" : "") +
-							((aggregateMask&AGGR_SUM)!=0 ?",\n\tsumAggr" : "") +
-							((aggregateMask&AGGR_MIN)!=0 ?",\n\tminAggr" : "") +
-							((aggregateMask&AGGR_MAX)!=0 ?",\n\tmaxAggr" : "")
-							;
-	
-		// first update, then insert to prevent problems	
-		String delta = SqlUtils.gen_Select_INTO(c, 
-				delta_table,
-				"SELECT \t" + gk + " as ckey" + aggrAttr
-				, 
-				"FROM\t(" + subindexQ + ") AS siq"); // incomplete
-		return delta;
 	}
 	
 	public String generate_level0(Connection c, String level0_table, String from, String where, AggregateAxis axis[], String aggregateColumn, int aggregateMask) 
@@ -368,6 +358,64 @@ public class PreAggregate {
 				, 
 				"FROM " + from + where + "\nGROUP BY "+gb);
 		return level0;
+	}
+	
+	public String generate_level0_n(Connection c, String delta_table,
+			String level0, AggregateAxis axis[], String dimTable[],
+			String genKey, int aggregateMask) throws SQLException {
+		int i;
+		StringBuilder select = new StringBuilder();
+		StringBuilder from = new StringBuilder();
+		StringBuilder where = new StringBuilder();
+		StringBuilder gb = new StringBuilder();
+		StringBuilder gk = new StringBuilder();
+		gk.append(genKey + "(");
+		for (i = 0; i < axis.length; i++) {
+			if (i > 0) {
+				select.append(',');
+				from.append(',');
+				gb.append(',');
+				gk.append(',');
+			}
+			if (i > 1)
+				where.append(" AND ");
+			select.append("\n\t\tdim" + i + ".level" + " AS l" + i);
+			select.append(",\n\t\t"
+					+ SqlUtils
+							.gen_DIV(c, "level0.i" + i, "dim" + i + ".factor")
+					+ " AS v" + i);
+			from.append("\n\t\t" + dimTable[i] + " AS dim" + i);
+			gk.append("l" + i + "," + "v" + i);
+			if (i > 0)
+				where.append("dim0.level=dim" + i + ".level");
+			gb.append("l" + i + ",v" + i);
+		}
+		gk.append(")");
+		if ((aggregateMask & AGGR_COUNT) != 0)
+			select.append(",\n\t\tSUM(level0.countAggr) AS countAggr");
+		if ((aggregateMask & AGGR_SUM) != 0)
+			select.append(",\n\t\tSUM(level0.sumAggr) AS sumAggr");
+		if ((aggregateMask & AGGR_MIN) != 0)
+			select.append(",\n\t\tMIN(level0.minAggr) AS minAggr");
+		if ((aggregateMask & AGGR_MAX) != 0)
+			select.append(",\n\t\tMAX(level0.maxAggr) AS maxAggr");
+		String DATA = level0 + " AS level0";
+		from.append(",\n\t\t" + DATA);
+
+		String subindexQ = "SELECT " + select + "\n\t FROM\t" + from
+				+ "\n\tGROUP BY " + gb;
+
+		String aggrAttr = ((aggregateMask & AGGR_COUNT) != 0 ? ",\n\tcountAggr"
+				: "")
+				+ ((aggregateMask & AGGR_SUM) != 0 ? ",\n\tsumAggr" : "")
+				+ ((aggregateMask & AGGR_MIN) != 0 ? ",\n\tminAggr" : "")
+				+ ((aggregateMask & AGGR_MAX) != 0 ? ",\n\tmaxAggr" : "");
+
+		// first update, then insert to prevent problems
+		String delta = SqlUtils.gen_Select_INTO(c, delta_table, "SELECT \t"
+				+ gk + " as ckey" + aggrAttr, "FROM\t(" + subindexQ
+				+ ") AS siq"); // incomplete
+		return delta;
 	}
 	
 	/*

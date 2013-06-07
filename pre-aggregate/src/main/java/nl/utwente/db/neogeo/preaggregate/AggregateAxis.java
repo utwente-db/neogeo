@@ -538,6 +538,23 @@ class  TimestampAxisIndexer implements AxisIndexer {
 		return indexer.sqlRangeFunction(c, fun);	
 	}
 	
+	public Object[][] split(int n) {
+		Object[][] res = new Object[n][2];
+		
+		int sz = axisSize();
+		int chunk = sz / n; 
+		for(int i=0; i<n; i++) {
+			if ( i == 0 )
+				res[i][0] = low();
+			else
+				res[i][0] = reverseValue(i*chunk);
+			if ( i == (n-1) )
+				res[i][1] = high();
+			else
+				res[i][1] = reverseValue((i+1)*chunk);
+		}
+		return res;
+	}
 	public String toString() {
 		return "AggregateAxis(colExpr="+columnExpression+", type="+sqlType()+", low="+low()+",high="+high()+", BBS="+indexer.BASEBLOCKSIZE()+", N="+N()+",axisSize="+axisSize()+", bits="+bits()+", maxLevels="+maxLevels()+")";
 	}
