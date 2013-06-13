@@ -17,7 +17,7 @@ public class Test {
 			// new TweetConverter("/Users/flokstra/twitter_sm.db",c,"public","london_hav");
 			// new TweetConverter("/Users/flokstra/uk_raw.sql",c,"public","uk");
 			//
-			GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "london_hav_neogeo", "myAggregate", "coordinates");
+			GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "uk_neogeo", "myAggregate", "coordinates",0,200000,null);
 			// GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "london_hav_neogeo", "myAggregate");
 			//
 			// pa.boxQuery("count",0.18471,51.60626,0.23073,51.55534); // in the middle of havering map *correction anomaly

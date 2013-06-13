@@ -92,9 +92,9 @@ public class PreAggregate {
 		this.internalHash = internalHash;
 	}
 	
-	public PreAggregate(Connection c, String schema, String table, String label, AggregateAxis axis[], String aggregateColumn, String aggregateType, int aggregateMask) 
+	public PreAggregate(Connection c, String schema, String table, String label, AggregateAxis axis[], String aggregateColumn, String aggregateType, int aggregateMask, int axisToSplit, long chunkSize, Object[][] newRange) 
 			throws SQLException {
-		createPreAggregate(c,schema,table,label,axis,aggregateColumn,aggregateType,aggregateMask);
+		createPreAggregate(c,schema,table,label,axis,aggregateColumn,aggregateType,aggregateMask,axisToSplit,chunkSize,newRange);
 	}
 	
 	private void _init(Connection c, String schema, String table, String label)
@@ -153,7 +153,8 @@ public class PreAggregate {
 	
 	protected void createPreAggregate(Connection c, String schema,
 			String table, String label, AggregateAxis axis[],
-			String aggregateColumn, String aggregateType, int aggregateMask) throws SQLException {
+			String aggregateColumn, String aggregateType, int aggregateMask, 
+			int axisToSplit, long chunkSize, Object[][] newRange) throws SQLException {
 		int i;
 		String dimTable[]	 = new String[axis.length];
 		
@@ -220,11 +221,9 @@ public class PreAggregate {
 		);
 		sql_build.newLine();
 		
-		int axisToSplit = -1;
 		int nChunks = 1;
 		Object ro[][] = null;
 		if ( axisToSplit >= 0 ) {
-			long chunkSize = 3000;
 			long nTuples = SqlUtils.count(c,schema,table,"*");
 			nChunks = (int) (nTuples / chunkSize);
 			ro = axis[axisToSplit].split(nChunks);
@@ -236,7 +235,6 @@ public class PreAggregate {
 			String where = null;
 			if ( nChunks > 1 ) {
 				where = "("+axis[axisToSplit].columnExpression()+">="+ro[i][0]+" AND "+axis[axisToSplit].columnExpression()+"<"+ro[i][1]+")";
-				System.out.println("#WHERE: "+where);
 				sql_build.add("-- adding increment "+i+" to pa index\n");
 			} else {
 				sql_build.add("-- computing pa_index in one step\n");
