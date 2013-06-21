@@ -231,5 +231,11 @@ public class AggregationDataStore extends ContentDataStore {
 		return bounds;
 	}
 
+	public int getXSize(){
+		return xSize;
+	}
 	
+	public int getYSize(){
+		return ySize;
+	}
 }
