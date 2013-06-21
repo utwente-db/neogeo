@@ -48,10 +48,10 @@
   </dependencies>
   <build>
   	<resources>
-  		<resource>
+  		<!-- resource>
   			<targetPath>WEB-INF/lib</targetPath>
   			<directory>src/main/resources/WEB-INF/lib</directory>
-  		</resource>
+  		</resource-->
   		<resource>
   			<targetPath>META-INF/services</targetPath>
   			<directory>src/main/resources/META-INF/services</directory>

@@ -55,28 +55,28 @@ public class AggregationFeatureReader implements FeatureReader {
     }
 
     SimpleFeature readFeature() throws IOException {
-    	 if( reader == null ){
-             throw new IOException("FeatureReader is closed; no additional features can be read");
-         }
-         boolean read = reader.readRecord(); // read the "next" record
-         if( read == false ){
-             close(); // automatic close to be nice
-             return null; // no additional features are available
-         }
-         Coordinate coordinate = new Coordinate();
-         for( String column : reader.getHeaders() ){
-             String value = reader.get(column);
-             if( "lat".equalsIgnoreCase(column)){
-                 coordinate.y = Double.valueOf( value.trim() );
-             }
-             else if( "lon".equalsIgnoreCase(column)){
-                 coordinate.x = Double.valueOf( value.trim() );
-             }
-             else {
-                 builder.set(column, value );
-             }
-         }
-         builder.set("Location", geometryFactory.createPoint( coordinate ) );
+//    	 if( reader == null ){
+//             throw new IOException("FeatureReader is closed; no additional features can be read");
+//         }
+//         boolean read = reader.readRecord(); // read the "next" record
+//         if( read == false ){
+//             close(); // automatic close to be nice
+//             return null; // no additional features are available
+//         }
+//         Coordinate coordinate = new Coordinate();
+//         for( String column : reader.getHeaders() ){
+//             String value = reader.get(column);
+//             if( "lat".equalsIgnoreCase(column)){
+//                 coordinate.y = Double.valueOf( value.trim() );
+//             }
+//             else if( "lon".equalsIgnoreCase(column)){
+//                 coordinate.x = Double.valueOf( value.trim() );
+//             }
+//             else {
+//                 builder.set(column, value );
+//             }
+//         }
+//         builder.set("Location", geometryFactory.createPoint( coordinate ) );
          
          return this.buildFeature();
     }
