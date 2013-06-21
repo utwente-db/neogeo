@@ -39,7 +39,8 @@ public class AggregationUtilities {
 	public static Area analyseFilterArea(Filter filter) {
 		StringBuffer sb = new StringBuffer();
 		Area a =  _analyseFilterArea(filter);
-		LOGGER.severe("final area: "+a.toString());
+		if(a!=null)
+			LOGGER.severe("final area: "+a.toString());
 		return a;
 	}
 
@@ -51,7 +52,8 @@ public class AggregationUtilities {
 	private static Area _analyseFilterArea(Filter cur ) {
 		Area a = null;
 		List<Filter> childrenF;
-		List<Expression> childrenE = new Vector<Expression>();
+		//List<Expression> childrenE = new Vector<Expression>();
+		Expression expr1, expr2;
 		if(cur instanceof BinaryLogicOperator){
 			childrenF = ((BinaryLogicOperator) cur).getChildren();
 			if(cur instanceof And){
@@ -61,18 +63,21 @@ public class AggregationUtilities {
 			}
 		}
 		if(cur instanceof BinaryComparisonOperator){
-			childrenE.add(((BinaryComparisonOperator) cur).getExpression1());
-			childrenE.add(((BinaryComparisonOperator) cur).getExpression2());
+			expr1 = ((BinaryComparisonOperator) cur).getExpression1();
+			expr2 = ((BinaryComparisonOperator) cur).getExpression2();
 			//			sb.append(((BinaryComparisonOperator) cur).getMatchAction().values());
 			//			for(Expression ee : childrenE){
-			a = updateBounds(a, _analyseExpressionArea(childrenE.get(0),childrenE.get(1)));
+			LOGGER.severe("comparison shortcut: "+((BinaryComparisonOperator) cur).getClass().getCanonicalName());
+			a = updateBounds(a, _analyseExpressionArea(expr1,expr2));
 			//				sb.append(",");
 			//			}
 			//			sb.append(")");
 		}
 		if(cur instanceof BinaryTemporalOperator){
-			childrenE.add(((BinaryTemporalOperator) cur).getExpression1());
-			childrenE.add(((BinaryTemporalOperator) cur).getExpression2());
+			expr1 = (((BinaryTemporalOperator) cur).getExpression1());
+			expr2 = (((BinaryTemporalOperator) cur).getExpression2());
+			LOGGER.severe("temporal shortcut: "+((BinaryTemporalOperator) cur).getClass().getCanonicalName());
+			a = updateBounds(a, _analyseExpressionArea(expr1,expr2));
 			//			sb.append(((BinaryTemporalOperator) cur).getMatchAction().values());
 			//			for(Expression ee : childrenE){
 			//				a.updateBounds(_analyseExpressionArea(ee));
@@ -81,8 +86,11 @@ public class AggregationUtilities {
 			//			sb.append(")");
 		}
 		if(cur instanceof BinarySpatialOperator){
-			childrenE.add(((BinarySpatialOperator) cur).getExpression1());
-			childrenE.add(((BinarySpatialOperator) cur).getExpression2());
+			expr1 = (((BinarySpatialOperator) cur).getExpression1());
+			expr2 = (((BinarySpatialOperator) cur).getExpression2());
+			LOGGER.severe("spatial shortcut: "+((BinarySpatialOperator) cur).getClass().getCanonicalName());
+			a = updateBounds(a, _analyseExpressionArea(expr1, expr2));
+
 			//			sb.append(((BinarySpatialOperator) cur).getMatchAction().values());
 			//			for(Expression ee : childrenE){
 			//				a.updateBounds(_analyseExpressionArea(ee));
@@ -90,16 +98,20 @@ public class AggregationUtilities {
 			//			}
 			//			sb.append(")");
 		}
-		if(childrenE!=null && childrenE.size()==2)
-			a = updateBounds(a, _analyseExpressionArea(childrenE.get(0),childrenE.get(1)));
-
+//		LOGGER.severe("childrenE :"+(childrenE==null)+"    "+childrenE.size());
+//		if(childrenE!=null ){
+//			for(int i=0; i<childrenE.size();i++){
+//				LOGGER.severe("passed it");
+////				a = updateBounds(a, _analyseExpressionArea(childrenE.get(i*2+0),childrenE.get(i*2+1)));
+//			}
+//		}
 		return a;
 	}
 
 	private static Area updateBounds(Area a, Area b) {
 		if(a==null) return b;
 		if(b==null) return a;
-		a.updateBounds(a);
+		a.updateBounds(b);
 		return a;
 	}
 
@@ -108,7 +120,7 @@ public class AggregationUtilities {
 		//		sb.append("Expression{"+ee.getClass().getCanonicalName()+"}");
 		if(ee1 instanceof PropertyName){
 			//			sb.append("-");
-			LOGGER.severe(((PropertyName)ee1).getPropertyName());
+			LOGGER.severe("property name:"+((PropertyName)ee1).getPropertyName());
 			if(ee2 instanceof Literal && ((PropertyName)ee1).getPropertyName().equals("area")){
 				//			sb.append("-")
 				Object val = ((Literal)ee2).getValue();
@@ -121,6 +133,69 @@ public class AggregationUtilities {
 			}
 		}
 		return a;
+	}
+
+	public static String analyseFilter(Filter filter) {
+		StringBuffer sb = new StringBuffer();
+		_analyseFilter(filter, sb);
+		LOGGER.severe("start analysing filter");
+		return sb.toString();
+	}
+
+	/**
+	 * depth first traversal of the filter expression
+	 * @param cur
+	 * @param sb
+	 */
+	private static void _analyseFilter(Filter cur, StringBuffer sb ) {
+		List<Filter> childrenF;
+		List<Expression> childrenE = new Vector<Expression>();
+		sb.append(cur.getClass().getCanonicalName());
+		sb.append("[");
+
+		if(cur instanceof BinaryLogicOperator){
+			childrenF = ((BinaryLogicOperator) cur).getChildren();
+			if(cur instanceof And || cur instanceof Or){
+				for(Filter ff : childrenF){
+					_analyseFilter(ff,sb);
+				}
+			} else unsupportedFilter(sb, cur);
+		}
+		if(cur instanceof BinaryComparisonOperator){
+			sb.append(((BinaryComparisonOperator) cur).getMatchAction().values());
+			childrenE.add(((BinaryComparisonOperator) cur).getExpression1());
+			childrenE.add(((BinaryComparisonOperator) cur).getExpression2());
+		}
+		if(cur instanceof BinaryTemporalOperator){
+			sb.append(((BinaryTemporalOperator) cur).getMatchAction().values());
+			childrenE.add(((BinaryTemporalOperator) cur).getExpression1());
+			childrenE.add(((BinaryTemporalOperator) cur).getExpression2());
+		}
+		if(cur instanceof BinarySpatialOperator){
+			sb.append(((BinarySpatialOperator) cur).getMatchAction().values());
+			childrenE.add(((BinarySpatialOperator) cur).getExpression1());
+			childrenE.add(((BinarySpatialOperator) cur).getExpression2());
+		}
+		if(childrenE!=null && childrenE.size()==2)
+			_analyseExpression(childrenE.get(0),childrenE.get(1),sb);
+		sb.append("]");
+	}
+
+	private static void _analyseExpression(Expression ee1, Expression ee2, StringBuffer sb) {
+		sb.append("Expression1{"+ee1.getClass().getCanonicalName()+"},");
+		if(ee1 instanceof PropertyName){
+			sb.append("(");
+			sb.append(((PropertyName)ee1).getPropertyName());
+			sb.append(")");
+		}
+		sb.append("-");
+		sb.append("Expression2{"+ee2.getClass().getCanonicalName()+"}");
+		if(ee2 instanceof Literal ){
+			Object val = ((Literal)ee2).getValue();
+			sb.append("(");
+			sb.append(val);
+			sb.append(")");
+		}
 	}
 
 	private static void unsupportedFilter(StringBuffer sb, Filter ff) {

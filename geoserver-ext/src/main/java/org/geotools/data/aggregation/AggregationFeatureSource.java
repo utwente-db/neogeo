@@ -120,6 +120,7 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 	protected FeatureReader<SimpleFeatureType, SimpleFeature> getReaderInternal(Query query)
 	throws IOException {
 		LOGGER.severe("query properties: "+query.getProperties());
+		//LOGGER.severe("query analysis: "+AggregationUtilities.analyseFilter(query.getFilter()));
 		// Note we ignore 'query' because querying/filtering is handled in superclasses.
 		// http://opensourcejavaphp.net/java/geotools/org/geotools/data/store/ContentFeatureSource.java.html
 		// set capabilities to avoid checking by superclass

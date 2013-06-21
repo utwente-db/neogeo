@@ -94,7 +94,7 @@ public class Area {
 
 	public void updateBounds(Area a){
 		if(a!=null)
-			updateBounds(a.getLowX(), a.getHighX(), a.getLowY(), a.getLowY());	
+			updateBounds(a.getLowX(), a.getHighX(), a.getLowY(), a.getHighY());	
 	}
 
 //	public boolean isValid(){
