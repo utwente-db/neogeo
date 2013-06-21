@@ -138,7 +138,7 @@ public class CopyOfMysqlOrderQueryBuilder {
 		int min=0;
 		int max=0;
 		int bytes=1;
-		for(int i=0;i<MysqlConnectionOrder.coding.length;i++){
+		for(int i=0;i<CompleteOrderIndex.coding.length;i++){
 			if(blobext.isEmpty()){
 				// 2 bytes
 				bytes=2;

@@ -80,7 +80,7 @@ public class CompleteOrderIndex {
 
 	private void completeIndex(Connection con, int level) throws SQLException, IOException{
 		String blobext = "";
-		switch (MysqlConnectionOrder.coding[level]){ 
+		switch (CompleteOrderIndex.coding[level]){ 
 		case 1: 
 			blobext = "tiny";
 			break;
@@ -102,13 +102,13 @@ public class CompleteOrderIndex {
 		while(rs.next()){
 			int i0 = rs.getInt("i0");
 			int cnt = rs.getInt("cnt");
-			byte[] buf = new byte[cnt*MysqlConnectionOrder.coding[level]];
+			byte[] buf = new byte[cnt*CompleteOrderIndex.coding[level]];
 			InputStream is = rs.getBinaryStream("order_map");
 			is.read(buf, 0, cnt*CompleteOrderIndex.coding[level]);
 
 			int[] data = new int[cnt];
 			for(int ii=0;ii<cnt;ii++){
-				switch (MysqlConnectionOrder.coding[level]){
+				switch (CompleteOrderIndex.coding[level]){
 				case 1: data[ii]=(buf[ii] & 0xFF);
 				break;
 				case 2: data[ii]=(buf[ii*2] & 0xFF)*0x100 + (buf[ii*2+1] & 0xFF);
@@ -119,8 +119,8 @@ public class CompleteOrderIndex {
 				break;
 				}
 			}
-			byte[] start_buf = new byte[cnt*MysqlConnectionOrder.coding[level]];
-			byte[] end_buf = new byte[cnt*MysqlConnectionOrder.coding[level]];
+			byte[] start_buf = new byte[cnt*CompleteOrderIndex.coding[level]];
+			byte[] end_buf = new byte[cnt*CompleteOrderIndex.coding[level]];
 			int start_cnt = 0;
 			int end_cnt = 0;
 			int median = cnt/2;
@@ -131,7 +131,7 @@ public class CompleteOrderIndex {
 				if(data[cnt-1-ii]>median) end_cnt--;
 				else if(data[cnt-1-ii]<median) end_cnt++;
 				// otherwise the start_cnt is not changing.
-				switch (MysqlConnectionOrder.coding[level]){
+				switch (CompleteOrderIndex.coding[level]){
 				case 1: 
 					start_buf[ii]=(byte) (start_cnt & 0xFF);
 					end_buf[cnt-1-ii]=(byte) (end_cnt & 0xFF);
