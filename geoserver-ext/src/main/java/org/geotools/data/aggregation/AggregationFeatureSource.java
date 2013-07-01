@@ -1,7 +1,10 @@
 package org.geotools.data.aggregation;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.List;
+import java.util.Set;
+import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 import org.geotools.data.FeatureReader;
@@ -11,6 +14,8 @@ import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.data.store.ContentEntry;
 import org.geotools.data.store.ContentFeatureCollection;
 import org.geotools.data.store.ContentFeatureSource;
+import org.geotools.factory.Hints;
+import org.geotools.factory.Hints.Key;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
@@ -18,6 +23,7 @@ import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
+import org.opengis.filter.FilterVisitor;
 import org.opengis.geometry.BoundingBox;
 import org.opengis.geometry.DirectPosition;
 import org.opengis.referencing.FactoryException;
@@ -65,15 +71,15 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 		CoordinateReferenceSystem crs = query.getCoordinateSystem();
 		if (crs!=null) LOGGER.severe("query CRS: "+crs.getAlias());
 
-		
+
 		ReferencedEnvelope bounds = this.getDataStore().getReferencedEnvelope(entry, getSchema().getCoordinateReferenceSystem());
-//		double x1;
-//		double x2;
-//		double y1;
-//		double y2;
+		//		double x1;
+		//		double x2;
+		//		double y1;
+		//		double y2;
 		// parameters double x1, double x2, double y1, double y2, CoordinateReferenceSystem crs
 		//ReferencedEnvelope bounds = new ReferencedEnvelope(x1,x2,y1,y2, getSchema().getCoordinateReferenceSystem() );
-		
+
 		//		DirectPosition lc = bounds.getLowerCorner();
 		//		DirectPosition uc = bounds.getUpperCorner();
 		//		double[] lcord = lc.getCoordinate();
@@ -85,16 +91,16 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 		//		LOGGER.severe("upper corner dimensions : "+ucord.length);
 		//		LOGGER.severe("upper corner 0 : "+ucord[0]);
 		//		LOGGER.severe("upper corner 1 : "+ucord[1]);
-//		FeatureReader<SimpleFeatureType, SimpleFeature> featureReader = getReaderInternal(query);
-//		try {
-//			while( featureReader.hasNext() ){
-//				SimpleFeature feature = featureReader.next();
-//				bounds.include( feature.getBounds() );
-//			}
-//		}
-//		finally {
-//			featureReader.close();
-//		}
+		//		FeatureReader<SimpleFeatureType, SimpleFeature> featureReader = getReaderInternal(query);
+		//		try {
+		//			while( featureReader.hasNext() ){
+		//				SimpleFeature feature = featureReader.next();
+		//				bounds.include( feature.getBounds() );
+		//			}
+		//		}
+		//		finally {
+		//			featureReader.close();
+		//		}
 		return bounds;
 	}
 
@@ -119,6 +125,14 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 
 	protected FeatureReader<SimpleFeatureType, SimpleFeature> getReaderInternal(Query query)
 	throws IOException {
+		Hints hint = query.getHints();
+		for(Entry<Object, Object> e : hint.entrySet()){
+			LOGGER.severe("hint entry: "+e.getKey()+"="+e.getValue());
+		}
+		// viewparams are under the key VIRTUAL_TABLE_PARAMETERS
+		// format of the valye: key:value;k:v
+		// example: testkey:testvalue;secondtestkey:secondtestvalue
+
 		LOGGER.severe("query properties: "+query.getProperties());
 		//LOGGER.severe("query analysis: "+AggregationUtilities.analyseFilter(query.getFilter()));
 		// Note we ignore 'query' because querying/filtering is handled in superclasses.
@@ -131,21 +145,38 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 		// canSort()
 		// canRetype() 
 		ReferencedEnvelope bounds = new ReferencedEnvelope(query.getCoordinateSystem());
-//		DirectPosition lc = bounds.getLowerCorner();
-//		DirectPosition uc = bounds.getUpperCorner();
-//		double[] lcord = lc.getCoordinate();
-//		double[] ucord = uc.getCoordinate();
+		//		DirectPosition lc = bounds.getLowerCorner();
+		//		DirectPosition uc = bounds.getUpperCorner();
+		//		double[] lcord = lc.getCoordinate();
+		//		double[] ucord = uc.getCoordinate();
 		LOGGER.severe("extracting the bounding box of the request:");
-//		LOGGER.severe("lower corner dimensions : "+lcord.length);
-//		LOGGER.severe("lower corner 0 : "+lcord[0]);
-//		LOGGER.severe("lower corner 1 : "+lcord[1]);
-//		LOGGER.severe("upper corner dimensions : "+ucord.length);
-//		LOGGER.severe("upper corner 0 : "+ucord[0]);
-//		LOGGER.severe("upper corner 1 : "+ucord[1]);
+		//		LOGGER.severe("lower corner dimensions : "+lcord.length);
+		//		LOGGER.severe("lower corner 0 : "+lcord[0]);
+		//		LOGGER.severe("lower corner 1 : "+lcord[1]);
+		//		LOGGER.severe("upper corner dimensions : "+ucord.length);
+		//		LOGGER.severe("upper corner 0 : "+ucord[0]);
+		//		LOGGER.severe("upper corner 1 : "+ucord[1]);
+		//		Filter ff = query.getFilter();
+		//		FilterVisitor ffv;
+		//		ff.accept(ffv, null);
 		LOGGER.severe("filter: "+query.getFilter().getClass().getCanonicalName());
-		Area a = AggregationUtilities.analyseFilterArea(query.getFilter());
-		LOGGER.severe("Parsed filter: "+a.toString());
-		return new AggregationFeatureReader( getState(), a);
+		// the TIME parameter will be for a continuous interval in the layer definition at the dimension tabs
+		// the filter is a IsBetweenImpl filter
+		// TODO this not covered yet by the filter analysis
+		// if TIME parameter is not specified the filter is based on a IncludeFilter for 
+		// propertyNames [TIME]
+		// TODO handle IncludeFilter
+		//Area a = AggregationUtilities.analyseFilterArea(query.getFilter());
+		AggregationFilterVisitor visitor = new AggregationFilterVisitor();
+		query.getFilter().accept(visitor, null);
+		LOGGER.severe("query parsing valid? "+visitor.isValid());
+//		if(visitor.isValid()){
+			Area a = visitor.getArea();
+			if(a!=null)
+				LOGGER.severe("Parsed filter: "+a.toString());
+			return new AggregationFeatureReader( getState(), a);
+//		} else 
+//			return null;
 	}
 
 	//	@Override
@@ -181,7 +212,7 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 			builder.add("min", Double.class);
 		if(data.hasOutputMax())
 			builder.add("max", Double.class);
-
+		builder.add("time",Timestamp.class);
 		CRSAuthorityFactory   factory = CRS.getAuthorityFactory(true);
 		CoordinateReferenceSystem crs = DefaultGeographicCRS.WGS84; // <- Coordinate reference system
 		try {

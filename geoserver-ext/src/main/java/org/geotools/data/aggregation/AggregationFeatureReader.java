@@ -2,6 +2,7 @@ package org.geotools.data.aggregation;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.Timestamp;
 import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 
@@ -109,6 +110,7 @@ private AggregationDataStore data;
 		if(data.hasOutputMax())
 			builder.set("max", 19);
                 
+		builder.set("time", new Timestamp(2002,10,01,23,59,59,999));
 		// create the ring for the polygon
 		Coordinate[] coordinates = new Coordinate[5];
         // lower left corner
