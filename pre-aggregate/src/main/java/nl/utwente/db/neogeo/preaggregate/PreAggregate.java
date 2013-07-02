@@ -485,16 +485,16 @@ public class PreAggregate {
 				swgc[i][2] = iv_count[i]; // gridcells
 			}
 			StringBuilder sqlaggr = new StringBuilder();
-			if ((aggregateMask & AGGR_COUNT) != 0)
+			if ((queryAggregateMask & aggregateMask & AGGR_COUNT) != 0)
 				sqlaggr.append(",sum(countAggr) AS countAggr");
-			if ((aggregateMask & AGGR_SUM) != 0)
+			if ((queryAggregateMask & aggregateMask & AGGR_SUM) != 0)
 				sqlaggr.append(",sum(sumAggr) AS sumAggr");
-			if ((aggregateMask & AGGR_MIN) != 0)
+			if ((queryAggregateMask & aggregateMask & AGGR_MIN) != 0)
 				sqlaggr.append(",min(minAggr) AS minAggr");
-			if ((aggregateMask & AGGR_MAX) != 0)
+			if ((queryAggregateMask & aggregateMask & AGGR_MAX) != 0)
 				sqlaggr.append(",max(maxAggr) AS maxAggr");
 			String gcells = "pa_grid(\'" + grid_paGridQuery(swgc) + "\')";
-			String sql = "SELECT gkey"+sqlaggr+" FROM "+schema+"."+table+PA_EXTENSION+", "+gcells+ " WHERE ckey=pakey GROUP BY gkey;";
+			String sql = "SELECT gkey"+sqlaggr+" FROM "+schema+"."+table+PA_EXTENSION+", "+gcells+ " WHERE ckey=pakey GROUP BY gkey order by gkey;";
 			System.out.println("XXX="+sql);			
 			result = SqlUtils.execute(c,sql);
 		} else {
