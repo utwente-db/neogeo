@@ -974,10 +974,7 @@ public class PreAggregate {
 				"DELETE FROM " + schema + "." + aggregateRepositoryDimName +
 				" WHERE tableName=\'"+tableName+"\' AND label=\'"+label+"\';"
 		);
-		Statement cnts = c.createStatement();
-		cnts.execute("select count(*) from "+schema+"."+tableName);
-		ResultSet rs = cnts.getResultSet();
-		int cnt = rs.getInt(1);
+		long cnt = SqlUtils.count(c, schema, tableName, "*");
 		PreparedStatement ps = c.prepareStatement("INSERT INTO " + schema + "." + aggregateRepositoryName + "  (" +
 				"tableName," +
 				"label," +
@@ -1008,7 +1005,7 @@ public class PreAggregate {
 		ps.setInt(5,axis.length);
 		ps.setString(6,String.valueOf(kd.kind())); // INCOMPLETE
 		ps.setInt(7,aggregateMask);
-		ps.setInt(8, cnt);
+		ps.setInt(8, (int)cnt);
 		for(int i=0; i<axis.length; i++) {
 			psi.setString(1,tableName);
 			psi.setString(2,label);

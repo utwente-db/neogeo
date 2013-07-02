@@ -1,6 +1,7 @@
 package nl.utwente.db.neogeo.preaggregate;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
@@ -8,7 +9,16 @@ public class Test {
 	
 	public static void main(String[] argv) {
 		System.out.println("Test pre-aggregate package");
-	    // runTest( /* put your own jdbc Connection Object here */ );
+		Connection connection = null;
+		try {
+			Class.forName("org.postgresql.Driver");
+			connection = DriverManager.getConnection(
+					   "jdbc:postgresql://silo2.ewi.utwente.nl:5432/xxxx","flokstra", "xxxx");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    runTest( connection );
 	}
 	
 	public static void runTest(Connection c) {
@@ -37,7 +47,7 @@ public class Test {
 			int[] iv_count = {10, 10};
 			Double[][] iv_first_obj = new Double[2][2];
 			// lowX,highY,highX,low = -8.4,60,1.9,49
-			pa.SQLquery_grid(PreAggregate.AGGR_COUNT, iv_first_obj, iv_count);
+			// pa.SQLquery_grid(PreAggregate.AGGR_COUNT, iv_first_obj, iv_count);
 			if ( false ) {
 			PegelAndelfingen2Aggregate pegel = new PegelAndelfingen2Aggregate(c, "public" , "andelfingen2", "pegel_andelfingen2", "timed");
 			// PegelAndelfingen2Aggregate pegel = new PegelAndelfingen2Aggregate(c, "public" , "andelfingen2", "pegel_andelfingen2");
