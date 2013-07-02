@@ -1027,6 +1027,22 @@ public class PreAggregate {
 		return axis;
 	}
 
+	public int getAggregateMask() {
+		return aggregateMask;
+	}
+
+	public String getSchema() {
+		return schema;
+	}
+
+	public String getTable() {
+		return table;
+	}
+
+	public String getLabel() {
+		return label;
+	}
+
 	//	public static void main(String[] argv) {
 	//		qverbose = true;
 	//		AggrKeyDescriptor kd = new AggrKeyDescriptor();

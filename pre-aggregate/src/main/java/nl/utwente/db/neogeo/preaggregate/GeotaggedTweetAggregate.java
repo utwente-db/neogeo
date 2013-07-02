@@ -28,7 +28,7 @@ public class GeotaggedTweetAggregate extends PreAggregate {
 		AggregateAxis axis[] = {
 				new AggregateAxis("ST_X("+point_column+")","double",""+DFLT_BASEBOXSIZE,DFLT_N),
 				new AggregateAxis("ST_Y("+point_column+")","double",""+DFLT_BASEBOXSIZE,DFLT_N)
-				// , new AggregateAxis("time","timestamp with time zone","3600000" /*=1 hour*/,DFLT_N)
+			  , new AggregateAxis("time","timestamp with time zone","3600000" /*=1 hour*/,DFLT_N)
 			};
 		createPreAggregate(c,schema,table,label,axis,"char_length(tweet)","bigint",AGGR_ALL,axisToSplit,chunkSize,newRange);
 	}

@@ -335,7 +335,7 @@ class  TimestampAxisIndexer implements AxisIndexer {
 				tsvalue = low;
 			else if ( tsvalue > high )
 				tsvalue = high;
-			return (tsvalue * BASEBLOCKSIZE) == 0;
+			return (tsvalue % BASEBLOCKSIZE) == 0;
 		}
 		
 		public Object reverseValue(int index) {
