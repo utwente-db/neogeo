@@ -459,17 +459,44 @@ public class PreAggregate {
 		for(i=0; i<axis.length; i++) {
 			AggregateAxis ax = axis[i];
 
-			if ( !ax.exactIndex(iv_first_obj[i][RMIN]) )
-				throw new SQLException("SQLquery_grid: start of first interval in dim "+i+" not on boundary: "+iv_first_obj[i][RMIN]);
-			if ( !ax.exactIndex(iv_first_obj[i][RMAX]) )
-				throw new SQLException("SQLquery_grid: end of first interval in dim "+i+" not on boundary: "+iv_first_obj[i][RMAX]);
+			if (false) {
+				if (!ax.exactIndex(iv_first_obj[i][RMIN]))
+					throw new SQLException(
+							"SQLquery_grid: start of first interval in dim "
+									+ i + " not on boundary: "
+									+ iv_first_obj[i][RMIN]);
+				if (!ax.exactIndex(iv_first_obj[i][RMAX]))
+					throw new SQLException(
+							"SQLquery_grid: end of first interval in dim " + i
+									+ " not on boundary: "
+									+ iv_first_obj[i][RMAX]);
+			}
 			iv_first[i] = ax.getIndex(iv_first_obj[i][RMIN]);
 			iv_size[i] = ax.getIndex(iv_first_obj[i][RMAX]) - iv_first[i];
 		}
 		// now have all the info we need
 		// what do do in the sql case ?
 		if ( serversideStairwalk ) {
-			// not impl yet
+			int swgc[][] = new int[axis.length][3]; // start/width/gridcells
+
+			for(i=0; i<axis.length; i++) {
+				swgc[i][0] = iv_first[i]; // start
+				swgc[i][1] = iv_size[i]; // width
+				swgc[i][2] = iv_count[i]; // gridcells
+			}
+			StringBuilder sqlaggr = new StringBuilder();
+			if ((aggregateMask & AGGR_COUNT) != 0)
+				sqlaggr.append(",sum(countAggr) AS countAggr");
+			if ((aggregateMask & AGGR_SUM) != 0)
+				sqlaggr.append(",sum(sumAggr) AS sumAggr");
+			if ((aggregateMask & AGGR_MIN) != 0)
+				sqlaggr.append(",min(minAggr) AS minAggr");
+			if ((aggregateMask & AGGR_MAX) != 0)
+				sqlaggr.append(",max(maxAggr) AS maxAggr");
+			String gcells = "pa_grid(\'" + grid_paGridQuery(swgc) + "\')";
+			String sql = "SELECT gkey"+sqlaggr+" FROM "+schema+"."+table+PA_EXTENSION+", "+gcells+ " WHERE ckey=pakey GROUP BY gkey;";
+			System.out.println("XXX="+sql);			
+			result = SqlUtils.execute(c,sql);
 		} else {
 			// explode it
 			PermutationGenerator p = new PermutationGenerator(axis.length);

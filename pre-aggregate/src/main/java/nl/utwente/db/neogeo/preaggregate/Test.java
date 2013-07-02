@@ -14,7 +14,7 @@ public class Test {
 		try {
 			Class.forName("org.postgresql.Driver");
 			connection = DriverManager.getConnection(
-					"jdbc:postgresql://silo2.ewi.utwente.nl:5432/xxxx","flokstra", "xxxx");
+					"jdbc:postgresql://silo2.ewi.utwente.nl:5432/twitter","flokstra", "twitter");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
