@@ -54,12 +54,15 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 	public AggregationFeatureSource(ContentEntry entry, Query query) {
 		super(entry,query);
 		String typename = entry.getTypeName();
+		typename = ((AggregationDataStore)entry.getDataStore()).stripTypeName(typename);
 		LOGGER.severe("TypeName: "+typename);
+		
 		try {
 			AggregationDataStore data = getDataStore();
 			agg = data.createPreAggregate(typename);
 		} catch (SQLException e) {
-			LOGGER.severe("SQLException for creating the PreAggregate object");
+			LOGGER.severe("SQLException for creating the PreAggregate object:"+e.getMessage());
+			e.printStackTrace();
 		}
 	}
 	

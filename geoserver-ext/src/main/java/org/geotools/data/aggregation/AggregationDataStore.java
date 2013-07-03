@@ -262,6 +262,10 @@ public class AggregationDataStore extends ContentDataStore {
 	public int getMask(){
 		return mask;
 	}
+	
+	public String stripTypeName(String typename) {
+		return typename.substring((NAME+"_").length());
+	}
 
 	public PreAggregate createPreAggregate(String typename) throws SQLException{
 		String tablename = PreAggregate.getTablenameFromTypeName(typename);
