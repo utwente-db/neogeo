@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,8 +11,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-
-import com.vividsolutions.jts.geom.Polygon;
 
 import nl.utwente.db.neogeo.preaggregate.AggregateAxis.DoubleAxisIndexer;
 import nl.utwente.db.neogeo.preaggregate.AggregateAxis.IntegerAxisIndexer;
@@ -978,6 +975,10 @@ public class PreAggregate {
 				" FROM " + schema + "." + aggregateRepositoryName +
 				" WHERE tableName=\'"+tableName+"\' AND label=\'"+label+"\';"
 		);
+		
+//		System.out.println("resultset "+rs+"    "+"SELECT " + "*" +
+//				" FROM " + schema + "." + aggregateRepositoryName +
+//				" WHERE tableName=\'"+tableName+"\' AND label=\'"+label+"\';");
 		if (!rs.next())
 			return false;
 		int dimensions = rs.getInt(3);
