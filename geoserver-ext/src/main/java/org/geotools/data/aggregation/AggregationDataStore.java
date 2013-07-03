@@ -28,15 +28,15 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 public class AggregationDataStore extends ContentDataStore {
 
 	private static final Logger LOGGER = Logger.getLogger("org.geotools.data.aggregation.AggregationDataStore");
-	private static final String TYPE_NAMES_QUERY = "select tablename,label from pre_aggregate";
+	//private static final String TYPE_NAMES_QUERY = "select tablename,label from pre_aggregate";
 	// first ? is the column name of the geometry column
 	// second ? is the table name of the indexed table
 	private static final String NATIVE_SRS_QUERY = "SELECT ST_SRID(COLUMN) FROM TABLE limit 1";
 	// first ? is the string tablename+"_"+label
-	private static final String GEOMETRY_COLUMN_QUERY = "SELECT tablename, substr(columnexpression,6,length(columnexpression)-6) FROM pre_aggregate_axis where tablename || '_' ||label=? and substr(columnexpression,1,4)='ST_X'";
-	private static final String BOUNDS_QUERY = "SELECT tablename, substr(columnexpression,1,4), low, high FROM pre_aggregate_axis where tablename || '_' ||label=? and substr(columnexpression,1,3)='ST_' order by columnexpression";
+	private static final String GEOMETRY_COLUMN_QUERY = "SELECT tablename, substr(columnexpression,6,length(columnexpression)-6) FROM pre_aggregate_axis where tablename || '___' ||label=? and substr(columnexpression,1,4)='ST_X'";
+	private static final String BOUNDS_QUERY = "SELECT tablename, substr(columnexpression,1,4), low, high FROM pre_aggregate_axis where tablename || '___' ||label=? and substr(columnexpression,1,3)='ST_' order by columnexpression";
 	private static final String NAME = "aggregate";
-	private static final String TOTAL_COUNT_QUERY = null;
+	//private static final String TOTAL_COUNT_QUERY = null;
 
 	private String hostname;
 	private int port;
@@ -44,6 +44,7 @@ public class AggregationDataStore extends ContentDataStore {
 	private String password;
 	private String database;
 	private Connection con;
+	private String schema;
 	private int xSize;
 	private int ySize;
 	private int mask;
@@ -56,11 +57,12 @@ public class AggregationDataStore extends ContentDataStore {
 	//				0, 0);
 	//	}
 
-	public AggregationDataStore(String hostname, int port, String database, String username, String password, int xSize, int ySize, int mask){
+	public AggregationDataStore(String hostname, int port, String schema, String database, String username, String password, int xSize, int ySize, int mask){
 		this.hostname = hostname; 
 		this.port = port;
 		this.username = username;
 		this.password = password;
+		this.schema = schema;
 		this.database = database;
 		this.xSize = xSize;
 		this.ySize = ySize;
@@ -106,21 +108,22 @@ public class AggregationDataStore extends ContentDataStore {
 
 	@Override
 	protected List<Name> createTypeNames() throws IOException	{
+		LOGGER.severe(" typenames start!");
 		List<Name> ret = null;
 		getConnection();
 		try {
-			Statement stmt = con.createStatement();
-			stmt.execute(TYPE_NAMES_QUERY);
-			ResultSet rs = stmt.getResultSet();
+			LOGGER.severe(" typenames start 1!"+schema);
+			List<String> names = PreAggregate.availablePreAggregates(con,schema);
+			LOGGER.severe(" typenames start 2!"+names.size());
 			ret = new Vector<Name>();
-			while(rs.next()){
-				ret.add(new NameImpl(NAME+"_"+rs.getString("tablename")+"_"+rs.getString("label")));
+			for(String name : names){
+				ret.add(new NameImpl(NAME+"_"+name));
 			}
 		} catch (SQLException e) {
 			LOGGER.severe("Connection to database was not successful!");
 			e.printStackTrace();
 		}
-
+		LOGGER.severe(" typenames created: #entries"+ret.size());
 		return ret;
 	}
 
@@ -234,7 +237,7 @@ public class AggregationDataStore extends ContentDataStore {
 	public int getXSize(){
 		return xSize;
 	}
-	
+
 	public int getYSize(){
 		return ySize;
 	}

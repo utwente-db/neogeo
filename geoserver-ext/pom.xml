@@ -9,6 +9,10 @@
 
  <name>geoserver extension facilitation aggregation index</name>
  <url>http://maven.apache.org</url>
+ <dependencyManagement>
+ 	<dependencies>
+ 	</dependencies>
+ </dependencyManagement>
 
  <properties>
   <geotools.version>8.6</geotools.version>

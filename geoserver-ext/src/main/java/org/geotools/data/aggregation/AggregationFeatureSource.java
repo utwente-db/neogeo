@@ -73,34 +73,7 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 
 
 		ReferencedEnvelope bounds = this.getDataStore().getReferencedEnvelope(entry, getSchema().getCoordinateReferenceSystem());
-		//		double x1;
-		//		double x2;
-		//		double y1;
-		//		double y2;
-		// parameters double x1, double x2, double y1, double y2, CoordinateReferenceSystem crs
-		//ReferencedEnvelope bounds = new ReferencedEnvelope(x1,x2,y1,y2, getSchema().getCoordinateReferenceSystem() );
 
-		//		DirectPosition lc = bounds.getLowerCorner();
-		//		DirectPosition uc = bounds.getUpperCorner();
-		//		double[] lcord = lc.getCoordinate();
-		//		double[] ucord = uc.getCoordinate();
-		//		LOGGER.severe("extracting the bounding box of the request:");
-		//		LOGGER.severe("lower corner dimensions : "+lcord.length);
-		//		LOGGER.severe("lower corner 0 : "+lcord[0]);
-		//		LOGGER.severe("lower corner 1 : "+lcord[1]);
-		//		LOGGER.severe("upper corner dimensions : "+ucord.length);
-		//		LOGGER.severe("upper corner 0 : "+ucord[0]);
-		//		LOGGER.severe("upper corner 1 : "+ucord[1]);
-		//		FeatureReader<SimpleFeatureType, SimpleFeature> featureReader = getReaderInternal(query);
-		//		try {
-		//			while( featureReader.hasNext() ){
-		//				SimpleFeature feature = featureReader.next();
-		//				bounds.include( feature.getBounds() );
-		//			}
-		//		}
-		//		finally {
-		//			featureReader.close();
-		//		}
 		return bounds;
 	}
 
@@ -174,7 +147,10 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 			Area a = visitor.getArea();
 			if(a!=null)
 				LOGGER.severe("Parsed filter: "+a.toString());
-			return new AggregationFeatureReader( getState(), a);
+			long startTime = visitor.getStartTime();
+			long endTime = visitor.getEndTime();
+			LOGGER.severe("Parsed startTime:"+startTime+"    endTime:"+endTime);
+			return new AggregationFeatureReader( getState(), a );
 //		} else 
 //			return null;
 	}
