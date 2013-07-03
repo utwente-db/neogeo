@@ -9,8 +9,6 @@ import java.util.Set;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
 
-import nl.utwente.db.neogeo.preaggregate.PreAggregate;
-
 import org.geotools.data.FeatureReader;
 import org.geotools.data.Join;
 import org.geotools.data.Query;
@@ -46,7 +44,6 @@ import com.vividsolutions.jts.geom.Polygon;
 public class AggregationFeatureSource extends ContentFeatureSource {
 	private static final Logger LOGGER = Logger.getLogger("org.geotools.data.aggregation.AggregationFeatureSource");
 
-	private int crsNumber = -1;
 	private int totalCnt = -1;
 	private Object totalBounds = null;
 	private PreAggregate agg = null;
@@ -54,8 +51,7 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 	public AggregationFeatureSource(ContentEntry entry, Query query) {
 		super(entry,query);
 		String typename = entry.getTypeName();
-		typename = ((AggregationDataStore)entry.getDataStore()).stripTypeName(typename);
-		LOGGER.severe("TypeName: "+typename);
+		typename = PreAggregate.stripTypeName(typename);
 		
 		try {
 			AggregationDataStore data = getDataStore();
@@ -89,7 +85,7 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 		if (crs!=null) LOGGER.severe("query CRS: "+crs.getAlias());
 
 
-		ReferencedEnvelope bounds = this.getDataStore().getReferencedEnvelope(entry, getSchema().getCoordinateReferenceSystem());
+		ReferencedEnvelope bounds = agg.getReferencedEnvelope(entry, getSchema().getCoordinateReferenceSystem());
 
 		return bounds;
 	}
@@ -217,18 +213,18 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 //			builder.add("max", Double.class);
 //		builder.add("time",Timestamp.class);
 		
-		//TODO move this to PreAggregate
-		CRSAuthorityFactory   factory = CRS.getAuthorityFactory(true);
-		CoordinateReferenceSystem crs = DefaultGeographicCRS.WGS84; // <- Coordinate reference system
-		try {
-			if(crsNumber==-1)
-				crsNumber = this.getDataStore().getCRSNumber(entry);
-			crs = factory.createCoordinateReferenceSystem("EPSG:"+crsNumber);
-		} catch (NoSuchAuthorityCodeException e) {
-			e.printStackTrace();
-		} catch (FactoryException e) {
-			e.printStackTrace();
-		}
+//		CRSAuthorityFactory   factory = CRS.getAuthorityFactory(true);
+//		CoordinateReferenceSystem crs = DefaultGeographicCRS.WGS84; // <- Coordinate reference system
+//		try {
+//			if(crsNumber==-1)
+//				crsNumber = agg.getCRSNumber(entry);
+//			crs = factory.createCoordinateReferenceSystem("EPSG:"+crsNumber);
+//		} catch (NoSuchAuthorityCodeException e) {
+//			e.printStackTrace();
+//		} catch (FactoryException e) {
+//			e.printStackTrace();
+//		}
+		CoordinateReferenceSystem crs = agg.getCoordinateReferenceSystem(entry);
 		builder.setCRS(crs); // <- Coordinate reference system
 		builder.add("area", Polygon.class );
 

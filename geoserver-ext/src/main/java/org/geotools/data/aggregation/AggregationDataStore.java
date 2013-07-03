@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-import nl.utwente.db.neogeo.preaggregate.PreAggregate;
-
 import org.geotools.data.Query;
 import org.geotools.data.store.ContentDataStore;
 import org.geotools.data.store.ContentEntry;
@@ -31,12 +29,11 @@ public class AggregationDataStore extends ContentDataStore {
 	//private static final String TYPE_NAMES_QUERY = "select tablename,label from pre_aggregate";
 	// first ? is the column name of the geometry column
 	// second ? is the table name of the indexed table
-	private static final String NATIVE_SRS_QUERY = "SELECT ST_SRID(COLUMN) FROM TABLE limit 1";
-	// first ? is the string tablename+"_"+label
-	private static final String GEOMETRY_COLUMN_QUERY = "SELECT tablename, substr(columnexpression,6,length(columnexpression)-6) FROM pre_aggregate_axis where tablename || '___' ||label=? and substr(columnexpression,1,4)='ST_X'";
-	private static final String BOUNDS_QUERY = "SELECT tablename, substr(columnexpression,1,4), low, high FROM pre_aggregate_axis where tablename || '___' ||label=? and substr(columnexpression,1,3)='ST_' order by columnexpression";
-	private static final String NAME = "aggregate";
-	//private static final String TOTAL_COUNT_QUERY = null;
+//	private static final String NATIVE_SRS_QUERY = "SELECT ST_SRID(COLUMN) FROM TABLE limit 1";
+//	// first ? is the string tablename+"_"+label
+//	private static final String GEOMETRY_COLUMN_QUERY = "SELECT tablename, substr(columnexpression,6,length(columnexpression)-6) FROM pre_aggregate_axis where tablename || '___' ||label=? and substr(columnexpression,1,4)='ST_X'";
+//	private static final String BOUNDS_QUERY = "SELECT tablename, substr(columnexpression,1,4), low, high FROM pre_aggregate_axis where tablename || '___' ||label=? and substr(columnexpression,1,3)='ST_' order by columnexpression";
+//	//private static final String TOTAL_COUNT_QUERY = null;
 
 	private String hostname;
 	private int port;
@@ -116,7 +113,7 @@ public class AggregationDataStore extends ContentDataStore {
 			List<String> names = PreAggregate.availablePreAggregates(con,schema);
 			ret = new Vector<Name>();
 			for(String name : names){
-				ret.add(new NameImpl(NAME+"_"+name));
+				ret.add(new NameImpl(name));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -129,46 +126,6 @@ public class AggregationDataStore extends ContentDataStore {
 		return new AggregationFeatureSource(entry, Query.ALL);
 	}
 
-	public int getCRSNumber(ContentEntry entry) {
-		int ret = 0;
-		String typename = entry.getTypeName();
-		typename = typename.substring((NAME+"_").length());
-		PreparedStatement stmt1;
-		try {
-			stmt1 = con.prepareStatement(GEOMETRY_COLUMN_QUERY);
-			stmt1.setString(1, typename);
-			LOGGER.finest("geometry column query:"+stmt1.toString());
-			stmt1.execute();
-			ResultSet rs1 = stmt1.getResultSet();
-			String tablename = "";		
-			String locColumn = "";
-			while(rs1.next()){
-				tablename = rs1.getString(1);
-				locColumn = rs1.getString(2);
-			}
-			rs1.close();
-			Statement stmt2;
-			try {
-				String query = NATIVE_SRS_QUERY.replaceFirst("COLUMN", locColumn).
-				replaceFirst("TABLE", tablename);
-				stmt2 = con.createStatement();			
-				LOGGER.finest("NATIVE SRS query:"+stmt2.toString());
-				stmt2.execute(query);
-				ResultSet rs2 = stmt2.getResultSet();
-				while(rs2.next()){
-					ret = rs2.getInt(1);
-				}
-				rs2.close();
-			} catch (SQLException e) {
-
-				e.printStackTrace();
-			}
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-		}
-
-		return ret;
-	}
 
 	public boolean hasOutputCount(){
 		return hasOutputCount(PreAggregate.AGGR_ALL);
@@ -220,32 +177,32 @@ public class AggregationDataStore extends ContentDataStore {
 		return xSize*ySize;
 	}
 
-	public ReferencedEnvelope getReferencedEnvelope(ContentEntry entry, CoordinateReferenceSystem coordinateReferenceSystem) {
-		ReferencedEnvelope bounds = null;
-		String typename = entry.getTypeName();
-		typename = typename.substring((NAME+"_").length());
-		PreparedStatement stmt1;
-		try {
-			stmt1 = con.prepareStatement(BOUNDS_QUERY);
-			stmt1.setString(1, typename);
-			LOGGER.finest("bounds query:"+stmt1.toString());
-			stmt1.execute();
-			ResultSet rs1 = stmt1.getResultSet();
-			rs1.next();
-			double x1 = Double.valueOf(rs1.getString("low"));
-			double x2 = Double.valueOf(rs1.getString("high"));
-			rs1.next();
-			double y1 = Double.valueOf(rs1.getString("low"));
-			double y2 = Double.valueOf(rs1.getString("high"));
-			// parameters double x1, double x2, double y1, double y2, CoordinateReferenceSystem crs
-			bounds = new ReferencedEnvelope(x1,x2,y1,y2, coordinateReferenceSystem );
-			rs1.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}			
-		return bounds;
-	}
+//	public ReferencedEnvelope getReferencedEnvelope(ContentEntry entry, CoordinateReferenceSystem coordinateReferenceSystem) {
+//		ReferencedEnvelope bounds = null;
+//		String typename = entry.getTypeName();
+//		typename = this.stripTypeName(typename);
+//		PreparedStatement stmt1;
+//		try {
+//			stmt1 = con.prepareStatement(BOUNDS_QUERY);
+//			stmt1.setString(1, typename);
+//			LOGGER.finest("bounds query:"+stmt1.toString());
+//			stmt1.execute();
+//			ResultSet rs1 = stmt1.getResultSet();
+//			rs1.next();
+//			double x1 = Double.valueOf(rs1.getString("low"));
+//			double x2 = Double.valueOf(rs1.getString("high"));
+//			rs1.next();
+//			double y1 = Double.valueOf(rs1.getString("low"));
+//			double y2 = Double.valueOf(rs1.getString("high"));
+//			// parameters double x1, double x2, double y1, double y2, CoordinateReferenceSystem crs
+//			bounds = new ReferencedEnvelope(x1,x2,y1,y2, coordinateReferenceSystem );
+//			rs1.close();
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}			
+//		return bounds;
+//	}
 
 	public int getXSize(){
 		return xSize;
@@ -263,10 +220,6 @@ public class AggregationDataStore extends ContentDataStore {
 		return mask;
 	}
 	
-	public String stripTypeName(String typename) {
-		return typename.substring((NAME+"_").length());
-	}
-
 	public PreAggregate createPreAggregate(String typename) throws SQLException{
 		String tablename = PreAggregate.getTablenameFromTypeName(typename);
 		String label = PreAggregate.getLabelFromTypeName(typename);
