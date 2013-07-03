@@ -19,7 +19,7 @@ public class AggregateAxis {
 		public String   sqlRangeFunction(Connection c, String name) throws SQLException ;
 	}
 	
-class  IntegerAxisIndexer implements AxisIndexer {
+public class IntegerAxisIndexer implements AxisIndexer {
 		
 		private int low;
 		private int high;
@@ -106,7 +106,7 @@ class  IntegerAxisIndexer implements AxisIndexer {
 		
 	}
 	
-class  LongAxisIndexer implements AxisIndexer {
+public class  LongAxisIndexer implements AxisIndexer {
 		
 		private long low;
 		private long high;
@@ -192,7 +192,7 @@ class  LongAxisIndexer implements AxisIndexer {
 		
 	}
 	
-	class  DoubleAxisIndexer implements AxisIndexer {
+public class DoubleAxisIndexer implements AxisIndexer {
 		
 		private double low;
 		private double high;
@@ -281,7 +281,7 @@ class  LongAxisIndexer implements AxisIndexer {
 	}
 	
 	
-class  TimestampAxisIndexer implements AxisIndexer {
+public class  TimestampAxisIndexer implements AxisIndexer {
 		
 		private long low;
 		private long high;

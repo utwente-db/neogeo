@@ -4,18 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Vector;
-
-import nl.utwente.db.neogeo.preaggregate.AggregateAxis.DoubleAxisIndexer;
-import nl.utwente.db.neogeo.preaggregate.AggregateAxis.IntegerAxisIndexer;
-import nl.utwente.db.neogeo.preaggregate.AggregateAxis.LongAxisIndexer;
-import nl.utwente.db.neogeo.preaggregate.AggregateAxis.TimestampAxisIndexer;
 
 public class PreAggregate {
 
@@ -35,10 +26,10 @@ public class PreAggregate {
 	public static final	int		AGGR_MAX			= AGGR_BASE << 3;
 	public static final int		AGGR_ALL			= (AGGR_COUNT|AGGR_SUM|AGGR_MIN|AGGR_MAX);
 
-	private int	aggregateMask = 0; // the 'allowed' aggregates for this instance
+	protected int	aggregateMask = 0; // the 'allowed' aggregates for this instance
 
-	private static final String  aggregateRepositoryName	= "pre_aggregate";
-	private static final String  aggregateRepositoryDimName	= "pre_aggregate_axis";
+	protected static final String  aggregateRepositoryName	= "pre_aggregate";
+	protected static final String  aggregateRepositoryDimName	= "pre_aggregate_axis";
 
 	public static final int	RMIN	= 0;
 	public static final int	RMAX	= 1;
@@ -74,12 +65,6 @@ public class PreAggregate {
 	}
 
 	public static final String PA_EXTENSION = "_pa";
-	// TODO other type mappings have to be added
-	private static final HashMap<String, String> className = new HashMap<String, String>()
-							{{put(LongAxisIndexer.TYPE_EXPRESSION,Long.class.getCanonicalName());
-							  put(IntegerAxisIndexer.TYPE_EXPRESSION,Integer.class.getCanonicalName());
-							  put(DoubleAxisIndexer.TYPE_EXPRESSION,Double.class.getCanonicalName());
-							  put(TimestampAxisIndexer.TYPE_EXPRESSION, Timestamp.class.getCanonicalName());}};
 
 	protected Connection c;
 	protected String schema;
@@ -92,8 +77,8 @@ public class PreAggregate {
 	private HashMap<Long, AggrRec> internalHash = null;
 
 	protected AggregateAxis axis[];
-	private String aggregateColumn;
-	private String aggregateType;
+	protected String aggregateColumn;
+	protected String aggregateType;
 
 	public PreAggregate() {
 	}
@@ -1093,54 +1078,6 @@ public class PreAggregate {
 		return label;
 	}
 
-	static public List<String> availablePreAggregates(Connection c, String schema) throws SQLException{
-		if (!SqlUtils.existsTable(c, schema, aggregateRepositoryName)) return null;
-		String query = "select tablename,label from "+aggregateRepositoryName+";";
-		ResultSet rs = SqlUtils.execute(c,query);
-		Vector<String> ret = new Vector<String>();
-		while(rs.next()){
-			ret.add(getTypeName(rs.getString("tablename"),rs.getString("label")));
-		}
-		return ret;
-	}
-
-	public static String getTypeName(String tablename, String label) {
-		return tablename+"___"+label;
-	}
-	
-	public static String getTablenameFromTypeName(String typename) {
-		if(typename.contains("___"))
-			return typename.split("___")[0];
-		else return typename;
-	}
-	
-	public static String getLabelFromTypeName(String typename) {
-		if(typename.contains("___"))
-			return typename.split("___")[1];
-		else return "";
-	}
-	
-	public Map<String,Class> getColumnTypes(int mask) throws ClassNotFoundException{
-		Class cl = Class.forName(className.get(aggregateType));
-		LinkedHashMap<String,Class> ret = new LinkedHashMap<String,Class>();
-		if((mask & this.aggregateMask & PreAggregate.AGGR_COUNT) != 0)
-			ret.put("countaggr", Long.class);
-		if((mask & this.aggregateMask & PreAggregate.AGGR_SUM) != 0)
-			ret.put("sumaggr", cl);
-		if((mask & this.aggregateMask & PreAggregate.AGGR_MIN) != 0)
-			ret.put("min", cl);
-		if((mask & this.aggregateMask & PreAggregate.AGGR_MAX) != 0)
-			ret.put("max", cl);
-		// check whether time is contained in the axis
-		for(AggregateAxis a : axis){
-			if(TimestampAxisIndexer.TYPE_EXPRESSION.equals(a.sqlType())){
-				// we have a time axis
-				ret.put("starttime", Timestamp.class);
-				ret.put("endtime", Timestamp.class);
-			} 
-		}
-		return ret;
-	}
 	
 	//	public static void main(String[] argv) {
 	//		qverbose = true;
