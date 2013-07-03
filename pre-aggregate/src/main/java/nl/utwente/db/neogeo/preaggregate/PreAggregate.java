@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Vector;
 
 public class PreAggregate {
@@ -112,7 +113,7 @@ public class PreAggregate {
 	public Object[][] getRangeValues(Connection c) throws SQLException {
 		return getRangeValues(c, schema, table, axis);
 	}
-	
+
 	public Object[][] getRangeValues(Connection c, String schema, String table, AggregateAxis axis[]) throws SQLException {
 		int i;
 		Object res[][] = new Object[axis.length][2];
@@ -463,13 +464,13 @@ public class PreAggregate {
 				if (!ax.exactIndex(iv_first_obj[i][RMIN]))
 					throw new SQLException(
 							"SQLquery_grid: start of first interval in dim "
-									+ i + " not on boundary: "
-									+ iv_first_obj[i][RMIN]);
+							+ i + " not on boundary: "
+							+ iv_first_obj[i][RMIN]);
 				if (!ax.exactIndex(iv_first_obj[i][RMAX]))
 					throw new SQLException(
 							"SQLquery_grid: end of first interval in dim " + i
-									+ " not on boundary: "
-									+ iv_first_obj[i][RMAX]);
+							+ " not on boundary: "
+							+ iv_first_obj[i][RMAX]);
 			}
 			iv_first[i] = ax.getIndex(iv_first_obj[i][RMIN]);
 			iv_size[i] = ax.getIndex(iv_first_obj[i][RMAX]) - iv_first[i];
@@ -1068,6 +1069,33 @@ public class PreAggregate {
 
 	public String getLabel() {
 		return label;
+	}
+
+	static public List<String> availablePreAggregates(Connection c, String schema) throws SQLException{
+		if (!SqlUtils.existsTable(c, schema, aggregateRepositoryName)) return null;
+		String query = "select tablename,label from "+aggregateRepositoryName+";";
+		ResultSet rs = SqlUtils.execute(c,query);
+		Vector<String> ret = new Vector<String>();
+		while(rs.next()){
+			ret.add(getTypeName(rs.getString("tablename"),rs.getString("label")));
+		}
+		return ret;
+	}
+
+	public static String getTypeName(String tablename, String label) {
+		return tablename+"___"+label;
+	}
+	
+	public static String getTablenameFromTypeName(String typename) {
+		if(typename.contains("___"))
+			return typename.split("___")[0];
+		else return typename;
+	}
+	
+	public static String getLabelFromTypeName(String typename) {
+		if(typename.contains("___"))
+			return typename.split("___")[1];
+		else return "";
 	}
 
 	//	public static void main(String[] argv) {
