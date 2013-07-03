@@ -5,10 +5,20 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
+
+import com.vividsolutions.jts.geom.Polygon;
+
+import nl.utwente.db.neogeo.preaggregate.AggregateAxis.DoubleAxisIndexer;
+import nl.utwente.db.neogeo.preaggregate.AggregateAxis.IntegerAxisIndexer;
+import nl.utwente.db.neogeo.preaggregate.AggregateAxis.LongAxisIndexer;
+import nl.utwente.db.neogeo.preaggregate.AggregateAxis.TimestampAxisIndexer;
 
 public class PreAggregate {
 
@@ -67,6 +77,12 @@ public class PreAggregate {
 	}
 
 	public static final String PA_EXTENSION = "_pa";
+	// TODO other type mappings have to be added
+	private static final HashMap<String, String> className = new HashMap<String, String>()
+							{{put(LongAxisIndexer.TYPE_EXPRESSION,Long.class.getCanonicalName());
+							  put(IntegerAxisIndexer.TYPE_EXPRESSION,Integer.class.getCanonicalName());
+							  put(DoubleAxisIndexer.TYPE_EXPRESSION,Double.class.getCanonicalName());
+							  put(TimestampAxisIndexer.TYPE_EXPRESSION, Timestamp.class.getCanonicalName());}};
 
 	protected Connection c;
 	protected String schema;
@@ -79,6 +95,8 @@ public class PreAggregate {
 	private HashMap<Long, AggrRec> internalHash = null;
 
 	protected AggregateAxis axis[];
+	private String aggregateColumn;
+	private String aggregateType;
 
 	public PreAggregate() {
 	}
@@ -88,6 +106,7 @@ public class PreAggregate {
 		_init(c,schema,table,label);
 	}
 
+	// Is this still used?
 	public PreAggregate(Connection c, String schema, String table, String label, HashMap<Long, AggrRec> internalHash)
 	throws SQLException {
 		_init(c,schema,table,label);
@@ -964,6 +983,8 @@ public class PreAggregate {
 		int dimensions = rs.getInt(3);
 		char keyFlag = rs.getString(4).charAt(0);
 		aggregateMask = rs.getInt(5);
+		aggregateColumn = rs.getString(7);
+		aggregateType = rs.getString(8);
 		AggregateAxis read_axis[] = new AggregateAxis[dimensions];
 
 		ResultSet rsi = SqlUtils.execute(c,
@@ -1097,7 +1118,29 @@ public class PreAggregate {
 			return typename.split("___")[1];
 		else return "";
 	}
-
+	
+	public Map<String,Class> getColumnTypes(int mask) throws ClassNotFoundException{
+		Class cl = Class.forName(className.get(aggregateType));
+		LinkedHashMap<String,Class> ret = new LinkedHashMap<String,Class>();
+		if((mask & this.aggregateMask & PreAggregate.AGGR_COUNT) != 0)
+			ret.put("countaggr", Long.class);
+		if((mask & this.aggregateMask & PreAggregate.AGGR_SUM) != 0)
+			ret.put("sumaggr", cl);
+		if((mask & this.aggregateMask & PreAggregate.AGGR_MIN) != 0)
+			ret.put("min", cl);
+		if((mask & this.aggregateMask & PreAggregate.AGGR_MAX) != 0)
+			ret.put("max", cl);
+		// check whether time is contained in the axis
+		for(AggregateAxis a : axis){
+			if(TimestampAxisIndexer.TYPE_EXPRESSION.equals(a.sqlType())){
+				// we have a time axis
+				ret.put("starttime", Timestamp.class);
+				ret.put("endtime", Timestamp.class);
+			} 
+		}
+		return ret;
+	}
+	
 	//	public static void main(String[] argv) {
 	//		qverbose = true;
 	//		AggrKeyDescriptor kd = new AggrKeyDescriptor();

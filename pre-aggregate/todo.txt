@@ -40,3 +40,11 @@ SELECT gkey,sum(A.countAggr) AS countAggr1,sum(B.countAggr) AS countAggr2
 	GROUP BY gkey 
 	order by gkey;  
 
+
+adding ordinal scale axis
+--------------------------
+so far all axis are defined on a continuous domain. In case of axis defined over 
+keywords/strings this is not the case anymore. Here the different strings have
+to be enumerated in the query rather defining a range.
+This is quite related to the previous topic and might be a solution on how to handle
+ordinal domains.

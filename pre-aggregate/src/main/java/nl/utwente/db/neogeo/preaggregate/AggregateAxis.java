@@ -25,6 +25,8 @@ class  IntegerAxisIndexer implements AxisIndexer {
 		private int high;
 		private int axisSize;
 		private int BASEBLOCKSIZE;
+		public final static String TYPE_EXPRESSION = "integer";
+		
 		
 		public IntegerAxisIndexer(Object low, Object high, Object BASEBLOCKSIZE) {
 			this.low = (low instanceof Integer) ? ((Integer)low).intValue() : Integer.parseInt(low.toString());
@@ -91,7 +93,7 @@ class  IntegerAxisIndexer implements AxisIndexer {
 		}
 		
 		public String sqlType() {
-			return "integer";
+			return TYPE_EXPRESSION ;
 		}
 		
 		public String sqlRangeFunction(Connection c, String fun) throws SQLException {
@@ -110,6 +112,8 @@ class  LongAxisIndexer implements AxisIndexer {
 		private long high;
 		private int    axisSize;
 		private long BASEBLOCKSIZE;
+		public final static String TYPE_EXPRESSION = "bigint";
+		
 		
 		public LongAxisIndexer(Object low, Object high, Object BASEBLOCKSIZE) {
 			this.low = (low instanceof Long) ? ((Long)low).longValue() : Long.parseLong(low.toString());
@@ -176,7 +180,7 @@ class  LongAxisIndexer implements AxisIndexer {
 		}
 		
 		public String sqlType() {
-			return "bigint";
+			return TYPE_EXPRESSION;
 		}
 		
 		public String sqlRangeFunction(Connection c, String fun) throws SQLException {
@@ -194,6 +198,8 @@ class  LongAxisIndexer implements AxisIndexer {
 		private double high;
 		private int    axisSize;
 		private double BASEBLOCKSIZE;
+		public final static String TYPE_EXPRESSION = "double precision";
+		
 		
 		public DoubleAxisIndexer(Object low, Object high, Object BASEBLOCKSIZE) {
 			this.low = (low instanceof Double) ? ((Double)low).doubleValue() : Double.parseDouble(low.toString());
@@ -261,7 +267,7 @@ class  LongAxisIndexer implements AxisIndexer {
 		}
 		
 		public String sqlType() {
-			return "double precision";
+			return TYPE_EXPRESSION;
 		}
 		
 		public String sqlRangeFunction(Connection c, String fun) throws SQLException {
@@ -281,6 +287,7 @@ class  TimestampAxisIndexer implements AxisIndexer {
 		private long high;
 		private int  axisSize;
 		private long BASEBLOCKSIZE;
+		public final static String TYPE_EXPRESSION = "timestamp with time zone";
 		
 		public TimestampAxisIndexer(Object low, Object high, Object BASEBLOCKSIZE) {
 			this.low =  (low instanceof Timestamp) ? ((Timestamp)low).getTime() : Long.parseLong(low.toString());
@@ -350,7 +357,7 @@ class  TimestampAxisIndexer implements AxisIndexer {
 		}
 		
 		public String sqlType() {
-			return "timestamp with time zone";
+			return TYPE_EXPRESSION;
 		}
 		
 		public String OLDsqlRangeFunction(Connection c, String fun) {
