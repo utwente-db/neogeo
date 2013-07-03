@@ -1,24 +1,72 @@
 package nl.utwente.db.neogeo.preaggregate;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Properties;
 
 public class Test {
+	private static final String CONFIG_FILENAME = "database_postgres.properties";
+	private String hostname;
+	private String port;
+	private String username;
+	private String password;
+	private String database;
 
-	public static void main(String[] argv) {
-		System.out.println("Test pre-aggregate package");
-		Connection connection = null;
+	private void readProperties() {
+		Properties prop = new Properties();
 		try {
-			Class.forName("org.postgresql.Driver");
-			connection = DriverManager.getConnection(
-					"jdbc:postgresql://silo2.ewi.utwente.nl:5432/twitter","flokstra", "twitter");
-		} catch (Exception e) {
+			InputStream is =
+				this.getClass().getClassLoader().getResourceAsStream(CONFIG_FILENAME);
+			prop.load(is);
+			hostname = prop.getProperty("hostname");
+			port = prop.getProperty("port");
+			username = prop.getProperty("username");
+			password = prop.getProperty("password");
+			database = prop.getProperty("database");
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public Connection getConnection(){
+		try {
+			Class.forName("org.postgresql.Driver");
+		} catch (ClassNotFoundException e) {
+			System.out.println("Where is your PostgreSQL JDBC Driver? "
+					+ "Include in your library path!");
+			e.printStackTrace();
+			return null;
+		}
+		System.out.println("PostgreSQL JDBC Driver Registered!");
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(
+					"jdbc:postgresql://"+hostname+":"+port+"/"+database, username, password);
+		} catch (SQLException e) {
+			System.out.println("Connection Failed! Check output console");
+			e.printStackTrace();
+			return null;
+
+		}
+		if (connection != null) {
+			System.out.println("You made it, take control your database now!");
+		} else {
+			System.out.println("Failed to make connection!");
+		}
+		return connection;
+	}
+	
+	public static void main(String[] argv) {
+		System.out.println("Test pre-aggregate package");
+		Test t = new Test();
+		t.readProperties();
+		Connection connection = t.getConnection();
 		runTest( connection );
 	}
 
