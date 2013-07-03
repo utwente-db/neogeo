@@ -108,22 +108,17 @@ public class AggregationDataStore extends ContentDataStore {
 
 	@Override
 	protected List<Name> createTypeNames() throws IOException	{
-		LOGGER.severe(" typenames start!");
 		List<Name> ret = null;
 		getConnection();
 		try {
-			LOGGER.severe(" typenames start 1!"+schema);
 			List<String> names = PreAggregate.availablePreAggregates(con,schema);
-			LOGGER.severe(" typenames start 2!"+names.size());
 			ret = new Vector<Name>();
 			for(String name : names){
 				ret.add(new NameImpl(NAME+"_"+name));
 			}
 		} catch (SQLException e) {
-			LOGGER.severe("Connection to database was not successful!");
 			e.printStackTrace();
 		}
-		LOGGER.severe(" typenames created: #entries"+ret.size());
 		return ret;
 	}
 
