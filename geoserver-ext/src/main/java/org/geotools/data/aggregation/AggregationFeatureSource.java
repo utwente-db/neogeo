@@ -1,11 +1,15 @@
 package org.geotools.data.aggregation;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
+
+import nl.utwente.db.neogeo.preaggregate.PreAggregate;
 
 import org.geotools.data.FeatureReader;
 import org.geotools.data.Join;
@@ -45,10 +49,20 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 	private int crsNumber = -1;
 	private int totalCnt = -1;
 	private Object totalBounds = null;
-
+	private PreAggregate agg = null;
+	
 	public AggregationFeatureSource(ContentEntry entry, Query query) {
 		super(entry,query);
+		String typename = entry.getTypeName();
+		LOGGER.severe("TypeName: "+typename);
+		try {
+			AggregationDataStore data = getDataStore();
+			agg = data.createPreAggregate(typename);
+		} catch (SQLException e) {
+			LOGGER.severe("SQLException for creating the PreAggregate object");
+		}
 	}
+	
 	/**
 	 * Access parent AggregationDataStore
 	 */
@@ -180,15 +194,27 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 		SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
 		builder.setName( entry.getName() );
 		AggregationDataStore data = this.getDataStore();
-		if(data.hasOutputCount())
-			builder.add("cnt", Integer.class);
-		if(data.hasOutputSum())
-			builder.add("sum", Double.class);
-		if(data.hasOutputMin())
-			builder.add("min", Double.class);
-		if(data.hasOutputMax())
-			builder.add("max", Double.class);
-		builder.add("time",Timestamp.class);
+		try {
+			Map<String, Class> h = agg.getColumnTypes(data.getMask());
+			for(Entry<String,Class> en : h.entrySet()){
+				builder.add(en.getKey(), en.getValue());
+			}
+		} catch (ClassNotFoundException e) {
+			LOGGER.severe("transform ClassNotFoundException int a IOException");
+			throw new IOException(e.getMessage());
+			//e.printStackTrace();
+		}
+//		if(data.hasOutputCount(agg.getAggregateMask()))
+//			builder.add("cnt", Integer.class);
+//		if(data.hasOutputSum(agg.getAggregateMask()))
+//			builder.add("sum", Double.class);
+//		if(data.hasOutputMin(agg.getAggregateMask()))
+//			builder.add("min", Double.class);
+//		if(data.hasOutputMax(agg.getAggregateMask()))
+//			builder.add("max", Double.class);
+//		builder.add("time",Timestamp.class);
+		
+		//TODO move this to PreAggregate
 		CRSAuthorityFactory   factory = CRS.getAuthorityFactory(true);
 		CoordinateReferenceSystem crs = DefaultGeographicCRS.WGS84; // <- Coordinate reference system
 		try {

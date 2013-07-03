@@ -32,6 +32,7 @@ public class AggregationDataStoreFactory implements DataStoreFactorySpi {
     }));
     public static final Param X_SIZE_PARAM = new Param("xSize", Integer.class, "number of grid cells in x direction", true, 10);
     public static final Param Y_SIZE_PARAM = new Param("ySize", Integer.class, "number of grid cells in y direction", true, 10);
+    public static final Param TIME_SIZE_PARAM = new Param("timeSize", Integer.class, "number of bins for the time dimension", true, 1);
     public static final Param CNT_AGG_PARAM = new Param("count", Boolean.class, "output count aggregate", true, true);
     public static final Param SUM_AGG_PARAM = new Param("sum", Boolean.class, "output sum aggregate", true, false);
     public static final Param MIN_AGG_PARAM = new Param("minimum", Boolean.class, "output min aggregate", true, false);
@@ -52,7 +53,7 @@ public class AggregationDataStoreFactory implements DataStoreFactorySpi {
     {
         return (new Param[] {
             HOSTNAME_PARAM, PORT_PARAM, SCHEMA_PARAM, DATABASE_PARAM, USERNAME_PARAM, PASSWORD_PARAM,
-            X_SIZE_PARAM,Y_SIZE_PARAM,CNT_AGG_PARAM,SUM_AGG_PARAM,MIN_AGG_PARAM,MAX_AGG_PARAM
+            X_SIZE_PARAM,Y_SIZE_PARAM,TIME_SIZE_PARAM,CNT_AGG_PARAM,SUM_AGG_PARAM,MIN_AGG_PARAM,MAX_AGG_PARAM
         });
     }
 
@@ -110,6 +111,7 @@ public class AggregationDataStoreFactory implements DataStoreFactorySpi {
         String password = (String)PASSWORD_PARAM.lookUp(params);
         int xSize = ((Integer)X_SIZE_PARAM.lookUp(params)).intValue();
         int ySize = ((Integer)Y_SIZE_PARAM.lookUp(params)).intValue();
+        int timeSize = ((Integer)TIME_SIZE_PARAM.lookUp(params)).intValue();
         boolean cnt = ((Boolean)CNT_AGG_PARAM.lookUp(params)).booleanValue();
         boolean sum = ((Boolean)SUM_AGG_PARAM.lookUp(params)).booleanValue();
         boolean min = ((Boolean)MAX_AGG_PARAM.lookUp(params)).booleanValue();
@@ -118,7 +120,7 @@ public class AggregationDataStoreFactory implements DataStoreFactorySpi {
         mask += sum ? PreAggregate.AGGR_SUM:0;
         mask += min ? PreAggregate.AGGR_MIN:0;
         mask += max ? PreAggregate.AGGR_MAX:0;
-        return new AggregationDataStore(hostname, port, schema, database, username, password, xSize, ySize, mask);
+        return new AggregationDataStore(hostname, port, schema, database, username, password, xSize, ySize, timeSize, mask);
     }
 
     public DataStore createNewDataStore(Map params) throws IOException {

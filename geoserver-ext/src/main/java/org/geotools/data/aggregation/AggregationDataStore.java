@@ -47,6 +47,7 @@ public class AggregationDataStore extends ContentDataStore {
 	private String schema;
 	private int xSize;
 	private int ySize;
+	private int timeSize;
 	private int mask;
 
 	//	/**
@@ -57,7 +58,7 @@ public class AggregationDataStore extends ContentDataStore {
 	//				0, 0);
 	//	}
 
-	public AggregationDataStore(String hostname, int port, String schema, String database, String username, String password, int xSize, int ySize, int mask){
+	public AggregationDataStore(String hostname, int port, String schema, String database, String username, String password, int xSize, int ySize, int timeSize, int mask){
 		this.hostname = hostname; 
 		this.port = port;
 		this.username = username;
@@ -66,6 +67,7 @@ public class AggregationDataStore extends ContentDataStore {
 		this.database = database;
 		this.xSize = xSize;
 		this.ySize = ySize;
+		this.timeSize = timeSize;
 		this.mask = mask;
 		LOGGER.severe("AggregationDataStore created!!! ###########");
 	}
@@ -169,19 +171,35 @@ public class AggregationDataStore extends ContentDataStore {
 	}
 
 	public boolean hasOutputCount(){
-		return (mask & PreAggregate.AGGR_COUNT)==PreAggregate.AGGR_COUNT;
+		return hasOutputCount(PreAggregate.AGGR_ALL);
+	}
+
+	public boolean hasOutputCount(int mask2){
+		return (mask & mask2 & PreAggregate.AGGR_COUNT)==PreAggregate.AGGR_COUNT;
 	}
 
 	public boolean hasOutputSum(){
-		return (mask & PreAggregate.AGGR_SUM)==PreAggregate.AGGR_SUM;
+		return hasOutputSum(PreAggregate.AGGR_ALL);
+	}
+	
+	public boolean hasOutputSum(int mask2){
+		return (mask & mask2 & PreAggregate.AGGR_SUM)==PreAggregate.AGGR_SUM;
 	}
 
 	public boolean hasOutputMin(){
-		return (mask & PreAggregate.AGGR_MIN)==PreAggregate.AGGR_MIN;
+		return hasOutputMin(PreAggregate.AGGR_ALL);
+	}
+
+	public boolean hasOutputMin(int mask2){
+		return (mask & mask2 & PreAggregate.AGGR_MIN)==PreAggregate.AGGR_MIN;
 	}
 
 	public boolean hasOutputMax(){
-		return (mask & PreAggregate.AGGR_MAX)==PreAggregate.AGGR_MAX;
+		return hasOutputMax(PreAggregate.AGGR_ALL);
+	}
+	
+	public boolean hasOutputMax(int mask2){
+		return (mask & mask2 & PreAggregate.AGGR_MAX)==PreAggregate.AGGR_MAX;
 	}
 
 	public int getTotalCount(String typeName) {
@@ -235,5 +253,19 @@ public class AggregationDataStore extends ContentDataStore {
 
 	public int getYSize(){
 		return ySize;
+	}
+
+	public int getTimeSize(){
+		return timeSize;
+	}
+
+	public int getMask(){
+		return mask;
+	}
+
+	public PreAggregate createPreAggregate(String typename) throws SQLException{
+		String tablename = PreAggregate.getTablenameFromTypeName(typename);
+		String label = PreAggregate.getLabelFromTypeName(typename);
+		return new PreAggregate(getConnection(),schema,tablename,label);
 	}
 }
