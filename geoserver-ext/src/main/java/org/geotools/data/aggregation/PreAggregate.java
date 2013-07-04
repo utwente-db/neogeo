@@ -35,16 +35,18 @@ public class PreAggregate extends
 nl.utwente.db.neogeo.preaggregate.PreAggregate {
 	private static final Logger LOGGER = Logger.getLogger("org.geotools.data.aggregation.PreAggregate");
 	private static final String NAME = "aggregate";
+	
 	// TODO other type mappings have to be added
 	private static final HashMap<String, String> className = new HashMap<String, String>()
 	{{put(LongAxisIndexer.TYPE_EXPRESSION,Long.class.getCanonicalName());
 	put(IntegerAxisIndexer.TYPE_EXPRESSION,Integer.class.getCanonicalName());
 	put(DoubleAxisIndexer.TYPE_EXPRESSION,Double.class.getCanonicalName());
 	put(TimestampAxisIndexer.TYPE_EXPRESSION, Timestamp.class.getCanonicalName());}};
+	
 	private static final String NATIVE_SRS_QUERY = "SELECT ST_SRID(COLUMN) FROM TABLE limit 1";
 	// first ? is the string tablename+"_"+label
 	private static final String GEOMETRY_COLUMN_QUERY = "SELECT tablename, substr(columnexpression,6,length(columnexpression)-6) FROM pre_aggregate_axis where tablename || '___' ||label=? and substr(columnexpression,1,4)='ST_X'";
-	private static final String BOUNDS_QUERY = "SELECT tablename, substr(columnexpression,1,4), low, high FROM pre_aggregate_axis where tablename || '___' ||label=? and substr(columnexpression,1,3)='ST_' order by columnexpression";
+//	private static final String BOUNDS_QUERY = "SELECT tablename, substr(columnexpression,1,4), low, high FROM pre_aggregate_axis where tablename || '___' ||label=? and substr(columnexpression,1,3)='ST_' order by columnexpression";
 	
 	private int crsNumber = -1;
 	
@@ -53,34 +55,32 @@ nl.utwente.db.neogeo.preaggregate.PreAggregate {
 		super(c,schema,table,label);
 	}
 
-	public ReferencedEnvelope getReferencedEnvelope(ContentEntry entry, CoordinateReferenceSystem coordinateReferenceSystem) {
-		ReferencedEnvelope bounds = null;
-		String typename = entry.getTypeName();
-		typename = stripTypeName(typename);
-		PreparedStatement stmt1;
-		try {
-			Connection con = ((AggregationDataStore)entry.getDataStore()).getConnection();
-			stmt1 = con.prepareStatement(BOUNDS_QUERY);
-			stmt1.setString(1, typename);
-			LOGGER.finest("bounds query:"+stmt1.toString());
-			stmt1.execute();
-			ResultSet rs1 = stmt1.getResultSet();
-			rs1.next();
-			double x1 = Double.valueOf(rs1.getString("low"));
-			double x2 = Double.valueOf(rs1.getString("high"));
-			rs1.next();
-			double y1 = Double.valueOf(rs1.getString("low"));
-			double y2 = Double.valueOf(rs1.getString("high"));
-			// parameters double x1, double x2, double y1, double y2, CoordinateReferenceSystem crs
-			bounds = new ReferencedEnvelope(x1,x2,y1,y2, coordinateReferenceSystem );
-			rs1.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}			
-		return bounds;
+	public Area getArea() {
+		double x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+		for(AggregateAxis a : axis){
+			if(a.columnExpression().startsWith("ST_X")){
+				x1 = (Double) a.low();
+				x2 = (Double) a.high();
+			} else if(a.columnExpression().startsWith("ST_Y")){
+					y1 = (Double) a.low();
+					y2 = (Double) a.high();
+				}
+		}
+		return new Area(x1,x2,y1,y2);
 	}
 
+	public long[] getTimeBounds(){
+		long[] ret = new long[2];
+		for(AggregateAxis a : axis){
+			if(a.sqlType().equals(TimestampAxisIndexer.TYPE_EXPRESSION)){
+				ret[0] = ((Timestamp) a.low()).getTime();
+				ret[1] = ((Timestamp) a.high()).getTime();
+				break;
+			}
+		}
+		return ret;
+	}
+	
 	static public List<String> availablePreAggregates(Connection c, String schema) throws SQLException{
 		if (!SqlUtils.existsTable(c, schema, PreAggregate.aggregateRepositoryName)) return null;
 		String query = "select tablename,label from "+aggregateRepositoryName+";";

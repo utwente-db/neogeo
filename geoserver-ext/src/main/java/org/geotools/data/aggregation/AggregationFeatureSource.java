@@ -45,7 +45,6 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 	private static final Logger LOGGER = Logger.getLogger("org.geotools.data.aggregation.AggregationFeatureSource");
 
 	private int totalCnt = -1;
-	private Object totalBounds = null;
 	private PreAggregate agg = null;
 	
 	public AggregationFeatureSource(ContentEntry entry, Query query) {
@@ -81,32 +80,29 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 	 */
 	protected ReferencedEnvelope getBoundsInternal(Query query) throws IOException {
 		LOGGER.severe("filter: "+query.getFilter().getClass().getCanonicalName());
-		CoordinateReferenceSystem crs = query.getCoordinateSystem();
-		if (crs!=null) LOGGER.severe("query CRS: "+crs.getAlias());
-
-
-		ReferencedEnvelope bounds = agg.getReferencedEnvelope(entry, getSchema().getCoordinateReferenceSystem());
-
+		Area a = agg.getArea();
+		ReferencedEnvelope bounds = new ReferencedEnvelope(a.getLowX(),a.getHighX(),a.getLowY(),a.getHighY(),
+								getSchema().getCoordinateReferenceSystem());
 		return bounds;
 	}
 
 	protected int getCountInternal(Query query) throws IOException {
-		int count = -1;
-		if (query.getFilter() == Filter.INCLUDE) {
+//		int count = -1;
+//		if (query.getFilter() == Filter.INCLUDE) {
 			if(totalCnt==-1) 
-				totalCnt = this.getDataStore().getTotalCount(query.getTypeName());
-			count = totalCnt;
-		}else {
-			ContentFeatureCollection cfc = this.getFeatures(query);
-			count = 0;
-			SimpleFeatureIterator iter = cfc.features();
-			while(iter.hasNext()) {
-				iter.next();
-				count++;
-			}
-			iter.close();
-		}
-		return count;
+				totalCnt = this.getDataStore().getTotalCount();
+//			count = totalCnt;
+//		}else {
+//			ContentFeatureCollection cfc = this.getFeatures(query);
+//			count = 0;
+//			SimpleFeatureIterator iter = cfc.features();
+//			while(iter.hasNext()) {
+//				iter.next();
+//				count++;
+//			}
+//			iter.close();
+//		}
+		return totalCnt;
 	}
 
 	protected FeatureReader<SimpleFeatureType, SimpleFeature> getReaderInternal(Query query)
@@ -153,7 +149,7 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 		// propertyNames [TIME]
 		// TODO handle IncludeFilter
 		//Area a = AggregationUtilities.analyseFilterArea(query.getFilter());
-		AggregationFilterVisitor visitor = new AggregationFilterVisitor();
+		AggregationFilterVisitor visitor = new AggregationFilterVisitor(agg);
 		query.getFilter().accept(visitor, null);
 		LOGGER.severe("query parsing valid? "+visitor.isValid());
 //		if(visitor.isValid()){

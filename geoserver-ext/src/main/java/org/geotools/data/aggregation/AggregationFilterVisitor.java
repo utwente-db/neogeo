@@ -68,7 +68,13 @@ public class AggregationFilterVisitor extends DefaultFilterVisitor {
 	private long startTime = -1;
 	private long endTime = -1;
 	private boolean valid = true;
+	private PreAggregate agg;
 
+	public AggregationFilterVisitor(PreAggregate agg){
+		super();
+		this.agg = agg;
+	}
+	
 	@Override
 	public Object visit(PropertyIsBetween filter, Object data) {
 		LOGGER.log(level, filter.getClass().getCanonicalName());
@@ -123,20 +129,23 @@ public class AggregationFilterVisitor extends DefaultFilterVisitor {
 		}
 		return super.visit(expression,data);
 	}
-
-	@Override
-	public Object visit(IncludeFilter filter, Object data) {
-		LOGGER.log(level, filter.getClass().getCanonicalName());
-		valid = true;
-		return super.visit(filter, data);
-	}
-
 	
 	private Area updateBounds(Area a, Area b) {
 		if(a==null) return b;
 		if(b==null) return a;
 		a.updateBounds(b);
 		return a;
+	}
+	
+	@Override
+	public Object visit(IncludeFilter filter, Object data) {
+		LOGGER.log(level, filter.getClass().getCanonicalName());
+		area = agg.getArea();
+		long[] timebounds = agg.getTimeBounds();
+		startTime = timebounds[0];
+		endTime = timebounds[1];
+		valid = true;
+		return super.visit(filter, data);
 	}
 
 	// remaining filters are more or less ignored

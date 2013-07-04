@@ -3,10 +3,7 @@ package org.geotools.data.aggregation;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -16,24 +13,13 @@ import org.geotools.data.store.ContentDataStore;
 import org.geotools.data.store.ContentEntry;
 import org.geotools.data.store.ContentFeatureSource;
 import org.geotools.feature.NameImpl;
-import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.feature.type.Name;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 // Referenced classes of package org.geotools.data.aggregation:
 //            AggregationFeatureSource
 
 public class AggregationDataStore extends ContentDataStore {
-
 	private static final Logger LOGGER = Logger.getLogger("org.geotools.data.aggregation.AggregationDataStore");
-	//private static final String TYPE_NAMES_QUERY = "select tablename,label from pre_aggregate";
-	// first ? is the column name of the geometry column
-	// second ? is the table name of the indexed table
-//	private static final String NATIVE_SRS_QUERY = "SELECT ST_SRID(COLUMN) FROM TABLE limit 1";
-//	// first ? is the string tablename+"_"+label
-//	private static final String GEOMETRY_COLUMN_QUERY = "SELECT tablename, substr(columnexpression,6,length(columnexpression)-6) FROM pre_aggregate_axis where tablename || '___' ||label=? and substr(columnexpression,1,4)='ST_X'";
-//	private static final String BOUNDS_QUERY = "SELECT tablename, substr(columnexpression,1,4), low, high FROM pre_aggregate_axis where tablename || '___' ||label=? and substr(columnexpression,1,3)='ST_' order by columnexpression";
-//	//private static final String TOTAL_COUNT_QUERY = null;
 
 	private String hostname;
 	private int port;
@@ -47,13 +33,6 @@ public class AggregationDataStore extends ContentDataStore {
 	private int timeSize;
 	private int mask;
 
-	//	/**
-	//	 * @deprecated Use {@link #AggregationDataStore(String,int,String,String,String,int,int,long)} instead
-	//	 */
-	//	public AggregationDataStore(String hostname, int port, String username, String password, String database){
-	//		this(hostname, port, username, password, database, 0,
-	//				0, 0);
-	//	}
 
 	public AggregationDataStore(String hostname, int port, String schema, String database, String username, String password, int xSize, int ySize, int timeSize, int mask){
 		this.hostname = hostname; 
@@ -159,50 +138,10 @@ public class AggregationDataStore extends ContentDataStore {
 		return (mask & mask2 & PreAggregate.AGGR_MAX)==PreAggregate.AGGR_MAX;
 	}
 
-	public int getTotalCount(String typeName) {
-		//		int count = -1;
-		//		getConnection();
-		//		Statement stmt;
-		//		try {
-		//			stmt = con.createStatement();
-		//			stmt.execute(TOTAL_COUNT_QUERY);
-		//			ResultSet rs = stmt.getResultSet();
-		//			while(rs.next()){
-		//				count = rs.getInt(1);
-		//			}
-		//		} catch (SQLException e) {
-		//			e.printStackTrace();
-		//		}
-		//		return count;
+	public int getTotalCount() {
 		return xSize*ySize;
 	}
 
-//	public ReferencedEnvelope getReferencedEnvelope(ContentEntry entry, CoordinateReferenceSystem coordinateReferenceSystem) {
-//		ReferencedEnvelope bounds = null;
-//		String typename = entry.getTypeName();
-//		typename = this.stripTypeName(typename);
-//		PreparedStatement stmt1;
-//		try {
-//			stmt1 = con.prepareStatement(BOUNDS_QUERY);
-//			stmt1.setString(1, typename);
-//			LOGGER.finest("bounds query:"+stmt1.toString());
-//			stmt1.execute();
-//			ResultSet rs1 = stmt1.getResultSet();
-//			rs1.next();
-//			double x1 = Double.valueOf(rs1.getString("low"));
-//			double x2 = Double.valueOf(rs1.getString("high"));
-//			rs1.next();
-//			double y1 = Double.valueOf(rs1.getString("low"));
-//			double y2 = Double.valueOf(rs1.getString("high"));
-//			// parameters double x1, double x2, double y1, double y2, CoordinateReferenceSystem crs
-//			bounds = new ReferencedEnvelope(x1,x2,y1,y2, coordinateReferenceSystem );
-//			rs1.close();
-//		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}			
-//		return bounds;
-//	}
 
 	public int getXSize(){
 		return xSize;
