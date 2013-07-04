@@ -17,6 +17,7 @@ public class AggregateAxis {
 		public String   storageFormat(Object o);
 		public String	sqlType();
 		public String   sqlRangeFunction(Connection c, String name) throws SQLException ;
+		public AxisSplitDimension splitAxis(Object low, Object high, int cnt);
 	}
 	
 public class IntegerAxisIndexer implements AxisIndexer {
@@ -102,6 +103,38 @@ public class IntegerAxisIndexer implements AxisIndexer {
 							"", "\tRETURN FLOOR((v - " + this.low + ") / " + this.BASEBLOCKSIZE + ");\n"
 
 					);	
+		}
+
+		public AxisSplitDimension splitAxis(Object low, Object high, int cnt) {
+			if(cnt<=0 || low==null || high==null) return null;
+			int start = (Integer) low;
+			int end = (Integer) high;
+			if(end<=start) return null;
+			if(start>(Integer)high() || end<(Integer)low())
+				// query out of range of the available data
+				return null;
+			int startl = Math.round(start/BASEBLOCKSIZE);
+			int endl = Math.round(end/BASEBLOCKSIZE);
+		
+			// in the case of a split along a single chunk, no alignment with the factor is possible!
+			if(cnt==1) return new AxisSplitDimension((int) startl*BASEBLOCKSIZE, (int)endl*BASEBLOCKSIZE, 1);
+			
+			double delta = Math.ceil( (end-start)/((double)(cnt-1))/BASEBLOCKSIZE)*BASEBLOCKSIZE;
+			// this is the case where the query is inside the available data
+			int _start = (int) (Math.floor(start/delta)*delta);
+			int _end = (int) (Math.ceil(end/delta)*delta);
+			assert((_end-_start)/((int)delta)==cnt); 
+			while(_start<(Integer)low() && cnt>0){
+				_start += delta;
+				cnt--;
+			}
+			while(_end>(Integer)high() && cnt>0){
+				_end -= delta;
+				cnt--;
+			}
+			if(cnt>0)
+				return new AxisSplitDimension(_start, _start+((int)delta), cnt);
+			return null;
 		}
 		
 	}
@@ -189,6 +222,39 @@ public class  LongAxisIndexer implements AxisIndexer {
 							"", "\tRETURN " + SqlUtils.gen_DIV(c,"v - " + this.low, ""+this.BASEBLOCKSIZE) + ";"
 					);	
 		}
+
+		public AxisSplitDimension splitAxis(Object low, Object high, int cnt) {
+			if(cnt<=0 || low==null || high==null) return null;
+			long start = (Long) low;
+			long end = (Long) high;
+			if(end<=start) return null;
+			if(start>(Long)high() || end<(Long)low())
+				// query out of range of the available data
+				return null;
+			long startl = Math.round(start/BASEBLOCKSIZE);
+			long endl = Math.round(end/BASEBLOCKSIZE);
+		
+			// in the case of a split along a single chunk, no alignment with the factor is possible!
+			if(cnt==1) return new AxisSplitDimension((long) startl*BASEBLOCKSIZE, (long)endl*BASEBLOCKSIZE, 1);
+			
+			double delta = Math.ceil( (end-start)/((double)(cnt-1))/BASEBLOCKSIZE)*BASEBLOCKSIZE;
+			// this is the case where the query is inside the available data
+			long _start = (long) (Math.floor(start/delta)*delta);
+			long _end = (long) (Math.ceil(end/delta)*delta);
+			assert((_end-_start)/((long)delta)==cnt); 
+			while(_start<(Integer)low() && cnt>0){
+				_start += delta;
+				cnt--;
+			}
+			while(_end>(Integer)high() && cnt>0){
+				_end -= delta;
+				cnt--;
+			}
+			if(cnt>0)
+				return new AxisSplitDimension(_start, _start+((long)delta), cnt);
+			return null;
+		}
+
 		
 	}
 	
@@ -277,6 +343,39 @@ public class DoubleAxisIndexer implements AxisIndexer {
 
 					);	
 		}
+
+		public AxisSplitDimension splitAxis(Object low, Object high, int cnt) {
+			if(cnt<=0 || low==null || high==null) return null;
+			double start = (Double) low;
+			double end = (Double) high;
+			if(end<=start) return null;
+			
+			// resolve double representation errors
+			long startl = Math.round(start/BASEBLOCKSIZE);
+			long endl = Math.round(end/BASEBLOCKSIZE);
+			if(start>this.high || end<this.low)
+				// query out of range of the available data
+				return null;
+			// in the case of a split along a single chunk, no alignment with the factor is possible!
+			if(cnt==1) return new AxisSplitDimension((double) startl*BASEBLOCKSIZE, (double)endl*BASEBLOCKSIZE, 1);
+			double 	deltal = Math.ceil((endl-startl)/(cnt-1));
+			// this is the case where the query is inside the available data
+			double _startl = (double) (Math.floor(startl/deltal))*deltal;
+			double _endl = (double) (Math.ceil(endl/deltal))*deltal;
+			// assert((_end-_start)/delta==cnt+1); 
+			while(_startl<this.low/BASEBLOCKSIZE && cnt>0){
+				_startl += deltal;
+				cnt--;
+			}
+			while(_endl>this.high/BASEBLOCKSIZE && cnt>0){
+				_endl -= deltal;
+				cnt--;
+			}
+			if(cnt>0)
+				return new AxisSplitDimension(_startl*BASEBLOCKSIZE, (_startl+deltal)*BASEBLOCKSIZE, cnt);
+			return null;
+		}
+
 		
 	}
 	
@@ -384,6 +483,45 @@ public class  TimestampAxisIndexer implements AxisIndexer {
 
 					);	
 		}
+
+		public AxisSplitDimension splitAxis(Object low, Object high, int cnt) {
+			if(cnt<=0 || low==null || high==null) return null;
+			long start = ((Timestamp) low).getTime();
+			long end = ((Timestamp) high).getTime();
+			if(end<=start) return null;
+			if(start>this.high || end<this.low)
+				// query out of range of the available data
+				return null;
+			long startl = start/BASEBLOCKSIZE;
+			long endl = end/BASEBLOCKSIZE;
+		
+			// in the case of a split along a single chunk, no alignment with the factor is possible!
+			if(cnt==1) return new AxisSplitDimension(new Timestamp(startl*BASEBLOCKSIZE), new Timestamp(endl*BASEBLOCKSIZE), 1);
+			
+			
+			long deltal = (endl-startl)/(cnt-1);
+			if((endl-startl)%(cnt-1) > 0) deltal++;
+			//delta = delta*BASEBLOCKSIZE;
+			
+			// this is the case where the query is inside the available data
+			long _start = (startl/deltal)*deltal;
+			long _end = endl/deltal;
+			if(endl%deltal >0) _end++;
+			_end = _end*deltal;
+			
+			while(_start<this.low/BASEBLOCKSIZE && cnt>0){
+				_start += deltal;
+				cnt--;
+			}
+			while(_end>this.high/BASEBLOCKSIZE && cnt>0){
+				_end -= deltal;
+				cnt--;
+			}
+			if(cnt>0)
+				return new AxisSplitDimension(new Timestamp(_start*BASEBLOCKSIZE), new Timestamp((_start+deltal)*BASEBLOCKSIZE),cnt);
+			return null;
+		}
+
 		
 		
 	}
@@ -545,6 +683,12 @@ public class  TimestampAxisIndexer implements AxisIndexer {
 		return indexer.sqlRangeFunction(c, fun);	
 	}
 	
+	/**
+	 * function does not take care of baseblocksize for the boundatries of the split
+	 * and the delta/chunk
+	 * @param n
+	 * @return
+	 */
 	public Object[][] split(int n) {
 		Object[][] res = new Object[n][2];
 		
@@ -562,8 +706,16 @@ public class  TimestampAxisIndexer implements AxisIndexer {
 		}
 		return res;
 	}
+	
 	public String toString() {
 		return "AggregateAxis(colExpr="+columnExpression+", type="+sqlType()+", low="+low()+",high="+high()+", BBS="+indexer.BASEBLOCKSIZE()+", N="+N()+",axisSize="+axisSize()+", bits="+bits()+", maxLevels="+maxLevels()+")";
 	}
-	
+
+	public AxisSplitDimension splitAxis(Object low, Object high, int cnt) {
+		if ( indexer != null )
+			return indexer.splitAxis(low, high, cnt); 
+		else
+			throw new NullPointerException();
+	}
+
 }
