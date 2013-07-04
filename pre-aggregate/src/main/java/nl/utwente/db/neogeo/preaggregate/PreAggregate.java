@@ -961,9 +961,6 @@ public class PreAggregate {
 				" WHERE tableName=\'"+tableName+"\' AND label=\'"+label+"\';"
 		);
 		
-//		System.out.println("resultset "+rs+"    "+"SELECT " + "*" +
-//				" FROM " + schema + "." + aggregateRepositoryName +
-//				" WHERE tableName=\'"+tableName+"\' AND label=\'"+label+"\';");
 		if (!rs.next())
 			return false;
 		int dimensions = rs.getInt(3);
