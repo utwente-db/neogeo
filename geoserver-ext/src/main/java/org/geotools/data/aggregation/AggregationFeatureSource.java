@@ -1,6 +1,7 @@
 package org.geotools.data.aggregation;
 
 import java.io.IOException;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
@@ -8,6 +9,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
+
+import nl.utwente.db.neogeo.preaggregate.AggregateAxis;
 
 import org.geotools.data.FeatureReader;
 import org.geotools.data.Join;
@@ -46,6 +49,19 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 
 	private int totalCnt = -1;
 	private PreAggregate agg = null;
+	AggregateAxis x;
+	AggregateAxis y;
+	AggregateAxis time;
+
+	private int xSize;
+
+	private int ySize;
+
+	private int timeSize;
+
+	private int cntAxis;
+
+	private int[] iv_count;
 	
 	public AggregationFeatureSource(ContentEntry entry, Query query) {
 		super(entry,query);
@@ -59,6 +75,25 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 			LOGGER.severe("SQLException for creating the PreAggregate object:"+e.getMessage());
 			e.printStackTrace();
 		}
+		AggregationDataStore data = this.getDataStore();
+		AggregateAxis x = agg.getXaxis();
+		AggregateAxis y = agg.getYaxis();
+		AggregateAxis time = agg.getTimeAxis();
+		
+		xSize = data.getXSize();
+        ySize = data.getYSize();
+        timeSize = data.getTimeSize();
+        cntAxis = agg.getAxis().length;
+        iv_count = new int[cntAxis];
+        for(int i=0; i<cntAxis; i++){
+        	if(agg.getAxis()[i]==x)
+        		iv_count[i] = xSize;
+        	else if(agg.getAxis()[i]==y)
+        		iv_count[i] = ySize;
+        	else if(agg.getAxis()[i]==time)
+        		iv_count[i] = timeSize;
+        }
+       
 	}
 	
 	/**
@@ -159,7 +194,8 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 			long startTime = visitor.getStartTime();
 			long endTime = visitor.getEndTime();
 			LOGGER.severe("Parsed startTime:"+startTime+"    endTime:"+endTime);
-			return new AggregationFeatureReader( getState(), a );
+			ResultSet rs = performQuery(a,startTime,endTime);
+			return new AggregationFeatureReader( getState(), rs );
 //		} else 
 //			return null;
 	}
@@ -229,4 +265,35 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 		return SCHEMA;
 	}
 
+	private ResultSet performQuery(Area area, long start, long end){
+		
+		
+        // number of basic units to be split up in boxes in the map
+        double origDiffX = (area.getHighX()-area.getLowX())/((Double)x.BASEBLOCKSIZE());
+        // the goal is to have xSize boxes thus have a look how many baseboxsizes 
+        // can be used per box
+        double grid_deltaX = Math.round(origDiffX/((double) xSize))*((Double)x.BASEBLOCKSIZE());
+        
+        // determine the start of the first box 
+        double startX = Math.ceil(area.getLowX()/DFLT_BASEBOXSIZE)* DFLT_BASEBOXSIZE;
+        // determine the number of boxes which can be displayed
+        double endX = Math.floor(area.getHighX()/DFLT_BASEBOXSIZE)* DFLT_BASEBOXSIZE;
+        xSize = grid_deltaX==0 ? 0 : (int) Math.floor((endX - startX)/grid_deltaX);
+        
+        double origDiffY = (area.getHighY()-area.getLowY())/DFLT_BASEBOXSIZE;
+        double grid_deltaY = Math.round(origDiffY/((double) ySize))*DFLT_BASEBOXSIZE;
+        // determine the start of the first box 
+        double startY = Math.ceil(area.getLowY()/DFLT_BASEBOXSIZE)* DFLT_BASEBOXSIZE;
+        // determine the number of boxes which can be displayed
+        double endY = Math.floor(area.getHighY()/DFLT_BASEBOXSIZE)* DFLT_BASEBOXSIZE;
+        ySize = grid_deltaY==0 ? 0 : (int) Math.floor((endY - startY)/grid_deltaY);
+        
+        //TODO check with Jan whether this is indeed the way the intervals are calculated
+        
+        LOGGER.severe("area: "+area.toString());
+        LOGGER.severe("X: startX:"+startX+"   xSize:"+xSize+"    grid_deltaX:"+grid_deltaX);
+        LOGGER.severe("Y: startY:"+startY+"   ySize:"+ySize+"    grid_deltaY:"+grid_deltaY);
+        Object[][] arg1;
+		agg.SQLquery_grid(agg.getAggregateMask(), arg1, iv_count);
+	}
 }

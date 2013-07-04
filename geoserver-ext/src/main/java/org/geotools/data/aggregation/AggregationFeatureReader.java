@@ -2,6 +2,7 @@ package org.geotools.data.aggregation;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.NoSuchElementException;
 import java.util.logging.Logger;
@@ -45,39 +46,13 @@ private AggregationDataStore data;
     public static final double	DFLT_BASEBOXSIZE = 0.001;
 	
 //    public AggregationFeatureReader(Area area) throws IOException {
-        public AggregationFeatureReader(ContentState contentState, Area area) throws IOException {
+        public AggregationFeatureReader(ContentState contentState, ResultSet rs) throws IOException {
         state = contentState;
         data = (AggregationDataStore)contentState.getEntry().getDataStore();
         builder = new SimpleFeatureBuilder(state.getFeatureType());
         geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
         row = 0;
-        xSize = data.getXSize();
-        ySize = data.getYSize();
-        // number of basic units to be split up in boxes in the map
-        double origDiffX = (area.getHighX()-area.getLowX())/DFLT_BASEBOXSIZE;
-        // the goal is to have xSize boxes thus have a look how many baseboxsizes 
-        // can be used per box
-        grid_deltaX = Math.round(origDiffX/((double) xSize))*DFLT_BASEBOXSIZE;
         
-        // determine the start of the first box 
-        startX = Math.ceil(area.getLowX()/DFLT_BASEBOXSIZE)* DFLT_BASEBOXSIZE;
-        // determine the number of boxes which can be displayed
-        double endX = Math.floor(area.getHighX()/DFLT_BASEBOXSIZE)* DFLT_BASEBOXSIZE;
-        xSize = grid_deltaX==0 ? 0 : (int) Math.floor((endX - startX)/grid_deltaX);
-        
-        double origDiffY = (area.getHighY()-area.getLowY())/DFLT_BASEBOXSIZE;
-        grid_deltaY = Math.round(origDiffY/((double) ySize))*DFLT_BASEBOXSIZE;
-        // determine the start of the first box 
-        startY = Math.ceil(area.getLowY()/DFLT_BASEBOXSIZE)* DFLT_BASEBOXSIZE;
-        // determine the number of boxes which can be displayed
-        double endY = Math.floor(area.getHighY()/DFLT_BASEBOXSIZE)* DFLT_BASEBOXSIZE;
-        ySize = grid_deltaY==0 ? 0 : (int) Math.floor((endY - startY)/grid_deltaY);
-        
-        //TODO check with Jan whether this is indeed the way the intervals are calculated
-        
-        LOGGER.severe("area: "+area.toString());
-        LOGGER.severe("X: startX:"+startX+"   xSize:"+xSize+"    grid_deltaX:"+grid_deltaX);
-        LOGGER.severe("Y: startY:"+startY+"   ySize:"+ySize+"    grid_deltaY:"+grid_deltaY);
     }
 
     public SimpleFeatureType getFeatureType() {
