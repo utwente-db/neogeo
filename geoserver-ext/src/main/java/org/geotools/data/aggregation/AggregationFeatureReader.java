@@ -150,9 +150,10 @@ public class AggregationFeatureReader implements FeatureReader {
 		// x dimension first factor 1
 		// y dimension second factor range[0]
 		// time dimension third factor range[0]*range[1]
+		ret[0] = ((int)gkey) % range[0];
 		ret[1] = (((int)gkey) % (range[0]*range[1]))/range[0];
 		ret[2] = ((int)gkey) / (range[0]*range[1]);
-		ret[0] = ((int)gkey) - (ret[2]+ret[1]);
+		LOGGER.severe("key reversal (gkey,x,y,time)=("+gkey+","+ret+")");
 		return ret;
 	}
 
