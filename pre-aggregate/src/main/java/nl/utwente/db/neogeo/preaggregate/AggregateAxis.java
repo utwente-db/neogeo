@@ -371,10 +371,13 @@ public class DoubleAxisIndexer implements AxisIndexer {
 			
 			// in the case of a split along a single chunk, no alignment with the factor is possible!
 			if(cnt==1) return new AxisSplitDimension((double) startl*BASEBLOCKSIZE, (double)endl*BASEBLOCKSIZE, 1);
-			double 	deltal = Math.ceil((endl-startl)/(cnt-1));
+			double 	deltal = Math.ceil((endl-startl)/cnt);
+//			double 	deltal = Math.ceil((endl-startl)/(cnt-1));
 			// this is the case where the query is inside the available data
-			double _startl = (double) (Math.floor(startl/deltal))*deltal;
-			double _endl = (double) (Math.ceil(endl/deltal))*deltal;
+//			double _startl = (double) (Math.floor(startl/deltal))*deltal;
+//			double _endl = (double) (Math.ceil(endl/deltal))*deltal;
+			double _startl = (double) (Math.ceil(startl/deltal))*deltal;
+			double _endl = (double) (Math.floor(endl/deltal))*deltal;
 			// assert((_end-_start)/delta==cnt+1); 
 			LOGGER.severe("Double:3: "+startl+"|"+endl+"|"+cnt);
 			
