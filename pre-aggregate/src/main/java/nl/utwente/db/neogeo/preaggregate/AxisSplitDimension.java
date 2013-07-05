@@ -36,4 +36,8 @@ public class AxisSplitDimension {
 		return end;
 	}
 
+	@Override
+	public String toString(){
+		return "(start:"+start.toString()+"|end:"+end.toString()+"|cnt:"+cnt+")";
+	}
 }
