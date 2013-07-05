@@ -110,30 +110,36 @@ public class IntegerAxisIndexer implements AxisIndexer {
 			int start = (Integer) low;
 			int end = (Integer) high;
 			if(end<=start) return null;
-			if(start>(Integer)high() || end<(Integer)low())
+			if(start>this.high || end<this.low)
 				// query out of range of the available data
 				return null;
-			int startl = Math.round(start/BASEBLOCKSIZE);
-			int endl = Math.round(end/BASEBLOCKSIZE);
+			int startl = start/BASEBLOCKSIZE;
+			int endl = end/BASEBLOCKSIZE;
 		
 			// in the case of a split along a single chunk, no alignment with the factor is possible!
-			if(cnt==1) return new AxisSplitDimension((int) startl*BASEBLOCKSIZE, (int)endl*BASEBLOCKSIZE, 1);
+			if(cnt==1) return new AxisSplitDimension(new Timestamp(startl*BASEBLOCKSIZE), new Timestamp(endl*BASEBLOCKSIZE), 1);
 			
-			double delta = Math.ceil( (end-start)/((double)(cnt-1))/BASEBLOCKSIZE)*BASEBLOCKSIZE;
+			
+			int deltal = (endl-startl)/(cnt-1);
+			if((endl-startl)%(cnt-1) > 0) deltal++;
+			//delta = delta*BASEBLOCKSIZE;
+			
 			// this is the case where the query is inside the available data
-			int _start = (int) (Math.floor(start/delta)*delta);
-			int _end = (int) (Math.ceil(end/delta)*delta);
-			assert((_end-_start)/((int)delta)==cnt); 
-			while(_start<(Integer)low() && cnt>0){
-				_start += delta;
+			int _start = (startl/deltal)*deltal;
+			int _end = endl/deltal;
+			if(endl%deltal >0) _end++;
+			_end = _end*deltal;
+			
+			while(_start<this.low/BASEBLOCKSIZE && cnt>0){
+				_start += deltal;
 				cnt--;
 			}
-			while(_end>(Integer)high() && cnt>0){
-				_end -= delta;
+			while(_end>this.high/BASEBLOCKSIZE && cnt>0){
+				_end -= deltal;
 				cnt--;
 			}
 			if(cnt>0)
-				return new AxisSplitDimension(_start, _start+((int)delta), cnt);
+				return new AxisSplitDimension(_start*BASEBLOCKSIZE, (_start+deltal)*BASEBLOCKSIZE,cnt);
 			return null;
 		}
 		
@@ -228,33 +234,39 @@ public class  LongAxisIndexer implements AxisIndexer {
 			long start = (Long) low;
 			long end = (Long) high;
 			if(end<=start) return null;
-			if(start>(Long)high() || end<(Long)low())
+			if(start>this.high || end<this.low)
 				// query out of range of the available data
 				return null;
-			long startl = Math.round(start/BASEBLOCKSIZE);
-			long endl = Math.round(end/BASEBLOCKSIZE);
+			long startl = start/BASEBLOCKSIZE;
+			long endl = end/BASEBLOCKSIZE;
 		
 			// in the case of a split along a single chunk, no alignment with the factor is possible!
-			if(cnt==1) return new AxisSplitDimension((long) startl*BASEBLOCKSIZE, (long)endl*BASEBLOCKSIZE, 1);
+			if(cnt==1) return new AxisSplitDimension(new Timestamp(startl*BASEBLOCKSIZE), new Timestamp(endl*BASEBLOCKSIZE), 1);
 			
-			double delta = Math.ceil( (end-start)/((double)(cnt-1))/BASEBLOCKSIZE)*BASEBLOCKSIZE;
+			
+			long deltal = (endl-startl)/(cnt-1);
+			if((endl-startl)%(cnt-1) > 0) deltal++;
+			//delta = delta*BASEBLOCKSIZE;
+			
 			// this is the case where the query is inside the available data
-			long _start = (long) (Math.floor(start/delta)*delta);
-			long _end = (long) (Math.ceil(end/delta)*delta);
-			assert((_end-_start)/((long)delta)==cnt); 
-			while(_start<(Integer)low() && cnt>0){
-				_start += delta;
+			long _start = (startl/deltal)*deltal;
+			long _end = endl/deltal;
+			if(endl%deltal >0) _end++;
+			_end = _end*deltal;
+			
+			while(_start<this.low/BASEBLOCKSIZE && cnt>0){
+				_start += deltal;
 				cnt--;
 			}
-			while(_end>(Integer)high() && cnt>0){
-				_end -= delta;
+			while(_end>this.high/BASEBLOCKSIZE && cnt>0){
+				_end -= deltal;
 				cnt--;
 			}
 			if(cnt>0)
-				return new AxisSplitDimension(_start, _start+((long)delta), cnt);
+				return new AxisSplitDimension(_start*BASEBLOCKSIZE, (_start+deltal)*BASEBLOCKSIZE,cnt);
 			return null;
 		}
-
+		
 		
 	}
 	
