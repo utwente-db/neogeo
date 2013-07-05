@@ -106,41 +106,7 @@ public class IntegerAxisIndexer implements AxisIndexer {
 		}
 
 		public AxisSplitDimension splitAxis(Object low, Object high, int cnt) {
-			if(cnt<=0 || low==null || high==null) return null;
-			int start = (Integer) low;
-			int end = (Integer) high;
-			if(end<=start) return null;
-			if(start>this.high || end<this.low)
-				// query out of range of the available data
-				return null;
-			int startl = start/BASEBLOCKSIZE;
-			int endl = end/BASEBLOCKSIZE;
-		
-			// in the case of a split along a single chunk, no alignment with the factor is possible!
-			if(cnt==1) return new AxisSplitDimension(new Timestamp(startl*BASEBLOCKSIZE), new Timestamp(endl*BASEBLOCKSIZE), 1);
-			
-			
-			int deltal = (endl-startl)/(cnt-1);
-			if((endl-startl)%(cnt-1) > 0) deltal++;
-			//delta = delta*BASEBLOCKSIZE;
-			
-			// this is the case where the query is inside the available data
-			int _start = (startl/deltal)*deltal;
-			int _end = endl/deltal;
-			if(endl%deltal >0) _end++;
-			_end = _end*deltal;
-			
-			while(_start<this.low/BASEBLOCKSIZE && cnt>0){
-				_start += deltal;
-				cnt--;
-			}
-			while(_end>this.high/BASEBLOCKSIZE && cnt>0){
-				_end -= deltal;
-				cnt--;
-			}
-			if(cnt>0)
-				return new AxisSplitDimension(_start*BASEBLOCKSIZE, (_start+deltal)*BASEBLOCKSIZE,cnt);
-			return null;
+		throw new RuntimeException("Function not implemented yet!");
 		}
 		
 	}
@@ -230,41 +196,7 @@ public class  LongAxisIndexer implements AxisIndexer {
 		}
 
 		public AxisSplitDimension splitAxis(Object low, Object high, int cnt) {
-			if(cnt<=0 || low==null || high==null) return null;
-			long start = (Long) low;
-			long end = (Long) high;
-			if(end<=start) return null;
-			if(start>this.high || end<this.low)
-				// query out of range of the available data
-				return null;
-			long startl = start/BASEBLOCKSIZE;
-			long endl = end/BASEBLOCKSIZE;
-		
-			// in the case of a split along a single chunk, no alignment with the factor is possible!
-			if(cnt==1) return new AxisSplitDimension(new Timestamp(startl*BASEBLOCKSIZE), new Timestamp(endl*BASEBLOCKSIZE), 1);
-			
-			
-			long deltal = (endl-startl)/(cnt-1);
-			if((endl-startl)%(cnt-1) > 0) deltal++;
-			//delta = delta*BASEBLOCKSIZE;
-			
-			// this is the case where the query is inside the available data
-			long _start = (startl/deltal)*deltal;
-			long _end = endl/deltal;
-			if(endl%deltal >0) _end++;
-			_end = _end*deltal;
-			
-			while(_start<this.low/BASEBLOCKSIZE && cnt>0){
-				_start += deltal;
-				cnt--;
-			}
-			while(_end>this.high/BASEBLOCKSIZE && cnt>0){
-				_end -= deltal;
-				cnt--;
-			}
-			if(cnt>0)
-				return new AxisSplitDimension(_start*BASEBLOCKSIZE, (_start+deltal)*BASEBLOCKSIZE,cnt);
-			return null;
+			throw new RuntimeException("Function not implemented yet!");
 		}
 		
 		
@@ -371,13 +303,13 @@ public class DoubleAxisIndexer implements AxisIndexer {
 			
 			// in the case of a split along a single chunk, no alignment with the factor is possible!
 			if(cnt==1) return new AxisSplitDimension((double) startl*BASEBLOCKSIZE, (double)endl*BASEBLOCKSIZE, 1);
-			double 	deltal = Math.ceil((endl-startl)/cnt);
-//			double 	deltal = Math.ceil((endl-startl)/(cnt-1));
+//			double 	deltal = Math.ceil((endl-startl)/cnt);
+			double 	deltal = Math.ceil((endl-startl)/(cnt-1));
 			// this is the case where the query is inside the available data
-//			double _startl = (double) (Math.floor(startl/deltal))*deltal;
-//			double _endl = (double) (Math.ceil(endl/deltal))*deltal;
-			double _startl = (double) (Math.ceil(startl/deltal))*deltal;
-			double _endl = (double) (Math.floor(endl/deltal))*deltal;
+			double _startl = (double) (Math.floor(startl/deltal))*deltal;
+			double _endl = (double) (Math.ceil(endl/deltal))*deltal;
+//			double _startl = (double) (Math.ceil(startl/deltal))*deltal;
+//			double _endl = (double) (Math.floor(endl/deltal))*deltal;
 			// assert((_end-_start)/delta==cnt+1); 
 			LOGGER.severe("Double:3: "+startl+"|"+endl+"|"+cnt);
 			
