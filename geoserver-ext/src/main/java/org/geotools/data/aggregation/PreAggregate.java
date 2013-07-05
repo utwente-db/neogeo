@@ -15,20 +15,18 @@ import java.util.logging.Logger;
 
 import nl.utwente.db.neogeo.preaggregate.AggregateAxis;
 import nl.utwente.db.neogeo.preaggregate.SqlUtils;
+import nl.utwente.db.neogeo.preaggregate.AggregateAxis.DoubleAxisIndexer;
+import nl.utwente.db.neogeo.preaggregate.AggregateAxis.IntegerAxisIndexer;
+import nl.utwente.db.neogeo.preaggregate.AggregateAxis.LongAxisIndexer;
+import nl.utwente.db.neogeo.preaggregate.AggregateAxis.TimestampAxisIndexer;
 
 import org.geotools.data.store.ContentEntry;
-import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-
-import nl.utwente.db.neogeo.preaggregate.AggregateAxis.DoubleAxisIndexer;
-import nl.utwente.db.neogeo.preaggregate.AggregateAxis.IntegerAxisIndexer;
-import nl.utwente.db.neogeo.preaggregate.AggregateAxis.LongAxisIndexer;
-import nl.utwente.db.neogeo.preaggregate.AggregateAxis.TimestampAxisIndexer;
 
 
 public class PreAggregate extends
@@ -189,19 +187,59 @@ nl.utwente.db.neogeo.preaggregate.PreAggregate {
 		}
 		return crs;
 	}
-	
+
 	public AggregateAxis getXaxis(){
 		return map.get("x");
 	}
-	
+
 	public AggregateAxis getYaxis(){
 		return map.get("y");
 	}
-	
+
 	public AggregateAxis getTimeAxis(){
 		return map.get("time");
 	}
-	
-	
+
+	public ResultSet StandardSQLQuery_grid(int queryAggregateMask, Object iv_first_obj[][], int iv_count[]) throws SQLException {
+		int i=0;
+		String sql_sel = "select ";
+		String sql_constr = " where ";
+		String sql_group = " group by ";
+//		System.out.println("cnt | low | factor | high");
+		for(AggregateAxis a : getAxis()){
+			if(iv_first_obj[i][1] instanceof Double){
+				double start = (Double)iv_first_obj[i][0];
+				double end = (Double)iv_first_obj[i][1];
+//				System.out.print(iv_count[i]+"|"+iv_first_obj[i][0]+"|");
+//				System.out.print((end-start)+"|");
+//				System.out.println(start+(end-start)*iv_count[i]);
+				if(iv_count[i]>1){
+					sql_sel += " floor("+a.columnExpression()+"/"+ (end-start)+") as a"+i+",";
+					sql_group += " floor("+a.columnExpression()+"/"+ (end-start)+") ,";
+				}
+				sql_constr += " "+a.columnExpression()+">="+start+" and "+a.columnExpression()+"<="+(start+(end-start)*iv_count[i])+" and ";
+			}
+			if(iv_first_obj[i][1] instanceof Timestamp){
+				long start = ((Timestamp)iv_first_obj[i][0]).getTime()/1000;
+				long end = ((Timestamp)iv_first_obj[i][1]).getTime()/1000;
+//				System.out.print(iv_count[i]+"|"+start+"|");
+//				System.out.print((end-start)+"|");
+//				System.out.println(start+(end-start)*iv_count[i]);
+				if(iv_count[i]>1){
+					sql_sel += " EXTRACT(EPOCH FROM "+a.columnExpression()+")/"+ (end-start)+" as a"+i+",";
+					sql_group += " EXTRACT(EPOCH FROM "+a.columnExpression()+")/"+ (end-start)+" ,";
+				}
+				sql_constr += " EXTRACT(EPOCH FROM "+a.columnExpression()+")>="+start+" and EXTRACT(EPOCH FROM "+a.columnExpression()+")<="+(start+(end-start)*iv_count[i])+" and ";
+			}
+			i++;
+		}
+		if (sql_group.endsWith(",")) 
+			sql_group = sql_group.substring(0, sql_group.length()-1);
+		String sql = sql_sel+"count(*) from "+table+sql_constr+" true "+sql_group;
+		Statement stmt = c.createStatement();
+		LOGGER.severe(sql);
+		ResultSet rs=stmt.getResultSet();
+		return rs;
+	}
 
 }

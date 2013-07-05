@@ -1,5 +1,7 @@
 package org.geotools.data.aggregation;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -61,10 +63,10 @@ import com.vividsolutions.jts.geom.Polygon;
 public class AggregationFilterVisitor extends DefaultFilterVisitor {
 	private static final Logger LOGGER = Logger.getLogger("org.geotools.data.aggregation.AggregationFilterVisitor");
 	private Level level = Level.SEVERE;
-//	private boolean valid = true;
-//	private AreaTimeintervalViewparams q = new AreaTimeintervalViewparams();
+	//	private boolean valid = true;
+	//	private AreaTimeintervalViewparams q = new AreaTimeintervalViewparams();
 	private Area area = null;
-//	private HashMap<String,String> viewparams = new HashMap<String,String>();
+	//	private HashMap<String,String> viewparams = new HashMap<String,String>();
 	private long startTime = -1;
 	private long endTime = -1;
 	private boolean valid = true;
@@ -74,7 +76,7 @@ public class AggregationFilterVisitor extends DefaultFilterVisitor {
 		super();
 		this.agg = agg;
 	}
-	
+
 	@Override
 	public Object visit(PropertyIsBetween filter, Object data) {
 		LOGGER.log(level, filter.getClass().getCanonicalName());
@@ -83,7 +85,6 @@ public class AggregationFilterVisitor extends DefaultFilterVisitor {
 		filter.getLowerBoundary().accept(this, null);
 		filter.getUpperBoundary().accept(this, null);
 		// if property is TIME then this will be valid
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -93,10 +94,9 @@ public class AggregationFilterVisitor extends DefaultFilterVisitor {
 		filter.getExpression1().accept(this, null);
 		filter.getExpression2().accept(this, null);
 		// handle spatial query
-		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	@Override
 	public Object visit(PropertyName expression, Object data){
 		LOGGER.log(level, expression.getClass().getCanonicalName()+": "+expression.getPropertyName());
@@ -106,13 +106,13 @@ public class AggregationFilterVisitor extends DefaultFilterVisitor {
 		}
 		return super.visit(expression,data);
 	}
-	
+
 	@Override
 	public Object visit(And filter, Object data) {
 		LOGGER.log(level, filter.getClass().getCanonicalName());
 		return super.visit(filter, data);
 	}
-	
+
 	@Override
 	public Object visit(Literal expression, Object data){
 		Object val = expression.getValue();
@@ -123,20 +123,40 @@ public class AggregationFilterVisitor extends DefaultFilterVisitor {
 			Area a = Area.parsePolygon(poly);
 			area = updateBounds(area,a);
 			LOGGER.severe("low level area: "+a.toString());
+		} else if(val instanceof Date){
+			LOGGER.severe(val.toString());
+			updateTime((Date)val);
 		} else {
 			LOGGER.log(level,"type of literal val: "+val.getClass().getCanonicalName());
 			valid = false;
 		}
 		return super.visit(expression,data);
 	}
-	
+
 	private Area updateBounds(Area a, Area b) {
 		if(a==null) return b;
 		if(b==null) return a;
 		a.updateBounds(b);
 		return a;
 	}
-	
+
+	private void updateTime(Date t){
+		if(startTime==-1)
+			startTime = t.getTime();
+		else if(endTime==-1){
+			if(t.getTime()>startTime)
+				endTime = t.getTime();
+			else {
+				endTime = startTime;
+				startTime = t.getTime();
+			}
+		}else {
+			// starTime and endTime are already set
+			if(t.getTime()>startTime && t.getTime()<endTime)
+				throw new RuntimeException("unexpected update of time in filter parsing");
+		}
+	}
+
 	@Override
 	public Object visit(IncludeFilter filter, Object data) {
 		LOGGER.log(level, filter.getClass().getCanonicalName());
@@ -149,7 +169,7 @@ public class AggregationFilterVisitor extends DefaultFilterVisitor {
 	}
 
 	// remaining filters are more or less ignored
-	
+
 	@Override
 	public Object visit(ExcludeFilter filter, Object data) {
 		LOGGER.log(level, filter.getClass().getCanonicalName());
@@ -417,8 +437,8 @@ public class AggregationFilterVisitor extends DefaultFilterVisitor {
 	}
 
 	// start of expressions 
-	
-	
+
+
 	@Override
 	public Object visit(Add expression, Object data){
 		LOGGER.log(level, expression.getClass().getCanonicalName());
@@ -464,13 +484,15 @@ public class AggregationFilterVisitor extends DefaultFilterVisitor {
 	public Area getArea(){
 		return area;
 	}
-	
-	public long getStartTime(){
-		return startTime;
+
+	public Timestamp getStartTime(){
+		if(startTime==-1) return null;
+		return new Timestamp(startTime);
 	}
-	
-	public long getEndTime(){
-		return endTime;
+
+	public Timestamp getEndTime(){
+		if(endTime == -1) return null;
+		return new Timestamp(endTime);
 	}
 
 	public boolean isValid(){
