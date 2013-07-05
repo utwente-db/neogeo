@@ -1,6 +1,6 @@
 package org.geotools.data.aggregation;
 
-import java.awt.RenderingHints;
+
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,6 +13,8 @@ import java.util.logging.Logger;
 import nl.utwente.db.neogeo.preaggregate.AggregateAxis;
 import nl.utwente.db.neogeo.preaggregate.AxisSplitDimension;
 
+import org.geoserver.ows.Dispatcher;
+import org.geoserver.ows.Request;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.Query;
 import org.geotools.data.store.ContentEntry;
@@ -23,6 +25,7 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+
 
 import com.vividsolutions.jts.geom.Polygon;
 
@@ -128,30 +131,42 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 		return totalCnt;
 	}
 
+	protected Area getReaderInternalGetFeatureInfo(Request req ) {
+		//LOGGER.severe("request context "+req.getRawKvp());
+
+		Map<String,Object> kvp = req.getKvp();
+		for(Entry<String,Object> e : kvp.entrySet()){
+			LOGGER.severe("kvp: key="+e.getKey()+"   value="+e.getValue().toString());
+		}
+		// key=BBOX   value=ReferencedEnvelope[0.14668148058431 : 0.273466415399465, 51.5469266059974 : 51.6177065420478]
+		ReferencedEnvelope re = (ReferencedEnvelope) kvp.get("BBOX");
+		Area area = new Area(re.getMinX(),re.getMaxX(), re.getMinY(), re.getMaxY());
+		//		and then, if not null (in test enviroment it can be),
+		//		check the kvp map, it has the parsed BBOX among the others
+		return area;
+	}
+
 	protected FeatureReader<SimpleFeatureType, SimpleFeature> getReaderInternal(Query query)
 	throws IOException {
-		RenderingHints hint = query.getHints();
-		ViewParams vp = new ViewParams();
-		for(Entry<Object, Object> e : hint.entrySet()){
-			LOGGER.severe("hint entry: "+e.getKey()+"="+e.getValue());
-			LOGGER.severe("hint value class :"+e.getValue().getClass().getCanonicalName());
-			//			if(e.getKey().toString().equals("VIRTUAL_TABLE_PARAMETERS")){
-			//				vp.parse(e.getValue().toString());
-			//			}
-		}
-		// grab the parameter values
-//        Map<String, String> values = null;
-//        if(hints != null) {
-//            values = (Map<String, String>) ((RenderingHints) hints).get(Hints.VIRTUAL_TABLE_PARAMETERS);
-//        }
-//        if (values == null) {
-//            values = Collections.emptyMap();
-//        }
+		Hints hint = query.getHints();
+
 		// viewparams are under the key VIRTUAL_TABLE_PARAMETERS
 		// format of the valye: key:value;k:v
 		// example: testkey:testvalue;secondtestkey:secondtestvalue
-		//		s = hint.get(RenderingHints.VIRTUAL_TABLE_PARAMETERS);
-		//		ViewParams vp = new ViewParams(s);
+		Map<String, String> values = null;
+		if(hint != null) {
+			values = (Map<String, String>) hint.get(Hints.VIRTUAL_TABLE_PARAMETERS);
+		}
+		if (values == null) {
+			values = Collections.emptyMap();
+		}
+		for(Entry<String, String> e : values.entrySet()){
+			LOGGER.severe("hint entry: "+e.getKey()+"="+e.getValue());
+		}
+		boolean pa_query = true;
+		if(values.containsKey("query") && values.get("query").equals("standard")){
+			pa_query = false;
+		}
 
 		LOGGER.severe("query properties: "+query.getProperties());
 		LOGGER.severe("extracting the bounding box of the request:");
@@ -168,11 +183,36 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 		Timestamp startTime = visitor.getStartTime();
 		Timestamp endTime = visitor.getEndTime();
 		LOGGER.severe("Parsed startTime:"+startTime+"    endTime:"+endTime);
+
 		ResultSet rs = null;
 		Object[][] iv_first_obj = null;
 		int[] range = null;
 		try {
-			Object[][] ret = reformulateQuery(a,startTime,endTime);
+			Object[][] ret ;
+			Request req = Dispatcher.REQUEST.get();
+			LOGGER.severe("request requets "+req.getRequest());
+			// GetFeatureInfo
+			if("GetFeatureInfo".equals(req.getRequest())){
+				Area area = getReaderInternalGetFeatureInfo(req);
+				ret = reformulateQuery(area,startTime,endTime, this.iv_count);
+				double startX = (Double) ret[0][0];
+				double grid_deltaX = ((Double)ret[0][1]) - startX;
+				double endX = startX+grid_deltaX*((Integer)ret[0][2]);
+				double startY = (Double) ret[1][0];
+				double grid_deltaY = ((Double)ret[1][1]) - startY;
+				double endY = startY+grid_deltaY*((Integer)ret[1][2]);
+				double _startX = (double) (Math.floor(a.getLowX()/grid_deltaX))*grid_deltaX;
+				double _endX = (double) (Math.ceil(a.getHighX()/grid_deltaX))*grid_deltaX;				
+				double _startY = (double) (Math.floor(a.getLowY()/grid_deltaY))*grid_deltaY;
+				double _endY = (double) (Math.ceil(a.getHighY()/grid_deltaY))*grid_deltaY;
+				int[] cnt = new int[cntAxis];
+				cnt[0] = (int) Math.round((_endX-_startX) / grid_deltaX);
+				cnt[1] = (int) Math.round((_endY-_startY) / grid_deltaY);
+				cnt[2] = this.iv_count[2];
+				ret = reformulateQuery(new Area(_startX, _endX, _startY, _endY),startTime,endTime, cnt);
+			} else {
+				ret = reformulateQuery(a,startTime,endTime, this.iv_count);
+			}
 			range = new int[ret.length];
 			iv_first_obj = new Object[ret.length][2];
 			for(int i=0;i<ret.length;i++){
@@ -180,12 +220,12 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 				iv_first_obj[i][1]=ret[i][1];
 				range[i]=(Integer) ret[i][2];
 			}
-			if(vp.contains("query") && vp.getParam("query").equals("standard")){
-				LOGGER.severe("processing the query in standard SQL");
-				// TODO call the standard query processing
-			} else{
+			if(pa_query){
 				LOGGER.severe("processing the query with Aggregation Index");
 				rs = agg.SQLquery_grid(this.getDataStore().getMask(), iv_first_obj, range);
+			} else{
+				LOGGER.severe("processing the query in standard SQL");
+				// TODO call the standard query processing
 			}
 		} catch (Exception e1) {
 			LOGGER.severe("Cought Exception:"+e1.getMessage());
@@ -193,16 +233,16 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 			e1.printStackTrace();
 			//throw new IOException(e1.getMessage());
 		}
-		if(rs!=null)
-			try {
-				return new AggregationFeatureReader( getState(), rs , iv_first_obj, range, agg.getColumnTypes(getDataStore().getMask()));
-			} catch (ClassNotFoundException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			//		} else
-			//			LOGGER.severe("Was not able to understand the specified filter!");
-			return null;
+		//		if(rs!=null)
+		try {
+			return new AggregationFeatureReader( getState(), rs , iv_first_obj, range, agg.getColumnTypes(getDataStore().getMask()));
+		} catch (ClassNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		//		} else
+		//			LOGGER.severe("Was not able to understand the specified filter!");
+		return null;
 	}
 
 	//	@Override
@@ -270,7 +310,7 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 		return SCHEMA;
 	}
 
-	private Object[][] reformulateQuery(Area area, Timestamp start, Timestamp end) throws RuntimeException{
+	private Object[][] reformulateQuery(Area area, Timestamp start, Timestamp end, int[] iv_count) throws RuntimeException{
 		int i=0;
 		//int[] range = new int[agg.getAxis().length];
 		Object[][] iv_obj = new Object[agg.getAxis().length][3];
@@ -283,18 +323,18 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 				dim = a.splitAxis(area.getLowX(), area.getHighX(), iv_count[0]);
 				i=0;
 			} else
-			if(a==y) {
-				LOGGER.severe(area.getLowY()+"|"+ area.getHighY()+"|"+ iv_count[1]);
-				LOGGER.severe("processing axis y:"+a.columnExpression());
-				dim = a.splitAxis(area.getLowY(), area.getHighY(), iv_count[1]);
-				i=1;
-			} else
-			if(a==time) {
-				LOGGER.severe(start+"|"+ end+"|"+ iv_count[2]);
-				LOGGER.severe("processing axis time:"+a.columnExpression());
-				dim = a.splitAxis(start, end, iv_count[2]);
-				i=2;
-			}
+				if(a==y) {
+					LOGGER.severe(area.getLowY()+"|"+ area.getHighY()+"|"+ iv_count[1]);
+					LOGGER.severe("processing axis y:"+a.columnExpression());
+					dim = a.splitAxis(area.getLowY(), area.getHighY(), iv_count[1]);
+					i=1;
+				} else
+					if(a==time) {
+						LOGGER.severe(start+"|"+ end+"|"+ iv_count[2]);
+						LOGGER.severe("processing axis time:"+a.columnExpression());
+						dim = a.splitAxis(start, end, iv_count[2]);
+						i=2;
+					}
 			//if(dim==null) throw new Exception("query area out of available data domain due to problems in axis "+a.columnExpression());
 			//			range[i] = dim.getCount();
 			LOGGER.severe("dim values:"+dim.toString());

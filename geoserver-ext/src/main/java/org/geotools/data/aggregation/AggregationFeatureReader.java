@@ -92,7 +92,7 @@ public class AggregationFeatureReader implements FeatureReader {
 
 	SimpleFeature readFeature() throws IOException {
 		try {
-			if(!rs.next()) return null; // no additional features are available
+			if(rs==null || !rs.next()) return null; // no additional features are available
 
 			long gkey = rs.getLong("gkey");
 			int[] pos = revertGKey(gkey);
