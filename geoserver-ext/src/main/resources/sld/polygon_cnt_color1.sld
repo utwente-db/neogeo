@@ -20,7 +20,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <Title>Less Than 20</Title>
           <ogc:Filter>
             <ogc:PropertyIsLessThan>
-              <ogc:PropertyName>cnt</ogc:PropertyName>
+              <ogc:PropertyName>countaggr</ogc:PropertyName>
               <ogc:Literal>20</ogc:Literal>
             </ogc:PropertyIsLessThan>
           </ogc:Filter>
@@ -41,11 +41,11 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <ogc:Filter>
             <ogc:And>
               <ogc:PropertyIsGreaterThanOrEqualTo>
-                <ogc:PropertyName>cnt</ogc:PropertyName>
+                <ogc:PropertyName>countaggr</ogc:PropertyName>
                 <ogc:Literal>20</ogc:Literal>
               </ogc:PropertyIsGreaterThanOrEqualTo>
               <ogc:PropertyIsLessThan>
-                <ogc:PropertyName>cnt</ogc:PropertyName>
+                <ogc:PropertyName>countaggr</ogc:PropertyName>
                 <ogc:Literal>50</ogc:Literal>
               </ogc:PropertyIsLessThan>
             </ogc:And>
@@ -66,7 +66,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <Title>Greater Than 50</Title>
           <ogc:Filter>
             <ogc:PropertyIsGreaterThan>
-              <ogc:PropertyName>cnt</ogc:PropertyName>
+              <ogc:PropertyName>countaggr</ogc:PropertyName>
               <ogc:Literal>50</ogc:Literal>
             </ogc:PropertyIsGreaterThan>
           </ogc:Filter>

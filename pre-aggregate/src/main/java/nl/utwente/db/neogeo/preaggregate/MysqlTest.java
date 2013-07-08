@@ -77,7 +77,7 @@ public class MysqlTest {
 		}
 	}
 	
-	public static void main(String[] argv) throws SQLException {
+	public static void main(String[] argv) throws Exception {
 		MysqlTest psqlCon = new MysqlTest();
 		Connection con = psqlCon.getConnection();
 		System.out.println("connection "+con.toString());

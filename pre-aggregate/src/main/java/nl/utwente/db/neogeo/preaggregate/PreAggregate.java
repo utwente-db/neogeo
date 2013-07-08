@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
@@ -27,10 +26,10 @@ public class PreAggregate {
 	public static final	int		AGGR_MAX			= AGGR_BASE << 3;
 	public static final int		AGGR_ALL			= (AGGR_COUNT|AGGR_SUM|AGGR_MIN|AGGR_MAX);
 
-	private int	aggregateMask = 0; // the 'allowed' aggregates for this instance
+	protected int	aggregateMask = 0; // the 'allowed' aggregates for this instance
 
-	private static final String  aggregateRepositoryName	= "pre_aggregate";
-	private static final String  aggregateRepositoryDimName	= "pre_aggregate_axis";
+	protected static final String  aggregateRepositoryName	= "pre_aggregate";
+	protected static final String  aggregateRepositoryDimName	= "pre_aggregate_axis";
 
 	public static final int	RMIN	= 0;
 	public static final int	RMAX	= 1;
@@ -78,6 +77,8 @@ public class PreAggregate {
 	private HashMap<Long, AggrRec> internalHash = null;
 
 	protected AggregateAxis axis[];
+	protected String aggregateColumn;
+	protected String aggregateType;
 
 	public PreAggregate() {
 	}
@@ -87,6 +88,7 @@ public class PreAggregate {
 		_init(c,schema,table,label);
 	}
 
+	// Is this still used?
 	public PreAggregate(Connection c, String schema, String table, String label, HashMap<Long, AggrRec> internalHash)
 	throws SQLException {
 		_init(c,schema,table,label);
@@ -112,7 +114,7 @@ public class PreAggregate {
 	public Object[][] getRangeValues(Connection c) throws SQLException {
 		return getRangeValues(c, schema, table, axis);
 	}
-	
+
 	public Object[][] getRangeValues(Connection c, String schema, String table, AggregateAxis axis[]) throws SQLException {
 		int i;
 		Object res[][] = new Object[axis.length][2];
@@ -463,13 +465,13 @@ public class PreAggregate {
 				if (!ax.exactIndex(iv_first_obj[i][RMIN]))
 					throw new SQLException(
 							"SQLquery_grid: start of first interval in dim "
-									+ i + " not on boundary: "
-									+ iv_first_obj[i][RMIN]);
+							+ i + " not on boundary: "
+							+ iv_first_obj[i][RMIN]);
 				if (!ax.exactIndex(iv_first_obj[i][RMAX]))
 					throw new SQLException(
 							"SQLquery_grid: end of first interval in dim " + i
-									+ " not on boundary: "
-									+ iv_first_obj[i][RMAX]);
+							+ " not on boundary: "
+							+ iv_first_obj[i][RMAX]);
 			}
 			iv_first[i] = ax.getIndex(iv_first_obj[i][RMIN]);
 			iv_size[i] = ax.getIndex(iv_first_obj[i][RMAX]) - iv_first[i];
@@ -494,17 +496,18 @@ public class PreAggregate {
 				prev_dimsize *= iv_count[i];
 			}
 			StringBuilder sqlaggr = new StringBuilder();
-			if ((aggregateMask & AGGR_COUNT) != 0)
+			if ((queryAggregateMask & aggregateMask & AGGR_COUNT) != 0)
 				sqlaggr.append(",sum(countAggr) AS countAggr");
-			if ((aggregateMask & AGGR_SUM) != 0)
+			if ((queryAggregateMask & aggregateMask & AGGR_SUM) != 0)
 				sqlaggr.append(",sum(sumAggr) AS sumAggr");
-			if ((aggregateMask & AGGR_MIN) != 0)
+			if ((queryAggregateMask & aggregateMask & AGGR_MIN) != 0)
 				sqlaggr.append(",min(minAggr) AS minAggr");
-			if ((aggregateMask & AGGR_MAX) != 0)
+			if ((queryAggregateMask & aggregateMask & AGGR_MAX) != 0)
 				sqlaggr.append(",max(maxAggr) AS maxAggr");
 			String gcells = "pa_grid(\'" + grid_paGridQuery(swgc) + "\')";
-			String sql = "SELECT gkey"+sqlaggr+" FROM "+schema+"."+table+PA_EXTENSION+", "+gcells+ " WHERE ckey=pakey GROUP BY gkey;";
-			// System.out.println("SQL="+sql);			
+			String sql = "SELECT gkey"+sqlaggr+" FROM "+schema+"."+table+PA_EXTENSION+", "+gcells+ " WHERE ckey=pakey GROUP BY gkey order by gkey;";
+			System.out.println("XXX="+sql);			
+
 			result = SqlUtils.execute(c,sql);
 		} else {
 			// explode it
@@ -968,11 +971,14 @@ public class PreAggregate {
 				" FROM " + schema + "." + aggregateRepositoryName +
 				" WHERE tableName=\'"+tableName+"\' AND label=\'"+label+"\';"
 		);
+		
 		if (!rs.next())
 			return false;
 		int dimensions = rs.getInt(3);
 		char keyFlag = rs.getString(4).charAt(0);
 		aggregateMask = rs.getInt(5);
+		aggregateColumn = rs.getString(7);
+		aggregateType = rs.getString(8);
 		AggregateAxis read_axis[] = new AggregateAxis[dimensions];
 
 		ResultSet rsi = SqlUtils.execute(c,
@@ -1080,6 +1086,7 @@ public class PreAggregate {
 		return label;
 	}
 
+	
 	//	public static void main(String[] argv) {
 	//		qverbose = true;
 	//		AggrKeyDescriptor kd = new AggrKeyDescriptor();

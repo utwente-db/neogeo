@@ -1,0 +1,50 @@
+todo:
+======
+
+boundaries of the ckey function
+--------------------------------
+The problem is that queries at the moment can be asked for the range where there
+exist values in the database. If a SQLquery_grid exceeds this range the query will 
+be rejected and a NULL resultset will be returned.
+
+Analysing this problem it turns out that this limitation to the range of the data 
+is due to the ckey, thus the number of bits assigned per dimension.
+In the application it can easily happen that the range is exceeded thus, we need
+a place to deal with it. This can be either on the Java or C side.
+
+
+Combing multiple PA labels in one query
+----------------------------------------
+In the DCMR use case we will have multiple counts of tweets which contain a certain
+key word. In the PA this will result in multiple PAs one per key word. The query 
+will then be looking for the counts of tweets per keyword, thus the result will have 
+multiple attributes - one per key word.
+The current implementation does not support this scenario. There are several problems:
+The current query as below
+	SELECT gkey,sum(countAggr) AS countAggr 
+	FROM public.london_hav_neogeo_pa, 
+    	 pa_grid('#G|X|3|3|4,10,0,189,3|4,9,0,82,4|4,9,0,455,1|public.london_hav_neogeo|public.london_hav_neogeo_btree|') 
+	WHERE ckey=pakey 
+	GROUP BY gkey 
+	order by gkey;
+does not allow to combine another PA table with it since they have different ranges 
+and therefore different ckeys.
+We could solve the problem by introducing a generic ckey generation and then it would 
+be possible to reuse the created ckeys from the stairwalker for multiple PA tables.
+something like this:
+SELECT gkey,sum(A.countAggr) AS countAggr1,sum(B.countAggr) AS countAggr2 
+	FROM public.london_hav_neogeo_word1_pa A,
+		 public.london_hav_neogeo_word2_pa B, 
+    	 pa_grid('#G|X|3|3|4,10,0,189,3|4,9,0,82,4|4,9,0,455,1|public.london_hav_neogeo|public.london_hav_neogeo_btree|') 
+	WHERE ckey=A.pakey and ckey=B.pakey   
+	GROUP BY gkey 
+	order by gkey;  
+
+
+adding ordinal scale axis
+--------------------------
+so far all axis are defined on a continuous domain. In case of axis defined over 
+keywords/strings this is not the case anymore. Here the different strings have
+to be enumerated in the query rather defining a range.
+This is quite related to the previous topic and might be a solution on how to handle
+ordinal domains.

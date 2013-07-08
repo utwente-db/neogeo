@@ -3,9 +3,10 @@ package nl.utwente.db.neogeo.preaggregate;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.logging.Logger;
 
 public class AggregateAxis {
-	
+	protected static final Logger LOGGER = Logger.getLogger("nl.utwente.db.neogeo.preaggregate.AggregateAxis");
 	interface AxisIndexer {
 		public Object 	low();
 		public Object 	high();
@@ -17,14 +18,16 @@ public class AggregateAxis {
 		public String   storageFormat(Object o);
 		public String	sqlType();
 		public String   sqlRangeFunction(Connection c, String name) throws SQLException ;
+		public AxisSplitDimension splitAxis(Object low, Object high, int cnt);
 	}
 	
-class  IntegerAxisIndexer implements AxisIndexer {
-		
+public class IntegerAxisIndexer implements AxisIndexer {
 		private int low;
 		private int high;
 		private int axisSize;
 		private int BASEBLOCKSIZE;
+		public final static String TYPE_EXPRESSION = "integer";
+		
 		
 		public IntegerAxisIndexer(Object low, Object high, Object BASEBLOCKSIZE) {
 			this.low = (low instanceof Integer) ? ((Integer)low).intValue() : Integer.parseInt(low.toString());
@@ -91,7 +94,7 @@ class  IntegerAxisIndexer implements AxisIndexer {
 		}
 		
 		public String sqlType() {
-			return "integer";
+			return TYPE_EXPRESSION ;
 		}
 		
 		public String sqlRangeFunction(Connection c, String fun) throws SQLException {
@@ -101,15 +104,21 @@ class  IntegerAxisIndexer implements AxisIndexer {
 
 					);	
 		}
+
+		public AxisSplitDimension splitAxis(Object low, Object high, int cnt) {
+		throw new RuntimeException("Function not implemented yet!");
+		}
 		
 	}
 	
-class  LongAxisIndexer implements AxisIndexer {
+public class  LongAxisIndexer implements AxisIndexer {
 		
 		private long low;
 		private long high;
 		private int    axisSize;
 		private long BASEBLOCKSIZE;
+		public final static String TYPE_EXPRESSION = "bigint";
+		
 		
 		public LongAxisIndexer(Object low, Object high, Object BASEBLOCKSIZE) {
 			this.low = (low instanceof Long) ? ((Long)low).longValue() : Long.parseLong(low.toString());
@@ -176,7 +185,7 @@ class  LongAxisIndexer implements AxisIndexer {
 		}
 		
 		public String sqlType() {
-			return "bigint";
+			return TYPE_EXPRESSION;
 		}
 		
 		public String sqlRangeFunction(Connection c, String fun) throws SQLException {
@@ -185,15 +194,21 @@ class  LongAxisIndexer implements AxisIndexer {
 							"", "\tRETURN " + SqlUtils.gen_DIV(c,"v - " + this.low, ""+this.BASEBLOCKSIZE) + ";"
 					);	
 		}
+
+		public AxisSplitDimension splitAxis(Object low, Object high, int cnt) {
+			throw new RuntimeException("Function not implemented yet!");
+		}
+		
 		
 	}
 	
-	class  DoubleAxisIndexer implements AxisIndexer {
-		
+public class DoubleAxisIndexer implements AxisIndexer {
 		private double low;
 		private double high;
 		private int    axisSize;
 		private double BASEBLOCKSIZE;
+		public final static String TYPE_EXPRESSION = "double precision";
+		
 		
 		public DoubleAxisIndexer(Object low, Object high, Object BASEBLOCKSIZE) {
 			this.low = (low instanceof Double) ? ((Double)low).doubleValue() : Double.parseDouble(low.toString());
@@ -261,7 +276,7 @@ class  LongAxisIndexer implements AxisIndexer {
 		}
 		
 		public String sqlType() {
-			return "double precision";
+			return TYPE_EXPRESSION;
 		}
 		
 		public String sqlRangeFunction(Connection c, String fun) throws SQLException {
@@ -271,16 +286,61 @@ class  LongAxisIndexer implements AxisIndexer {
 
 					);	
 		}
+
+		public AxisSplitDimension splitAxis(Object low, Object high, int cnt) {
+			LOGGER.severe("Double:1: "+low+"|"+high+"|"+cnt);
+			if(cnt<=0 || low==null || high==null) throw new RuntimeException("count, low or high values are not feasible");
+			double start = (Double) low;
+			double end = (Double) high;
+			if(end<=start) throw new RuntimeException("end value "+end+" is less than start value "+start);
+			// resolve double representation errors
+			long startl = Math.round(start/BASEBLOCKSIZE);
+			long endl = Math.round(end/BASEBLOCKSIZE);
+			LOGGER.severe("Double:2: "+startl+"|"+endl+"|"+cnt);
+			if(start>this.high || end<this.low)
+				// query out of range of the available data
+				throw new RuntimeException("query out of range of the available data: (start,end,high,low)=("+start+","+end+","+this.low+","+this.high+")");
+			
+			// in the case of a split along a single chunk, no alignment with the factor is possible!
+			if(cnt==1) return new AxisSplitDimension((double) startl*BASEBLOCKSIZE, (double)endl*BASEBLOCKSIZE, 1);
+//			double 	deltal = Math.ceil((endl-startl)/cnt);
+			double 	deltal = Math.ceil((endl-startl)/(cnt-1));
+			// this is the case where the query is inside the available data
+			double _startl = (double) (Math.floor(startl/deltal))*deltal;
+			double _endl = (double) (Math.ceil(endl/deltal))*deltal;
+//			double _startl = (double) (Math.ceil(startl/deltal))*deltal;
+//			double _endl = (double) (Math.floor(endl/deltal))*deltal;
+			// assert((_end-_start)/delta==cnt+1); 
+			LOGGER.severe("Double:3: "+startl+"|"+endl+"|"+cnt);
+			
+			while(_startl<this.low/BASEBLOCKSIZE && cnt>0){
+				_startl += deltal;
+				cnt--;
+			}
+			while(_endl>this.high/BASEBLOCKSIZE && cnt>0){
+				_endl -= deltal;
+				cnt--;
+			}
+			LOGGER.severe("Double:4: "+startl+"|"+endl+"|"+cnt);
+			
+			if(cnt>0)
+				return new AxisSplitDimension(_startl*BASEBLOCKSIZE, (_startl+deltal)*BASEBLOCKSIZE, cnt);
+			LOGGER.severe("Double:5: "+startl+"|"+endl+"|"+cnt);
+			
+			throw new RuntimeException("remaining count value is less than or euqal to 0: "+cnt);
+		}
+
 		
 	}
 	
 	
-class  TimestampAxisIndexer implements AxisIndexer {
+public class  TimestampAxisIndexer implements AxisIndexer {
 		
 		private long low;
 		private long high;
 		private int  axisSize;
 		private long BASEBLOCKSIZE;
+		public final static String TYPE_EXPRESSION = "timestamp with time zone";
 		
 		public TimestampAxisIndexer(Object low, Object high, Object BASEBLOCKSIZE) {
 			this.low =  (low instanceof Timestamp) ? ((Timestamp)low).getTime() : Long.parseLong(low.toString());
@@ -350,7 +410,7 @@ class  TimestampAxisIndexer implements AxisIndexer {
 		}
 		
 		public String sqlType() {
-			return "timestamp with time zone";
+			return TYPE_EXPRESSION;
 		}
 		
 		public String OLDsqlRangeFunction(Connection c, String fun) {
@@ -377,6 +437,50 @@ class  TimestampAxisIndexer implements AxisIndexer {
 
 					);	
 		}
+
+		public AxisSplitDimension splitAxis(Object low, Object high, int cnt) throws RuntimeException {
+			if(cnt<=0) cnt=1;
+			long start = this.low;
+			long end = this.high;
+			if(low!=null) {
+				start = ((Timestamp) low).getTime();
+			}
+			if(high!=null){
+				end = ((Timestamp) high).getTime();
+			}
+			if(end<=start) throw new RuntimeException("end value "+end+" is less than start value "+start);
+			if(start>this.high || end<this.low)
+				// query out of range of the available data
+				throw new RuntimeException("query out of range of the available data: (start,end,high,low)=("+start+","+end+","+this.low+","+this.high+")");
+			long startl = start/BASEBLOCKSIZE;
+			long endl = end/BASEBLOCKSIZE;
+		
+			// in the case of a split along a single chunk, no alignment with the factor is possible!
+			if(cnt==1) return new AxisSplitDimension(new Timestamp(startl*BASEBLOCKSIZE), new Timestamp(endl*BASEBLOCKSIZE), 1);
+			
+			long deltal = (endl-startl)/(cnt-1);
+			if((endl-startl)%(cnt-1) > 0) deltal++;
+			//delta = delta*BASEBLOCKSIZE;
+			
+			// this is the case where the query is inside the available data
+			long _start = (startl/deltal)*deltal;
+			long _end = endl/deltal;
+			if(endl%deltal >0) _end++;
+			_end = _end*deltal;
+			
+			while(_start<this.low/BASEBLOCKSIZE && cnt>0){
+				_start += deltal;
+				cnt--;
+			}
+			while(_end>this.high/BASEBLOCKSIZE && cnt>0){
+				_end -= deltal;
+				cnt--;
+			}
+			if(cnt>0)
+				return new AxisSplitDimension(new Timestamp(_start*BASEBLOCKSIZE), new Timestamp((_start+deltal)*BASEBLOCKSIZE),cnt);
+			throw new RuntimeException("remaining count value is less than or euqal to 0: "+cnt);
+		}
+
 		
 		
 	}
@@ -538,6 +642,12 @@ class  TimestampAxisIndexer implements AxisIndexer {
 		return indexer.sqlRangeFunction(c, fun);	
 	}
 	
+	/**
+	 * function does not take care of baseblocksize for the boundatries of the split
+	 * and the delta/chunk
+	 * @param n
+	 * @return
+	 */
 	public Object[][] split(int n) {
 		Object[][] res = new Object[n][2];
 		
@@ -555,8 +665,16 @@ class  TimestampAxisIndexer implements AxisIndexer {
 		}
 		return res;
 	}
+	
 	public String toString() {
 		return "AggregateAxis(colExpr="+columnExpression+", type="+sqlType()+", low="+low()+",high="+high()+", BBS="+indexer.BASEBLOCKSIZE()+", N="+N()+",axisSize="+axisSize()+", bits="+bits()+", maxLevels="+maxLevels()+")";
 	}
-	
+
+	public AxisSplitDimension splitAxis(Object low, Object high, int cnt) {
+		if ( indexer != null )
+			return indexer.splitAxis(low, high, cnt); 
+		else
+			throw new NullPointerException();
+	}
+
 }
