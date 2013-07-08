@@ -30,5 +30,10 @@
 			<artifactId>pre-aggregate</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+        <groupId>com.sun.net.httpserver</groupId>
+        <artifactId>http</artifactId>
+        <version>20070405</version>
+      </dependency>
 	</dependencies>
 </project>

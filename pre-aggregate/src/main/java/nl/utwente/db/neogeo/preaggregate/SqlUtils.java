@@ -209,6 +209,16 @@ public class SqlUtils {
 		throw new SQLException("UNEXPECTED");
 	}
 
+	public static String gen_MOD(Connection c, String l, String r) throws SQLException {
+		switch ( dbType(c) ) {
+		case POSTGRES:
+			return "MOD("+l+","+r+")";
+		case MYSQL:
+			return "("+l+") mod ("+r+")";
+		}	
+		throw new SQLException("UNEXPECTED");
+	}
+	
 	public static String sql_assign(Connection c, String name, String value) throws SQLException {
 		switch ( dbType(c) ) {
 		case POSTGRES:

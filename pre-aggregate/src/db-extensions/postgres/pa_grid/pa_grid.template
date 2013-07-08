@@ -435,15 +435,16 @@ static VectorLong* pacells_n(pa_grid* grid, int current_D[]) {
 }
 
 static void loadcell_pa_grid(pa_grid* grid, int current_D[]) {
-  int i, factor;
+  int i, prev_dimsize;
 
-  grid->gridKey = 0;
   for(i=0; i<grid->q.dimensions; i++) {
-      if ( i == 0 )
-          factor = 1;
-      else
-          factor *= grid->q.d[i].gridsize;
-      grid->gridKey += factor * current_D[i];
+      if ( i == 0 ) {
+          grid->gridKey = current_D[i];
+          prev_dimsize = grid->q.d[i].gridsize;
+      } else {
+          grid->gridKey += current_D[i] * prev_dimsize;
+	  prev_dimsize *= grid->q.d[i].gridsize; 
+      }
   }
   grid->stw_res = pacells_n(grid, current_D);
   grid->current_stw_res = -1;

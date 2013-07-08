@@ -479,10 +479,19 @@ public class PreAggregate {
 		if ( serversideStairwalk ) {
 			int swgc[][] = new int[axis.length][3]; // start/width/gridcells
 
+			StringBuilder gksplit = new StringBuilder();
+			long prev_dimsize = 1;
 			for(i=0; i<axis.length; i++) {
 				swgc[i][0] = iv_first[i]; // start
 				swgc[i][1] = iv_size[i]; // width
 				swgc[i][2] = iv_count[i]; // gridcells
+				//
+				if ( i == 0 ) {
+					
+				} else {
+					
+				}
+				prev_dimsize *= iv_count[i];
 			}
 			StringBuilder sqlaggr = new StringBuilder();
 			if ((aggregateMask & AGGR_COUNT) != 0)
@@ -495,7 +504,7 @@ public class PreAggregate {
 				sqlaggr.append(",max(maxAggr) AS maxAggr");
 			String gcells = "pa_grid(\'" + grid_paGridQuery(swgc) + "\')";
 			String sql = "SELECT gkey"+sqlaggr+" FROM "+schema+"."+table+PA_EXTENSION+", "+gcells+ " WHERE ckey=pakey GROUP BY gkey;";
-			System.out.println("XXX="+sql);			
+			// System.out.println("SQL="+sql);			
 			result = SqlUtils.execute(c,sql);
 		} else {
 			// explode it
@@ -880,6 +889,7 @@ public class PreAggregate {
 			sb.append(swgc[i][0]+","+swgc[i][1]+","+swgc[i][2]+"|");
 		}
 		sb.append(schema+"."+table+"|"+schema+"."+table+"_btree"+"|");
+		if ( true ) System.out.println("XX="+sb);
 		return sb.toString();
 	}
 
