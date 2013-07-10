@@ -1,0 +1,76 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+<title></title>
+<link rel="stylesheet" href="theme/default/style.css" type="text/css">
+<script type="text/javascript" src="js/OpenLayers.js"></script>
+<script type="text/javascript">
+    function init() {
+
+        var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
+        var toProjection   = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
+
+	var bounds = new OpenLayers.Bounds(
+                    -0.357796311378479, 51.373607635498,
+                    0.143579229712486, 51.633186340332
+                );
+
+	var options = {
+            projection: toProjection,
+            displayProjection: fromProjection,
+            units: 'degrees'
+        };
+        var map = new OpenLayers.Map('map', options);
+
+        var london = new OpenLayers.Layer.WMS(
+        "LondonGeoserver", "/geoserver/nurc/wms",
+        {
+            // layers: 'nurc:london_place, nurc:london_neogeo',
+            layers: 'nurc:london_neogeo',
+            format: 'image/gif',
+            transparent: 'true'
+        }
+        );
+        map.addLayer(new OpenLayers.Layer.OSM());
+        map.addLayer(london);
+        map.addControl(new OpenLayers.Control.Navigation());
+
+	OpenLayers.Popup.FramedCloud.prototype.maxSize = new OpenLayers.Size(800, 400); 
+        var popup;
+	var info = new OpenLayers.Control.WMSGetFeatureInfo({
+            url: '/geoserver/nurc/wms',
+	    layers: [london],
+	    vendorParams: { "propertyName": "time,user_name,tweet" },
+            title: 'London Tweets by clicking',
+            queryVisible: true,
+            eventListeners: {
+                getfeatureinfo: function(event) {
+		    if (popup) {
+			map.removePopup(popup);
+		    }
+		    popup = new OpenLayers.Popup.FramedCloud(
+                        "jf-chicken",
+                        map.getLonLatFromPixel(event.xy),
+                        new OpenLayers.Size(800, 400),
+                        event.text,
+                        null,
+                        true
+                    );
+		    map.addPopup(popup);
+                }
+            }
+        });
+        map.addControl(info);
+        info.activate();
+
+	var zoom = 15;
+	map.setCenter(new OpenLayers.LonLat(-0.1,51.51).transform(fromProjection,toProjection), zoom);
+        // map.zoomToMaxExtent(bounds, true);
+    };
+
+</script>
+</head>
+<body onload="init();">
+    <div id="map"></div>
+  </body>
+</html>
+

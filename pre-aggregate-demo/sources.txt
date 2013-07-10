@@ -1,0 +1,5 @@
+sources:
+
+http://openlayers.org/dev/examples/navtoolbar-alwaysZoom.html
+http://openlayers.org/dev/examples/wmst.html
+http://openlayers.org/dev/examples/osm.html
