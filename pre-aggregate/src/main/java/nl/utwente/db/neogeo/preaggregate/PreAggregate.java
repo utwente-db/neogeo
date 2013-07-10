@@ -4,11 +4,15 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 public class PreAggregate {
+	private static final Logger LOGGER = Logger.getLogger("org.geotools.data.aggregation.PreAggregate");
 
 	/*
 	 * Experiment setup variables
@@ -489,9 +493,9 @@ public class PreAggregate {
 				swgc[i][2] = iv_count[i]; // gridcells
 				//
 				if ( i == 0 ) {
-					
+
 				} else {
-					
+
 				}
 				prev_dimsize *= iv_count[i];
 			}
@@ -537,6 +541,62 @@ public class PreAggregate {
 			result = SqlUtils.execute(c, qb.toString());
 
 		}
+		return result;
+	}
+
+	public ResultSet SQLquery_grid_standard(int queryAggregateMask, Object iv_first_obj[][], int iv_count[]) throws SQLException {
+		ResultSet result = null;
+		int i;
+
+		if ( iv_first_obj.length != axis.length )
+			throw new SQLException("SQLquery_grid: dimension of first interval does not meet axis");
+		if ( iv_count.length != axis.length )
+			throw new SQLException("SQLquery_grid: dimension of interval count does not meet axis");
+		int iv_size[] = new int[axis.length];
+		int iv_first[] = new int[axis.length];
+		// now have all the info we need
+		// what do do in the sql case ?
+		StringBuilder sqlaggr = new StringBuilder();
+		if ((queryAggregateMask & aggregateMask & AGGR_COUNT) != 0)
+			sqlaggr.append(",count(*) AS countAggr");
+		if ((queryAggregateMask & aggregateMask & AGGR_SUM) != 0)
+			sqlaggr.append(",sum("+aggregateColumn+") AS sumAggr");
+		if ((queryAggregateMask & aggregateMask & AGGR_MIN) != 0)
+			sqlaggr.append(",min("+aggregateColumn+") AS minAggr");
+		if ((queryAggregateMask & aggregateMask & AGGR_MAX) != 0)
+			sqlaggr.append(",max("+aggregateColumn+") AS maxAggr");
+
+		StringBuilder sqlgkey = new StringBuilder();
+		StringBuilder sqlwhere = new StringBuilder();
+		StringBuilder sqlgroupby = new StringBuilder();
+		int factor = 1;
+		for(i=axis.length-1; i>=0; i--) {
+			if(i<2){
+				// coordinates				
+				sqlgkey.append("floor("+axis[i].columnExpression()+"/"+(((Double)iv_first_obj[i][1])-((Double)iv_first_obj[i][0]))+")*"+factor+"+");
+				sqlwhere.append( " and "+axis[i].columnExpression()+">="+iv_first_obj[i][0]);
+				sqlwhere.append( " and "+ axis[i].columnExpression()+"<="+
+					(((Double)iv_first_obj[i][0])+iv_count[i]*(((Double)iv_first_obj[i][1])-((Double)iv_first_obj[i][0]))));
+				sqlgroupby.append("floor("+axis[i].columnExpression()+"/"+(((Double)iv_first_obj[i][1])-((Double)iv_first_obj[i][0]))+"),");
+			} else {
+				// time dimension - if existent
+				sqlwhere.append( " and "+axis[i].columnExpression()+">= '"+((Timestamp)iv_first_obj[i][0])+"'::timestamp with time zone");
+				sqlwhere.append( " and "+axis[i].columnExpression()+"<= '"+
+						(((Timestamp)iv_first_obj[i][0])+"'::timestamp with time zone + ("+iv_count[i]+"*('"+((Timestamp)iv_first_obj[i][1])+"'::timestamp with time zone - '"+((Timestamp)iv_first_obj[i][0])+"'::timestamp with time zone))"));
+				if(iv_count[i]>1){
+					sqlgkey.append("floor(extract('epoch' from "+axis[i].columnExpression()+")/(extract('epoch' from '"+(((Timestamp)iv_first_obj[i][1])+"'::timestamp with time zone) - extract('epoch' from '"+((Timestamp)iv_first_obj[i][0]))+"'::timestamp with time zone)))*"+factor+"+");				
+					sqlgroupby.append("floor(extract('epoch' from "+axis[i].columnExpression()+")/(extract('epoch' from '"+(((Timestamp)iv_first_obj[i][1])+"'::timestamp with time zone) - extract('epoch' from '"+((Timestamp)iv_first_obj[i][0]))+"'::timestamp with time zone))),");
+				}
+			}
+			factor = factor*iv_count[i];
+		}
+		int		ranges[][] = new int[axis.length][2];
+
+		String sql = "SELECT "+sqlgkey.toString()+"0 as gkey"+sqlaggr+" FROM "+schema+"."+table+" WHERE true "+sqlwhere.toString()+
+						" GROUP BY "+sqlgroupby.toString();
+		sql = sql.substring(0, sql.length()-1);
+		System.out.println("XXX="+sql);			
+		result = SqlUtils.execute(c, sql);
 		return result;
 	}
 
@@ -971,7 +1031,7 @@ public class PreAggregate {
 				" FROM " + schema + "." + aggregateRepositoryName +
 				" WHERE tableName=\'"+tableName+"\' AND label=\'"+label+"\';"
 		);
-		
+
 		if (!rs.next())
 			return false;
 		int dimensions = rs.getInt(3);
@@ -1086,7 +1146,7 @@ public class PreAggregate {
 		return label;
 	}
 
-	
+
 	//	public static void main(String[] argv) {
 	//		qverbose = true;
 	//		AggrKeyDescriptor kd = new AggrKeyDescriptor();
