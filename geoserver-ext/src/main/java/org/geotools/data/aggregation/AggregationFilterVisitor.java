@@ -161,9 +161,13 @@ public class AggregationFilterVisitor extends DefaultFilterVisitor {
 	public Object visit(IncludeFilter filter, Object data) {
 		LOGGER.log(level, filter.getClass().getCanonicalName());
 		area = agg.getArea();
+		try{
 		long[] timebounds = agg.getTimeBounds();
 		startTime = timebounds[0];
 		endTime = timebounds[1];
+		} catch(NullPointerException e){
+			LOGGER.severe("PreAggregate does not contain a time dimension");
+		}
 		valid = true;
 		return super.visit(filter, data);
 	}

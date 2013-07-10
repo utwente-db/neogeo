@@ -57,6 +57,10 @@
   </dependencies>
   
   <build>
+  	<sourceDirectory>src/main/java</sourceDirectory>
+  	<testSourceDirectory>src/test/java</testSourceDirectory>
+  	<outputDirectory>target</outputDirectory>
+  	<testOutputDirectory>target</testOutputDirectory>
   	<resources>
   		<!-- resource>
   			<targetPath>WEB-INF/lib</targetPath>

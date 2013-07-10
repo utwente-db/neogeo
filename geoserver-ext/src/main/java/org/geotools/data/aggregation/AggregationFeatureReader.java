@@ -46,12 +46,14 @@ public class AggregationFeatureReader implements FeatureReader {
 	private int[] range;
 	private Map<String, Class> attributes = null;
 
+	private AggregationDataStore data;
+
 	//    public AggregationFeatureReader(Area area) throws IOException {
 	public AggregationFeatureReader(ContentState contentState, ResultSet rs, 
 			Object[][] iv_first_obj, int[] range,
 			Map<String, Class> attributes ) throws IOException {
 		state = contentState;
-		//		data = (AggregationDataStore)contentState.getEntry().getDataStore();
+		data = (AggregationDataStore)contentState.getEntry().getDataStore();
 		builder = new SimpleFeatureBuilder(state.getFeatureType());
 		geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
 		row = 0;
@@ -65,14 +67,18 @@ public class AggregationFeatureReader implements FeatureReader {
 	/**
 	 * set all parameters derived for constructing the grid at the end 
 	 */
-	public void _init(){
-		// TODO make this more generic that arbitrary order of axis can be processed
+	public void _init()throws NullPointerException{
 		startX = (Double) iv_first_obj[0][0];
 		grid_deltaX = ((Double)iv_first_obj[0][1]) - startX;
 		startY = (Double) iv_first_obj[1][0];
 		grid_deltaY = ((Double)iv_first_obj[1][1]) - startY;
-		starttime = ((Timestamp)iv_first_obj[2][0]).getTime();
-		grid_delta_time = ((Timestamp)iv_first_obj[2][1]).getTime()- starttime;
+		if(attributes.containsKey("starttime")){
+			starttime = ((Timestamp)iv_first_obj[2][0]).getTime();
+			grid_delta_time = ((Timestamp)iv_first_obj[2][1]).getTime()- starttime;
+		} else {
+			starttime = -1;
+			grid_delta_time = 0;
+		}
 	}
 
 	public SimpleFeatureType getFeatureType() {
@@ -106,14 +112,16 @@ public class AggregationFeatureReader implements FeatureReader {
 					val = rs.getInt(key);
 				} else if(cl == java.lang.Long.class){
 					val = rs.getLong(key);
-//				} else if(cl == java.sql.Timestamp.class){
-//					val = rs.getTimestamp(key);
+					//				} else if(cl == java.sql.Timestamp.class){
+					//					val = rs.getTimestamp(key);
 				}	
 				builder.set(key, val);
 			}
 
-			builder.set("starttime", new Timestamp(starttime+pos[2]*grid_delta_time));
-			builder.set("endtime", new Timestamp(starttime+(pos[2]+1)*grid_delta_time));
+			if(attributes.containsKey("starttime")){
+				builder.set("starttime", new Timestamp(starttime+pos[2]*grid_delta_time));
+				builder.set("endtime", new Timestamp(starttime+(pos[2]+1)*grid_delta_time));
+			}
 			// create the ring for the polygon
 			Coordinate[] coordinates = new Coordinate[5];
 			// lower left corner
@@ -152,8 +160,9 @@ public class AggregationFeatureReader implements FeatureReader {
 		// time dimension third factor range[0]*range[1]
 		ret[0] = ((int)gkey) % range[0];
 		ret[1] = (((int)gkey) % (range[0]*range[1]))/range[0];
-		ret[2] = ((int)gkey) / (range[0]*range[1]);
-		LOGGER.severe("key reversal (gkey,x,y,time)=("+gkey+","+ret+")");
+		if(range.length>2)
+			ret[2] = ((int)gkey) / (range[0]*range[1]);
+		//LOGGER.severe("key reversal (gkey,x,y,time)=("+gkey+","+ret+")");
 		return ret;
 	}
 

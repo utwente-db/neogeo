@@ -222,10 +222,14 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 			}
 			if(pa_query){
 				LOGGER.severe("processing the query with Aggregation Index");
+				long start = System.currentTimeMillis();
 				rs = agg.SQLquery_grid(this.getDataStore().getMask(), iv_first_obj, range);
+				LOGGER.severe("query response time [ms]: "+(System.currentTimeMillis()-start));
 			} else{
 				LOGGER.severe("processing the query in standard SQL");
+				long start = System.currentTimeMillis();
 				// TODO call the standard query processing
+				LOGGER.severe("query response time [ms]: "+(System.currentTimeMillis()-start));
 			}
 		} catch (Exception e1) {
 			LOGGER.severe("Cought Exception:"+e1.getMessage());
