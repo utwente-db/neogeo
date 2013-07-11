@@ -97,6 +97,12 @@ public class Test {
 				System.out.println(rs.getInt(1)+"|"+rs.getLong(2));
 			}
 			rs.close();
+			System.out.println("\n\n standard query!");
+			rs = pa.SQLquery_grid_standard(PreAggregate.AGGR_COUNT, iv_first_obj, range);
+			while(rs.next()){
+				System.out.println(rs.getInt(1)+"|"+rs.getLong(2));
+			}
+			rs.close();
 			System.out.println("\n\n with splitting!");
 			int i=0;
 			for(AggregateAxis a : pa.getAxis()){

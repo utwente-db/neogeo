@@ -1,13 +1,6 @@
 todo
 =====
 
-1) it is at the moment hard coded that the underlying database supports the time dimension; 
-this must be dynamic
-
-2) if you reach the boundaries of the dataset, the bbox of the map is rest to the bbox 
+1) if you reach the boundaries of the dataset, the bbox of the map is rest to the bbox 
 of the dataset WITHOUT reducing the number of grid cells. As a consequence when zooming out
 a lot the grid cells get very tiny. Adjust BBox and number of grid cells.
-
-3) handle getFeatureInfo: currently the getFeatureInfo has a tiny BBox, which seems to
-correspond to the point the mouse is pointing to; however, in our aggregation view we
-have to query the cell where the mouse is pointing to.

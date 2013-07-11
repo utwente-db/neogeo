@@ -288,7 +288,7 @@ public class DoubleAxisIndexer implements AxisIndexer {
 		}
 
 		public AxisSplitDimension splitAxis(Object low, Object high, int cnt) {
-			LOGGER.severe("Double:1: "+low+"|"+high+"|"+cnt);
+			//LOGGER.severe("Double:1: "+low+"|"+high+"|"+cnt);
 			if(cnt<=0 || low==null || high==null) throw new RuntimeException("count, low or high values are not feasible");
 			double start = (Double) low;
 			double end = (Double) high;
@@ -296,7 +296,7 @@ public class DoubleAxisIndexer implements AxisIndexer {
 			// resolve double representation errors
 			long startl = Math.round(start/BASEBLOCKSIZE);
 			long endl = Math.round(end/BASEBLOCKSIZE);
-			LOGGER.severe("Double:2: "+startl+"|"+endl+"|"+cnt);
+			//LOGGER.severe("Double:2: "+startl+"|"+endl+"|"+cnt);
 			if(start>this.high || end<this.low)
 				// query out of range of the available data
 				throw new RuntimeException("query out of range of the available data: (start,end,high,low)=("+start+","+end+","+this.low+","+this.high+")");
@@ -311,7 +311,7 @@ public class DoubleAxisIndexer implements AxisIndexer {
 //			double _startl = (double) (Math.ceil(startl/deltal))*deltal;
 //			double _endl = (double) (Math.floor(endl/deltal))*deltal;
 			// assert((_end-_start)/delta==cnt+1); 
-			LOGGER.severe("Double:3: "+startl+"|"+endl+"|"+cnt);
+			//LOGGER.severe("Double:3: "+startl+"|"+endl+"|"+cnt);
 			
 			while(_startl<this.low/BASEBLOCKSIZE && cnt>0){
 				_startl += deltal;
@@ -321,11 +321,10 @@ public class DoubleAxisIndexer implements AxisIndexer {
 				_endl -= deltal;
 				cnt--;
 			}
-			LOGGER.severe("Double:4: "+startl+"|"+endl+"|"+cnt);
+			LOGGER.severe("Acis splitting result: "+startl+"|"+endl+"|"+cnt);
 			
 			if(cnt>0)
 				return new AxisSplitDimension(_startl*BASEBLOCKSIZE, (_startl+deltal)*BASEBLOCKSIZE, cnt);
-			LOGGER.severe("Double:5: "+startl+"|"+endl+"|"+cnt);
 			
 			throw new RuntimeException("remaining count value is less than or euqal to 0: "+cnt);
 		}
@@ -476,6 +475,7 @@ public class  TimestampAxisIndexer implements AxisIndexer {
 				_end -= deltal;
 				cnt--;
 			}
+			LOGGER.severe("axis splitter result (_start,_end,cnt)=("+_start+","+_end+","+cnt+")");
 			if(cnt>0)
 				return new AxisSplitDimension(new Timestamp(_start*BASEBLOCKSIZE), new Timestamp((_start+deltal)*BASEBLOCKSIZE),cnt);
 			throw new RuntimeException("remaining count value is less than or euqal to 0: "+cnt);

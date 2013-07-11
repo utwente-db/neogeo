@@ -12,6 +12,14 @@ is due to the ckey, thus the number of bits assigned per dimension.
 In the application it can easily happen that the range is exceeded thus, we need
 a place to deal with it. This can be either on the Java or C side.
 
+Another problem with the ckey function is its exsibility. If you have a data 
+collection which increases over time (appand only) then the bounds of the time 
+dimension (at least) will be extended with every new tuple appanded. Thus, a re-
+indexing is needed. Possible solutions are the pre-definition of a domain per axis, 
+or re-thinking the design of the ckey function to make it open for extensions.
+
+genkey function in postgres is not table specific at the moment; this makes this
+function non-reusable for later on standard queries
 
 Combing multiple PA labels in one query
 ----------------------------------------
@@ -48,3 +56,8 @@ keywords/strings this is not the case anymore. Here the different strings have
 to be enumerated in the query rather defining a range.
 This is quite related to the previous topic and might be a solution on how to handle
 ordinal domains.
+
+
+index is not created on the _pa tables for ckey
+------------------------------------------------
+the creation script is missing the incex creation.

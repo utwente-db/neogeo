@@ -34,6 +34,32 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
               <CssParameter name="stroke-width">1</CssParameter>
             </Stroke>
           </PolygonSymbolizer>
+          <TextSymbolizer>
+            <Label>
+              <ogc:PropertyName>countaggr</ogc:PropertyName>
+            </Label>
+            <Font>
+              <CssParameter name="font-family">Arial</CssParameter>
+              <CssParameter name="font-size">12</CssParameter>
+              <CssParameter name="font-style">normal</CssParameter>
+              <CssParameter name="font-weight">bold</CssParameter>
+            </Font>
+            <LabelPlacement>
+              <PointPlacement>
+                <AnchorPoint>
+                  <AnchorPointX>0.5</AnchorPointX>
+                  <AnchorPointY>0.0</AnchorPointY>
+                </AnchorPoint>
+                <Displacement>
+                  <DisplacementX>0</DisplacementX>
+                  <DisplacementY>0</DisplacementY>
+                </Displacement>
+              </PointPlacement>
+            </LabelPlacement>
+            <Fill>
+              <CssParameter name="fill">#990099</CssParameter>
+            </Fill>
+          </TextSymbolizer>
         </Rule>
         <Rule>
           <Name>MediumPop</Name>
@@ -60,6 +86,32 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
               <CssParameter name="stroke-width">1</CssParameter>
             </Stroke>
           </PolygonSymbolizer>
+          <TextSymbolizer>
+            <Label>
+              <ogc:PropertyName>countaggr</ogc:PropertyName>
+            </Label>
+            <Font>
+              <CssParameter name="font-family">Arial</CssParameter>
+              <CssParameter name="font-size">12</CssParameter>
+              <CssParameter name="font-style">normal</CssParameter>
+              <CssParameter name="font-weight">bold</CssParameter>
+            </Font>
+            <LabelPlacement>
+              <PointPlacement>
+                <AnchorPoint>
+                  <AnchorPointX>0.5</AnchorPointX>
+                  <AnchorPointY>0.0</AnchorPointY>
+                </AnchorPoint>
+                <Displacement>
+                  <DisplacementX>0</DisplacementX>
+                  <DisplacementY>0</DisplacementY>
+                </Displacement>
+              </PointPlacement>
+            </LabelPlacement>
+            <Fill>
+              <CssParameter name="fill">#990099</CssParameter>
+            </Fill>
+          </TextSymbolizer>
         </Rule>
         <Rule>
           <Name>LargePop</Name>
@@ -80,6 +132,32 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
               <CssParameter name="stroke-width">1</CssParameter>
             </Stroke>
           </PolygonSymbolizer>
+          <TextSymbolizer>
+            <Label>
+              <ogc:PropertyName>countaggr</ogc:PropertyName>
+            </Label>
+            <Font>
+              <CssParameter name="font-family">Arial</CssParameter>
+              <CssParameter name="font-size">12</CssParameter>
+              <CssParameter name="font-style">normal</CssParameter>
+              <CssParameter name="font-weight">bold</CssParameter>
+            </Font>
+            <LabelPlacement>
+              <PointPlacement>
+                <AnchorPoint>
+                  <AnchorPointX>0.5</AnchorPointX>
+                  <AnchorPointY>0.0</AnchorPointY>
+                </AnchorPoint>
+                <Displacement>
+                  <DisplacementX>0</DisplacementX>
+                  <DisplacementY>0</DisplacementY>
+                </Displacement>
+              </PointPlacement>
+            </LabelPlacement>
+            <Fill>
+              <CssParameter name="fill">#990099</CssParameter>
+            </Fill>
+          </TextSymbolizer>
         </Rule>
       </FeatureTypeStyle>
     </UserStyle>
