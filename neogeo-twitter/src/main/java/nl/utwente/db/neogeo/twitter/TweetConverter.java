@@ -1,18 +1,18 @@
 package nl.utwente.db.neogeo.twitter;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.sql.Connection;
-import java.sql.Timestamp;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Iterator;
-
-import nl.utwente.db.neogeo.preaggregate.*;
-
-import nl.utwente.db.neogeo.db.utils.HibernateUtils;
 
 public class TweetConverter {
 
@@ -301,7 +301,7 @@ public class TweetConverter {
 //			System.out.println("Caught: " + e);
 //			e.printStackTrace(System.out);
 //		}
-		Test.runTest(HibernateUtils.getJDBCConnection());
+		// Test.runTest(HibernateUtils.getJDBCConnection());
 	}
 	
 //	public static void main2(String[] argv) throws SQLException {

@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
@@ -488,14 +487,11 @@ public class PreAggregate {
 			StringBuilder gksplit = new StringBuilder();
 			long prev_dimsize = 1;
 			for(i=0; i<axis.length; i++) {
-				swgc[i][0] = iv_first[i]; // start
-				swgc[i][1] = iv_size[i]; // width
-				swgc[i][2] = iv_count[i]; // gridcells
-				//
+				swgc[i][0] = iv_first[i];	// start
+				swgc[i][1] = iv_size[i];	// width
+				swgc[i][2] = iv_count[i];	// gridcells
 				if ( i == 0 ) {
-
 				} else {
-
 				}
 				prev_dimsize *= iv_count[i];
 			}
