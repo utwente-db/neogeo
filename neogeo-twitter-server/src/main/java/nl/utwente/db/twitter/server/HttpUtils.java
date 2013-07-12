@@ -6,20 +6,34 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import org.json.simple.parser.ParseException;
+
 public class HttpUtils {
  
 	private static final String USER_AGENT = "Mozilla/5.0";
 	
 	public static void main(String[] args) throws Exception {
-		if ( false ) {
-		postTweet("http://localhost:8080/neogeo-twitter-server/AddTweet", Tweet.exampleTweet);
+		// String host = "localhost";
+		String host = "farm15.ewi.utwente.nl";
+		
+		if ( true ) {
+			postTweet("http://"+host+":8080/neogeo-twitter-server/AddTweet",
+					Tweet.exampleTweet);
 		} else {
-			Tweet tweet = new Tweet(Tweet.exampleTweet);
-			System.out.println("#!Enriched="+tweet.dummyEnriched());
+			Tweet tweet = null;
+			
+			try {
+				tweet = new Tweet(Tweet.exampleTweet);
+			} catch (ParseException e) {
+				System.out.println("#!INVALID TWEET: "+e);
+				return;
+			}
+			System.out.println("#!Enriched=" + tweet.dummyEnriched());
+			
 		}
 	}
  
-	private static void postTweet(String url, String json_tweet) throws Exception {
+	public static void postTweet(String url, String json_tweet) throws Exception {
 		URL obj = new URL(url);
 		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
  
@@ -29,7 +43,7 @@ public class HttpUtils {
 		con.setRequestProperty("User-Agent", USER_AGENT);
 		// con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
  
-		String urlParameters = Tweet.exampleTweet;
+		String urlParameters = json_tweet;
  
 		// Send post request
 		con.setDoOutput(true);

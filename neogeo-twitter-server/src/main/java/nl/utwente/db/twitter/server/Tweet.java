@@ -1,6 +1,5 @@
 package nl.utwente.db.twitter.server;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -10,6 +9,7 @@ import java.util.Map;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 
 public class Tweet {
 
@@ -20,27 +20,16 @@ public class Tweet {
 	@SuppressWarnings("unused")
 	private String json;
 	private MyJSONRepository jrep;
-	private String	errorMessage = null;
-
-	public Tweet(String id_str, String tweet, String place, String json) {
-		this.id_str = id_str;
-		this.tweet = tweet;
-		this.place = place;
-		this.json = json;
-		this.jrep = MyJSONRepository.getRepository(json);
-	}
 	
-	public Tweet(String json) {
+	public Tweet(String json) throws ParseException {
 		this.jrep = MyJSONRepository.getRepository(json);
-		this.id_str = obj2string( jrep.getPath("id"));
-		this.tweet = obj2string( jrep.getPath("text"));
+		this.id_str = obj2string(jrep.getPath("id"));
+		this.tweet = obj2string(jrep.getPath("text"));
 		this.place = place_full_name();
 		this.json = json;
+
 	}
 
-	public boolean isValid() {
-		return errorMessage == null;
-	}
 	private static final String obj2string(Object o) {
 		if ( o != null )
 			return o.toString();
@@ -122,7 +111,7 @@ public class Tweet {
 		Date res = null;
 		try {
 			res = sf.parse(strDate);
-		} catch(ParseException e) {
+		} catch(java.text.ParseException e) {
 			System.out.println("CAUGHT:Tweet:created_at(): "+e);
 		}
 		return res;
@@ -212,11 +201,12 @@ public class Tweet {
 	public String dummyEnriched() {
 		JSONObject obj=new JSONObject();
 		  obj.put("id",this.id());
+		  obj.put("tweet",this.tweet());
 		  obj.put("language","English");
 		  //
 		  JSONArray list = new JSONArray();
-		  list.add(json_geolocation("Nowhereistan",10,"(x,y)",0.98,"htpp:/url/nws"));
-		  list.add(json_geolocation("Somewhereistan",40,"(x,y)",0.95,"htpp:/url/sws"));
+		  list.add(json_geolocation("Nowhereistan",0,"(x,y)",0.98,"htpp:/url/nws"));
+		  list.add(json_geolocation("Somewhereistan",37,"(x,y)",0.95,"htpp:/url/sws"));
 		  list.add(json_geolocation("Anywhereistan",92,"(x,y)",1.0,"htpp:/url/aws"));
 		  obj.put("geolocations", list);
 		  //

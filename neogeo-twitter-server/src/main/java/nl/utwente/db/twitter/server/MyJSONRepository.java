@@ -1,10 +1,10 @@
 package nl.utwente.db.twitter.server;
 
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.LinkedHashMap;
 
 import org.json.simple.JSONValue;
 import org.json.simple.parser.ContainerFactory;
@@ -13,7 +13,7 @@ import org.json.simple.parser.ParseException;
 
 public class MyJSONRepository {
 	
-	private static boolean debug = false;
+	private static boolean debug = false; 
 
 	@SuppressWarnings("rawtypes")
 	private Map topJSONMap = null;
@@ -170,31 +170,25 @@ public class MyJSONRepository {
 	};
 
 	public static synchronized MyJSONRepository getRepository(
-			String json_encoded) {
-		try {
-			@SuppressWarnings("rawtypes")
-			Map json = (Map) parser.parse(json_encoded, containerFactory);
-			if (debug) {
-				System.out.println("JSON=" + json_encoded);
-				@SuppressWarnings("rawtypes")
-				Iterator iter = json.entrySet().iterator();
-				System.out.println("==JSON iterate result==");
-				while (iter.hasNext()) {
-					@SuppressWarnings("rawtypes")
-					Map.Entry entry = (Map.Entry) iter.next();
-					System.out
-							.println(entry.getKey() + "=>" + entry.getValue());
-				}
+			String json_encoded) throws ParseException {
 
-				System.out.println("==toJSONString()==");
-				System.out.println(JSONValue.toJSONString(json));
+		@SuppressWarnings("rawtypes")
+		Map json = (Map) parser.parse(json_encoded, containerFactory);
+		if (debug) {
+			System.out.println("JSON=" + json_encoded);
+			@SuppressWarnings("rawtypes")
+			Iterator iter = json.entrySet().iterator();
+			System.out.println("==JSON iterate result==");
+			while (iter.hasNext()) {
+				@SuppressWarnings("rawtypes")
+				Map.Entry entry = (Map.Entry) iter.next();
+				System.out.println(entry.getKey() + "=>" + entry.getValue());
 			}
-			return new MyJSONRepository(json);
-		} catch (ParseException pe) {
-			System.out.println("Caught: " + pe);
-			pe.printStackTrace(System.out);
+
+			System.out.println("==toJSONString()==");
+			System.out.println(JSONValue.toJSONString(json));
 		}
-		return null;
+		return new MyJSONRepository(json);
 	}
-	
+
 }

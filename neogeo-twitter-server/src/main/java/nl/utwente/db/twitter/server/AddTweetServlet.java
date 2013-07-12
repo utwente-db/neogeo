@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.simple.parser.ParseException;
+
 @MultipartConfig
 public class AddTweetServlet extends HttpServlet {
 
@@ -40,34 +42,26 @@ public class AddTweetServlet extends HttpServlet {
         // System.out.println("OK: "+s);
 
         Tweet tweet = null;
+        
         try {
         	tweet = new Tweet(jsonbuff.toString());
-        } catch (Exception e) {
-        	e.printStackTrace();
+        	
+        	String enriched = tweet.dummyEnriched();
+        	
+        	System.out.println("#!ENRICHED: "+enriched);
+        	if ( false ) {
+        		try {
+        			HttpUtils.postTweet("http://84.35.254.52:30000/Enrichment", enriched);
+        		} catch (Exception e) {
+        			System.out.println("#!CAUGHT: "+e);
+        		}
+        	}
+        } catch (ParseException e) {
+        	System.out.println("INVALID TWEET: "+e +",tweet="+jsonbuff);
+        	response.sendError(400, "TWEET PARSE ERROR: "+e);
+        	return;
         }
         System.out.println("TWEET: id="+tweet.id_str()+", tweet="+tweet.tweet());
-        
-//        try {
-//          JSONObject jsonObject = JSONObject.fromObject(jb.toString());
-//        } catch (ParseException e) {
-//          crash and burn
-//          throw new IOException("Error parsing JSON request string");
-//        }
-        
-//        try {
-//            byte[] arBytes = rsp.getBytes();
-//            
-//            // FileInputStream is = new FileInputStream(file);
-//            // is.read(arBytes);
-//            
-//            System.out.println("#!Handled AddTweetServlet 99:doGet()");
-//            
-//            ServletOutputStream op = response.getOutputStream();
-//            op.write(arBytes);
-//            op.flush();
-//        } catch (IOException e) {
-//            throw new RuntimeException("Unable to download file", e);
-//        }
     }
 
     @Override
