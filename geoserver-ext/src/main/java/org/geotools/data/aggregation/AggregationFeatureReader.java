@@ -61,7 +61,8 @@ public class AggregationFeatureReader implements FeatureReader {
 		this.range = range;
 		this.attributes = attributes;
 		this.rs = rs;
-		_init();
+		if(rs!=null)
+			_init();
 	}
 
 	/**
