@@ -12,9 +12,9 @@ is due to the ckey, thus the number of bits assigned per dimension.
 In the application it can easily happen that the range is exceeded thus, we need
 a place to deal with it. This can be either on the Java or C side.
 
-Another problem with the ckey function is its exsibility. If you have a data 
-collection which increases over time (appand only) then the bounds of the time 
-dimension (at least) will be extended with every new tuple appanded. Thus, a re-
+Another problem with the ckey function is its extensibility. If you have a data 
+collection which increases over time (append only) then the bounds of the time 
+dimension (at least) will be extended with every new tuple appended. Thus, a re-
 indexing is needed. Possible solutions are the pre-definition of a domain per axis, 
 or re-thinking the design of the ckey function to make it open for extensions.
 
@@ -60,4 +60,4 @@ ordinal domains.
 
 index is not created on the _pa tables for ckey
 ------------------------------------------------
-the creation script is missing the incex creation.
+the creation script is missing the index creation.

@@ -231,3 +231,30 @@ function setHTML(response){
 };
 }
 
+function update_date() {
+	var startstring = OpenLayers.Util.getElement('startyear').value + "-" +
+    					OpenLayers.Util.getElement('startmonth').value + "-" +
+    					OpenLayers.Util.getElement('startday').value + "T" +
+    					OpenLayers.Util.getElement('starthour').value + ":" +
+    					OpenLayers.Util.getElement('startminute').value + ":00.0Z";
+    var endstring = OpenLayers.Util.getElement('endyear').value + "-" +
+    					OpenLayers.Util.getElement('endmonth').value + "-" +
+    					OpenLayers.Util.getElement('endday').value + "T" +
+    					OpenLayers.Util.getElement('endhour').value + ":" +
+    					OpenLayers.Util.getElement('endminute').value + ":00.0Z";
+    neogeo_uk_agg.mergeNewParams({'time':startstring+'/'+endstring});
+}
+
+function update_viewparams() {
+	var viewparams = "keyword1:"+OpenLayers.Util.getElement('keyword1').value + 
+					 ";keyword2:"+OpenLayers.Util.getElement('keyword2').value + 
+					 ";keyword3:"+OpenLayers.Util.getElement('keyword3').value + 
+					 ";keyword4:"+OpenLayers.Util.getElement('keyword4').value + 
+					 ";keyword5:"+OpenLayers.Util.getElement('keyword5').value;
+    var query = OpenLayers.Util.getElement('query');
+    if(query.checked){
+    	viewparams = viewparams+";query:standard";
+    }
+    neogeo_uk_agg.mergeNewParams({'viewparams':viewparams});
+}
+3
