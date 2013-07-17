@@ -21,12 +21,22 @@ import org.geotools.data.store.ContentEntry;
 import org.geotools.data.store.ContentFeatureSource;
 import org.geotools.factory.Hints;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
+import org.geotools.geometry.DirectPosition2D;
+import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.referencing.CRS;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.geometry.MismatchedDimensionException;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.operation.TransformException;
 
 
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Polygon;
 
 @SuppressWarnings("unchecked")
@@ -140,10 +150,37 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 		}
 		// key=BBOX   value=ReferencedEnvelope[0.14668148058431 : 0.273466415399465, 51.5469266059974 : 51.6177065420478]
 		ReferencedEnvelope re = (ReferencedEnvelope) kvp.get("BBOX");
-		Area area = new Area(re.getMinX(),re.getMaxX(), re.getMinY(), re.getMaxY());
-		//		and then, if not null (in test enviroment it can be),
-		//		check the kvp map, it has the parsed BBOX among the others
-		return area;
+		Envelope te = null;
+
+		// transform CRS
+		try {
+			CoordinateReferenceSystem sourceCrs = CRS.decode((String) kvp.get("SRS"));
+			CoordinateReferenceSystem targetCrs = agg.getCoordinateReferenceSystem(getEntry());
+			LOGGER.severe("source CRS:"+sourceCrs.getName().getCode());
+			LOGGER.severe("target CRS:"+targetCrs.getName().getCode());
+			boolean lenient = true;
+			MathTransform mathTransform
+			= CRS.findMathTransform(sourceCrs, targetCrs, lenient);
+			te = JTS.transform( re, mathTransform);
+		} catch (NoSuchAuthorityCodeException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (FactoryException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (MismatchedDimensionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TransformException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if(te!=null){
+			Area area = new Area(te.getMinX(),te.getMaxX(), te.getMinY(), te.getMaxY());
+			//		and then, if not null (in test enviroment it can be),
+			//		check the kvp map, it has the parsed BBOX among the others
+			return area;
+		} return null;
 	}
 
 	protected FeatureReader<SimpleFeatureType, SimpleFeature> getReaderInternal(Query query)
@@ -194,6 +231,7 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 			// GetFeatureInfo
 			if("GetFeatureInfo".equals(req.getRequest())){
 				Area area = getReaderInternalGetFeatureInfo(req);
+				if(area== null) return null;
 				ret = reformulateQuery(area,startTime,endTime, this.iv_count);
 				double startX = (Double) ret[0][0];
 				double grid_deltaX = ((Double)ret[0][1]) - startX;

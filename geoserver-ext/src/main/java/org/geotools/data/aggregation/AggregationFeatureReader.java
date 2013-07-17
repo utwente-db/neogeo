@@ -186,11 +186,13 @@ public class AggregationFeatureReader implements FeatureReader {
 		geometryFactory = null;
 		next = null;
 		try {
-			rs.close();
+			if (rs!=null)
+				rs.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		rs = null;
 		LOGGER.severe("produced #rows for the output: "+row);
 	}
 
