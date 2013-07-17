@@ -246,7 +246,7 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 				int[] cnt = new int[cntAxis];
 				cnt[0] = (int) Math.round((_endX-_startX) / grid_deltaX);
 				cnt[1] = (int) Math.round((_endY-_startY) / grid_deltaY);
-				cnt[2] = this.iv_count[2];
+				if(cntAxis>2) cnt[2] = this.iv_count[2];
 				ret = reformulateQuery(new Area(_startX, _endX, _startY, _endY),startTime,endTime, cnt);
 			} else {
 				ret = reformulateQuery(a,startTime,endTime, this.iv_count);
