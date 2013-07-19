@@ -535,7 +535,6 @@ public class PreAggregate {
 			qb.append(';');
 			System.out.println("#! executing Grid Query:\n"+qb);
 			result = SqlUtils.execute(c, qb.toString());
-
 		}
 		return result;
 	}

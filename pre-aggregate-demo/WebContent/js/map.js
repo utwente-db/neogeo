@@ -163,11 +163,13 @@ function init() {
 			"tweets UK", "http://silo2.ewi.utwente.nl:8080/geoserver/nurc/wms",
 			{
 				layers: 'nurc:uk_neogeo',
-				maxfeatures: 500,
+				maxfeatures: 100,
 				format: 'image/gif',
 				transparent: 'true'
 					//time: '2002-09-01T00:00:00.0Z/2002-10-01T23:59:59.999Z',
 					//styleMap: new OpenLayers.StyleMap(style)
+			},{
+				opacity: 0.5
 			}
 	);
 	
@@ -226,7 +228,8 @@ function init() {
 					//styleMap: new OpenLayers.StyleMap(style)
 			}, {
 				singleTile: true,
-				ratio: 1
+				ratio: 1,
+				opacity: 0.5
 			}
 	);
 	map.addLayers([neogeo_uk_agg, neogeo_uk]);
