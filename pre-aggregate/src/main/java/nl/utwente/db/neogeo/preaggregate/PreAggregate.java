@@ -242,6 +242,7 @@ public class PreAggregate {
 				((aggregateMask&AGGR_MAX)!=0 ? "\tmaxAggr "+aggregateType+"\n" : "") +
 				");\n"
 		);
+		sql_build.add("CREATE INDEX ON "+table_pa+" USING HASH(ckey);\n");
 		sql_build.newLine();
 
 		int nChunks = 1;
