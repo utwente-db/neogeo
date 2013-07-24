@@ -75,9 +75,9 @@ public final class AggrKey {
 		long res = 0;
 		// long nres = 0;
 		
-		for(short i=0; i<kd.dimensions(); i++) {		
+		for(short i=0; i<kd.dimensions(); i++) {	
 			res = ( (res << kd.levelBits) + (long)getLevel(i) );
-			res = ( (res << kd.dimBits[i]) + getIndex(i) );
+			res = ( (res << kd.dimBits[i]) + kd.axis[i].dimensionKeyValue(getIndex(i)) );
 			
 			// nres = nres*((long)Math.pow(2,kd.levelBits)) + (long)getLevel(i);
 			// nres = nres*((long)Math.pow(2,kd.dimBits[i])) + (long)i(i);

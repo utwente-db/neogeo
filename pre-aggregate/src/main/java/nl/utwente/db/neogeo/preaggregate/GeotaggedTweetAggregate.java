@@ -1,11 +1,8 @@
 package nl.utwente.db.neogeo.preaggregate;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.Date;
 
 public class GeotaggedTweetAggregate extends PreAggregate {
 
@@ -27,8 +24,9 @@ public class GeotaggedTweetAggregate extends PreAggregate {
 		throws SQLException {
 		AggregateAxis axis[] = {
 				new AggregateAxis("ST_X("+point_column+")","double",""+DFLT_BASEBOXSIZE,DFLT_N),
+				// new AggregateAxis("ST_X("+point_column+")","double","-0.119","0.448",""+DFLT_BASEBOXSIZE,DFLT_N),
 				new AggregateAxis("ST_Y("+point_column+")","double",""+DFLT_BASEBOXSIZE,DFLT_N)
-			  , new AggregateAxis("time","timestamp with time zone","3600000" /*=1 hour*/,DFLT_N)
+			  // , new AggregateAxis("time","timestamp with time zone","3600000" /*=1 hour*/,DFLT_N)
 			};
 		createPreAggregate(c,schema,table,label,axis,"char_length(tweet)","bigint",AGGR_ALL,axisToSplit,chunkSize,newRange);
 	}

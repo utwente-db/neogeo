@@ -366,7 +366,7 @@ static long crossProductLongKey(pa_grid* grid, Ktype *K) {
 
     for(i=0; i<grid->q.dimensions; i++) {
         res = (res << grid->q.levelbits) + K->l[i];
-        res = (res << grid->q.d[i].bits) + K->i[i];
+        res = (res << grid->q.d[i].bits) + ( K->i[i] + 1); //INCOMPLETE
     }
     return res;
 }

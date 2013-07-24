@@ -6,7 +6,12 @@ import java.sql.Timestamp;
 import java.util.logging.Logger;
 
 public class AggregateAxis {
+	
+	public static final int INDEX_TOO_SMALL = -2;
+	public static final int INDEX_TOO_LARGE = -1;
+	
 	protected static final Logger LOGGER = Logger.getLogger("nl.utwente.db.neogeo.preaggregate.AggregateAxis");
+	
 	interface AxisIndexer {
 		public Object 	low();
 		public Object 	high();
@@ -65,9 +70,9 @@ public class IntegerAxisIndexer implements AxisIndexer {
 			else
 				lvalue = Integer.parseInt(""+value);
 			if ( lvalue < low )
-				lvalue = low;
+				return INDEX_TOO_SMALL;
 			else if ( lvalue > high )
-				lvalue = high;
+				return INDEX_TOO_LARGE;
 			return (int)((lvalue-this.low)/this.BASEBLOCKSIZE);
 		}
 		
@@ -100,7 +105,7 @@ public class IntegerAxisIndexer implements AxisIndexer {
 		public String sqlRangeFunction(Connection c, String fun) throws SQLException {
 			return SqlUtils.gen_Create_Or_Replace_Function(
 							c, fun, "v "+sqlType(), "integer",
-							"", "\tRETURN FLOOR((v - " + this.low + ") / " + this.BASEBLOCKSIZE + ");\n"
+							"", "\tRETURN FLOOR((v - " + this.low + ") / " + this.BASEBLOCKSIZE + ")" + ";\n"
 
 					);	
 		}
@@ -156,9 +161,9 @@ public class  LongAxisIndexer implements AxisIndexer {
 			else
 				lvalue = Long.parseLong(""+value);
 			if ( lvalue < low )
-				lvalue = low;
+				return INDEX_TOO_SMALL;
 			else if ( lvalue > high )
-				lvalue = high;
+				return INDEX_TOO_LARGE;
 			return (int)((lvalue-this.low)/this.BASEBLOCKSIZE);
 		}
 		
@@ -246,9 +251,9 @@ public class DoubleAxisIndexer implements AxisIndexer {
 			else
 				dvalue = Double.parseDouble(""+value);
 			if ( dvalue < low )
-				dvalue = low;
+				return INDEX_TOO_SMALL;
 			else if ( dvalue > high )
-				dvalue = high;
+				return INDEX_TOO_LARGE;
 			return (int)((dvalue-this.low)/this.BASEBLOCKSIZE);
 		}
 		
@@ -282,7 +287,7 @@ public class DoubleAxisIndexer implements AxisIndexer {
 		public String sqlRangeFunction(Connection c, String fun) throws SQLException {
 			return SqlUtils.gen_Create_Or_Replace_Function(
 							c, fun, "v "+sqlType(), "integer",
-							"", "\tRETURN FLOOR((v - " + this.low + ") / " + this.BASEBLOCKSIZE + ");\n"
+							"", "\tRETURN FLOOR((v - " + this.low + ") / " + this.BASEBLOCKSIZE + ")" + ";\n"
 
 					);	
 		}
@@ -377,9 +382,9 @@ public class  TimestampAxisIndexer implements AxisIndexer {
 			else
 				tsvalue = Long.parseLong(""+value);
 			if ( tsvalue < low )
-				tsvalue = low;
+				return INDEX_TOO_SMALL;
 			else if ( tsvalue > high )
-				tsvalue = high;
+				return INDEX_TOO_LARGE;
 			return (int)((tsvalue-this.low)/this.BASEBLOCKSIZE);
 		}
 		
@@ -412,27 +417,12 @@ public class  TimestampAxisIndexer implements AxisIndexer {
 			return TYPE_EXPRESSION;
 		}
 		
-		public String OLDsqlRangeFunction(Connection c, String fun) {
-			StringBuilder res = new StringBuilder();
-			
-			res.append(fun);
-			res.append("(v "+sqlType()+") RETURNS integer AS $$\n");
-			res.append("BEGIN\n");
-			double base = this.low / 1000; // epoch is in seconds, not milliseconds
-			double bbs  = this.BASEBLOCKSIZE / 1000; // epoch is in seconds not milliseconds
-			// res.append("\tRETURN CAST((EXTRACT(EPOCH FROM ( (v - to_timestamp(" + base + ")))) / " + bbs + ") AS integer);\n");
-			res.append("\tRETURN CAST(((EXTRACT(EPOCH FROM v) - " + base + ") / " + bbs + ") AS integer);\n");
-			res.append("END\n");
-			res.append("$$ LANGUAGE plpgsql");
-			return res.toString();	
-		}
-		
 		public String sqlRangeFunction(Connection c, String fun) throws SQLException {
 			double base = this.low / 1000; // epoch is in seconds, not milliseconds
 			double bbs  = this.BASEBLOCKSIZE / 1000; // epoch is in seconds not milliseconds
 			return SqlUtils.gen_Create_Or_Replace_Function(
 							c, fun, "v "+sqlType(), "integer",
-							"", "\tRETURN FLOOR((EXTRACT(EPOCH FROM v) - " + base + ") / " + bbs + ");\n"
+							"", "\tRETURN FLOOR((EXTRACT(EPOCH FROM v) - " + base + ") / " + bbs + ")" + ";\n"
 
 					);	
 		}
@@ -589,9 +579,12 @@ public class  TimestampAxisIndexer implements AxisIndexer {
 	}
 
 	public int getIndex(Object value) {
-		if ( indexer != null )
-			return indexer.getIndex(value);
-		else
+		if ( indexer != null ) {
+			int res = indexer.getIndex(value);
+			if ( true && res < 0 ) 
+				System.out.println(this+": getIndex("+value+")="+res);
+			return res;
+		} else
 			throw new NullPointerException();
 	}
 	
@@ -618,14 +611,40 @@ public class  TimestampAxisIndexer implements AxisIndexer {
 		return (short) Math.ceil(Math.log(base) / Math.log((long)2));
 	}
 	
-	public static final short pow2(int base) {
-		return (short) Math.round(Math.pow(base, 2));
+	public static final short pow2(int exp) {
+		return (short) Math.round(Math.pow(2,exp));
 	}
 	
 	public short bits() {
-		return log2(axisSize());
+		/* The real axis size has to make room for 2 extra values for every index of a dimension:
+		 * 0 - value is too small
+		 * 2^n - 1 - value is too big
+		 */
+		int real_axis_size = axisSize() + 2;
+		return log2(real_axis_size);
+	}
+	
+	protected int tooLow() {
+		return 0;
+	}
+	
+	protected int tooHigh() {
+		return pow2(bits()) - 1;
 	}
 
+	public int dimensionKeyValue(int d_i) {
+		if ( d_i < 0 ) {
+			if ( d_i == INDEX_TOO_SMALL )
+				return tooLow();
+			else if ( d_i == INDEX_TOO_LARGE )
+				return tooHigh();
+			else 
+				throw new RuntimeException("bad dimension key value: "+d_i);
+		} else
+			return d_i; // TODO + 1
+		
+	}
+	
 	public String storageFormat(Object o) {
 		if ( indexer != null )
 			return indexer.storageFormat(o);
@@ -636,7 +655,6 @@ public class  TimestampAxisIndexer implements AxisIndexer {
 	public String sqlType() {
 		return indexer.sqlType();	
 	}
-	
 	
 	public String sqlRangeFunction(Connection c, String fun) throws SQLException {
 		return indexer.sqlRangeFunction(c, fun);	

@@ -178,8 +178,21 @@ public class PreAggregate {
 		Object obj_ranges[][] = getRangeValues(c,schema,table,axis);
 		short maxLevel = 0;
 		for (i = 0; i < axis.length; i++) {
-			if ( !axis[i].hasRangeValues() )
+			if ( axis[i].hasRangeValues() ) {
+				if ( (axis[i].getIndex(obj_ranges[i][RMIN])<0) || (axis[i].getIndex(obj_ranges[i][RMAX])<0) )
+					throw new RuntimeException("createPreAggregate: predefined ranges conflict with min/max dataset");
+			} else {
 				axis[i].setRangeValues(obj_ranges[i][RMIN], obj_ranges[i][RMAX]);
+			}
+			/*
+			 * Adjust the axis a little bit too wide on blocksize multiples
+			 */
+			Object wide_min, wide_max;
+			
+			wide_min = axis[i].reverseValue(-1);
+			wide_max = axis[i].reverseValue(axis[i].axisSize()+1);
+			axis[i].setRangeValues(wide_min, wide_max);
+			
 			if ( axis[i].maxLevels() > maxLevel )
 				maxLevel = axis[i].maxLevels();
 			if (showAxisAndKey)
@@ -476,6 +489,7 @@ public class PreAggregate {
 							+ " not on boundary: "
 							+ iv_first_obj[i][RMAX]);
 			}
+			// TODO: check out of range values
 			iv_first[i] = ax.getIndex(iv_first_obj[i][RMIN]);
 			iv_size[i] = ax.getIndex(iv_first_obj[i][RMAX]) - iv_first[i];
 		}
@@ -610,8 +624,10 @@ public class PreAggregate {
 
 		if ( obj_range.length != axis.length )
 			throw new SQLException("PreAggregate.query(): dimension index and query do not match");
+		@SuppressWarnings("unused")
 		boolean needsCorrection = false;
 		for(i=0; i<axis.length; i++) {
+			// TODO: do out of range checks
 			ranges[i][RMIN] = axis[i].getIndex(obj_range[i][RMIN]);
 			ranges[i][RMAX] = axis[i].getIndex(obj_range[i][RMAX]);
 			if (	doResultCorrection && (
@@ -649,10 +665,7 @@ public class PreAggregate {
 			// use Postgres internal pacells2d function
 			String pa_grid_str;
 
-			if ( false )
-				pa_grid_str = "pa_grid('"+range_paGridQuery(ranges)+"')";
-			else
-				pa_grid_str = "pa_grid_cell('"+range_paGridQuery(ranges)+"') AS pakey "; // 2 times faster
+			pa_grid_str = "pa_grid_cell('"+range_paGridQuery(ranges)+"') AS pakey "; // 2 times faster
 			return ", " + pa_grid_str + " WHERE ckey=pakey";
 		} else {
 			StringBuilder qb = new StringBuilder();
@@ -674,9 +687,10 @@ public class PreAggregate {
 		int		ranges[][] = new int[axis.length][2];
 
 		if ( obj_range.length != axis.length )
-			throw new SQLException("PreAggregate.query(): dimension index and query do not match");
+			throw new SQLException("PreAggregate.query(): dimension index and query do not match (" + axis.length + "<>" + obj_range.length + ")");
 		boolean needsCorrection = false;
 		for(i=0; i<axis.length; i++) {
+			// TODO: do out of range corrections
 			ranges[i][RMIN] = axis[i].getIndex(obj_range[i][RMIN]);
 			ranges[i][RMAX] = axis[i].getIndex(obj_range[i][RMAX]);
 			if (	doResultCorrection && (
@@ -688,7 +702,7 @@ public class PreAggregate {
 		}
 		long direct_result = -1;
 		long pg_direct_time_ms = -1;
-		if ( false && useDirect ) {
+		if ( true && useDirect ) {
 			String daggr = "x"; 
 			if ( aggr.equals("count") )
 				daggr = "count(*)";
@@ -744,10 +758,8 @@ public class PreAggregate {
 			// use Postgres internal pacells2d function
 			String pa_grid_str;
 
-			if ( false )
-				pa_grid_str = "pa_grid('"+range_paGridQuery(ranges)+"')";
-			else
-				pa_grid_str = "pa_grid_cell('"+range_paGridQuery(ranges)+"') AS pakey "; // 2 times faster
+			
+			pa_grid_str = "pa_grid_cell('"+range_paGridQuery(ranges)+"') AS pakey "; // 2 times faster
 			qb.append(", ");
 			qb.append(pa_grid_str);
 			qb.append(" WHERE ckey=pakey");

@@ -20,12 +20,15 @@ public class AggrKeyDescriptor {
 	public short	dimBits[] = null;
 	public short	totalBits = -1;
 	
+	public AggregateAxis axis[];
+	
 	public	AggrKeyDescriptor(char kind, AggregateAxis axis[]) {
 		_init(kind, axis);
 	}
 	
 	protected void _init(char kind, AggregateAxis axis[]) {
 		this.kind		= kind;
+		this.axis		= axis;
 		switch ( kind ) {
 		 case KD_NULL:
 			_init(KD_CROSSPRODUCT_LONG, axis);
@@ -88,8 +91,7 @@ public class AggrKeyDescriptor {
 				pars.append(',');
 			pars.append("l"+i+" numeric,i"+i+" numeric");
 			sres = "("+sres+")" + "*" +  (int)Math.pow(2,levelBits) + "+" + "l"+i;
-			sres = "("+sres+")" + "*" +  (int)Math.pow(2,dimBits[i]) + "+" + "i"+i;
-
+			sres = "("+sres+")" + "*" +  (int)Math.pow(2,dimBits[i]) + "+" + "(i"+i+"+1)";
 		}
 		return SqlUtils.gen_Create_Or_Replace_Function(
 							c, fun, pars.toString(), "bigint",
