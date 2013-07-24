@@ -519,7 +519,23 @@ public class PreAggregate {
 			if ((queryAggregateMask & aggregateMask & AGGR_MAX) != 0)
 				sqlaggr.append(",max(maxAggr) AS maxAggr");
 			String gcells = "pa_grid(\'" + grid_paGridQuery(swgc) + "\')";
-			String sql = "SELECT gkey"+sqlaggr+" FROM "+schema+"."+table+PA_EXTENSION+", "+gcells+ " WHERE ckey=pakey GROUP BY gkey order by gkey;";
+			StringBuilder gk_ex = new StringBuilder();
+			
+			gk_ex.append("gkey");
+			int prevBits = 0;
+			for(i=0; i<iv_count.length; i++) {
+				int dimBits = AggregateAxis.log2(iv_count[i]);
+				String base = null;
+				
+				if (prevBits == 0 ) {
+					base = "gkey";
+				} else {
+					base = SqlUtils.gen_DIV(c, "gkey", ""+AggregateAxis.pow2(prevBits));
+				}
+				gk_ex.append("," + SqlUtils.gen_MOD(c, base, ""+AggregateAxis.pow2(dimBits)) + " AS d"+i);
+				prevBits += dimBits;
+			}
+			String sql = "SELECT "+gk_ex+sqlaggr+" FROM "+schema+"."+table+PA_EXTENSION+", "+gcells+ " WHERE ckey=pakey GROUP BY gkey order by gkey;";
 			System.out.println("XXX="+sql);			
 
 			result = SqlUtils.execute(c,sql);
@@ -1153,18 +1169,8 @@ public class PreAggregate {
 		return label;
 	}
 
+	public static void main(String[] argv) {
 
-	//	public static void main(String[] argv) {
-	//		qverbose = true;
-	//		AggrKeyDescriptor kd = new AggrKeyDescriptor();
-	//		short axisN[] = {2,2};
-	//
-	//		int range[][] = {
-	//				{61, 214 },
-	//				{154, 261 }
-	//		};
-	//		// pacells_2d(kd,ranges[0][RMIN],ranges[0][RMAX],axisN[0],ranges[1][RMIN],ranges[1][RMAX],axisN[1],null);
-	//		// pacellsN(kd,range,axisN);
-	//	}
+	}
 
 }

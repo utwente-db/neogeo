@@ -313,6 +313,17 @@ static long my_abs(long l) {
   return (l<0) ? -l : l;
 }
 
+static long my_log2(long num) {
+  int cnt = 0;
+  int v = 1;
+
+  while ( v < num ) {
+    cnt++;
+    v *= 2;
+  }
+  return cnt;
+}
+
 static long my_pow(long base, long to_power) {
   if ( to_power < 1 )
     return 1;
@@ -437,15 +448,13 @@ static VectorLong* pacells_n(pa_grid* grid, int current_D[]) {
 static void loadcell_pa_grid(pa_grid* grid, int current_D[]) {
   int i, prev_dimsize;
 
-  for(i=0; i<grid->q.dimensions; i++) {
-      if ( i == 0 ) {
-          grid->gridKey = current_D[i];
-          prev_dimsize = grid->q.d[i].gridsize;
-      } else {
-          grid->gridKey += current_D[i] * prev_dimsize;
-	  prev_dimsize *= grid->q.d[i].gridsize; 
-      }
+  grid->gridKey = 0;
+  for(i=grid->q.dimensions-1; i>=0; i--) {	
+      grid->gridKey <<= my_log2(grid->q.d[i].gridsize);
+      grid->gridKey += current_D[i];
+      // fprintf(stdout,"#### y_log2({%d} %ld, %ld)[%ld]\n",my_log2(grid->q.d[i].gridsize),current_D[i],grid->q.d[i].gridsize,grid->gridKey);
   }
+  // fprintf(stdout,"#### gridKey = %ld\n",grid->gridKey);
   grid->stw_res = pacells_n(grid, current_D);
   grid->current_stw_res = -1;
 }

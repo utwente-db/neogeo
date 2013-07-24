@@ -37,7 +37,7 @@ int main() {
   testmulti = 1;
   for(i=0; i<testmulti; i++) {
     pa_grid* grid = create_pa_grid(
-	"#G|X|3|2|4,10,61,153,1|4,9,154,108,1|public.london_hav_neogeo|public.london_hav_neogeo_btree|"
+	"#G|X|3|2|4,10,61,153,10|4,9,154,108,10|public.london_hav_neogeo|public.london_hav_neogeo_btree|"
 	);
     fprintf(stdout,"+ GRID Result={\n");
     count = 0;
@@ -45,7 +45,7 @@ int main() {
       count++;
       // fprintf(stdout,"\t[x=%d,y=%d](%ld,\t%ld)\n",(int)(grid->gkey%5),(int)(grid->gkey/5),grid->gkey,grid->akey);
       // fprintf(stdout,"\t(%ld,\t%ld)\n",grid->gridKey,grid->cellKey);
-      fprintf(stdout,"%ld\n",grid->cellKey);
+      // fprintf(stdout,"%ld\n",grid->cellKey);
     }
     fprintf(stdout,"}[count=%d]\n",count);
     free_pa_grid(grid);
