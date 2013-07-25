@@ -190,14 +190,17 @@ public class PreAggregate {
 			Object wide_min, wide_max;
 			
 			wide_min = axis[i].reverseValue(-1);
-			wide_max = axis[i].reverseValue(axis[i].axisSize()+1);
+			wide_max = axis[i].reverseValue(axis[i].axisSize());
+			// System.out.println("#!OLD    AXIS: "+axis[i]);
 			axis[i].setRangeValues(wide_min, wide_max);
+			// System.out.println("#!ADJUST AXIS: "+axis[i]);
 			
 			if ( axis[i].maxLevels() > maxLevel )
 				maxLevel = axis[i].maxLevels();
 			if (showAxisAndKey)
 				System.out.println("AXIS["+i+"]="+axis[i]);
 		}
+		obj_ranges = null;
 
 		kd = new AggrKeyDescriptor(DEFAULT_KD, axis);
 		if (showAxisAndKey)
@@ -475,10 +478,11 @@ public class PreAggregate {
 			throw new SQLException("SQLquery_grid: dimension of interval count does not meet axis");
 		int iv_size[] = new int[axis.length];
 		int iv_first[] = new int[axis.length];
+		int iv_last[] = new int[axis.length];
 		for(i=0; i<axis.length; i++) {
 			AggregateAxis ax = axis[i];
 
-			if (false) {
+			if (true) {
 				if (!ax.exactIndex(iv_first_obj[i][RMIN]))
 					throw new SQLException(
 							"SQLquery_grid: start of first interval in dim "
@@ -492,7 +496,8 @@ public class PreAggregate {
 			}
 			// TODO: check out of range values
 			iv_first[i] = ax.getIndex(iv_first_obj[i][RMIN]);
-			iv_size[i] = ax.getIndex(iv_first_obj[i][RMAX]) - iv_first[i];
+			iv_last[i]  = ax.getIndex(iv_first_obj[i][RMAX]); // IMPORTANT!!!!!
+			iv_size[i]  = iv_last[i] - iv_first[i];
 		}
 		// now have all the info we need
 		// what do do in the sql case ?
@@ -521,6 +526,7 @@ public class PreAggregate {
 				sqlaggr.append(",max(maxAggr) AS maxAggr");
 			String gcells = "pa_grid(\'" + grid_paGridQuery(swgc) + "\')";
 			StringBuilder gk_ex = new StringBuilder();
+			StringBuilder order  = new StringBuilder();
 			
 			gk_ex.append("gkey");
 			int prevBits = 0;
@@ -534,11 +540,60 @@ public class PreAggregate {
 					base = SqlUtils.gen_DIV(c, "gkey", ""+AggregateAxis.pow2(prevBits));
 				}
 				gk_ex.append("," + SqlUtils.gen_MOD(c, base, ""+AggregateAxis.pow2(dimBits)) + " AS d"+i);
+				if ( i > 0 )
+					order.append(",");
+				order.append("d"+i);
 				prevBits += dimBits;
 			}
-			String sql = "SELECT "+gk_ex+sqlaggr+" FROM "+schema+"."+table+PA_EXTENSION+", "+gcells+ " WHERE ckey=pakey GROUP BY gkey order by gkey;";
-			System.out.println("XXX="+sql);			
+			String sql = "SELECT "+gk_ex+sqlaggr+" FROM "+schema+"."+table+PA_EXTENSION+", "+gcells+ " WHERE ckey=pakey GROUP BY gkey ORDER BY "+order+";";
+			System.out.println("#!GRID_QUERY="+sql);	
+			//
+			if ( true ) {
+				int cellnr[] = { 7, 8 };
+				
+				System.out.println("#!DOING A RECHECK!!");
+				Object cellrange[][] = new Object[axis.length][2];
+				for(i=0; i<axis.length; i++) {
+					int iv_from = iv_first[i] + cellnr[i]*iv_size[i];
+					int iv_to   = iv_first[i] + (cellnr[i] + 1) * iv_size[i] + 1;
+					cellrange[i][0] = axis[i].reverseValue(iv_from);
+					cellrange[i][1] = axis[i].reverseValue(iv_to);
+				}
+				query("count", cellrange);
+			}
+			
+			if (true) {
+				System.out.println("\n#!MANUAL COMPUTED GRID RESULTS");
+				for (int d0 = 0; d0 < iv_count[0]; d0++) {
+					for (int d1 = 0; d1 < iv_count[1]; d1++) {
 
+						int cellnr[] = { d0, d1 };
+
+						Object cellrange[][] = new Object[axis.length][2];
+						for (i = 0; i < axis.length; i++) {
+							int iv_from = iv_first[i] + cellnr[i] * iv_size[i];
+							int iv_to = iv_first[i] + (cellnr[i] + 1)
+									* iv_size[i] + 1;
+							cellrange[i][0] = axis[i].reverseValue(iv_from);
+							cellrange[i][1] = axis[i].reverseValue(iv_to);
+						}
+						if (false) {
+							ResultSet rs = SQLquery(queryAggregateMask,
+									cellrange);
+							int res = 0;
+							if (rs.next())
+								res = rs.getInt(1);
+							if (res > 0)
+								System.out.println("GRID[" + d0 + "," + d1
+										+ "] = " + res);
+						} else {
+							query("count", cellrange);
+						}
+					}
+				}
+			}
+			
+			//
 			result = SqlUtils.execute(c,sql);
 		} else {
 			// explode it
@@ -616,13 +671,12 @@ public class PreAggregate {
 			}
 			factor = factor*iv_count[i];
 		}
-		int		ranges[][] = new int[axis.length][2];
-
 		String sql = "SELECT "+sqlgkey.toString()+"0 as gkey"+sqlaggr+" FROM "+schema+"."+table+" WHERE true "+sqlwhere.toString()+
 						" GROUP BY "+sqlgroupby.toString();
 		sql = sql.substring(0, sql.length()-1);
 		System.out.println("XXX="+sql);			
 		result = SqlUtils.execute(c, sql);
+		//
 		return result;
 	}
 
@@ -630,7 +684,7 @@ public class PreAggregate {
 		ResultSet result = null;
 
 		String sql = SQLquery_string(queryAggregateMask,obj_range,"") + ";";
-		System.out.println("# main query=\n" + sql);
+		// System.out.println("# main query=\n" + sql);
 		result = SqlUtils.execute(c, sql);
 		return result;
 	}
@@ -647,6 +701,10 @@ public class PreAggregate {
 			// TODO: do out of range checks
 			ranges[i][RMIN] = axis[i].getIndex(obj_range[i][RMIN]);
 			ranges[i][RMAX] = axis[i].getIndex(obj_range[i][RMAX]);
+			
+			if ( axis[i].exactIndex(obj_range[i][RMAX]) ) {
+				ranges[i][RMAX] -=  1; // adjust upper bound
+			}
 			if (	doResultCorrection && (
 					!axis[i].exactIndex(obj_range[i][RMIN]) ||
 					!axis[i].exactIndex(obj_range[i][RMAX])
@@ -663,7 +721,7 @@ public class PreAggregate {
 		else {
 			// incomplete, check if the query_aggregates are in the pre_aggregate cells
 		}
-		System.out.println("#!AGGR_MASK="+aggregateMask+", QueryMask="+queryAggregateMask);
+		// System.out.println("#!AGGR_MASK="+aggregateMask+", QueryMask="+queryAggregateMask);
 		StringBuilder b_sqlaggr = new StringBuilder();
 		if ((queryAggregateMask&AGGR_COUNT)!=0) b_sqlaggr.append(",SUM(countAggr) AS countAggr");
 		if ((queryAggregateMask&AGGR_SUM)!=0) b_sqlaggr.append(",SUM(sumAggr) AS sumAggr");
@@ -672,7 +730,7 @@ public class PreAggregate {
 		String sqlaggr = b_sqlaggr.substring(1); // rome heading ,
 
 		StringBuffer qb = new StringBuffer("SELECT " + extra_select + sqlaggr + " FROM "+schema+"."+table+PA_EXTENSION);
-		System.out.println("$ pa-command = "+range_paGridQuery(ranges));
+		// System.out.println("$ pa-command = "+range_paGridQuery(ranges));
 		qb.append(cellCondition(ranges));
 		return qb.toString();
 	}
@@ -703,13 +761,27 @@ public class PreAggregate {
 		int		i;
 		int		ranges[][] = new int[axis.length][2];
 
+		System.out.println("/--------------- query() legacy run ----------------");
 		if ( obj_range.length != axis.length )
 			throw new SQLException("PreAggregate.query(): dimension index and query do not match (" + axis.length + "<>" + obj_range.length + ")");
 		boolean needsCorrection = false;
 		for(i=0; i<axis.length; i++) {
 			// TODO: do out of range corrections
-			ranges[i][RMIN] = axis[i].getIndex(obj_range[i][RMIN]);
-			ranges[i][RMAX] = axis[i].getIndex(obj_range[i][RMAX]);
+			
+			int rmin = axis[i].getIndex(obj_range[i][RMIN]);
+			ranges[i][RMIN] = rmin;
+			int rmax = axis[i].getIndex(obj_range[i][RMAX]);
+			ranges[i][RMAX] = rmax;
+			if ( true ) {
+				// System.out.println("#!RANGE CONVERSION: "+axis[i]);
+				// System.out.println("#!RMIN["+obj_range[i][RMIN]+"]="+rmin+(axis[i].exactIndex(obj_range[i][RMIN])?"(EXACT)":"")+", RMAX["+obj_range[i][RMAX]+"]="+rmax+(axis[i].exactIndex(obj_range[i][RMAX])?"(EXACT)":""));
+				if ( axis[i].exactIndex(obj_range[i][RMAX]) ) {
+					// System.out.println("########## ADJUST UPPER BOUND ###########");
+					ranges[i][RMAX] = rmax - 1; // adjust upper bound
+				} else {
+					System.out.println("#! NO CORRECTION!!!!");
+				}
+			}
 			if (	doResultCorrection && (
 					!axis[i].exactIndex(obj_range[i][RMIN]) ||
 					!axis[i].exactIndex(obj_range[i][RMAX])
@@ -731,7 +803,7 @@ public class PreAggregate {
 			for(i=0; i<axis.length; i++) {
 				if ( i > 0 )
 					cond += " AND ";
-				cond += "(" + axis[i].columnExpression() + ">= ? ) AND (" + axis[i].columnExpression() + "<= ?)";
+				cond += "(" + axis[i].columnExpression() + ">= ? ) AND (" + axis[i].columnExpression() + "< ?)";
 			}
 			pg_direct_time_ms = new Date().getTime();
 			PreparedStatement ps = c.prepareStatement("SELECT "+daggr+" from "+schema+"."+table + " WHERE " + cond + ";");
@@ -739,7 +811,7 @@ public class PreAggregate {
 				ps.setObject(1 + i*2, obj_range[i][RMIN]);
 				ps.setObject(2 + i*2, obj_range[i][RMAX]);
 			}
-			// System.out.println("#! Direct query="+ps.toString());
+			System.out.println("#! Direct query="+ps.toString());
 			ResultSet rs = ps.executeQuery();
 			pg_direct_time_ms = new Date().getTime() - pg_direct_time_ms;
 			if ( !rs.next() )
@@ -771,7 +843,7 @@ public class PreAggregate {
 		StringBuffer qb = new StringBuffer("SELECT "+sqlaggr+" FROM "+schema+"."+table+PA_EXTENSION);
 		System.out.println("$ pa-command = "+range_paGridQuery(ranges));
 		long internalCount = 0;
-		if ( serversideStairwalk ) {
+		if ( true && serversideStairwalk ) {
 			// use Postgres internal pacells2d function
 			String pa_grid_str;
 
@@ -787,13 +859,6 @@ public class PreAggregate {
 			for (i = 0; i < resKeys.size(); i++) {
 				qb.append(((i > 0) ? " OR " : "") + "ckey="
 						+ resKeys.elementAt(i).toKey());
-				if (internalHash != null) {
-					AggrRec r = internalHash.get(resKeys.elementAt(i));
-					if (r != null) {
-						internalCount += r.getCount();
-						// System.out.println("#cell: "+lxy_toString(resKeys.elementAt(i).longValue())+"="+r.getCount());
-					}
-				}
 			}
 		}
 		qb.append(";");
@@ -891,6 +956,8 @@ public class PreAggregate {
 
 	private static boolean qverbose = false;
 
+	public static final boolean sw_verbose = false;
+	
 	private static final Vector<Long> stairwalk(int from, int to, int N) {
 		Vector<Long> res = new Vector<Long>();
 		to++; // last step must be to 1 beyond upper bound
@@ -898,24 +965,28 @@ public class PreAggregate {
 		int step  = 1;
 		int nowAt = from;
 		// first walk up the stairs
-		while (nowAt <= to) {
-			// System.out.println("* Check up: nowAt%(step*N)="+(nowAt % (step*N))+", (nowAt+step*N)="+(nowAt+step*N)+", level="+level+", step="+step+", to="+to);
+		while ( nowAt <= to ) {
+			if (sw_verbose )
+				System.out.println("* Check up: nowAt%(step*N)="+(nowAt % (step*N))+", (nowAt+step*N)="+(nowAt+step*N)+", level="+level+", step="+step+", to="+to);
 			if ( (nowAt % (step*N) == 0) && ((nowAt+step*N)<=to) ) {
 				// I can make a step up
 				level++;
 				step *= N;
-				// System.out.println("* Stepping down: nowAt="+nowAt+", level="+level+", step="+step);
+				if ( sw_verbose )
+					System.out.println("* Stepping down: nowAt="+nowAt+", level="+level+", step="+step);
 			} else {
 				// mark this one for selection
 				if ( (nowAt+step) <= to ) {
-					// System.out.println("+ Adding: nowAt="+li_toString(li_key(level,nowAt/step)));
+					if ( sw_verbose )
+						System.out.println("+ Adding: nowAt="+li_toString(li_key(level,nowAt/step)));
 					res.add(li_key(level,nowAt/step));
 				}
 				nowAt += step;
 			}
 		}
 		nowAt -= step;	// do step back you're too far
-		// System.out.println("* Stepping down: nowAt="+nowAt+", level="+level);
+		if ( sw_verbose )
+			System.out.println("* Stepping down: nowAt="+nowAt+", level="+level);
 		while (nowAt < to) {
 			// System.out.println("L["+level+"]: nowAt="+nowAt+", step="+step);
 			if ((nowAt + step) > to) {
@@ -926,13 +997,14 @@ public class PreAggregate {
 				// make a step
 				if ( (nowAt+step) <= to ) {
 					res.add(li_key(level,nowAt/step));
-					// System.out.println("+ Adding: nowAt="+li_toString(li_key(level,nowAt/step)));
+					if ( sw_verbose )
+						System.out.println("+ Adding: nowAt="+li_toString(li_key(level,nowAt/step)));
 					nowAt += step;
 				}
 			}
 		}
-		if ( qverbose ) {
-			System.out.println("# do stairwalk(from="+from+",to="+to+",N="+N+") = {");
+		if ( sw_verbose ) {
+			System.out.println("# do stairwalk(from="+from+",to="+(to-1)+",N="+N+") = {");
 			for(int i=0; i<res.size(); i++)
 				System.out.println("\t"+li_toString(res.elementAt(i).longValue()));
 			System.out.println("}");
@@ -976,7 +1048,7 @@ public class PreAggregate {
 			sb.append(swgc[i][0]+","+swgc[i][1]+","+swgc[i][2]+"|");
 		}
 		sb.append(schema+"."+table+"|"+schema+"."+table+"_btree"+"|");
-		if ( true ) System.out.println("XX="+sb);
+		if ( false ) System.out.println("XX="+sb);
 		return sb.toString();
 	}
 
@@ -993,7 +1065,6 @@ public class PreAggregate {
 		Vector<AggrKey> res = new Vector<AggrKey>();
 		p.start();
 		while ( p.next() ) {
-			// incomplete, analyze permutation levels in no subindexing case
 			K.reset();
 			for(short i=0; i<axis.length; i++) {
 				long lk = stairs.elementAt(i).elementAt(p.permutation(i));
@@ -1002,7 +1073,7 @@ public class PreAggregate {
 			}
 			res.add( K.copy() );
 		}
-		if (qverbose) {
+		if ( sw_verbose ) {
 			System.out.println("- RESULT(" + res.size() + ") = {");
 			for (int i = 0; i < res.size(); i++)
 				System.out.println("\t" + res.elementAt(i));

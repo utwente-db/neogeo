@@ -254,7 +254,10 @@ public class DoubleAxisIndexer implements AxisIndexer {
 				return INDEX_TOO_SMALL;
 			else if ( dvalue > high )
 				return INDEX_TOO_LARGE;
-			return (int)((dvalue-this.low)/this.BASEBLOCKSIZE);
+			if ( exactIndex(value) )
+				return (int)Math.round((dvalue-this.low)/this.BASEBLOCKSIZE);
+			else
+				return (int)Math.floor((dvalue-this.low)/this.BASEBLOCKSIZE);
 		}
 		
 		public boolean exactIndex(Object value) {
@@ -269,7 +272,7 @@ public class DoubleAxisIndexer implements AxisIndexer {
 			else if ( dvalue > high )
 				return true;
 			// System.out.println("REMAINDER="+ Math.abs(Math.IEEEremainder(dvalue, this.BASEBLOCKSIZE)));
-			return Math.abs(Math.IEEEremainder(dvalue, this.BASEBLOCKSIZE)) < 0.0000000000001;
+			return Math.abs(Math.IEEEremainder(dvalue, this.BASEBLOCKSIZE)) < 0.00000000001;
 		}
 		
 		public Object reverseValue(int index) {
@@ -287,8 +290,7 @@ public class DoubleAxisIndexer implements AxisIndexer {
 		public String sqlRangeFunction(Connection c, String fun) throws SQLException {
 			return SqlUtils.gen_Create_Or_Replace_Function(
 							c, fun, "v "+sqlType(), "integer",
-							"", "\tRETURN FLOOR((v - " + this.low + ") / " + this.BASEBLOCKSIZE + ")" + ";\n"
-
+							"", "\tRETURN FLOOR((v - " + this.low + "::double precision) / " + this.BASEBLOCKSIZE + "::double precision)" + ";\n"
 					);	
 		}
 
@@ -641,7 +643,7 @@ public class  TimestampAxisIndexer implements AxisIndexer {
 			else 
 				throw new RuntimeException("bad dimension key value: "+d_i);
 		} else
-			return d_i; // TODO + 1
+			return d_i + 1;
 		
 	}
 	
