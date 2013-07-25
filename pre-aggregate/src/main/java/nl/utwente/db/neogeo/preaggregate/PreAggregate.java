@@ -548,7 +548,7 @@ public class PreAggregate {
 			String sql = "SELECT "+gk_ex+sqlaggr+" FROM "+schema+"."+table+PA_EXTENSION+", "+gcells+ " WHERE ckey=pakey GROUP BY gkey ORDER BY "+order+";";
 			System.out.println("#!GRID_QUERY="+sql);	
 			//
-			if ( true ) {
+			if ( false ) {
 				int cellnr[] = { 7, 8 };
 				
 				System.out.println("#!DOING A RECHECK!!");
@@ -562,7 +562,7 @@ public class PreAggregate {
 				query("count", cellrange);
 			}
 			
-			if (true) {
+			if (false) {
 				System.out.println("\n#!MANUAL COMPUTED GRID RESULTS");
 				for (int d0 = 0; d0 < iv_count[0]; d0++) {
 					for (int d1 = 0; d1 < iv_count[1]; d1++) {
