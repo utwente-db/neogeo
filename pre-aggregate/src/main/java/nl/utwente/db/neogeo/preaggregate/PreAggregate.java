@@ -179,7 +179,7 @@ public class PreAggregate {
 		short maxLevel = 0;
 		for (i = 0; i < axis.length; i++) {
 			if ( axis[i].hasRangeValues() ) {
-				if ( (axis[i].getIndex(obj_ranges[i][RMIN])<0) || (axis[i].getIndex(obj_ranges[i][RMAX])<0) )
+				if ( (axis[i].getIndex(obj_ranges[i][RMIN],true)<0) || (axis[i].getIndex(obj_ranges[i][RMAX],true)<0) )
 					throw new RuntimeException("createPreAggregate: predefined ranges conflict with min/max dataset");
 			} else {
 				axis[i].setRangeValues(obj_ranges[i][RMIN], obj_ranges[i][RMAX]);
@@ -472,6 +472,7 @@ public class PreAggregate {
 		ResultSet result = null;
 		int i;
 
+		boolean allowOutsideRange = true;
 		if ( iv_first_obj.length != axis.length )
 			throw new SQLException("SQLquery_grid: dimension of first interval does not meet axis");
 		if ( iv_count.length != axis.length )
@@ -495,9 +496,19 @@ public class PreAggregate {
 							+ iv_first_obj[i][RMAX]);
 			}
 			// TODO: check out of range values
-			iv_first[i] = ax.getIndex(iv_first_obj[i][RMIN]);
-			iv_last[i]  = ax.getIndex(iv_first_obj[i][RMAX]); // IMPORTANT!!!!!
-			iv_size[i]  = iv_last[i] - iv_first[i];
+			if (allowOutsideRange) {
+				iv_first[i] = ax.getIndex(iv_first_obj[i][RMIN], false);
+				iv_last[i] = ax.getIndex(iv_first_obj[i][RMAX], false);
+				iv_size[i] = iv_last[i] - iv_first[i];
+			} else {
+				iv_first[i] = ax.getIndex(iv_first_obj[i][RMIN], true);
+				iv_last[i] = ax.getIndex(iv_first_obj[i][RMAX], true);
+				if ( iv_first[i] >= iv_last[i] )
+					throw new SQLException("grid range first > last on dimension "+i);
+				if ( iv_first[i] < 0 || iv_last[i] < 0 )
+					throw new SQLException("grid range outside pre-aggregate range on dimension "+i);
+				iv_size[i] = iv_last[i] - iv_first[i];
+			}
 		}
 		// now have all the info we need
 		// what do do in the sql case ?
@@ -699,8 +710,8 @@ public class PreAggregate {
 		boolean needsCorrection = false;
 		for(i=0; i<axis.length; i++) {
 			// TODO: do out of range checks
-			ranges[i][RMIN] = axis[i].getIndex(obj_range[i][RMIN]);
-			ranges[i][RMAX] = axis[i].getIndex(obj_range[i][RMAX]);
+			ranges[i][RMIN] = axis[i].getIndex(obj_range[i][RMIN],true);
+			ranges[i][RMAX] = axis[i].getIndex(obj_range[i][RMAX],true);
 			
 			if ( axis[i].exactIndex(obj_range[i][RMAX]) ) {
 				ranges[i][RMAX] -=  1; // adjust upper bound
@@ -768,9 +779,9 @@ public class PreAggregate {
 		for(i=0; i<axis.length; i++) {
 			// TODO: do out of range corrections
 			
-			int rmin = axis[i].getIndex(obj_range[i][RMIN]);
+			int rmin = axis[i].getIndex(obj_range[i][RMIN],true);
 			ranges[i][RMIN] = rmin;
-			int rmax = axis[i].getIndex(obj_range[i][RMAX]);
+			int rmax = axis[i].getIndex(obj_range[i][RMAX],true);
 			ranges[i][RMAX] = rmax;
 			if ( true ) {
 				// System.out.println("#!RANGE CONVERSION: "+axis[i]);

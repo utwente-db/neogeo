@@ -32,6 +32,39 @@
 #include "vector.template"
 
 /*
+ * Some utility fun
+ */
+
+static long my_abs(long l) {
+  return (l<0) ? -l : l;
+}
+
+static long my_log2(long num) {
+  int cnt = 0;
+  int v = 1;
+
+  while ( v < num ) {
+    cnt++;
+    v *= 2;
+  }
+  return cnt;
+}
+
+static long my_pow(long base, long exp) {
+  if ( exp < 1 )
+    return 1;
+  else {
+    int i;
+    long res = base;
+
+    for(i=1; i<exp; i++) {
+      res *= base;
+    }
+    return res;
+  }
+}
+
+/*
  * the main data structures
  */
 
@@ -116,8 +149,9 @@ typedef struct Ktype {
 
 // the data for every dimension
 typedef struct pa_grid_def {
-  int N;
-  int bits;
+  int	N;
+  int	bits;
+  long	maxRange;
   //
   int start;
   int cellwidth;
@@ -144,11 +178,12 @@ static void initQuery(pa_query* q, char keyFlag) {
 
 static void addQueryDimension(pa_query* q, int N, int bits, int start, int cellwidth, int gridsize) {
     pa_grid_def* d    = & q->d[q->dimensions++];
-    d->N        = N;
-    d->bits        = bits;
+    d->N            = N;
+    d->bits         = bits;
+    d->maxRange	    = my_pow(2, bits) - 2;
     d->start        = start;
     d->cellwidth    = cellwidth;
-    d->gridsize        = gridsize;
+    d->gridsize     = gridsize;
 }
 
 typedef struct pa_grid {
@@ -264,6 +299,37 @@ static VectorLong* stairwalk(VectorLong *v, long from, long to, long N) {
     return res;
 }
 
+static VectorLong* bounds_check_stairwalk(pa_grid* grid, int dim, VectorLong *v, long from, long to, long N) {
+    VectorLong *res;
+
+    // fprintf(stdout,"#! Doing bounds_check_stairwalk[D=%d](%ld,%ld,%ld)\n",dim,from,to,N);
+    if ( from > to ) {
+       MYERROR("from > to");
+      // fprintf(stdout,"* skip, from > to\n");
+    }
+    if ( from > grid->q.d[dim].maxRange ) {
+      // cell totally out of bounds, code 2^n-1
+      // fprintf(stdout,"* skip: from(%d) > max(%d) \n",from,grid->q.d[dim].maxRange);
+      return v;
+    }
+    if ( from < 0 ) {
+      if ( to < 0 ) {
+        // cell totally out of bounds, code 0
+        // fprintf(stdout,"* skip: [from,to] < 0\n");
+	return v;
+      }
+      // adjust from lo lowest poss value
+      // fprintf(stdout,"* adjust from %d -> %d\n",from,0);
+      from = 0;
+    }
+    if ( to > grid->q.d[dim].maxRange ) {
+      // from is valid here, so also make to valid
+      // fprintf(stdout,"* adjust to %d -> %d\n",to,grid->q.d[dim].maxRange);
+      to = grid->q.d[dim].maxRange;
+    }
+    res = stairwalk(v,from,to,N);
+    return res;
+}
 
 /*
  *
@@ -308,35 +374,6 @@ static void l_quicksort(long list[],int m,int n)
  *
  *
  */
-
-static long my_abs(long l) {
-  return (l<0) ? -l : l;
-}
-
-static long my_log2(long num) {
-  int cnt = 0;
-  int v = 1;
-
-  while ( v < num ) {
-    cnt++;
-    v *= 2;
-  }
-  return cnt;
-}
-
-static long my_pow(long base, long to_power) {
-  if ( to_power < 1 )
-    return 1;
-  else {
-    int i;
-    long res = base;
-
-    for(i=1; i<to_power; i++) {
-      res *= base;
-    }
-    return res;
-  }
-}
 
 static void resetK(Ktype* K) {
     int i;
@@ -418,7 +455,9 @@ static VectorLong* pacells_n(pa_grid* grid, int current_D[]) {
   for(i=0; i<grid->q.dimensions; i++) {
       int gp = current_D[i];
       steps = vector_getVector(grid->stairs,i);
-      stairwalk(
+      bounds_check_stairwalk(
+          grid,
+	  i,
           steps,
     	  grid->q.d[i].start + (gp * grid->q.d[i].cellwidth),
     	  grid->q.d[i].start + ((gp+1) * grid->q.d[i].cellwidth),
@@ -446,7 +485,7 @@ static VectorLong* pacells_n(pa_grid* grid, int current_D[]) {
 }
 
 static void loadcell_pa_grid(pa_grid* grid, int current_D[]) {
-  int i, prev_dimsize;
+  int i;
 
   grid->gridKey = 0;
   for(i=grid->q.dimensions-1; i>=0; i--) {	

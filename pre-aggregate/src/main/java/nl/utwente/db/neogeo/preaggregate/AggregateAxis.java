@@ -17,7 +17,7 @@ public class AggregateAxis {
 		public Object 	high();
 		public Object 	BASEBLOCKSIZE();
 		public int		axisSize();
-		public int	   	getIndex(Object value);
+		public int	   	getIndex(Object value, boolean checkBounds);
 		public boolean	exactIndex(Object value);
 		public Object 	reverseValue(int index);
 		public String   storageFormat(Object o);
@@ -62,18 +62,20 @@ public class IntegerAxisIndexer implements AxisIndexer {
 			return this.axisSize;
 		}
 	
-		public int getIndex(Object value) {
+		public int getIndex(Object value, boolean checkBounds) {
 			int lvalue;
-			
-			if ( value instanceof Integer )
-				lvalue = ((Integer)value).intValue();
+
+			if (value instanceof Integer)
+				lvalue = ((Integer) value).intValue();
 			else
-				lvalue = Integer.parseInt(""+value);
-			if ( lvalue < low )
-				return INDEX_TOO_SMALL;
-			else if ( lvalue > high )
-				return INDEX_TOO_LARGE;
-			return (int)((lvalue-this.low)/this.BASEBLOCKSIZE);
+				lvalue = Integer.parseInt("" + value);
+			if (checkBounds) {
+				if (lvalue < low)
+					return INDEX_TOO_SMALL;
+				else if (lvalue > high)
+					return INDEX_TOO_LARGE;
+			}
+			return (int) ((lvalue - this.low) / this.BASEBLOCKSIZE);
 		}
 		
 		public boolean exactIndex(Object value) {
@@ -153,18 +155,20 @@ public class  LongAxisIndexer implements AxisIndexer {
 			return this.axisSize;
 		}
 	
-		public int getIndex(Object value) {
+		public int getIndex(Object value, boolean checkBounds) {
 			long lvalue;
-			
-			if ( value instanceof Long )
-				lvalue = ((Long)value).longValue();
+
+			if (value instanceof Long)
+				lvalue = ((Long) value).longValue();
 			else
-				lvalue = Long.parseLong(""+value);
-			if ( lvalue < low )
-				return INDEX_TOO_SMALL;
-			else if ( lvalue > high )
-				return INDEX_TOO_LARGE;
-			return (int)((lvalue-this.low)/this.BASEBLOCKSIZE);
+				lvalue = Long.parseLong("" + value);
+			if (checkBounds) {
+				if (lvalue < low)
+					return INDEX_TOO_SMALL;
+				else if (lvalue > high)
+					return INDEX_TOO_LARGE;
+			}
+			return (int) ((lvalue - this.low) / this.BASEBLOCKSIZE);
 		}
 		
 		public boolean exactIndex(Object value) {
@@ -243,21 +247,25 @@ public class DoubleAxisIndexer implements AxisIndexer {
 			return this.axisSize;
 		}
 	
-		public int getIndex(Object value) {
+		public int getIndex(Object value, boolean checkBounds) {
 			double dvalue;
-			
-			if ( value instanceof Double )
-				dvalue = ((Double)value).doubleValue();
+
+			if (value instanceof Double)
+				dvalue = ((Double) value).doubleValue();
 			else
-				dvalue = Double.parseDouble(""+value);
-			if ( dvalue < low )
-				return INDEX_TOO_SMALL;
-			else if ( dvalue > high )
-				return INDEX_TOO_LARGE;
-			if ( exactIndex(value) )
-				return (int)Math.round((dvalue-this.low)/this.BASEBLOCKSIZE);
+				dvalue = Double.parseDouble("" + value);
+			if (checkBounds) {
+				if (dvalue < low)
+					return INDEX_TOO_SMALL;
+				else if (dvalue > high)
+					return INDEX_TOO_LARGE;
+			}
+			if (exactIndex(value))
+				return (int) Math.round((dvalue - this.low)
+						/ this.BASEBLOCKSIZE);
 			else
-				return (int)Math.floor((dvalue-this.low)/this.BASEBLOCKSIZE);
+				return (int) Math.floor((dvalue - this.low)
+						/ this.BASEBLOCKSIZE);
 		}
 		
 		public boolean exactIndex(Object value) {
@@ -376,20 +384,22 @@ public class  TimestampAxisIndexer implements AxisIndexer {
 			return this.axisSize;
 		}
 	
-		public int getIndex(Object value) {
+		public int getIndex(Object value, boolean checkBounds) {
 			long tsvalue;
-			
-			if ( value instanceof Timestamp )
-				tsvalue = ((Timestamp)value).getTime();
+
+			if (value instanceof Timestamp)
+				tsvalue = ((Timestamp) value).getTime();
 			else
-				tsvalue = Long.parseLong(""+value);
-			if ( tsvalue < low )
-				return INDEX_TOO_SMALL;
-			else if ( tsvalue > high )
-				return INDEX_TOO_LARGE;
-			return (int)((tsvalue-this.low)/this.BASEBLOCKSIZE);
+				tsvalue = Long.parseLong("" + value);
+			if (checkBounds) {
+				if (tsvalue < low)
+					return INDEX_TOO_SMALL;
+				else if (tsvalue > high)
+					return INDEX_TOO_LARGE;
+			}
+			return (int) ((tsvalue - this.low) / this.BASEBLOCKSIZE);
 		}
-		
+
 		public boolean exactIndex(Object value) {
 			long tsvalue;
 			
@@ -580,9 +590,9 @@ public class  TimestampAxisIndexer implements AxisIndexer {
 			throw new NullPointerException();
 	}
 
-	public int getIndex(Object value) {
+	public int getIndex(Object value, boolean checkBounds) {
 		if ( indexer != null ) {
-			int res = indexer.getIndex(value);
+			int res = indexer.getIndex(value, checkBounds);
 			if ( true && res < 0 ) 
 				System.out.println(this+": getIndex("+value+")="+res);
 			return res;
@@ -605,7 +615,6 @@ public class  TimestampAxisIndexer implements AxisIndexer {
 	}
 	
 	public short maxLevels() {
-		//return (short)Math.ceil(Math.pow(axisSize(), 1.0/(double)N()));
 		return (short)Math.ceil(Math.log(axisSize()) / Math.log(N()));
 	}
 	

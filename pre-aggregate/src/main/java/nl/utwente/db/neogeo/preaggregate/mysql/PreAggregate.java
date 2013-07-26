@@ -4,10 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Vector;
 
 import nl.utwente.db.neogeo.preaggregate.AggrKey;
@@ -365,8 +363,8 @@ public class PreAggregate {
 		boolean needsCorrection = false;
 		for(i=0; i<axis.length; i++) {
 			axisN[i] = axis[i].N();
-			ranges[i][RMIN] = axis[i].getIndex(obj_range[i][RMIN]);
-			ranges[i][RMAX] = axis[i].getIndex(obj_range[i][RMAX]);
+			ranges[i][RMIN] = axis[i].getIndex(obj_range[i][RMIN],true);
+			ranges[i][RMAX] = axis[i].getIndex(obj_range[i][RMAX],true);
 			if (	doResultCorrection && (
 						!axis[i].exactIndex(obj_range[i][RMIN]) ||
 						!axis[i].exactIndex(obj_range[i][RMAX])

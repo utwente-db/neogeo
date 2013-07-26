@@ -232,13 +232,22 @@ public class Test {
 
 			double vertcells = 70;
 			// pa.createAggrGrid("uk_grid","count",(double)(60-49)/vertcells,-8.4,60,1.9,49); // the entire UK query
-			int[] iv_count = {10, 10};
+			
+//			int[] iv_count = {10, 10};
+//			Double[][] iv_first_obj = new Double[2][2];
+//			iv_first_obj[0][0] = -0.11;
+//			iv_first_obj[0][1] = -0.07;
+//			iv_first_obj[1][0] = 51.33;
+//			iv_first_obj[1][1] = 51.36;
+			
+			// out of range example
+			int[] iv_count = {20, 20};
 			Double[][] iv_first_obj = new Double[2][2];
-			iv_first_obj[0][0] = -0.11;
-			iv_first_obj[0][1] = -0.07;
-			iv_first_obj[1][0] = 51.33;
-			iv_first_obj[1][1] = 51.36;
-//			lowX,highY,highX,low = -8.4,60,1.9,49
+			iv_first_obj[0][0] = -0.30;
+			iv_first_obj[0][1] = -0.26;
+			iv_first_obj[1][0] = 51.20;
+			iv_first_obj[1][1] = 51.23;
+			
 			pa.SQLquery_grid(PreAggregate.AGGR_COUNT, iv_first_obj, iv_count);
 //			if ( false ) {
 //				PegelAndelfingen2Aggregate pegel = new PegelAndelfingen2Aggregate(c, "public" , "andelfingen2", "pegel_andelfingen2", "timed");
