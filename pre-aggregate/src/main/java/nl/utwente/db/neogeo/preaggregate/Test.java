@@ -273,7 +273,7 @@ public class Test {
 				new AggregateAxis("ST_Y(coordinates)","double",""+DFLT_BASEBOXSIZE,DFLT_N),
 			    new AggregateAxis("time","timestamp with time zone","360000" /*=10 min*/,(short)16)
 			};
-		PreAggregate pa = new PreAggregate(c,"public", "uk_neogeo", "myAggregate",axis,"char_length(tweet)","bigint",PreAggregate.AGGR_ALL,0,200000,null);
+		PreAggregate pa = new PreAggregate(c,"public", "uk_neogeo", "myAggregate",axis,"char_length(tweet)","bigint",PreAggregate.AGGR_ALL,2,200000,null);
 
 	}
 }
