@@ -1,4 +1,4 @@
-   package nl.utwente.db.neogeo.preaggregate;
+package nl.utwente.db.neogeo.preaggregate;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +22,7 @@ public class Test {
 		Properties prop = new Properties();
 		try {
 			InputStream is =
-				this.getClass().getClassLoader().getResourceAsStream(CONFIG_FILENAME);
+					this.getClass().getClassLoader().getResourceAsStream(CONFIG_FILENAME);
 			prop.load(is);
 			hostname = prop.getProperty("hostname");
 			port = prop.getProperty("port");
@@ -34,7 +34,7 @@ public class Test {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public Connection getConnection(){
 		try {
 			Class.forName("org.postgresql.Driver");
@@ -62,13 +62,13 @@ public class Test {
 		}
 		return connection;
 	}
-	
+
 	public static void main(String[] argv) throws Exception {
 		System.out.println("Test pre-aggregate package");
 		Test t = new Test();
 		t.readProperties();
 		Connection connection = t.getConnection();
-		runTest2( connection );
+		runTest3( connection );
 	}
 
 	public static void runTest(Connection c) throws Exception {
@@ -117,7 +117,7 @@ public class Test {
 			while(rs.next()){
 				System.out.println(rs.getInt(1)+"|"+rs.getLong(2));
 			}
-			
+
 			rs.close();
 			System.out.println("\n\n execute directly!");
 			i=0;
@@ -151,17 +151,17 @@ public class Test {
 					sql_constr += " EXTRACT(EPOCH FROM "+a.columnExpression()+")>="+start+" and EXTRACT(EPOCH FROM "+a.columnExpression()+")<="+(start+(end-start)*range[i])+" and ";
 				}
 				i++;
-//				select  floor(st_x/ 0.28300000000000003) as x,
-//						floor(st_y/ 0.10999999999999943) as y,
-//						timel / 86400 as t,
-//						count(*) as cnt
-//				from london_neogeo
-//				where   st_x>=0 and st_x<=0.28300000000000003 and
-//						st_y>=51.370000000000005 and st_y<=51.59 and
-//						timel>=1318377600 and timel<=1319932800
-//				group by floor(st_x/ 0.28300000000000003), 
-//						 floor(st_y/ 0.10999999999999943), 
-//				 		 timel / 86400;
+				//				select  floor(st_x/ 0.28300000000000003) as x,
+				//						floor(st_y/ 0.10999999999999943) as y,
+				//						timel / 86400 as t,
+				//						count(*) as cnt
+				//				from london_neogeo
+				//				where   st_x>=0 and st_x<=0.28300000000000003 and
+				//						st_y>=51.370000000000005 and st_y<=51.59 and
+				//						timel>=1318377600 and timel<=1319932800
+				//				group by floor(st_x/ 0.28300000000000003), 
+				//						 floor(st_y/ 0.10999999999999943), 
+				//				 		 timel / 86400;
 			}
 			if (sql_group.endsWith(",")) 
 				sql_group = sql_group.substring(0, sql_group.length()-1);
@@ -173,12 +173,12 @@ public class Test {
 			while(rs.next()){
 				System.out.println(rs.getDouble(1)+"|"+rs.getLong(2));
 			}
-			
+
 			rs.close();
-			
-			
-			
-			
+
+
+
+
 
 			// GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "london_hav_neogeo", "myAggregate");
 			//
@@ -193,16 +193,16 @@ public class Test {
 
 			double vertcells = 70;
 			//		     pa.createAggrGrid("uk_grid","count",(double)(60-49)/vertcells,-8.4,60,1.9,49); // the entire UK query
-//			int[] iv_count = {10, 10};
+			//			int[] iv_count = {10, 10};
 			//Double[][] iv_first_obj = new Double[2][2];
 			// lowX,highY,highX,low = -8.4,60,1.9,49
 			// pa.SQLquery_grid(PreAggregate.AGGR_COUNT, iv_first_obj, iv_count);
-//			if ( false ) {
-//				PegelAndelfingen2Aggregate pegel = new PegelAndelfingen2Aggregate(c, "public" , "andelfingen2", "pegel_andelfingen2", "timed");
-//				// PegelAndelfingen2Aggregate pegel = new PegelAndelfingen2Aggregate(c, "public" , "andelfingen2", "pegel_andelfingen2");
-//				pegel.timeQuery("count", 1167606600, 1312737480);
-//			}							 
-			
+			//			if ( false ) {
+			//				PegelAndelfingen2Aggregate pegel = new PegelAndelfingen2Aggregate(c, "public" , "andelfingen2", "pegel_andelfingen2", "timed");
+			//				// PegelAndelfingen2Aggregate pegel = new PegelAndelfingen2Aggregate(c, "public" , "andelfingen2", "pegel_andelfingen2");
+			//				pegel.timeQuery("count", 1167606600, 1312737480);
+			//			}							 
+
 			c.close();
 		} catch (SQLException e) {
 			System.out.println("Caught: " + e);
@@ -232,14 +232,14 @@ public class Test {
 
 			double vertcells = 70;
 			// pa.createAggrGrid("uk_grid","count",(double)(60-49)/vertcells,-8.4,60,1.9,49); // the entire UK query
-			
-//			int[] iv_count = {10, 10};
-//			Double[][] iv_first_obj = new Double[2][2];
-//			iv_first_obj[0][0] = -0.11;
-//			iv_first_obj[0][1] = -0.07;
-//			iv_first_obj[1][0] = 51.33;
-//			iv_first_obj[1][1] = 51.36;
-			
+
+			//			int[] iv_count = {10, 10};
+			//			Double[][] iv_first_obj = new Double[2][2];
+			//			iv_first_obj[0][0] = -0.11;
+			//			iv_first_obj[0][1] = -0.07;
+			//			iv_first_obj[1][0] = 51.33;
+			//			iv_first_obj[1][1] = 51.36;
+
 			// out of range example
 			int[] iv_count = {20, 20};
 			Double[][] iv_first_obj = new Double[2][2];
@@ -247,19 +247,33 @@ public class Test {
 			iv_first_obj[0][1] = -0.26;
 			iv_first_obj[1][0] = 51.20;
 			iv_first_obj[1][1] = 51.23;
-			
+
 			pa.SQLquery_grid(PreAggregate.AGGR_COUNT, iv_first_obj, iv_count);
-//			if ( false ) {
-//				PegelAndelfingen2Aggregate pegel = new PegelAndelfingen2Aggregate(c, "public" , "andelfingen2", "pegel_andelfingen2", "timed");
-//				// PegelAndelfingen2Aggregate pegel = new PegelAndelfingen2Aggregate(c, "public" , "andelfingen2", "pegel_andelfingen2");
-//				pegel.timeQuery("count", 1167606600, 1312737480);
-//			}							 
-			
+			//			if ( false ) {
+			//				PegelAndelfingen2Aggregate pegel = new PegelAndelfingen2Aggregate(c, "public" , "andelfingen2", "pegel_andelfingen2", "timed");
+			//				// PegelAndelfingen2Aggregate pegel = new PegelAndelfingen2Aggregate(c, "public" , "andelfingen2", "pegel_andelfingen2");
+			//				pegel.timeQuery("count", 1167606600, 1312737480);
+			//			}							 
+
 			c.close();
 		} catch (SQLException e) {
 			System.out.println("Caught: " + e);
 			e.printStackTrace(System.out);
 		}
 		System.out.println("#!finished");
+	}
+
+	public static void runTest3(Connection c) throws Exception {
+		double	DFLT_BASEBOXSIZE = 0.001;
+		short	DFLT_N = 4;
+		//GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "uk_neogeo", "myAggregate", "coordinates",-1,200000,null);
+		AggregateAxis axis[] = {
+				new AggregateAxis("ST_X(coordinates)","double",""+DFLT_BASEBOXSIZE,DFLT_N),
+				// new AggregateAxis("ST_X("+point_column+")","double","-0.119","0.448",""+DFLT_BASEBOXSIZE,DFLT_N),
+				new AggregateAxis("ST_Y(coordinates)","double",""+DFLT_BASEBOXSIZE,DFLT_N),
+			    new AggregateAxis("time","timestamp with time zone","360000" /*=10 min*/,(short)16)
+			};
+		PreAggregate pa = new PreAggregate(c,"public", "uk_neogeo", "myAggregate",axis,"char_length(tweet)","bigint",PreAggregate.AGGR_ALL,0,200000,null);
+
 	}
 }
