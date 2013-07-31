@@ -4,10 +4,15 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.geoserver.ows.Request;
 import org.geotools.data.Query;
 import org.geotools.data.store.ContentDataStore;
 import org.geotools.data.store.ContentEntry;
@@ -20,6 +25,31 @@ import org.opengis.feature.type.Name;
 
 public class AggregationDataStore extends ContentDataStore {
 	private static final Logger LOGGER = Logger.getLogger("org.geotools.data.aggregation.AggregationDataStore");
+	public static final String LOG_QUERY = "CREATE TABLE IF NOT EXISTS public.pre_aggregate_logging ( id serial, "+
+			"tablename text,"+
+			"label text,"+
+			"request text,"+
+			"ip text,"+ 
+			"aggregate integer,"+ 
+			"low_x double precision,"+ 
+			"high_x double precision,"+ 
+			"low_y double precision,"+ 
+			"high_y double precision,"+ 
+			"start_time bigint,"+ 
+			"end_time bigint,"+
+			"type text,"+
+			"resolution_x integer,"+
+			"resolution_y integer,"+
+			"resolution_time integer,"+
+			"response_time double precision,"+
+			"'time' timestamp with time zone,"+ 
+			"PRIMARY KEY (id)) ";
+public static final String LOG_INSERT_QUERY = "insert into public.pre_aggregatea_logging "+
+			"(tablename,label,request,ip,"+
+			" aggregate,low_x,high_x,low_y,high_y,"+
+			" start_time,end_time, type,"+
+			" resolution_x, resulution_y, resolution_time,"+
+			"response_time,'time') values ";
 
 	private String hostname;
 	private int port;
@@ -45,6 +75,16 @@ public class AggregationDataStore extends ContentDataStore {
 		this.ySize = ySize;
 		this.timeSize = timeSize;
 		this.mask = mask;
+		Connection con = getConnection();
+		Statement stmt;
+		try {
+			stmt = con.createStatement();
+			stmt.execute(LOG_QUERY);
+			stmt.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		LOGGER.severe("AggregationDataStore created!!! ###########");
 	}
 
@@ -163,5 +203,29 @@ public class AggregationDataStore extends ContentDataStore {
 		String tablename = PreAggregate.getTablenameFromTypeName(typename);
 		String label = PreAggregate.getLabelFromTypeName(typename);
 		return new PreAggregate(getConnection(),schema,tablename,label);
+	}
+	
+	public void logQuery(Request req, PreAggregate agg, int mask, Area a, Timestamp start_time, Timestamp end_time, int[] range, String type, double response_time) {
+		HttpServletRequest httpReq = req.getHttpRequest();
+		String ip = httpReq.getRemoteAddr();
+		String request = req.getRequest();
+		
+		String sql = LOG_INSERT_QUERY;
+		sql += "('"+agg.getTable()+"','"+agg.getLabel()+"','"+request+"','"+ip;
+		sql += "',"+a.getLowX()+","+a.getHighX()+","+a.getLowY()+","+a.getHighY();
+		sql += ","+start_time.getTime()+","+end_time.getTime()+",'"+type+"',"+range[0]+","+range[1]+",";
+		sql += range.length>2 ? range[2] : null;
+		sql += ","+response_time+",current_timestamp);";
+		Connection con = getConnection();
+		Statement stmt;
+		try {
+			stmt = con.createStatement();
+			stmt.execute(sql);
+			stmt.close();
+		} catch (SQLException e) {
+			LOGGER.severe("logging of the query failed: "+e.getMessage());
+			e.printStackTrace();
+		}
+		
 	}
 }

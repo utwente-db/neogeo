@@ -2,13 +2,17 @@ package org.geotools.data.aggregation;
 
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
+
+import javax.servlet.http.HttpServletRequest;
 
 import nl.utwente.db.neogeo.preaggregate.AggregateAxis;
 import nl.utwente.db.neogeo.preaggregate.AxisSplitDimension;
@@ -33,7 +37,6 @@ import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
-
 
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
@@ -184,7 +187,7 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 	}
 
 	protected FeatureReader<SimpleFeatureType, SimpleFeature> getReaderInternal(Query query)
-	throws IOException {
+			throws IOException {
 		Hints hint = query.getHints();
 
 		// viewparams are under the key VIRTUAL_TABLE_PARAMETERS
@@ -221,13 +224,16 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 		Timestamp endTime = visitor.getEndTime();
 		LOGGER.severe("Parsed startTime:"+startTime+"    endTime:"+endTime);
 
+		Request req = Dispatcher.REQUEST.get();
+		HttpServletRequest httpReq = req.getHttpRequest();
+		String ip = httpReq.getRemoteAddr();
 		ResultSet rs = null;
 		Object[][] iv_first_obj = null;
 		int[] range = null;
 		try {
 			Object[][] ret ;
-			Request req = Dispatcher.REQUEST.get();
-			LOGGER.severe("request requets "+req.getRequest());
+			String request = req.getRequest();
+			LOGGER.severe("request requets "+request);
 			// GetFeatureInfo
 			if("GetFeatureInfo".equals(req.getRequest())){
 				Area area = getReaderInternalGetFeatureInfo(req);
@@ -247,7 +253,8 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 				cnt[0] = (int) Math.round((_endX-_startX) / grid_deltaX);
 				cnt[1] = (int) Math.round((_endY-_startY) / grid_deltaY);
 				if(cntAxis>2) cnt[2] = this.iv_count[2];
-				ret = reformulateQuery(new Area(_startX, _endX, _startY, _endY),startTime,endTime, cnt);
+				a = new Area(_startX, _endX, _startY, _endY);
+				ret = reformulateQuery(a ,startTime,endTime, cnt);
 			} else {
 				ret = reformulateQuery(a,startTime,endTime, this.iv_count);
 			}
@@ -258,17 +265,22 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 				iv_first_obj[i][1]=ret[i][1];
 				range[i]=(Integer) ret[i][2];
 			}
+			long start = System.currentTimeMillis();
+			long end;
+			String type = "grid";
 			if(pa_query){
 				LOGGER.severe("processing the query with Aggregation Index");
-				long start = System.currentTimeMillis();
 				rs = agg.SQLquery_grid(this.getDataStore().getMask(), iv_first_obj, range);
-				LOGGER.severe("query response time [ms]: "+(System.currentTimeMillis()-start));
+				end = System.currentTimeMillis()-start;
 			} else{
 				LOGGER.severe("processing the query in standard SQL");
-				long start = System.currentTimeMillis();
 				// TODO call the standard query processing
-				LOGGER.severe("query response time [ms]: "+(System.currentTimeMillis()-start));
+				end = System.currentTimeMillis()-start;
+				type = "standard";
 			}
+			LOGGER.severe("query response time [ms]: "+end);
+			this.getDataStore().logQuery(req, agg, this.getDataStore().getMask(),a, startTime,endTime, range,type,end);
+
 		} catch (Exception e1) {
 			LOGGER.severe("Cought Exception:"+e1.getMessage());
 			LOGGER.severe("there are not results!");
@@ -286,6 +298,7 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 		//			LOGGER.severe("Was not able to understand the specified filter!");
 		return null;
 	}
+
 
 	//	@Override
 	//	protected boolean canLimit() {
@@ -364,19 +377,17 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 				LOGGER.severe("processing axis x:"+a.columnExpression());
 				dim = a.splitAxis(area.getLowX(), area.getHighX(), iv_count[0]);
 				i=0;
-			} else
-				if(a==y) {
-					LOGGER.severe(area.getLowY()+"|"+ area.getHighY()+"|"+ iv_count[1]);
-					LOGGER.severe("processing axis y:"+a.columnExpression());
-					dim = a.splitAxis(area.getLowY(), area.getHighY(), iv_count[1]);
-					i=1;
-				} else
-					if(a==time) {
-						LOGGER.severe(start+"|"+ end+"|"+ iv_count[2]);
-						LOGGER.severe("processing axis time:"+a.columnExpression());
-						dim = a.splitAxis(start, end, iv_count[2]);
-						i=2;
-					}
+			} else if(a==y) {
+				LOGGER.severe(area.getLowY()+"|"+ area.getHighY()+"|"+ iv_count[1]);
+				LOGGER.severe("processing axis y:"+a.columnExpression());
+				dim = a.splitAxis(area.getLowY(), area.getHighY(), iv_count[1]);
+				i=1;
+			} else if(a==time) {
+				LOGGER.severe(start+"|"+ end+"|"+ iv_count[2]);
+				LOGGER.severe("processing axis time:"+a.columnExpression());
+				dim = a.splitAxis(start, end, iv_count[2]);
+				i=2;
+			}
 			//if(dim==null) throw new Exception("query area out of available data domain due to problems in axis "+a.columnExpression());
 			//			range[i] = dim.getCount();
 			LOGGER.severe("dim values:"+dim.toString());
