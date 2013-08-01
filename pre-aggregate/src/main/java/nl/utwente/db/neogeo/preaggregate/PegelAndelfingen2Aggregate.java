@@ -1,13 +1,7 @@
 package nl.utwente.db.neogeo.preaggregate;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.Date;
-
-import nl.utwente.db.neogeo.preaggregate.AggregateAxis;
 
 public class PegelAndelfingen2Aggregate extends PreAggregate {
 
@@ -28,7 +22,7 @@ public class PegelAndelfingen2Aggregate extends PreAggregate {
 	public PegelAndelfingen2Aggregate(Connection c, String schema, String table, String label, String time_column)
 		throws SQLException {
 		AggregateAxis axis[] = {
-				new AggregateAxis(time_column,"long",DFLT_TIME ,DFLT_N)
+				new MetricAxis(time_column,"long",DFLT_TIME ,DFLT_N)
 			};
 		createPreAggregate(c,schema,table,label,axis,"PEGEL","double precision",AGGR_ALL,-1,-1,null);
 	}

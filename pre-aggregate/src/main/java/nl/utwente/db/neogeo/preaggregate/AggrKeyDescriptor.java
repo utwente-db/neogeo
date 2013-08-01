@@ -73,7 +73,7 @@ public class AggrKeyDescriptor {
 			if ( axis[i].maxLevels() > maxLevel )
 				maxLevel = axis[i].maxLevels();
 		}
-		levelBits = AggregateAxis.log2(maxLevel);
+		levelBits = MetricAxis.log2(maxLevel);
 		if ( kind == KD_CROSSPRODUCT_LONG )
 			totalBits += (axis.length * levelBits);
 		else

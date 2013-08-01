@@ -1,6 +1,11 @@
 package nl.utwente.db.neogeo.preaggregate;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
 
 public class SqlUtils {
 
@@ -262,6 +267,21 @@ public class SqlUtils {
 			return	"CREATE TABLE "+table+"\n"+
 			select_head + "\n"+
 			select_tail + ";\n";
+		}	
+		throw new SQLException("UNEXPECTED");
+	}
+	
+	public static String gen_Constant(Connection c, Object o) throws SQLException {
+		switch ( dbType(c) ) {
+		case POSTGRES:
+			if ( o instanceof Timestamp ) {
+				Timestamp ts = (Timestamp) o;
+				
+				return '\'' + o.toString() + '\'' + "::timestamp";
+			} else
+				return o.toString();
+		case MYSQL:
+			return o.toString();
 		}	
 		throw new SQLException("UNEXPECTED");
 	}

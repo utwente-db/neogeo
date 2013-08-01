@@ -50,7 +50,7 @@ public class PreAggregate {
 			if ( l != li_l(key) )
 				throw new RuntimeException("li_l(): " + l + "<>" + li_l(key));
 			if ( i != li_i(key) )
-				throw new RuntimeException("li_i(l="+l+", i="+i+"): i=" + i + "<> li()=" + li_i(key) + ", bits="+AggregateAxis.log2(i));
+				throw new RuntimeException("li_i(l="+l+", i="+i+"): i=" + i + "<> li()=" + li_i(key) + ", bits="+MetricAxis.log2(i));
 		}
 		return key;
 	}
@@ -136,6 +136,7 @@ public class PreAggregate {
 		ResultSet rs = SqlUtils.execute(c,"SELECT "+ aggrs + ",count(*) FROM " + schema + "." + table + ";"); 
 		if ( !rs.next() )
 			throw new SQLException("PreAggregate: unable to get range values");
+		System.out.println("#!Executing: "+"SELECT "+ aggrs + ",count(*) FROM " + schema + "." + table + ";");
 		for(i=0; i<axis.length; i++ ) {
 			res[i][RMIN] = rs.getObject(1+i*2); // min
 			res[i][RMAX] = rs.getObject(2+i*2); // max
@@ -164,7 +165,7 @@ public class PreAggregate {
 	protected void createPreAggregate(Connection c, String schema,
 			String table, String label, AggregateAxis axis[],
 			String aggregateColumn, String aggregateType, int aggregateMask, 
-			int axisToSplit, long chunkSize, Object[][] newRange) throws SQLException {
+			int i_axisToSplit, long chunkSize, Object[][] newRange) throws SQLException {
 		int i;
 		String dimTable[]	 = new String[axis.length];
 
@@ -178,23 +179,29 @@ public class PreAggregate {
 		Object obj_ranges[][] = getRangeValues(c,schema,table,axis);
 		short maxLevel = 0;
 		for (i = 0; i < axis.length; i++) {
-			if ( axis[i].hasRangeValues() ) {
-				if ( (axis[i].getIndex(obj_ranges[i][RMIN],true)<0) || (axis[i].getIndex(obj_ranges[i][RMAX],true)<0) )
-					throw new RuntimeException("createPreAggregate: predefined ranges conflict with min/max dataset");
-			} else {
-				axis[i].setRangeValues(obj_ranges[i][RMIN], obj_ranges[i][RMAX]);
+			if (axis[i].isMetric()) {
+				MetricAxis metric = (MetricAxis) axis[i];
+
+				if (metric.hasRangeValues()) {
+					if ((metric.getIndex(obj_ranges[i][RMIN], true) < 0) || 
+						(metric.getIndex(obj_ranges[i][RMAX], true) < 0))
+						throw new RuntimeException(
+								"createPreAggregate: predefined ranges conflict with min/max dataset");
+				} else {
+					metric.setRangeValues(obj_ranges[i][RMIN], obj_ranges[i][RMAX]);
+				}
+
+				/*
+				 * Adjust the axis a little bit too wide on blocksize multiples
+				 */
+				Object wide_min, wide_max;
+
+				wide_min = metric.reverseValue(-1);
+				wide_max = metric.reverseValue(axis[i].axisSize());
+				// System.out.println("#!OLD    AXIS: "+axis[i]);
+				metric.setRangeValues(wide_min, wide_max);
+				// System.out.println("#!ADJUST AXIS: "+axis[i]);
 			}
-			/*
-			 * Adjust the axis a little bit too wide on blocksize multiples
-			 */
-			Object wide_min, wide_max;
-			
-			wide_min = axis[i].reverseValue(-1);
-			wide_max = axis[i].reverseValue(axis[i].axisSize());
-			// System.out.println("#!OLD    AXIS: "+axis[i]);
-			axis[i].setRangeValues(wide_min, wide_max);
-			// System.out.println("#!ADJUST AXIS: "+axis[i]);
-			
 			if ( axis[i].maxLevels() > maxLevel )
 				maxLevel = axis[i].maxLevels();
 			if (showAxisAndKey)
@@ -250,10 +257,15 @@ public class PreAggregate {
 
 		int nChunks = 1;
 		Object ro[][] = null;
-		if ( axisToSplit >= 0 ) {
+		MetricAxis axisToSplit = null;
+		if ( i_axisToSplit >= 0 ) {
+			if ( axis[i_axisToSplit].isMetric() )
+				axisToSplit = (MetricAxis)axis[i_axisToSplit];
+			else
+				throw new SQLException("unable to split over non-metric axis: "+i_axisToSplit);
 			long nTuples = SqlUtils.count(c,schema,table,"*");
 			nChunks = (int) (nTuples / chunkSize) +1;
-			ro = axis[axisToSplit].split(nChunks);
+			ro = axisToSplit.split(nChunks);
 		}
 		for (i = 0; i < nChunks; i++) {
 			/*
@@ -261,7 +273,7 @@ public class PreAggregate {
 			 */
 			String where = null;
 			if ( nChunks > 1 ) {
-				where = "("+axis[axisToSplit].columnExpression()+">="+ro[i][0]+" AND "+axis[axisToSplit].columnExpression()+"<"+ro[i][1]+")";
+				where = "("+axisToSplit.columnExpression()+">="+SqlUtils.gen_Constant(c,ro[i][0])+" AND "+axisToSplit.columnExpression()+"<"+SqlUtils.gen_Constant(c,ro[i][1])+")";
 				sql_build.add("-- adding increment "+i+" to pa index\n");
 			} else {
 				sql_build.add("-- computing pa_index in one step\n");
@@ -481,33 +493,38 @@ public class PreAggregate {
 		int iv_first[] = new int[axis.length];
 		int iv_last[] = new int[axis.length];
 		for(i=0; i<axis.length; i++) {
-			AggregateAxis ax = axis[i];
+			if (axis[i].isMetric()) {
+				MetricAxis ax = (MetricAxis) axis[i];
 
-			if (true) {
-				if (!ax.exactIndex(iv_first_obj[i][RMIN]))
-					throw new SQLException(
-							"SQLquery_grid: start of first interval in dim "
-							+ i + " not on boundary: "
-							+ iv_first_obj[i][RMIN]);
-				if (!ax.exactIndex(iv_first_obj[i][RMAX]))
-					throw new SQLException(
-							"SQLquery_grid: end of first interval in dim " + i
-							+ " not on boundary: "
-							+ iv_first_obj[i][RMAX]);
-			}
-			// TODO: check out of range values
-			if (allowOutsideRange) {
-				iv_first[i] = ax.getIndex(iv_first_obj[i][RMIN], false);
-				iv_last[i] = ax.getIndex(iv_first_obj[i][RMAX], false);
-				iv_size[i] = iv_last[i] - iv_first[i];
-			} else {
-				iv_first[i] = ax.getIndex(iv_first_obj[i][RMIN], true);
-				iv_last[i] = ax.getIndex(iv_first_obj[i][RMAX], true);
-				if ( iv_first[i] >= iv_last[i] )
-					throw new SQLException("grid range first > last on dimension "+i);
-				if ( iv_first[i] < 0 || iv_last[i] < 0 )
-					throw new SQLException("grid range outside pre-aggregate range on dimension "+i);
-				iv_size[i] = iv_last[i] - iv_first[i];
+				if (true) {
+					if (!ax.exactIndex(iv_first_obj[i][RMIN]))
+						throw new SQLException(
+								"SQLquery_grid: start of first interval in dim "
+										+ i + " not on boundary: "
+										+ iv_first_obj[i][RMIN]);
+					if (!ax.exactIndex(iv_first_obj[i][RMAX]))
+						throw new SQLException(
+								"SQLquery_grid: end of first interval in dim "
+										+ i + " not on boundary: "
+										+ iv_first_obj[i][RMAX]);
+				}
+				// TODO: check out of range values
+				if (allowOutsideRange) {
+					iv_first[i] = ax.getIndex(iv_first_obj[i][RMIN], false);
+					iv_last[i] = ax.getIndex(iv_first_obj[i][RMAX], false);
+					iv_size[i] = iv_last[i] - iv_first[i];
+				} else {
+					iv_first[i] = ax.getIndex(iv_first_obj[i][RMIN], true);
+					iv_last[i] = ax.getIndex(iv_first_obj[i][RMAX], true);
+					if (iv_first[i] >= iv_last[i])
+						throw new SQLException(
+								"grid range first > last on dimension " + i);
+					if (iv_first[i] < 0 || iv_last[i] < 0)
+						throw new SQLException(
+								"grid range outside pre-aggregate range on dimension "
+										+ i);
+					iv_size[i] = iv_last[i] - iv_first[i];
+				}
 			}
 		}
 		// now have all the info we need
@@ -542,15 +559,15 @@ public class PreAggregate {
 			gk_ex.append("gkey");
 			int prevBits = 0;
 			for(i=0; i<iv_count.length; i++) {
-				int dimBits = AggregateAxis.log2(iv_count[i]);
+				int dimBits = MetricAxis.log2(iv_count[i]);
 				String base = null;
 				
 				if (prevBits == 0 ) {
 					base = "gkey";
 				} else {
-					base = SqlUtils.gen_DIV(c, "gkey", ""+AggregateAxis.pow2(prevBits));
+					base = SqlUtils.gen_DIV(c, "gkey", ""+MetricAxis.pow2(prevBits));
 				}
-				gk_ex.append("," + SqlUtils.gen_MOD(c, base, ""+AggregateAxis.pow2(dimBits)) + " AS d"+i);
+				gk_ex.append("," + SqlUtils.gen_MOD(c, base, ""+MetricAxis.pow2(dimBits)) + " AS d"+i);
 				if ( i > 0 )
 					order.append(",");
 				order.append("d"+i);
@@ -708,19 +725,21 @@ public class PreAggregate {
 			throw new SQLException("PreAggregate.query(): dimension index and query do not match");
 		@SuppressWarnings("unused")
 		boolean needsCorrection = false;
-		for(i=0; i<axis.length; i++) {
-			// TODO: do out of range checks
-			ranges[i][RMIN] = axis[i].getIndex(obj_range[i][RMIN],true);
-			ranges[i][RMAX] = axis[i].getIndex(obj_range[i][RMAX],true);
-			
-			if ( axis[i].exactIndex(obj_range[i][RMAX]) ) {
-				ranges[i][RMAX] -=  1; // adjust upper bound
-			}
-			if (	doResultCorrection && (
-					!axis[i].exactIndex(obj_range[i][RMIN]) ||
-					!axis[i].exactIndex(obj_range[i][RMAX])
-			)) {
-				needsCorrection = true;
+		for (i = 0; i < axis.length; i++) {
+			if (axis[i].isMetric()) {
+				MetricAxis metric = (MetricAxis) axis[i];
+				// TODO: do out of range checks
+				ranges[i][RMIN] = metric.getIndex(obj_range[i][RMIN], true);
+				ranges[i][RMAX] = metric.getIndex(obj_range[i][RMAX], true);
+
+				if (metric.exactIndex(obj_range[i][RMAX])) {
+					ranges[i][RMAX] -= 1; // adjust upper bound
+				}
+				if (doResultCorrection
+						&& (!metric.exactIndex(obj_range[i][RMIN]) || 
+							!metric.exactIndex(obj_range[i][RMAX]))) {
+					needsCorrection = true;
+				}
 			}
 		}
 		return SQLquery_string(queryAggregateMask,extra,ranges);
@@ -783,21 +802,23 @@ public class PreAggregate {
 			ranges[i][RMIN] = rmin;
 			int rmax = axis[i].getIndex(obj_range[i][RMAX],true);
 			ranges[i][RMAX] = rmax;
-			if ( true ) {
-				// System.out.println("#!RANGE CONVERSION: "+axis[i]);
-				// System.out.println("#!RMIN["+obj_range[i][RMIN]+"]="+rmin+(axis[i].exactIndex(obj_range[i][RMIN])?"(EXACT)":"")+", RMAX["+obj_range[i][RMAX]+"]="+rmax+(axis[i].exactIndex(obj_range[i][RMAX])?"(EXACT)":""));
-				if ( axis[i].exactIndex(obj_range[i][RMAX]) ) {
-					// System.out.println("########## ADJUST UPPER BOUND ###########");
-					ranges[i][RMAX] = rmax - 1; // adjust upper bound
-				} else {
-					System.out.println("#! NO CORRECTION!!!!");
+			if (axis[i].isMetric()) {
+				MetricAxis metric = (MetricAxis) axis[i];
+				if (true) {
+					// System.out.println("#!RANGE CONVERSION: "+metric);
+					// System.out.println("#!RMIN["+obj_range[i][RMIN]+"]="+rmin+(metric.exactIndex(obj_range[i][RMIN])?"(EXACT)":"")+", RMAX["+obj_range[i][RMAX]+"]="+rmax+(axis[i].exactIndex(obj_range[i][RMAX])?"(EXACT)":""));
+					if (metric.exactIndex(obj_range[i][RMAX])) {
+						// System.out.println("########## ADJUST UPPER BOUND ###########");
+						ranges[i][RMAX] = rmax - 1; // adjust upper bound
+					} else {
+						System.out.println("#! NO CORRECTION!!!!");
+					}
 				}
-			}
-			if (	doResultCorrection && (
-					!axis[i].exactIndex(obj_range[i][RMIN]) ||
-					!axis[i].exactIndex(obj_range[i][RMAX])
-			)) {
-				needsCorrection = true;
+				if (doResultCorrection
+						&& (!metric.exactIndex(obj_range[i][RMIN]) || !metric
+								.exactIndex(obj_range[i][RMAX]))) {
+					needsCorrection = true;
+				}
 			}
 		}
 		long direct_result = -1;
@@ -1152,7 +1173,7 @@ public class PreAggregate {
 				" WHERE tableName=\'"+tableName+"\' AND label=\'"+label+"\';"
 		);
 		while( rsi.next() ) {
-			read_axis[rsi.getInt(1)] = new AggregateAxis(
+			read_axis[rsi.getInt(1)] = new MetricAxis(
 					rsi.getString(2),
 					rsi.getString(3),
 					rsi.getString(4),
@@ -1215,19 +1236,25 @@ public class PreAggregate {
 		ps.setString(6,String.valueOf(kd.kind())); // INCOMPLETE
 		ps.setInt(7,aggregateMask);
 		ps.setInt(8, (int)cnt);
-		for(int i=0; i<axis.length; i++) {
-			psi.setString(1,tableName);
-			psi.setString(2,label);
-			psi.setInt(   3,i);
-			psi.setString(4, axis[i].columnExpression());
-			psi.setString(5, axis[i].type());
-			psi.setString(6, axis[i].storageFormat(axis[i].low()));
-			psi.setString(7, axis[i].storageFormat(axis[i].high()));
-			psi.setString(8, axis[i].BASEBLOCKSIZE().toString());
-			psi.setInt(   9, axis[i].N());
-			psi.setInt(  10, axis[i].maxLevels());
-			psi.setInt(  11, axis[i].bits());
-			psi.execute();
+		for (int i = 0; i < axis.length; i++) {
+			if (axis[i].isMetric()) {
+				MetricAxis metric = (MetricAxis) axis[i];
+
+				psi.setString(1, tableName);
+				psi.setString(2, label);
+				psi.setInt(3, i);
+				psi.setString(4, metric.columnExpression());
+				psi.setString(5, metric.type());
+				psi.setString(6, metric.storageFormat(metric.low()));
+				psi.setString(7, metric.storageFormat(metric.high()));
+				psi.setString(8, metric.BASEBLOCKSIZE().toString());
+				psi.setInt(9, metric.N());
+				psi.setInt(10, metric.maxLevels());
+				psi.setInt(11, metric.bits());
+				psi.execute();
+			} else {
+				throw new RuntimeException("Unexpected");
+			}
 		}
 		ps.execute();
 	}

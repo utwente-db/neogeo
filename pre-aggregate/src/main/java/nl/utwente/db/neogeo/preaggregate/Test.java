@@ -105,7 +105,13 @@ public class Test {
 			rs.close();
 			System.out.println("\n\n with splitting!");
 			int i=0;
-			for(AggregateAxis a : pa.getAxis()){
+			for(AggregateAxis a_base : pa.getAxis()){
+				MetricAxis a = null;
+				
+				if ( a.isMetric() )
+					a = (MetricAxis)a_base;
+				else
+					throw new SQLException("Cannot split over non-metric axis");
 				AxisSplitDimension dim = a.splitAxis(a.low(), a.high(), range[i]);
 				if(dim==null) throw new Exception("query area out of available data domain");
 				range[i] = dim.getCount();
@@ -217,6 +223,8 @@ public class Test {
 			// new TweetConverter("/Users/flokstra/twitter_sm.db",c,"public","london_hav");
 			// new TweetConverter("/Users/flokstra/uk_raw.sql",c,"public","uk");
 			//
+			
+			//System.exit(0);
 
 			GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "london_hav_neogeo", "myAggregate", "coordinates",-1,200000,null);
 			//GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "london_hav_neogeo", "myAggregate");
