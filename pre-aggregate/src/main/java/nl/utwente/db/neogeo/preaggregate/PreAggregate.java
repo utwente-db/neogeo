@@ -136,7 +136,7 @@ public class PreAggregate {
 		ResultSet rs = SqlUtils.execute(c,"SELECT "+ aggrs + ",count(*) FROM " + schema + "." + table + ";"); 
 		if ( !rs.next() )
 			throw new SQLException("PreAggregate: unable to get range values");
-		System.out.println("#!Executing: "+"SELECT "+ aggrs + ",count(*) FROM " + schema + "." + table + ";");
+		// System.out.println("#!Executing: "+"SELECT "+ aggrs + ",count(*) FROM " + schema + "." + table + ";");
 		for(i=0; i<axis.length; i++ ) {
 			res[i][RMIN] = rs.getObject(1+i*2); // min
 			res[i][RMAX] = rs.getObject(2+i*2); // max
@@ -1277,10 +1277,6 @@ public class PreAggregate {
 
 	public String getLabel() {
 		return label;
-	}
-
-	public static void main(String[] argv) {
-
 	}
 
 }

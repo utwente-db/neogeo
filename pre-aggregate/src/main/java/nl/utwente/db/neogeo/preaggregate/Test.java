@@ -68,7 +68,7 @@ public class Test {
 		Test t = new Test();
 		t.readProperties();
 		Connection connection = t.getConnection();
-		runTest3( connection );
+		runTest2( connection );
 	}
 
 	public static void runTest(Connection c) throws Exception {
@@ -276,10 +276,10 @@ public class Test {
 		short	DFLT_N = 4;
 		//GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "uk_neogeo", "myAggregate", "coordinates",-1,200000,null);
 		AggregateAxis axis[] = {
-				new AggregateAxis("ST_X(coordinates)","double",""+DFLT_BASEBOXSIZE,DFLT_N),
+				new MetricAxis("ST_X(coordinates)","double",""+DFLT_BASEBOXSIZE,DFLT_N),
 				// new AggregateAxis("ST_X("+point_column+")","double","-0.119","0.448",""+DFLT_BASEBOXSIZE,DFLT_N),
-				new AggregateAxis("ST_Y(coordinates)","double",""+DFLT_BASEBOXSIZE,DFLT_N),
-			    new AggregateAxis("time","timestamp with time zone","360000" /*=10 min*/,(short)16)
+				new MetricAxis("ST_Y(coordinates)","double",""+DFLT_BASEBOXSIZE,DFLT_N),
+			    new MetricAxis("time","timestamp with time zone","360000" /*=10 min*/,(short)16)
 			};
 		PreAggregate pa = new PreAggregate(c,"public", "uk_neogeo", "myAggregate",axis,"char_length(tweet)","bigint",PreAggregate.AGGR_ALL,2,200000,null);
 
