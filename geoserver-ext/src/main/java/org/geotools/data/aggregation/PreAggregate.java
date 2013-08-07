@@ -14,11 +14,12 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import nl.utwente.db.neogeo.preaggregate.AggregateAxis;
+import nl.utwente.db.neogeo.preaggregate.MetricAxis;
 import nl.utwente.db.neogeo.preaggregate.SqlUtils;
-import nl.utwente.db.neogeo.preaggregate.AggregateAxis.DoubleAxisIndexer;
-import nl.utwente.db.neogeo.preaggregate.AggregateAxis.IntegerAxisIndexer;
-import nl.utwente.db.neogeo.preaggregate.AggregateAxis.LongAxisIndexer;
-import nl.utwente.db.neogeo.preaggregate.AggregateAxis.TimestampAxisIndexer;
+import nl.utwente.db.neogeo.preaggregate.MetricAxis.DoubleAxisIndexer;
+import nl.utwente.db.neogeo.preaggregate.MetricAxis.IntegerAxisIndexer;
+import nl.utwente.db.neogeo.preaggregate.MetricAxis.LongAxisIndexer;
+import nl.utwente.db.neogeo.preaggregate.MetricAxis.TimestampAxisIndexer;
 
 import org.geotools.data.store.ContentEntry;
 import org.geotools.referencing.CRS;
@@ -46,7 +47,7 @@ nl.utwente.db.neogeo.preaggregate.PreAggregate {
 	private static final String GEOMETRY_COLUMN_QUERY = "SELECT tablename, substr(columnexpression,6,length(columnexpression)-6) FROM pre_aggregate_axis where tablename || '___' ||label=? and substr(columnexpression,1,4)='ST_X'";
 	//	private static final String BOUNDS_QUERY = "SELECT tablename, substr(columnexpression,1,4), low, high FROM pre_aggregate_axis where tablename || '___' ||label=? and substr(columnexpression,1,3)='ST_' order by columnexpression";
 
-	HashMap<String, AggregateAxis> map = new HashMap<String, AggregateAxis>();
+	HashMap<String, MetricAxis> map = new HashMap<String, MetricAxis>();
 
 	private int crsNumber = -1;
 
@@ -55,24 +56,24 @@ nl.utwente.db.neogeo.preaggregate.PreAggregate {
 		super(c,schema,table,label);
 		for(AggregateAxis a : axis){
 			if(a.columnExpression().startsWith("ST_X")){
-				map.put("x", a);
+				map.put("x", (MetricAxis) a);
 			} else if(a.columnExpression().startsWith("ST_Y")){
-				map.put("y", a);
+				map.put("y", (MetricAxis) a);
 			} else if(a.sqlType().equals(TimestampAxisIndexer.TYPE_EXPRESSION)){
-				map.put("time", a);	
+				map.put("time", (MetricAxis) a);	
 			}
 		}
 	}
 
 	public Area getArea() {
-		AggregateAxis x = getXaxis();
-		AggregateAxis y = getYaxis();
+		MetricAxis x = getXaxis();
+		MetricAxis y = getYaxis();
 		return new Area((Double)x.low(),(Double)x.high(),(Double)y.low(),(Double)y.high());
 	}
 
 	public long[] getTimeBounds(){
 		long[] ret = new long[2];
-		AggregateAxis a = getTimeAxis();
+		MetricAxis a = getTimeAxis();
 		ret[0] = ((Timestamp) a.low()).getTime();
 		ret[1] = ((Timestamp) a.high()).getTime();
 		return ret;
@@ -188,15 +189,15 @@ nl.utwente.db.neogeo.preaggregate.PreAggregate {
 		return crs;
 	}
 
-	public AggregateAxis getXaxis(){
+	public MetricAxis getXaxis(){
 		return map.get("x");
 	}
 
-	public AggregateAxis getYaxis(){
+	public MetricAxis getYaxis(){
 		return map.get("y");
 	}
 
-	public AggregateAxis getTimeAxis(){
+	public MetricAxis getTimeAxis(){
 		return map.get("time");
 	}
 
