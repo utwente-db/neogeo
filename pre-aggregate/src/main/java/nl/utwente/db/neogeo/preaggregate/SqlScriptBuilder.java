@@ -53,8 +53,15 @@ public class SqlScriptBuilder {
 	}
 	
 	public void executeBatch()  throws SQLException{
-		this.pre_stat.executeBatch();
-		this.post_stat.executeBatch();
+		try {
+			this.pre_stat.executeBatch();
+			this.post_stat.executeBatch();
+		} catch (SQLException e) {
+			System.out.println("CAUGHT: "+e);
+			e.printStackTrace();
+			System.out.println("NEXT: "+e.getNextException());
+			System.exit(0);
+		}
 		//
 		this.pre_stat = c.createStatement();
 		this.post_stat = c.createStatement();

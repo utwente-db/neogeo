@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 import java.util.Properties;
 
 public class Test {
-	private static final String CONFIG_FILENAME = "database_postgres.properties";
+	private static final String CONFIG_FILENAME = "database.properties";
 	private String hostname;
 	private String port;
 	private String username;
@@ -229,15 +229,18 @@ public class Test {
 			GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "london_hav_neogeo", "myAggregate", "coordinates",-1,200000,null);
 			//GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "london_hav_neogeo", "myAggregate");
 			//
-			// pa.boxQuery("count",0.18471,51.60626,0.23073,51.55534); // in the middle of havering map *correction anomaly
+			pa.boxQuery("count",0.18471,51.60626,0.23073,51.55534); // in the middle of havering map *correction anomaly
 			//			pa.boxQuery("count",-0.058,51.59,0.095,51.483); // left of havering, few tweets
 			// pa.boxQuery("count",-0.058,51.58961,0.095,51.48287); // left of havering, few tweets
+			
 			// pa.boxQuery("count",-0.38326,51.62780,0.14554,51.39572); // a big london query
 			// pa.boxQuery("count",-8.4,60,1.9,49); // the entire UK query
 
 			// pa.boxQuery3d("count",-0.058,51.58961,0.095,51.48287,new Timestamp(1319000000000L), new Timestamp(1319900000000L)); // left of havering, few tweets
 			// pa.boxQuery3d("count",0.18471,51.60626,0.23073,51.55534,new Timestamp(1319000000000L), new Timestamp(1319900000000L)); // in the middle of havering map *correction anomaly
 
+			System.exit(0);
+			
 			double vertcells = 70;
 			// pa.createAggrGrid("uk_grid","count",(double)(60-49)/vertcells,-8.4,60,1.9,49); // the entire UK query
 

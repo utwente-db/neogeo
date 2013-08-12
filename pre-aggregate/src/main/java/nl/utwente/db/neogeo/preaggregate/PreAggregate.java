@@ -12,6 +12,8 @@ import java.util.logging.Logger;
 
 public class PreAggregate {
 	private static final Logger LOGGER = Logger.getLogger("org.geotools.data.aggregation.PreAggregate");
+	
+	private final boolean gen_optimized = false;
 
 	/*
 	 * Experiment setup variables
@@ -255,6 +257,14 @@ public class PreAggregate {
 		sql_build.add("CREATE INDEX ON "+table_pa+" USING HASH(ckey);\n");
 		sql_build.newLine();
 
+		String lfp_table = schema + "." + indexPrefix + "lfp";
+		if ( gen_optimized ) {
+			sql_build.add("-- generate table with all level/factor possibilities\n");
+			sql_build.add("DROP TABLE IF EXISTS " + lfp_table + ";\n");
+			gen_lfp_table(c,sql_build, lfp_table,axis,dimTable);
+			sql_build.addPost("DROP TABLE " + lfp_table + ";\n");
+		}
+		
 		int nChunks = 1;
 		Object ro[][] = null;
 		MetricAxis axisToSplit = null;
@@ -292,15 +302,21 @@ public class PreAggregate {
 			/*
 			 * Now generate the index levels 0 + n-1
 			 */
-			String level0_n_table = schema + "." + indexPrefix + "0_n";
+			String level0_n_table = schema + "." + indexPrefix + "0_n";;
 			sql_build.add("DROP TABLE IF EXISTS " + level0_n_table + ";\n");
-			String level0_n = generate_level0_n(c, level0_n_table, level0,
-					axis, dimTable, genKey, aggregateMask);
-			sql_build.add(level0_n);
 			sql_build.newLine();
-			if ( i == 0 ) // drop this table only once 
+			if (i == 0) // drop this table only once
 				sql_build.addPost("DROP TABLE " + level0_n_table + ";\n");
-			//
+			if ( !gen_optimized ) {
+				level0_n_table = schema + "." + indexPrefix + "0_n";
+				String level0_n = generate_level0_n(c, level0_n_table, level0,
+						axis, dimTable, genKey, aggregateMask);
+				sql_build.add(level0_n);
+				sql_build.newLine();
+			} else {
+				// use the optimized strategy
+				generate_optimized(c, sql_build, level0_n_table, level0, lfp_table, axis, genKey, aggregateMask);
+			}
 			if ( nChunks == 1 ) {
 				sql_build.add("INSERT INTO " + table_pa
 						+ " (\n\tSELECT * FROM " + level0_n_table + "\n);");
@@ -364,6 +380,127 @@ public class PreAggregate {
 		_init(c, schema, table, label);
 	}
 
+	protected void gen_lfp_table(Connection c, SqlScriptBuilder sql_build , String lfp_table, AggregateAxis axis[], String dimTable[]) throws SQLException {
+		int i, j;
+		
+		String lfp_table_tmp = lfp_table + "_tmp";
+		StringBuilder with = new StringBuilder();
+		StringBuilder select = new StringBuilder();
+		
+		with.append("WITH RECURSIVE\n");
+		for(i=0; i<axis.length; i++) {
+			if ( i > 0 )
+				with.append(",\n");
+			with.append("\t t"+i+"(level,factor) AS (\n");
+			with.append("\t\tVALUES(0,1)\n");
+			with.append("\tUNION ALL\n");
+			with.append("\t\tSELECT level+1, factor*"+axis[i].N() + " FROM t"+i+" WHERE level < "+axis[i].maxLevels()+"\n");
+			with.append("\t)");
+		}
+		with.append("\n");
+		
+		StringBuilder greatest = new StringBuilder();
+		greatest.append("greatest(");
+		for(i=0; i<axis.length; i++) {
+			if ( i>0 )
+				greatest.append(",");
+			greatest.append("t"+i+".level");
+		}
+		greatest.append(")");
+		for(i=0; i<axis.length; i++) {
+			if ( i > 0 )
+				select.append(",\n");
+			select.append("\tt"+i+".level as target_l"+i+", least(t"+i+".level, "+greatest+"-1) AS source_l"+i);
+			select.append(", div(dd"+i+".factor,sd"+i+".factor) as factor_f"+i);
+		}
+		
+		StringBuilder from = new StringBuilder();
+		from.append("FROM\t");
+		for(i=0; i<axis.length; i++) {
+			if ( i>0 )
+				from.append(", ");
+			from.append("t"+i+" AS t"+i);
+		}
+		from.append(",\n\t");
+		for(i=0; i<axis.length; i++) {
+			if ( i>0 )
+				from.append(", ");
+			from.append(dimTable[i]+" AS sd"+i);
+		}
+		from.append(",\n\t");
+		for(i=0; i<axis.length; i++) {
+			if ( i>0 )
+				from.append(", ");
+			from.append(dimTable[i]+" AS dd"+i);
+		}
+		from.append("\n");
+		
+		StringBuilder where = new StringBuilder();
+		where.append("WHERE\t");
+		where.append("(");
+		for(i=0; i<axis.length; i++) {
+			if ( i>0 )
+				where.append(" or ");
+			where.append("t"+i+".level>0");
+		}
+		where.append(")\n\t");
+		for(i=0; i<axis.length; i++) {
+			where.append("and "+ "dd"+i+".level=t"+i+".level ");
+		}
+		where.append("\n");
+		for(i=0; i<axis.length; i++) {
+			where.append("\tand "+"sd"+i+".level = least(t"+i+".level, "+greatest+"-1)\n");
+		}
+		// sql_build.add("DROP TABLE IF EXISTS " + lfp_table_tmp + ";\n");
+		String lfp_tmp = SqlUtils.gen_Select_INTO(c, 
+				lfp_table_tmp,
+				"SELECT" + select,
+				from.toString() + 
+				where,
+				false);
+		sql_build.add("DROP TABLE IF EXISTS " + lfp_table_tmp + ";\n");
+		sql_build.add(with.toString()+lfp_tmp+"\n");
+		
+		select = new StringBuilder();
+		select.append("SELECT\t");
+		for(i=0; i<axis.length; i++) {
+			select.append("target_l"+i+",\n\t");
+			StringBuilder diff = new StringBuilder();
+			if ( i > 0 ) {
+				for(j=0; j<i; j++) {
+					if ( j>0 )
+						diff.append("+");
+					diff.append("target_l"+j+"-source_l"+j);
+				}
+			}
+			if ( i == 0 )
+				select.append("source_l"+i+",\n\t");
+			else {
+				select.append("case ");
+				select.append(diff.toString());
+				select.append(" when 0 then source_l"+i+" else target_l"+i);
+				select.append(" end AS source_l"+i+",\n\t");
+			}
+			if ( i == 0 )
+				select.append("factor_f"+i+"");
+			else {
+				select.append("case ");
+				select.append(diff.toString());
+				select.append(" when 0 then factor_f"+i+" else 1");
+				select.append(" end AS factor_f"+i+"");
+			}
+			if ( i < (axis.length - 1) )
+				select.append(",\n\t");
+		}
+		String lfp = SqlUtils.gen_Select_INTO(c, 
+				lfp_table,
+				select.toString(),
+				"FROM "+lfp_table_tmp,
+				false);
+		sql_build.add(lfp);
+		sql_build.add("DROP TABLE IF EXISTS " + lfp_table_tmp + ";\n\n");
+	}
+	
 	public String generate_level0(Connection c, String level0_table, String from, String where, AggregateAxis axis[], String aggregateColumn, int aggregateMask) 
 	throws SQLException {
 		/*
@@ -377,6 +514,8 @@ public class PreAggregate {
 				select.append(",\n\t");
 				gb.append(',');
 			}
+			if ( gen_optimized )
+				select.append("0 AS l"+i+",\n\t");
 			select.append(rangeFunName(i)+"("+axis[i].columnExpression()+") AS i"+i);
 			gb.append("i"+i);
 		}
@@ -387,16 +526,97 @@ public class PreAggregate {
 			where = "";
 		String level0 = SqlUtils.gen_Select_INTO(c, 
 				level0_table,
-				"SELECT\t" + select +
+				"SELECT\n\t" + select +
 				((aggregateMask&AGGR_COUNT)!=0 ? ",\n\tCOUNT(" + aggregateColumn + ") AS countAggr" : "") +
 				((aggregateMask&AGGR_SUM) !=0 ? ",\n\tSUM(" + aggregateColumn + ") AS sumAggr" : "") +
 				((aggregateMask&AGGR_MIN) !=0 ? ",\n\tMIN(" + aggregateColumn + ") AS minAggr" : "") +
 				((aggregateMask&AGGR_MAX) !=0 ? ",\n\tMAX(" + aggregateColumn + ") AS maxAggr" : "")
 				, 
-				"FROM " + from + where + "\nGROUP BY "+gb);
+				"FROM " + from + where + "\nGROUP BY "+gb,
+				false);
 		return level0;
 	}
-
+	
+	protected void generate_optimized(Connection c, SqlScriptBuilder sql_build, String delta_table, String level0, String lfp_table, AggregateAxis axis[],
+			String genKey, int aggregateMask) throws SQLException {
+		// first compute the total number of levels
+		int i, sumlevels = 0;
+		for(i=0; i<axis.length; i++)
+			sumlevels += axis[i].maxLevels();
+		for(int thislevel=1; thislevel<=sumlevels; thislevel++) {
+			StringBuilder select = new StringBuilder();
+			StringBuilder where = new StringBuilder();
+			StringBuilder gb = new StringBuilder();
+			
+			select.append("SELECT");
+			for(i=0; i<axis.length; i++) {
+				select.append("\ttarget_l"+i+" AS "+ "l"+i+", DIV(level0.i"+i+",factor_f"+i+") as ii"+i);
+				if ( i!=axis.length-1 )
+					select.append(",\n");
+			}
+			if ((aggregateMask & AGGR_COUNT) != 0)
+				select.append(",\n\tSUM(level0.countAggr) AS countAggr");
+			if ((aggregateMask & AGGR_SUM) != 0)
+				select.append(",\n\tSUM(level0.sumAggr) AS sumAggr");
+			if ((aggregateMask & AGGR_MIN) != 0)
+				select.append(",\n\tMIN(level0.minAggr) AS minAggr");
+			if ((aggregateMask & AGGR_MAX) != 0)
+				select.append(",\n\tMAX(level0.maxAggr) AS maxAggr");
+			//
+			where.append("WHERE");
+			StringBuilder lsum = new StringBuilder();
+			for(i=0; i<axis.length; i++) {
+				where.append("\tlevel0.l"+i+"=source_l"+i+" and\n");
+				if ( i>0 )
+					lsum.append("+");
+				lsum.append("target_l"+i);
+			}
+			where.append("\t("+lsum+")="+thislevel+"\n");
+			//
+			gb.append("GROUP BY");
+			for(i=0; i<axis.length; i++) {
+				if ( i >0 )
+					gb.append(",");
+				gb.append(" target_l"+i+", ii"+i+", factor_f"+i);
+			}
+			
+			String stat = "INSERT INTO "+level0+"\n"+
+			   select +
+			   "\nFROM " + lfp_table + ", " + level0 + " AS level0\n" +
+			   where +
+			   gb + ";";
+			
+			sql_build.add(stat);
+			sql_build.newLine();
+			sql_build.newLine();
+		}
+		StringBuilder keystat = new StringBuilder();
+		keystat.append("SELECT\t"+genKey+"(");
+		for(i=0;i<axis.length; i++) {
+			if ( i>0 )
+				keystat.append(",");
+			keystat.append("l"+i+",i"+i);
+		}
+		keystat.append(") as ckey");
+		if ((aggregateMask & AGGR_COUNT) != 0)
+			keystat.append(",\n\tcountAggr");
+		if ((aggregateMask & AGGR_SUM) != 0)
+			keystat.append(",\n\tsumAggr");
+		if ((aggregateMask & AGGR_MIN) != 0)
+			keystat.append(",\n\tminAggr");
+		if ((aggregateMask & AGGR_MAX) != 0)
+			keystat.append(",\n\tmaxAggr");
+			
+		sql_build.add(
+				SqlUtils.gen_Select_INTO(c, 
+				delta_table,
+				keystat.toString(),
+				"FROM " + level0,
+				false)
+		);
+		sql_build.newLine();
+	}
+	
 	public String generate_level0_n(Connection c, String delta_table,
 			String level0, AggregateAxis axis[], String dimTable[],
 			String genKey, int aggregateMask) throws SQLException {
@@ -451,7 +671,8 @@ public class PreAggregate {
 		// first update, then insert to prevent problems
 		String delta = SqlUtils.gen_Select_INTO(c, delta_table, "SELECT \t"
 				+ gk + " as ckey" + aggrAttr, "FROM\t(" + subindexQ
-				+ ") AS siq"); // incomplete
+				+ ") AS siq",
+				false); // incomplete
 		return delta;
 	}
 

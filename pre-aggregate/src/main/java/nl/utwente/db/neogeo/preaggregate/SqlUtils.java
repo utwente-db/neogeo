@@ -257,10 +257,13 @@ public class SqlUtils {
 		throw new SQLException("UNEXPECTED");
 	}
 
-	public static String gen_Select_INTO(Connection c, String table, String select_head, String select_tail) throws SQLException {
+	public static String gen_Select_INTO(Connection c, String table, String select_head, String select_tail, boolean dropfirst) throws SQLException {
 		switch ( dbType(c) ) {
 		case POSTGRES:
-			return  select_head +"\n"+
+			String dropstat = "";
+			if ( dropfirst )
+				dropstat = "DROP TABLE IF EXISTS " + table + ";\n";
+			return  dropstat + select_head +"\n"+
 			"INTO "+ table +"\n" +
 			select_tail + ";\n";
 		case MYSQL:

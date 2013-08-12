@@ -32,6 +32,7 @@ public class AddTweetServlet extends HttpServlet {
         StringBuffer jsonbuff = new StringBuffer();
         String line = null;
         try {
+          System.out.println("INPUT char encoding is: " + request.getCharacterEncoding());
           BufferedReader reader = request.getReader();
           while ((line = reader.readLine()) != null)
             jsonbuff.append(line);
@@ -49,9 +50,9 @@ public class AddTweetServlet extends HttpServlet {
         	String enriched = tweet.dummyEnriched();
         	
         	System.out.println("#!ENRICHED: "+enriched);
-        	if ( false ) {
+        	if ( true ) {
         		try {
-        			HttpUtils.postTweet("http://84.35.254.52:30000/Enrichment", enriched);
+        			HttpUtils.postTweet("http://84.35.254.52:30000/Enrichment", enriched, "UTF-8");
         		} catch (Exception e) {
         			System.out.println("#!CAUGHT: "+e);
         		}

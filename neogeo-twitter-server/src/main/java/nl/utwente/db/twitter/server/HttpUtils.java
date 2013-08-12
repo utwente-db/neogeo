@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 
 import org.json.simple.parser.ParseException;
 
@@ -16,9 +17,9 @@ public class HttpUtils {
 		// String host = "localhost";
 		String host = "farm15.ewi.utwente.nl";
 		
-		if ( true ) {
+		if ( false ) {
 			postTweet("http://"+host+":8080/neogeo-twitter-server/AddTweet",
-					Tweet.exampleTweet);
+					Tweet.exampleTweet, "UTF-8");
 		} else {
 			Tweet tweet = null;
 			
@@ -33,18 +34,21 @@ public class HttpUtils {
 		}
 	}
  
-	public static void postTweet(String url, String json_tweet) throws Exception {
+	public static void postTweet(String url, String json_tweet, String charset) throws Exception {
 		URL obj = new URL(url);
 		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
  
 		//add request header
 		con.setRequestMethod("POST");
-		con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+		// con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+		con.setRequestProperty("Content-Type", "application/json");
 		con.setRequestProperty("User-Agent", USER_AGENT);
 		// con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
  
 		String urlParameters = json_tweet;
- 
+		if ( false && charset != null )
+		     urlParameters = URLEncoder.encode(urlParameters, charset);
+		
 		// Send post request
 		con.setDoOutput(true);
 		DataOutputStream wr = new DataOutputStream(con.getOutputStream());
@@ -69,7 +73,6 @@ public class HttpUtils {
  
 		//print result
 		System.out.println(response.toString());
- 
 	}
 	
 	// HTTP GET request
