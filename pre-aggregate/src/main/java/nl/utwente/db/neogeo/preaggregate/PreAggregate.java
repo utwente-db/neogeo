@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 public class PreAggregate {
 	private static final Logger LOGGER = Logger.getLogger("org.geotools.data.aggregation.PreAggregate");
 	
-	private final boolean gen_optimized = false;
+	private final boolean gen_optimized = true;
 
 	/*
 	 * Experiment setup variables
@@ -305,7 +305,7 @@ public class PreAggregate {
 			String level0_n_table = schema + "." + indexPrefix + "0_n";;
 			sql_build.add("DROP TABLE IF EXISTS " + level0_n_table + ";\n");
 			sql_build.newLine();
-			if (i == 0) // drop this table only once
+			if (i == -1) // drop this table only once
 				sql_build.addPost("DROP TABLE " + level0_n_table + ";\n");
 			if ( !gen_optimized ) {
 				level0_n_table = schema + "." + indexPrefix + "0_n";
@@ -350,6 +350,14 @@ public class PreAggregate {
 						+ table_pa
 						+ " AS pa_table WHERE pa_delta.ckey = pa_table.ckey));\n");
 				sql_build.newLine();
+			}
+			if ( false ) {
+				if ( gen_optimized )
+					sql_build.add(SqlUtils.gen_Select_INTO(c, 
+							"pa_opt", "SELECT *", "FROM " + table_pa, false));
+				else
+					sql_build.add(SqlUtils.gen_Select_INTO(c, 
+							"pa_org", "SELECT *", "FROM " + table_pa, false));
 			}
 		}
 
@@ -516,7 +524,7 @@ public class PreAggregate {
 			}
 			if ( gen_optimized )
 				select.append("0 AS l"+i+",\n\t");
-			select.append(rangeFunName(i)+"("+axis[i].columnExpression()+") AS i"+i);
+			select.append(rangeFunName(i)+"("+axis[i].columnExpression()+") :: integer AS i"+i);
 			gb.append("i"+i);
 		}
 		//
@@ -596,6 +604,7 @@ public class PreAggregate {
 			if ( i>0 )
 				keystat.append(",");
 			keystat.append("l"+i+",i"+i);
+			// keystat.append("l"+i+",i"+i+"+1");
 		}
 		keystat.append(") as ckey");
 		if ((aggregateMask & AGGR_COUNT) != 0)

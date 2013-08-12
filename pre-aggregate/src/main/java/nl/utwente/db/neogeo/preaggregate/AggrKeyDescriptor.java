@@ -89,7 +89,7 @@ public class AggrKeyDescriptor {
 		for(short i=0; i<dimensions; i++) {
 			if (i>0)
 				pars.append(',');
-			pars.append("l"+i+" numeric,i"+i+" numeric");
+			pars.append("l"+i+" integer,i"+i+" integer");
 			sres = "("+sres+")" + "*" +  (int)Math.pow(2,levelBits) + "+" + "l"+i;
 			sres = "("+sres+")" + "*" +  (int)Math.pow(2,dimBits[i]) + "+" + "(i"+i+"+1)";
 		}
