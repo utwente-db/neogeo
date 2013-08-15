@@ -12,6 +12,8 @@ import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
+import nl.utwente.db.neogeo.preaggregate.SqlUtils;
+
 import org.geoserver.ows.Request;
 import org.geotools.data.Query;
 import org.geotools.data.store.ContentDataStore;
@@ -25,7 +27,7 @@ import org.opengis.feature.type.Name;
 
 public class AggregationDataStore extends ContentDataStore {
 	private static final Logger LOGGER = Logger.getLogger("org.geotools.data.aggregation.AggregationDataStore");
-	public static final String LOG_QUERY = "CREATE TABLE IF NOT EXISTS public.pre_aggregate_logging ( id serial, "+
+	public static final String LOG_QUERY = "CREATE TABLE public.pre_aggregate_logging ( id serial, "+
 			"tablename text,"+
 			"label text,"+
 			"request text,"+
@@ -42,14 +44,14 @@ public class AggregationDataStore extends ContentDataStore {
 			"resolution_y integer,"+
 			"resolution_time integer,"+
 			"response_time double precision,"+
-			"'time' timestamp with time zone,"+ 
+			"\"time\" timestamp with time zone,"+ 
 			"PRIMARY KEY (id)) ";
-public static final String LOG_INSERT_QUERY = "insert into public.pre_aggregatea_logging "+
+	public static final String LOG_INSERT_QUERY = "insert into public.pre_aggregatea_logging "+
 			"(tablename,label,request,ip,"+
 			" aggregate,low_x,high_x,low_y,high_y,"+
 			" start_time,end_time, type,"+
 			" resolution_x, resulution_y, resolution_time,"+
-			"response_time,'time') values ";
+			"response_time,\"time\") values ";
 
 	private String hostname;
 	private int port;
@@ -78,9 +80,12 @@ public static final String LOG_INSERT_QUERY = "insert into public.pre_aggregatea
 		Connection con = getConnection();
 		Statement stmt;
 		try {
-			stmt = con.createStatement();
-			stmt.execute(LOG_QUERY);
-			stmt.close();
+			LOGGER.severe(LOG_QUERY);
+			if(!SqlUtils.existsTable(con, "public", "pre_aggregate_logging")){
+				stmt = con.createStatement();
+				stmt.execute(LOG_QUERY);
+				stmt.close();
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -157,7 +162,7 @@ public static final String LOG_INSERT_QUERY = "insert into public.pre_aggregatea
 	public boolean hasOutputSum(){
 		return hasOutputSum(PreAggregate.AGGR_ALL);
 	}
-	
+
 	public boolean hasOutputSum(int mask2){
 		return (mask & mask2 & PreAggregate.AGGR_SUM)==PreAggregate.AGGR_SUM;
 	}
@@ -173,7 +178,7 @@ public static final String LOG_INSERT_QUERY = "insert into public.pre_aggregatea
 	public boolean hasOutputMax(){
 		return hasOutputMax(PreAggregate.AGGR_ALL);
 	}
-	
+
 	public boolean hasOutputMax(int mask2){
 		return (mask & mask2 & PreAggregate.AGGR_MAX)==PreAggregate.AGGR_MAX;
 	}
@@ -198,18 +203,18 @@ public static final String LOG_INSERT_QUERY = "insert into public.pre_aggregatea
 	public int getMask(){
 		return mask;
 	}
-	
+
 	public PreAggregate createPreAggregate(String typename) throws SQLException{
 		String tablename = PreAggregate.getTablenameFromTypeName(typename);
 		String label = PreAggregate.getLabelFromTypeName(typename);
 		return new PreAggregate(getConnection(),schema,tablename,label);
 	}
-	
+
 	public void logQuery(Request req, PreAggregate agg, int mask, Area a, Timestamp start_time, Timestamp end_time, int[] range, String type, double response_time) {
 		HttpServletRequest httpReq = req.getHttpRequest();
 		String ip = httpReq.getRemoteAddr();
 		String request = req.getRequest();
-		
+
 		String sql = LOG_INSERT_QUERY;
 		sql += "('"+agg.getTable()+"','"+agg.getLabel()+"','"+request+"','"+ip;
 		sql += "',"+a.getLowX()+","+a.getHighX()+","+a.getLowY()+","+a.getHighY();
@@ -226,6 +231,6 @@ public static final String LOG_INSERT_QUERY = "insert into public.pre_aggregatea
 			LOGGER.severe("logging of the query failed: "+e.getMessage());
 			e.printStackTrace();
 		}
-		
+
 	}
 }
