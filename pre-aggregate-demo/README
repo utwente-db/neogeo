@@ -1,0 +1,4 @@
+A dynamic web project in eclipse. Has to be converted into a war and should be 
+deployed next to the Geoserver. No Maven project, just export it as a WAR file.
+
+Be aware of possible hardcoded URL's (silo2)

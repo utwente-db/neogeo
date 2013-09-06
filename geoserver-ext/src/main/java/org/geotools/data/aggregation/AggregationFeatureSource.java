@@ -238,6 +238,7 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 			if("GetFeatureInfo".equals(req.getRequest())){
 				Area area = getReaderInternalGetFeatureInfo(req);
 				if(area== null) return null;
+				// INCOMPLETE, not working properly
 				ret = reformulateQuery(area,startTime,endTime, this.iv_count);
 				double startX = (Double) ret[0][0];
 				double grid_deltaX = ((Double)ret[0][1]) - startX;

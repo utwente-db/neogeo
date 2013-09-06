@@ -1,0 +1,3 @@
+Thse files have to be reinstalled in the geoserver via the web interface.
+
+Add the sld file as a style option and associate it with the layer (in the layer configuration).

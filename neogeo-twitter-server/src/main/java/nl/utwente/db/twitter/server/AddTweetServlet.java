@@ -14,6 +14,8 @@ import org.json.simple.parser.ParseException;
 @MultipartConfig
 public class AddTweetServlet extends HttpServlet {
 
+	private static final boolean respond2enai = false;
+	
     private static final long serialVersionUID = 1L;
 
     @Override
@@ -50,12 +52,14 @@ public class AddTweetServlet extends HttpServlet {
         	String enriched = tweet.dummyEnriched();
         	
         	System.out.println("#!ENRICHED: "+enriched);
-        	if ( true ) {
+        	if ( respond2enai ) {
         		try {
         			HttpUtils.postTweet("http://84.35.254.52:30000/Enrichment", enriched, "UTF-8");
         		} catch (Exception e) {
         			System.out.println("#!CAUGHT: "+e);
         		}
+        	} else {
+        		System.out.println("#! NO ENAI RESPOND FOR: "+enriched);
         	}
         } catch (ParseException e) {
         	System.out.println("INVALID TWEET: "+e +",tweet="+jsonbuff);
