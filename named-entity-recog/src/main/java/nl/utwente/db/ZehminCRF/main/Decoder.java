@@ -50,22 +50,22 @@ public class Decoder
     /*
      * TopK paths
      */
-    public Vector<Path> getTopKPaths(Sentence s)
-    {
-        Vector<Path> paths = m_model.getPromisingPaths(s);
-        Path top1Tags = new Path(m_va.decode(s));
-        if (paths.size() == 0 || !paths.firstElement().getPath().equals(top1Tags.getPath()))
-        {
-            m_model.score(top1Tags, s);
-            paths.add(0, top1Tags);
-        }
-        boolean bDuplicate = checkDuplicatePath(paths);
-        if (bDuplicate)
-        {
-            //System.err.println("Same Path!!!");
-        }
-        return paths;
-    }
+//    public Vector<Path> getTopKPaths(Sentence s)
+//    {
+//        // Vector<Path> paths = m_model.getPromisingPaths(s);
+//        Path top1Tags = new Path(m_va.decode(s));
+//        if (paths.size() == 0 || !paths.firstElement().getPath().equals(top1Tags.getPath()))
+//        {
+//            // m_model.score(top1Tags, s);
+//            paths.add(0, top1Tags);
+//        }
+//        boolean bDuplicate = checkDuplicatePath(paths);
+//        if (bDuplicate)
+//        {
+//            //System.err.println("Same Path!!!");
+//        }
+//        return paths;
+//    }
 
     public boolean checkDuplicatePath(Vector<Path> paths)
     {
@@ -85,19 +85,19 @@ public class Decoder
         return false;
     }
 
-    public void decodeTopK(int k)
-    {
-        m_timer.start();
-        for (int i = 0; i < m_decoding_corpus.getNumSentences(); ++i)
-        {
-            Sentence sentence = m_decoding_corpus.getSentence(i);
-            Vector<Path> paths = getTopKPaths(sentence);
-            double precision = checkSentence(sentence, paths.firstElement().getTags());
-            System.out.println("Sentence: " + i + "\t" + precision + "\t topK: " + paths.size());
-        }
-        m_timer.end();
-        printPrecision();
-    }
+//    public void decodeTopK(int k)
+//    {
+//        m_timer.start();
+//        for (int i = 0; i < m_decoding_corpus.getNumSentences(); ++i)
+//        {
+//            Sentence sentence = m_decoding_corpus.getSentence(i);
+//            Vector<Path> paths = getTopKPaths(sentence);
+//            double precision = checkSentence(sentence, paths.firstElement().getTags());
+//            System.out.println("Sentence: " + i + "\t" + precision + "\t topK: " + paths.size());
+//        }
+//        m_timer.end();
+//        printPrecision();
+//    }
 
     public void decode()
     {
@@ -182,28 +182,28 @@ public class Decoder
 
     }
 
-    public List<NamedEntity> decodeTopK(String tweetStr, int TopK)
-    {
-        List<NamedEntity> NEsList=new ArrayList<NamedEntity>();
-        Sentence sentence = m_decoding_corpus.getSentence(0);
-
-        //Vector<String> annotatedTags = m_va.decode(sentence);
-        Vector<Path> paths = getTopKPaths(sentence);
-        int size = TopK;
-        if (paths.size() < size)
-        {
-            size = paths.size();
-        }
-        for (int i = 0; i < size; i++)
-        {
-            Path path = paths.get(i);
-            Vector<String> annotatedTags = path.getTags();
-            double score = path.getScore();
-            checkSentence(sentence, tweetStr, annotatedTags, NEsList);
-            
-        }
-        return NEsList;
-    }
+//    public List<NamedEntity> decodeTopK(String tweetStr, int TopK)
+//    {
+//        List<NamedEntity> NEsList=new ArrayList<NamedEntity>();
+//        Sentence sentence = m_decoding_corpus.getSentence(0);
+//
+//        //Vector<String> annotatedTags = m_va.decode(sentence);
+//        Vector<Path> paths = getTopKPaths(sentence);
+//        int size = TopK;
+//        if (paths.size() < size)
+//        {
+//            size = paths.size();
+//        }
+//        for (int i = 0; i < size; i++)
+//        {
+//            Path path = paths.get(i);
+//            Vector<String> annotatedTags = path.getTags();
+//            double score = path.getScore();
+//            checkSentence(sentence, tweetStr, annotatedTags, NEsList);
+//            
+//        }
+//        return NEsList;
+//    }
 
     public List<NamedEntity> decode(String tweetStr, int index, boolean WithType)
     {
@@ -276,7 +276,7 @@ public class Decoder
 
         //test_corpus = test_corpus.genSubCorpus(begin, end);
         CRModel_sp1 model = new CRModel_sp1(train_corpus, Global.g_BrwonModelFile, false);
-        new Decoder(train_corpus, test_corpus, model).decodeTopK(10000);
+        new Decoder(train_corpus, test_corpus, model).decode();
 
 
 

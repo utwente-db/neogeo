@@ -484,7 +484,8 @@ public class Corpus
         {
         	System.out.println("oo["+ ++cnt +"]="+oo);
             CPT cptoo = mapCPTOO.get(oo);
-            String of = oo.split(" ") + " " + m_mapOF.get(oo.split(" ")[1]);
+            String of = oo.split(" ")[0] + " " + m_mapOF.get(oo.split(" ")[1]);
+            System.out.println(of);
             CPT cptof = mapCPTOF.get(of);
             if (cptof == null)
             {

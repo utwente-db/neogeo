@@ -43,12 +43,10 @@ public class TEC4SE_Ver1
         Corpus test_corpus = new Corpus("crfTest.txt");
         System.out.println("#Test Sentences: " + test_corpus.getNumSentences());
 
-        System.out.println("HERE-1");
         CRModel_sp1 model = new CRModel_sp1(train_corpus, "CRF.model", false);
-        System.out.println("HERE-2");
-        List<NamedEntity> NEs= new Decoder(train_corpus, test_corpus, model).decodeTopK(TweetStr,1);
-        System.out.println("HERE-3");
-        
+
+        List<NamedEntity> NEs= new Decoder(train_corpus, test_corpus, model).decode(TweetStr, 0, true);
+
         for(int i=0;i<NEs.size();i++)
         {
             System.out.println(NEs.get(i).getMention());
