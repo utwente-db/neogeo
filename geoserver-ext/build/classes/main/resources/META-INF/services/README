@@ -1,0 +1,7 @@
+IMPORTANT:
+
+The spi file is used by the geostore to locate extension.
+Name in file corresponds to the core class name.
+
+Look @:
+http://docs.geotools.org/stable/userguide/tutorial/abstractdatastore.html

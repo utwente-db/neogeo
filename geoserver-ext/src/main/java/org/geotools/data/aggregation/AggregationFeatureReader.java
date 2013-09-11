@@ -69,6 +69,7 @@ public class AggregationFeatureReader implements FeatureReader {
 	 * set all parameters derived for constructing the grid at the end 
 	 */
 	public void _init()throws NullPointerException{
+		// JF, initial setup here
 		startX = (Double) iv_first_obj[0][0];
 		grid_deltaX = ((Double)iv_first_obj[0][1]) - startX;
 		startY = (Double) iv_first_obj[1][0];
@@ -127,6 +128,7 @@ public class AggregationFeatureReader implements FeatureReader {
 			Coordinate[] coordinates = new Coordinate[5];
 			// lower left corner
 			// TODO potentially remove some fraction on the upper bounds of the rectangle 
+			// JF HERE MODIFY RECTANGLE
 			double lowX = startX+pos[0]*grid_deltaX;
 			double highX = startX+(pos[0]+1)*grid_deltaX;
 			double lowY = startY+pos[1]*grid_deltaY;

@@ -23,7 +23,7 @@
 
         
         var london = new OpenLayers.Layer.WMS(
-        "LondonGeoserver", "http://silo2.ewi.utwente.nl:8080/geoserver/nurc/wms",
+        "LondonGeoserver", "http://silo3.ewi.utwente.nl:9090/geoserver/nurc/wms",
         {
             // layers: 'nurc:london_place, nurc:london_neogeo',
             layers: 'nurc:london_hav_neogeo',
@@ -38,7 +38,7 @@
 	OpenLayers.Popup.FramedCloud.prototype.maxSize = new OpenLayers.Size(800, 400); 
         var popup;
 	var info = new OpenLayers.Control.WMSGetFeatureInfo({
-            url: 'http://silo2.ewi.utwente.nl:8080/geoserver/nurc/wms',
+            url: 'http://silo3.ewi.utwente.nl:9090/geoserver/nurc/wms',
 	    layers: [london],
 	    vendorParams: { "propertyName": "time,user_name,tweet" },
             title: 'London Tweets by clicking',

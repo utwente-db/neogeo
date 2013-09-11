@@ -4,6 +4,7 @@
 	<groupId>nl.utwente.db</groupId>
 	<artifactId>pre-aggregate</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
 	<build>
 		<plugins>
 			<plugin>

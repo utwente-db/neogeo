@@ -226,10 +226,10 @@ public class Test {
 			
 			//System.exit(0);
 
-			GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "london_hav_neogeo", "myAggregate", "coordinates",-1,200000,null);
+			GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "uk_neogeo", "myAggregate", "coordinates",-1,200000,null);
 			//GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "london_hav_neogeo", "myAggregate");
 			//
-			pa.boxQuery("count",0.18471,51.60626,0.23073,51.55534); // in the middle of havering map *correction anomaly
+			// pa.boxQuery("count",0.18471,51.60626,0.23073,51.55534); // in the middle of havering map *correction anomaly
 			//			pa.boxQuery("count",-0.058,51.59,0.095,51.483); // left of havering, few tweets
 			// pa.boxQuery("count",-0.058,51.58961,0.095,51.48287); // left of havering, few tweets
 			
@@ -287,4 +287,15 @@ public class Test {
 		PreAggregate pa = new PreAggregate(c,"public", "uk_neogeo", "myAggregate",axis,"char_length(tweet)","bigint",PreAggregate.AGGR_ALL,2,200000,null);
 
 	}
+	
+	public static void runTest4(Connection c) throws Exception {
+		int pos[] =  new int[1];
+		
+		pos[0] = 5;
+		double startX = 52.25;
+		double grid_deltaX = 0.25;
+		System.out.println("ORG="+(startX + (pos[0]+1)*grid_deltaX) );
+		System.out.println("NEW="+(startX + ((double)(pos[0]+1))*grid_deltaX) );
+	}
+	
 }

@@ -2,10 +2,8 @@ package org.geotools.data.aggregation;
 
 
 import java.io.IOException;
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.Map;
@@ -25,7 +23,6 @@ import org.geotools.data.store.ContentEntry;
 import org.geotools.data.store.ContentFeatureSource;
 import org.geotools.factory.Hints;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
-import org.geotools.geometry.DirectPosition2D;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
@@ -39,7 +36,6 @@ import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 
 import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Polygon;
 
 @SuppressWarnings("unchecked")
@@ -80,6 +76,8 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 			e.printStackTrace();
 		}
 		AggregationDataStore data = this.getDataStore();
+		if ( agg == null )
+			System.out.println("#!HOLY SHIT: null pointer: agg!");
 		x = agg.getXaxis();
 		y = agg.getYaxis();
 		time = agg.getTimeAxis();

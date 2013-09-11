@@ -160,7 +160,7 @@ function init() {
 	});
 
 	neogeo_uk = new OpenLayers.Layer.WMS(
-			"tweets UK", "http://silo2.ewi.utwente.nl:8080/geoserver/nurc/wms",
+			"tweets UK", "http://silo3.ewi.utwente.nl:9090/geoserver/nurc/wms",
 			{
 				layers: 'nurc:uk_neogeo',
 				maxfeatures: 100,
@@ -179,7 +179,7 @@ function init() {
 //		strategies : [new OpenLayers.Strategy.BBOX()],
 //		protocol : new OpenLayers.Protocol.WFS({
 //			version : "1.1.0",
-//			url : "http://silo2.ewi.utwente.nl:8080/geoserver/wfs", 
+//			url : "http://silo3.ewi.utwente.nl:9090/geoserver/wfs", 
 //			featurePrefix : "nurc:",
 //			featureType : "uk_neogeo",
 //			featureNS : "", 
@@ -190,7 +190,7 @@ function init() {
 //	});
 	
 //	neogeo_uk = new OpenLayers.Layer.WFS("wfs testdata",
-//			"http://silo2.ewi.utwente.nl:8080/geoserver/wfs",
+//			"http://silo3.ewi.utwente.nl:9090/geoserver/wfs",
 //			{
 //			"TYPENAME": "nurc:uk_neogeo",
 //			"SERVICE": "WFS",
@@ -219,7 +219,7 @@ function init() {
 //			}; 
 //	neogeo_uk.styleMap = new OpenLayers.StyleMap(new OpenLayers.Style(style_green)); 
 	neogeo_uk_agg = new OpenLayers.Layer.WMS(
-			"tweet aggregate UK", "http://silo2.ewi.utwente.nl:8080/geoserver/nurc/wms",
+			"tweet aggregate UK", "http://silo3.ewi.utwente.nl:9090/geoserver/nurc/wms",
 			{
 				layers: 'nurc:aggregate_uk_neogeo___myAggregate',
 				format: 'image/gif',
@@ -281,7 +281,7 @@ function init() {
 			params.y = parseInt(e.xy.y);
 //			}
 			// merge filters
-			OpenLayers.loadURL("http://silo2.ewi.utwente.nl:8080/geoserver/nurc/wms", params, this, setHTML, setHTML);
+			OpenLayers.loadURL("http://silo3.ewi.utwente.nl:9090/geoserver/nurc/wms", params, this, setHTML, setHTML);
 			OpenLayers.Event.stop(e);
 		}
 	});

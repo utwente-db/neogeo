@@ -90,6 +90,7 @@ public class PreAggregate {
 
 	public PreAggregate(Connection c, String schema, String table, String label) 
 	throws SQLException {
+		System.out.println("JF: Here-XX, the jar connection has been made!!");
 		_init(c,schema,table,label);
 	}
 
@@ -1358,7 +1359,8 @@ public class PreAggregate {
 					"aggregateType TEXT," +
 					"dimensions int," +
 					"keyflag char," +
-					"aggregateMask int" +
+					"aggregateMask int," +
+					"count int" +
 					");"
 			);
 		}
@@ -1384,18 +1386,18 @@ public class PreAggregate {
 	private boolean read_repository(Connection c, String schema, String tableName, String label) throws SQLException {
 		if(!SqlUtils.existsTable(c, schema, tableName)) return false; // CHECK Andreas Change
 		ResultSet rs = SqlUtils.execute(c,
-				"SELECT " + "*" +
+				"SELECT " + "dimensions,keyflag,aggregatemask,aggregatecolumn,aggregatetype" +
 				" FROM " + schema + "." + aggregateRepositoryName +
 				" WHERE tableName=\'"+tableName+"\' AND label=\'"+label+"\';"
 		);
 
 		if (!rs.next())
 			return false;
-		int dimensions = rs.getInt(3);
-		char keyFlag = rs.getString(4).charAt(0);
-		aggregateMask = rs.getInt(5);
-		aggregateColumn = rs.getString(7);
-		aggregateType = rs.getString(8);
+		int dimensions = rs.getInt(1);
+		char keyFlag = rs.getString(2).charAt(0);
+		aggregateMask = rs.getInt(3);
+		aggregateColumn = rs.getString(4);
+		aggregateType = rs.getString(5);
 		AggregateAxis read_axis[] = new AggregateAxis[dimensions];
 
 		ResultSet rsi = SqlUtils.execute(c,

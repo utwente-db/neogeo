@@ -29,7 +29,7 @@ function init() {
     });
     map.addControl(new OpenLayers.Control.LayerSwitcher());
     neogeo_uk_agg = new OpenLayers.Layer.WMS(
-            "tweets UK", "http://silo2.ewi.utwente.nl:8080/geoserver/nurc/wms",
+            "tweets UK", "http://silo3.ewi.utwente.nl:9090/geoserver/nurc/wms",
             {
                 layers: 'nurc:london_hav_neogeo',
                 format: 'image/gif',

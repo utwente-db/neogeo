@@ -205,9 +205,14 @@ public class AggregationDataStore extends ContentDataStore {
 	}
 
 	public PreAggregate createPreAggregate(String typename) throws SQLException{
+		System.out.println("JF: Here-1");
 		String tablename = PreAggregate.getTablenameFromTypeName(typename);
+		System.out.println("JF: Here-2");
 		String label = PreAggregate.getLabelFromTypeName(typename);
-		return new PreAggregate(getConnection(),schema,tablename,label);
+		System.out.println("JF: Here-3");
+		Connection c = getConnection();
+		System.out.println("JF: Here-4: connection="+c);
+		return new PreAggregate(c,schema,tablename,label);
 	}
 
 	public void logQuery(Request req, PreAggregate agg, int mask, Area a, Timestamp start_time, Timestamp end_time, int[] range, String type, double response_time) {
