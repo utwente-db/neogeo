@@ -205,13 +205,10 @@ public class AggregationDataStore extends ContentDataStore {
 	}
 
 	public PreAggregate createPreAggregate(String typename) throws SQLException{
-		System.out.println("JF: Here-1");
 		String tablename = PreAggregate.getTablenameFromTypeName(typename);
-		System.out.println("JF: Here-2");
 		String label = PreAggregate.getLabelFromTypeName(typename);
-		System.out.println("JF: Here-3");
 		Connection c = getConnection();
-		System.out.println("JF: Here-4: connection="+c);
+		System.out.println("JF:succes connection: "+c);
 		return new PreAggregate(c,schema,tablename,label);
 	}
 
@@ -223,7 +220,11 @@ public class AggregationDataStore extends ContentDataStore {
 		String sql = LOG_INSERT_QUERY;
 		sql += "('"+agg.getTable()+"','"+agg.getLabel()+"','"+request+"','"+ip;
 		sql += "',"+a.getLowX()+","+a.getHighX()+","+a.getLowY()+","+a.getHighY();
-		sql += ","+start_time.getTime()+","+end_time.getTime()+",'"+type+"',"+range[0]+","+range[1]+",";
+		if ( start_time == null )
+			sql += ",NULL,NULL";
+		else
+			sql += ","+start_time.getTime()+","+end_time.getTime();
+		sql += ",'"+type+"',"+range[0]+","+range[1]+",";
 		sql += range.length>2 ? range[2] : null;
 		sql += ","+response_time+",current_timestamp);";
 		Connection con = getConnection();

@@ -316,7 +316,8 @@ public class DoubleAxisIndexer implements AxisIndexer {
 		}
 
 		public AxisSplitDimension splitAxis(Object low, Object high, int cnt) {
-			//LOGGER.severe("Double:1: "+low+"|"+high+"|"+cnt);
+			// 50.021|54.329403964700646|10|BBS=0.001
+			LOGGER.severe("Double:1: "+low+"|"+high+"|"+cnt+"|BBS="+BASEBLOCKSIZE);
 			if(cnt<=0 || low==null || high==null) throw new RuntimeException("count, low or high values are not feasible");
 			double start = (Double) low;
 			double end = (Double) high;
@@ -330,28 +331,32 @@ public class DoubleAxisIndexer implements AxisIndexer {
 				throw new RuntimeException("query out of range of the available data: (start,end,high,low)=("+start+","+end+","+this.low+","+this.high+")");
 			
 			// in the case of a split along a single chunk, no alignment with the factor is possible!
-//			if(cnt==1) return new AxisSplitDimension((double) startl*BASEBLOCKSIZE, (double)endl*BASEBLOCKSIZE, 1);
+//			// if(cnt==1) return new AxisSplitDimension((double) startl*BASEBLOCKSIZE, (double)endl*BASEBLOCKSIZE, 1);
 			if(cnt==1) return new AxisSplitDimension(low,high,1);
-			double 	deltal = Math.ceil((endl-startl)/(cnt-1));
+			// double 	deltal = Math.ceil((endl-startl)/(cnt-1)); // WHY cnt-1???
+			int deltal = (int)Math.ceil((endl-startl)/(cnt));
+
 			// this is the case where the query is inside the available data
 			
-			double _startl = (double) (_floor(startl,deltal))*deltal; // be careful with rounding here
-			double _endl = (double) (_floor(endl,deltal)+1)*deltal; // be careful with rounding here
-			
-			while(_startl<this.low/BASEBLOCKSIZE && cnt>0){
-				_startl += deltal;
-				cnt--;
-			}
-			while(_endl>this.high/BASEBLOCKSIZE && cnt>0){
-				_endl -= deltal;
-				cnt--;
-			}
-			LOGGER.severe("Acis splitting result: "+startl+"|"+endl+"|"+cnt);
+//			double _startl = (double) (_floor(startl,deltal))*deltal; // be careful with rounding here
+//			double _endl = (double) (_floor(endl,deltal)+1)*deltal; // be careful with rounding here
+//			
+//			while(_startl<this.low/BASEBLOCKSIZE && cnt>0){
+//				_startl += deltal;
+//				cnt--;
+//			}
+//			while(_endl>this.high/BASEBLOCKSIZE && cnt>0){
+//				_endl -= deltal;
+//				cnt--;
+//			}
+			LOGGER.severe("Axis splitting result (index range): "+startl+"|"+endl+"|"+cnt);
 			
 			if(cnt>0)
-				return new AxisSplitDimension(_startl*BASEBLOCKSIZE, (_startl+deltal)*BASEBLOCKSIZE, cnt);
+				return new AxisSplitDimension(reverseValue(startl), reverseValue(startl+deltal), cnt);
+//			if(cnt>0)
+//				return new AxisSplitDimension(_startl*BASEBLOCKSIZE, (_startl+deltal)*BASEBLOCKSIZE, cnt);
 			
-			throw new RuntimeException("remaining count value is less than or euqal to 0: "+cnt);
+			throw new RuntimeException("remaining count value is less than or equal to 0: "+cnt);
 		}
 
 		

@@ -6,12 +6,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Map.Entry;
+import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 
 import org.geotools.data.FeatureReader;
-import org.geotools.data.store.ContentFeatureSource;
 import org.geotools.data.store.ContentState;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.geometry.jts.JTSFactoryFinder;
@@ -52,6 +51,7 @@ public class AggregationFeatureReader implements FeatureReader {
 	public AggregationFeatureReader(ContentState contentState, ResultSet rs, 
 			Object[][] iv_first_obj, int[] range,
 			Map<String, Class> attributes ) throws IOException {
+		LOGGER.severe("JF: AggregationFeatureReader() created");
 		state = contentState;
 		data = (AggregationDataStore)contentState.getEntry().getDataStore();
 		builder = new SimpleFeatureBuilder(state.getFeatureType());
@@ -102,8 +102,19 @@ public class AggregationFeatureReader implements FeatureReader {
 		try {
 			if(rs==null || !rs.next()) return null; // no additional features are available
 
-			long gkey = rs.getLong("gkey");
-			int[] pos = revertGKey(gkey);
+			LOGGER.severe("JF: read next feature");
+			// long gkey = rs.getLong("gkey");
+			boolean hasTime = attributes.containsKey("starttime");
+			// int[] pos = revertGKey(gkey);
+			int pos[] = null;
+			if ( hasTime )
+				pos = new int[3];
+			else 
+				pos = new int[2];
+			pos[0] = rs.getInt("d0");
+			pos[1] = rs.getInt("d1");
+			if ( hasTime )
+				pos[2] = rs.getInt("d2");
 			for(Entry<String,Class> en : attributes.entrySet()){
 				String key = en.getKey();
 				Class cl = en.getValue();
@@ -128,7 +139,7 @@ public class AggregationFeatureReader implements FeatureReader {
 			Coordinate[] coordinates = new Coordinate[5];
 			// lower left corner
 			// TODO potentially remove some fraction on the upper bounds of the rectangle 
-			// JF HERE MODIFY RECTANGLE
+			// JF: HERE MODIFY RECTANGLE
 			double lowX = startX+pos[0]*grid_deltaX;
 			double highX = startX+(pos[0]+1)*grid_deltaX;
 			double lowY = startY+pos[1]*grid_deltaY;
