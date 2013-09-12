@@ -14,11 +14,8 @@ import edu.stanford.nlp.pipeline.PTBTokenizerAnnotator;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.time.TimeAnnotations;
 import edu.stanford.nlp.util.CoreMap;
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -29,6 +26,7 @@ import java.util.logging.Logger;
 import nl.utwente.db.ZehminCRF.corpus.Corpus;
 import nl.utwente.db.ZehminCRF.main.Decoder;
 import nl.utwente.db.ZehminCRF.sp.CRModel_sp1;
+import nl.utwente.db.ZehminCRF.utils.Global;
 
 /**
  *
@@ -47,7 +45,7 @@ public class TEC4SE_Ver1
         //String TweetStr="Niks te doen dit weekend? Festival GOGBOT in Enschede (Sciencefiction, technologie, #robots) http://www.fantasymedia.nl/content/festival-gogbot-2013-enschede-sciencefiction-technologie-robots?utm_source=twitterfeed&utm_medium=twitter … http://2013.gogbot.nl";
 
         PrepareTrainingFile();
-        List<Token> TokenList=PrepareTestFile_StanfordTokenizer(TweetStr);
+        List<Token> TokenList = PrepareTestFile_StanfordTokenizer(TweetStr);
         //PrepareTestFile_JavaTokenizer(TweetStr);
 
         Corpus train_corpus = new Corpus("crfTrain.txt");
@@ -58,11 +56,11 @@ public class TEC4SE_Ver1
 
         CRModel_sp1 model = new CRModel_sp1(train_corpus, "CRF.model", false);
 
-        List<NamedEntity> NEs= new Decoder(train_corpus, test_corpus, model).decode(TokenList,TweetStr);
+        List<NamedEntity> NEs = new Decoder(train_corpus, test_corpus, model).decode(TokenList, TweetStr);
 
-        for(int i=0;i<NEs.size();i++)
+        for (int i = 0; i < NEs.size(); i++)
         {
-            System.out.println(NEs.get(i).getOffset()+":"+NEs.get(i).getMention() + "--->" + NEs.get(i).getTag() );
+            System.out.println(NEs.get(i).getOffset() + ":" + NEs.get(i).getMention() + "--->" + NEs.get(i).getTag());
         }
     }
 
@@ -72,12 +70,26 @@ public class TEC4SE_Ver1
         {
             String PathSource = "ned.train";
             String PathTarget = "crfTrain.txt";
-
-            FileOutputStream fos = new FileOutputStream(PathTarget);
-            OutputStreamWriter out = new OutputStreamWriter(fos, "UTF-8");
-
-            InputStreamReader isr = new InputStreamReader(new FileInputStream(PathSource), "UTF-8");
+            
+            ClassLoader classLoader = new Global().getClass().getClassLoader();
+            URL url = classLoader.getResource(PathSource);
+            if (url == null)
+            {
+                throw new RuntimeException("Global:readFile: unable to locate resource: " + PathSource);
+            }
+            InputStreamReader isr = new InputStreamReader(new FileInputStream(url.getFile()), "UTF-8");
             BufferedReader bufferedReader = new BufferedReader(isr);
+            
+            
+            url = classLoader.getResource(PathTarget);
+            if (url == null)
+            {
+                throw new RuntimeException("Global:readFile: unable to locate resource: " + PathSource);
+            }
+            FileOutputStream fos = new FileOutputStream(url.getFile());
+            OutputStreamWriter out = new OutputStreamWriter(fos, "UTF-8");
+            
+            
             String line = "";
             while ((line = bufferedReader.readLine()) != null)
             {
@@ -128,14 +140,20 @@ public class TEC4SE_Ver1
         }
 
     }
-    
+
     private static void PrepareTestFile_JavaTokenizer(String TweetStr)
     {
         try
         {
             String PathTarget = "crfTest.txt";
 
-            FileOutputStream fos = new FileOutputStream(PathTarget);
+            ClassLoader classLoader = new Global().getClass().getClassLoader();
+            URL url = classLoader.getResource(PathTarget);
+            if (url == null)
+            {
+                throw new RuntimeException("Global:readFile: unable to locate resource: " + PathTarget);
+            }
+            FileOutputStream fos = new FileOutputStream(url.getFile());
             OutputStreamWriter out = new OutputStreamWriter(fos, "UTF-8");
 
             StringTokenizer ST = new StringTokenizer(TweetStr);
@@ -158,7 +176,7 @@ public class TEC4SE_Ver1
                     out.write("\n");
                 }
             }
-             out.close();
+            out.close();
             fos.close();
         }
         catch (Exception ex)
@@ -169,14 +187,18 @@ public class TEC4SE_Ver1
 
     private static List<Token> PrepareTestFile_StanfordTokenizer(String TweetStr)
     {
-        List<Token> TokensList=new ArrayList<Token>();
+        List<Token> TokensList = new ArrayList<Token>();
         try
         {
             String PathTarget = "crfTest.txt";
             
-            
-
-            FileOutputStream fos = new FileOutputStream(PathTarget);
+            ClassLoader classLoader = new Global().getClass().getClassLoader();
+            URL url = classLoader.getResource(PathTarget);
+            if (url == null)
+            {
+                throw new RuntimeException("Global:readFile: unable to locate resource: " + PathTarget);
+            }
+            FileOutputStream fos = new FileOutputStream(url.getFile());
             OutputStreamWriter out = new OutputStreamWriter(fos, "UTF-8");
 
             // creates a StanfordCoreNLP object, with POS tagging, lemmatization, NER, parsing, and coreference resolution 
@@ -194,22 +216,22 @@ public class TEC4SE_Ver1
             // these are all the sentences in this document
             // a CoreMap is essentially a Map that uses class objects as keys and has values with custom types
             List<CoreMap> sentences = document.get(SentencesAnnotation.class);
-            int sentenceSize=sentences.size();
-            int sentenceCnt=0;
+            int sentenceSize = sentences.size();
+            int sentenceCnt = 0;
             for (CoreMap sentence : sentences)
             {
                 // traversing the words in the current sentence
                 // a CoreLabel is a CoreMap with additional token-specific methods
                 sentenceCnt++;
-                List<CoreLabel> Tokens=sentence.get(TokensAnnotation.class);
-                int tokenSize=Tokens.size();
-                int tokenCnt=0;
+                List<CoreLabel> Tokens = sentence.get(TokensAnnotation.class);
+                int tokenSize = Tokens.size();
+                int tokenCnt = 0;
                 for (CoreLabel token : Tokens)
                 {
                     tokenCnt++;
                     String word = token.get(TextAnnotation.class);
-                    int offset= token.beginPosition();
-                    TokensList.add(new Token(word,offset));
+                    int offset = token.beginPosition();
+                    TokensList.add(new Token(word, offset));
                     String feature = "";
                     if (Character.isUpperCase(word.charAt(0)))
                     {
@@ -220,7 +242,7 @@ public class TEC4SE_Ver1
                         feature = "f";
                     }
                     out.write(word + "\t" + feature + "\t" + "O");
-                    if (!(sentenceCnt==sentenceSize && tokenCnt==tokenSize))
+                    if (!(sentenceCnt == sentenceSize && tokenCnt == tokenSize))
                     {
                         out.write("\n");
                     }
@@ -229,7 +251,7 @@ public class TEC4SE_Ver1
 
             out.close();
             fos.close();
-            
+
         }
         catch (Exception ex)
         {
