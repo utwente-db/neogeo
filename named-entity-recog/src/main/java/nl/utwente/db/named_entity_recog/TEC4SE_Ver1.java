@@ -4,12 +4,24 @@
  */
 package nl.utwente.db.named_entity_recog;
 
+import edu.stanford.nlp.ling.CoreAnnotations;
+import edu.stanford.nlp.ling.CoreAnnotations.SentencesAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations.TextAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
+import edu.stanford.nlp.ling.CoreLabel;
+import edu.stanford.nlp.pipeline.Annotation;
+import edu.stanford.nlp.pipeline.PTBTokenizerAnnotator;
+import edu.stanford.nlp.pipeline.StanfordCoreNLP;
+import edu.stanford.nlp.time.TimeAnnotations;
+import edu.stanford.nlp.util.CoreMap;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,7 +29,6 @@ import java.util.logging.Logger;
 import nl.utwente.db.ZehminCRF.corpus.Corpus;
 import nl.utwente.db.ZehminCRF.main.Decoder;
 import nl.utwente.db.ZehminCRF.sp.CRModel_sp1;
-
 
 /**
  *
@@ -33,23 +44,25 @@ public class TEC4SE_Ver1
     {
         //String TweetStr = "Onderweg naar Enschede voor hopelijk een mooi feestje vanavond. #batavieren";
         String TweetStr = "Campuspop:Alle Batavieren kunnen morgen voor 16 Euro kaarten kopen voor Campuspop met Anouk, Candy Dulfer, Ben Saundersenz.#batavierenrace";
+        //String TweetStr="Niks te doen dit weekend? Festival GOGBOT in Enschede (Sciencefiction, technologie, #robots) http://www.fantasymedia.nl/content/festival-gogbot-2013-enschede-sciencefiction-technologie-robots?utm_source=twitterfeed&utm_medium=twitter … http://2013.gogbot.nl";
 
-        //PrepareTrainingFile();
-        PrepareTestFile(TweetStr);
+        PrepareTrainingFile();
+        List<Token> TokenList=PrepareTestFile_StanfordTokenizer(TweetStr);
+        //PrepareTestFile_JavaTokenizer(TweetStr);
 
         Corpus train_corpus = new Corpus("crfTrain.txt");
-        System.out.println("#Training Sentences: " + train_corpus.getNumSentences());
+        //System.out.println("#Training Sentences: " + train_corpus.getNumSentences());
 
         Corpus test_corpus = new Corpus("crfTest.txt");
-        System.out.println("#Test Sentences: " + test_corpus.getNumSentences());
+        //System.out.println("#Test Sentences: " + test_corpus.getNumSentences());
 
         CRModel_sp1 model = new CRModel_sp1(train_corpus, "CRF.model", false);
 
-        List<NamedEntity> NEs= new Decoder(train_corpus, test_corpus, model).decode(TweetStr, 0, true);
+        List<NamedEntity> NEs= new Decoder(train_corpus, test_corpus, model).decode(TokenList,TweetStr);
 
         for(int i=0;i<NEs.size();i++)
         {
-            System.out.println(NEs.get(i).getMention());
+            System.out.println(NEs.get(i).getOffset()+":"+NEs.get(i).getMention() + "--->" + NEs.get(i).getTag() );
         }
     }
 
@@ -57,7 +70,7 @@ public class TEC4SE_Ver1
     {
         try
         {
-            String PathSource = "D:/PhD/Data/Dutch NER/ned.train";
+            String PathSource = "ned.train";
             String PathTarget = "crfTrain.txt";
 
             FileOutputStream fos = new FileOutputStream(PathTarget);
@@ -88,10 +101,10 @@ public class TEC4SE_Ver1
                             feature = "f";
                         }
                         String tag = tokens[2];
-                        if (!tag.equalsIgnoreCase("O"))
-                        {
-                            tag = "NE";
-                        }
+//                        if (!tag.equalsIgnoreCase("O"))
+//                        {
+//                            tag = tag.substring(0,2)+"NE";
+//                        }
                         out.write(word + "\t" + feature + "\t" + tag);
                         if (bufferedReader.ready())
                         {
@@ -115,8 +128,8 @@ public class TEC4SE_Ver1
         }
 
     }
-
-    private static void PrepareTestFile(String TweetStr)
+    
+    private static void PrepareTestFile_JavaTokenizer(String TweetStr)
     {
         try
         {
@@ -139,18 +152,89 @@ public class TEC4SE_Ver1
                 {
                     feature = "f";
                 }
-                out.write(Token + "\t" + feature +"\t" + "O");
+                out.write(Token + "\t" + feature + "\t" + "O");
                 if (ST.hasMoreTokens())
                 {
                     out.write("\n");
                 }
             }
-            out.close();
+             out.close();
             fos.close();
         }
         catch (Exception ex)
         {
             Logger.getLogger(TEC4SE_Ver1.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private static List<Token> PrepareTestFile_StanfordTokenizer(String TweetStr)
+    {
+        List<Token> TokensList=new ArrayList<Token>();
+        try
+        {
+            String PathTarget = "crfTest.txt";
+            
+            
+
+            FileOutputStream fos = new FileOutputStream(PathTarget);
+            OutputStreamWriter out = new OutputStreamWriter(fos, "UTF-8");
+
+            // creates a StanfordCoreNLP object, with POS tagging, lemmatization, NER, parsing, and coreference resolution 
+            Properties props = new Properties();
+            props.put("annotators", "tokenize, ssplit");
+            StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
+
+
+            // create an empty Annotation just with the given text
+            Annotation document = new Annotation(TweetStr);
+
+            // run all Annotators on this text
+            pipeline.annotate(document);
+
+            // these are all the sentences in this document
+            // a CoreMap is essentially a Map that uses class objects as keys and has values with custom types
+            List<CoreMap> sentences = document.get(SentencesAnnotation.class);
+            int sentenceSize=sentences.size();
+            int sentenceCnt=0;
+            for (CoreMap sentence : sentences)
+            {
+                // traversing the words in the current sentence
+                // a CoreLabel is a CoreMap with additional token-specific methods
+                sentenceCnt++;
+                List<CoreLabel> Tokens=sentence.get(TokensAnnotation.class);
+                int tokenSize=Tokens.size();
+                int tokenCnt=0;
+                for (CoreLabel token : Tokens)
+                {
+                    tokenCnt++;
+                    String word = token.get(TextAnnotation.class);
+                    int offset= token.beginPosition();
+                    TokensList.add(new Token(word,offset));
+                    String feature = "";
+                    if (Character.isUpperCase(word.charAt(0)))
+                    {
+                        feature = "t";
+                    }
+                    else
+                    {
+                        feature = "f";
+                    }
+                    out.write(word + "\t" + feature + "\t" + "O");
+                    if (!(sentenceCnt==sentenceSize && tokenCnt==tokenSize))
+                    {
+                        out.write("\n");
+                    }
+                }
+            }
+
+            out.close();
+            fos.close();
+            
+        }
+        catch (Exception ex)
+        {
+            Logger.getLogger(TEC4SE_Ver1.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return TokensList;
     }
 }

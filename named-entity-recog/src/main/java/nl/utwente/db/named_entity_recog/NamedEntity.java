@@ -11,12 +11,14 @@ package nl.utwente.db.named_entity_recog;
 public class NamedEntity
 {
     private String mention;
+    private String tag;
     private int offset;
     private double score;
 
-    public NamedEntity(String mention, int offset, double score)
+    public NamedEntity(String mention,String tag, int offset, double score)
     {
         this.mention = mention;
+        this.tag=tag;
         this.offset = offset;
         this.score = score;
     }
@@ -24,6 +26,11 @@ public class NamedEntity
     public String getMention()
     {
         return mention;
+    }
+
+    public String getTag()
+    {
+        return tag;
     }
 
     public int getOffset()
@@ -39,6 +46,11 @@ public class NamedEntity
     public void setMention(String mention)
     {
         this.mention = mention;
+    }
+
+    public void setTag(String tag)
+    {
+        this.tag = tag;
     }
 
     public void setOffset(int offset)

@@ -1,6 +1,5 @@
 package nl.utwente.db.ZehminCRF.main;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +14,7 @@ import nl.utwente.db.ZehminCRF.viterbi.CRStepGain;
 import nl.utwente.db.ZehminCRF.viterbi.Path;
 import nl.utwente.db.ZehminCRF.viterbi.ViterbiAlg;
 import nl.utwente.db.named_entity_recog.NamedEntity;
+import nl.utwente.db.named_entity_recog.Token;
 
 /**
  * @author Zhemin Zhu Created on Aug 22, 2012
@@ -46,28 +46,28 @@ public class Decoder
                 model, false);
         m_timer = new MyTimer();
     }
-
-    /*
-     * TopK paths
-     */
-//    public Vector<Path> getTopKPaths(Sentence s)
-//    {
-//        // Vector<Path> paths = m_model.getPromisingPaths(s);
-//        Path top1Tags = new Path(m_va.decode(s));
-//        if (paths.size() == 0 || !paths.firstElement().getPath().equals(top1Tags.getPath()))
-//        {
-//            // m_model.score(top1Tags, s);
-//            paths.add(0, top1Tags);
-//        }
-//        boolean bDuplicate = checkDuplicatePath(paths);
-//        if (bDuplicate)
-//        {
-//            //System.err.println("Same Path!!!");
-//        }
-//        return paths;
-//    }
-
-    public boolean checkDuplicatePath(Vector<Path> paths)
+    
+/*
+* TopK paths
+*/
+// public Vector<Path> getTopKPaths(Sentence s)
+// {
+// // Vector<Path> paths = m_model.getPromisingPaths(s);
+// Path top1Tags = new Path(m_va.decode(s));
+// if (paths.size() == 0 || !paths.firstElement().getPath().equals(top1Tags.getPath()))
+// {
+// // m_model.score(top1Tags, s);
+// paths.add(0, top1Tags);
+// }
+// boolean bDuplicate = checkDuplicatePath(paths);
+// if (bDuplicate)
+// {
+// //System.err.println("Same Path!!!");
+// }
+// return paths;
+// }
+    
+        public boolean checkDuplicatePath(Vector<Path> paths)
     {
         HashMap<String, Boolean> map = new HashMap<String, Boolean>();
         for (Path path : paths)
@@ -84,20 +84,20 @@ public class Decoder
         }
         return false;
     }
-
-//    public void decodeTopK(int k)
-//    {
-//        m_timer.start();
-//        for (int i = 0; i < m_decoding_corpus.getNumSentences(); ++i)
-//        {
-//            Sentence sentence = m_decoding_corpus.getSentence(i);
-//            Vector<Path> paths = getTopKPaths(sentence);
-//            double precision = checkSentence(sentence, paths.firstElement().getTags());
-//            System.out.println("Sentence: " + i + "\t" + precision + "\t topK: " + paths.size());
-//        }
-//        m_timer.end();
-//        printPrecision();
-//    }
+        
+// public void decodeTopK(int k)
+// {
+// m_timer.start();
+// for (int i = 0; i < m_decoding_corpus.getNumSentences(); ++i)
+// {
+// Sentence sentence = m_decoding_corpus.getSentence(i);
+// Vector<Path> paths = getTopKPaths(sentence);
+// double precision = checkSentence(sentence, paths.firstElement().getTags());
+// System.out.println("Sentence: " + i + "\t" + precision + "\t topK: " + paths.size());
+// }
+// m_timer.end();
+// printPrecision();
+// }
 
     public void decode()
     {
@@ -181,42 +181,42 @@ public class Decoder
                 + "\t Precision: " + 1.0 * (m_correctTag - m_correctOOV) / (m_totalTag - m_totalOOV));
 
     }
-
-//    public List<NamedEntity> decodeTopK(String tweetStr, int TopK)
-//    {
-//        List<NamedEntity> NEsList=new ArrayList<NamedEntity>();
-//        Sentence sentence = m_decoding_corpus.getSentence(0);
+    
+    // public List<NamedEntity> decodeTopK(String tweetStr, int TopK)
+// {
+// List<NamedEntity> NEsList=new ArrayList<NamedEntity>();
+// Sentence sentence = m_decoding_corpus.getSentence(0);
 //
-//        //Vector<String> annotatedTags = m_va.decode(sentence);
-//        Vector<Path> paths = getTopKPaths(sentence);
-//        int size = TopK;
-//        if (paths.size() < size)
-//        {
-//            size = paths.size();
-//        }
-//        for (int i = 0; i < size; i++)
-//        {
-//            Path path = paths.get(i);
-//            Vector<String> annotatedTags = path.getTags();
-//            double score = path.getScore();
-//            checkSentence(sentence, tweetStr, annotatedTags, NEsList);
-//            
-//        }
-//        return NEsList;
-//    }
+// //Vector<String> annotatedTags = m_va.decode(sentence);
+// Vector<Path> paths = getTopKPaths(sentence);
+// int size = TopK;
+// if (paths.size() < size)
+// {
+// size = paths.size();
+// }
+// for (int i = 0; i < size; i++)
+// {
+// Path path = paths.get(i);
+// Vector<String> annotatedTags = path.getTags();
+// double score = path.getScore();
+// checkSentence(sentence, tweetStr, annotatedTags, NEsList);
+//
+// }
+// return NEsList;
+// }
 
-    public List<NamedEntity> decode(String tweetStr, int index, boolean WithType)
+    public List<NamedEntity> decode(List<Token> TokenList,String TweetStr)
     {
-        List<NamedEntity> NEsList=new ArrayList<NamedEntity>();
+        List<NamedEntity> NEsList = new ArrayList<NamedEntity>();
         Sentence sentence = m_decoding_corpus.getSentence(0);
 
         Vector<String> annotatedTags = m_va.decode(sentence);
-        checkSentence(sentence, tweetStr, annotatedTags, NEsList);
-       
+        checkSentence(sentence, TokenList,TweetStr, annotatedTags, NEsList);
+
         return NEsList;
     }
-    
-    private void checkSentence(Sentence s, String tweetStr, Vector<String> vecAnnTags, List<NamedEntity> NEsList)
+
+    private void checkSentence(Sentence s, List<Token> TokenList,String TweetStr, Vector<String> vecAnnTags, List<NamedEntity> NEsList)
     {
         if (s.size() != vecAnnTags.size())
         {
@@ -228,19 +228,77 @@ public class Decoder
             s = s.genSubSentence(1, s.size() - 1);
             vecAnnTags = new Vector(vecAnnTags.subList(1, vecAnnTags.size() - 1));
         }
-        
-        
-       for (int i = 0; i < s.size(); i++)
+
+
+        String TempNEStr = "";
+        String TempNETag = "";
+        int NEStartOffset=-1;
+        int NEEndOffset=-1;
+        for (int i = 0; i < s.size(); i++)
         {
             String token = s.getWord(i);
+            int TokenStartOffset=TokenList.get(i).getOffset();
             String ResultTag = vecAnnTags.get(i);
-            if (ResultTag.equalsIgnoreCase("NE"))
+
+            if (!ResultTag.equalsIgnoreCase("o"))
             {
-                NEsList.add(new NamedEntity(token, 0, 0));
+                if (ResultTag.startsWith("B"))
+                {
+                    if (TempNEStr.isEmpty())
+                    {
+                        TempNEStr = token;
+                        NEStartOffset=TokenStartOffset;
+                        NEEndOffset=TokenStartOffset+token.length();
+                        TempNETag = ResultTag.substring(2);
+                    }
+                    else
+                    {                        
+                        NEsList.add(new NamedEntity(TweetStr.substring(NEStartOffset, NEEndOffset), TempNETag, NEStartOffset, 0));
+                        TempNEStr = token;
+                        NEStartOffset=TokenStartOffset;
+                        NEEndOffset=TokenStartOffset+token.length();
+                        TempNETag = ResultTag.substring(2);
+                    }
+                }
+                else if (ResultTag.startsWith("I"))
+                {
+                    if(TempNEStr.isEmpty())
+                    {
+                        System.out.println("Strange to have "+ResultTag+" as a first tag!!");
+                        NEStartOffset=TokenStartOffset;
+                    }
+                    else
+                    {
+                        TempNEStr += " ";                        
+                    }
+                    TempNEStr += token;
+                    NEEndOffset=TokenStartOffset+token.length();
+                    TempNETag = ResultTag.substring(2);
+                }
+
+            }
+            else if (ResultTag.equalsIgnoreCase("o"))
+            {
+                if (!TempNEStr.isEmpty())
+                {
+                    NEsList.add(new NamedEntity(TweetStr.substring(NEStartOffset, NEEndOffset), TempNETag, NEStartOffset, 0));
+                    NEStartOffset=-1;
+                    NEEndOffset=-1;
+                    TempNEStr = "";
+                    TempNETag = "";
+                }
             }
         }
+        if (!TempNEStr.isEmpty())
+        {
+            NEsList.add(new NamedEntity(TweetStr.substring(NEStartOffset, NEEndOffset), TempNETag, NEStartOffset, 0));
+            NEStartOffset=-1;
+            NEEndOffset=-1;
+            TempNEStr = "";
+            TempNETag = "";
+        }
     }
-    
+
     public static void main(String[] strs)
     {
         //this line is for fixing the JDK bug.

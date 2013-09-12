@@ -1,4 +1,6 @@
-Campuspop:Alle	t	O
+Campuspop	t	O
+:	f	O
+Alle	t	O
 Batavieren	t	O
 kunnen	f	O
 morgen	f	O
@@ -10,8 +12,12 @@ kopen	f	O
 voor	f	O
 Campuspop	t	O
 met	f	O
-Anouk,	t	O
+Anouk	t	O
+,	f	O
 Candy	t	O
-Dulfer,	t	O
+Dulfer	t	O
+,	f	O
 Ben	t	O
-Saundersenz.#batavierenrace	t	O
+Saundersenz	t	O
+.	f	O
+#batavierenrace	f	O
