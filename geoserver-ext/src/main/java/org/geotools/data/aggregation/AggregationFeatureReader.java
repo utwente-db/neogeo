@@ -29,7 +29,7 @@ public class AggregationFeatureReader implements FeatureReader {
 
 	protected ContentState state;
 	protected Connection con;
-	private SimpleFeature next;
+	private SimpleFeature next = null;
 	protected SimpleFeatureBuilder builder;
 	private int row;
 	private GeometryFactory geometryFactory;
@@ -69,7 +69,6 @@ public class AggregationFeatureReader implements FeatureReader {
 	 * set all parameters derived for constructing the grid at the end 
 	 */
 	public void _init()throws NullPointerException{
-		// JF, initial setup here
 		startX = (Double) iv_first_obj[0][0];
 		grid_deltaX = ((Double)iv_first_obj[0][1]) - startX;
 		startY = (Double) iv_first_obj[1][0];
@@ -100,12 +99,11 @@ public class AggregationFeatureReader implements FeatureReader {
 
 	SimpleFeature readFeature() throws IOException {
 		try {
+			LOGGER.severe("JF: read next feature start");
 			if(rs==null || !rs.next()) return null; // no additional features are available
-
-			LOGGER.severe("JF: read next feature");
+			LOGGER.severe("JF: FEATURE-READ");
 			// long gkey = rs.getLong("gkey");
 			boolean hasTime = attributes.containsKey("starttime");
-			// int[] pos = revertGKey(gkey);
 			int pos[] = null;
 			if ( hasTime )
 				pos = new int[3];
@@ -164,20 +162,6 @@ public class AggregationFeatureReader implements FeatureReader {
 			return null;
 		}
 
-	}
-
-	private int[] revertGKey(long gkey) {
-		int[] ret = new int[range.length];
-		// TODO make this more generic for arbitrary combinations of axis
-		// x dimension first factor 1
-		// y dimension second factor range[0]
-		// time dimension third factor range[0]*range[1]
-		ret[0] = ((int)gkey) % range[0];
-		ret[1] = (((int)gkey) % (range[0]*range[1]))/range[0];
-		if(range.length>2)
-			ret[2] = ((int)gkey) / (range[0]*range[1]);
-		//LOGGER.severe("key reversal (gkey,x,y,time)=("+gkey+","+ret+")");
-		return ret;
 	}
 
 	protected SimpleFeature buildFeature() {

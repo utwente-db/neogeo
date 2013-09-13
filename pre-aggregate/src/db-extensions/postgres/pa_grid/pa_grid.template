@@ -239,11 +239,11 @@ static char* li_toString(long key) {
 /*
  * Main stairwalk section
  */
-static VectorLong* stairwalk(VectorLong *v, long from, long to, long N) {
+static VectorLong* stairwalk(VectorLong *v, int from, int to, int N) {
     VectorLong *res;
-    long level = 0;
-    long step  = 1;
-    long nowAt = from;
+    int level = 0;
+    int step  = 1;
+    int nowAt = from;
 
     if ( v ) {
       res = v;
@@ -255,45 +255,38 @@ static VectorLong* stairwalk(VectorLong *v, long from, long to, long N) {
     if (QVERBOSE)
       fprintf(stdout,"#! do stairwalk(from=%ld, to=%ld, N=%ld)\n",from,to,N);
 #endif
-    to++; // last step must be to 1 beyond upper bound
     // first walk up the stairs
-    while (nowAt <= to) {
+    while ((nowAt+step) <= to) {
       if ( (nowAt % (step*N) == 0) && ((nowAt+step*N)<=to) ) {
         // I can make a step up
         level++;
         step *= N;
       } else {
-        // mark this one for selection
         long newKey = li_key(level,nowAt/step);
-        if ( (nowAt+step) <= to ) {
-#ifdef MYDEBUG
-          if (QVERBOSE)
-            fprintf(stdout,"+ @up(%s)\n",li_toString(newKey));
-#endif
-          add2VectorLong(res,newKey);
-        }
+        add2VectorLong(res,newKey);
         nowAt += step;
+#ifdef MYDEBUG
+        if (QVERBOSE)
+          fprintf(stdout,"+ @up(%s)\n",li_toString(newKey));
+#endif
       }
     }
-    nowAt -= step;  // do step back you're too far
-    // System.out.println("Stepping down: nowAt="+nowAt+", level="+level);
-    while (nowAt < to) {
-      // System.out.println("L["+level+"]: nowAt="+nowAt+", step="+step);
-      if ((nowAt + step) > to) {
+    level--; // go one level down
+    step /= N; // decrease stepsize
+    while ( (level>=0) && nowAt < to) {
+      if ( (nowAt + step) >= (to+1)) {
         // step down;
         level--;
         step /= N;
       } else {
         // make a step
         long newKey = li_key(level,nowAt/step);
-        if ( (nowAt+step) <= to ) {
+        add2VectorLong(res,newKey);
+        nowAt += step;
 #ifdef MYDEBUG
-          if (QVERBOSE)
-            fprintf(stdout,"+ @down(%s)\n",li_toString(newKey));
+        if (QVERBOSE)
+          fprintf(stdout,"+ @down(%s)\n",li_toString(newKey));
 #endif
-          add2VectorLong(res,newKey);
-          nowAt += step;
-        }
       }
     }
     return res;

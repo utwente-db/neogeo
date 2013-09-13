@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 public class PreAggregate {
 	private static final Logger LOGGER = Logger.getLogger("org.geotools.data.aggregation.PreAggregate");
 	
-	private final boolean gen_optimized = true;
+	private final boolean gen_optimized = false;
 
 	/*
 	 * Experiment setup variables
@@ -90,7 +90,6 @@ public class PreAggregate {
 
 	public PreAggregate(Connection c, String schema, String table, String label) 
 	throws SQLException {
-		System.out.println("JF: Here-XX, the jar connection has been made!!");
 		_init(c,schema,table,label);
 	}
 
@@ -648,8 +647,7 @@ public class PreAggregate {
 				where.append(" AND ");
 			select.append("\n\t\tdim" + i + ".level" + " AS l" + i);
 			select.append(",\n\t\t"
-					+ SqlUtils
-					.gen_DIV(c, "level0.i" + i, "dim" + i + ".factor")
+					+ SqlUtils.gen_CAST(c, SqlUtils.gen_DIV(c, "level0.i" + i, "dim" + i + ".factor"),"integer")
 					+ " AS v" + i);
 			from.append("\n\t\t" + dimTable[i] + " AS dim" + i);
 			gk.append("l" + i + "," + "v" + i);
