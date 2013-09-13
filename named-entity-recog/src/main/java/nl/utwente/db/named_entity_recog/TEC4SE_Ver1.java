@@ -40,11 +40,11 @@ public class TEC4SE_Ver1
      */
     public static void main(String[] args)
     {
-        //String TweetStr = "Onderweg naar Enschede voor hopelijk een mooi feestje vanavond. #batavieren";
-        String TweetStr = "Campuspop:Alle Batavieren kunnen morgen voor 16 Euro kaarten kopen voor Campuspop met Anouk, Candy Dulfer, Ben Saundersenz.#batavierenrace";
-        //String TweetStr="Niks te doen dit weekend? Festival GOGBOT in Enschede (Sciencefiction, technologie, #robots) http://www.fantasymedia.nl/content/festival-gogbot-2013-enschede-sciencefiction-technologie-robots?utm_source=twitterfeed&utm_medium=twitter … http://2013.gogbot.nl";
+       // String TweetStr = "Onderweg naar Enschede voor hopelijk een mooi feestje vanavond. #batavieren";
+        //String TweetStr = "Campuspop:Alle Batavieren kunnen morgen voor 16 Euro kaarten kopen voor Campuspop met Anouk, Candy Dulfer, Ben Saundersenz.#batavierenrace";
+        String TweetStr="Niks te doen dit weekend? Festival GOGBOT in Enschede (Sciencefiction, technologie, #robots) http://www.fantasymedia.nl/content/festival-gogbot-2013-enschede-sciencefiction-technologie-robots?utm_source=twitterfeed&utm_medium=twitter … http://2013.gogbot.nl";
 
-        PrepareTrainingFile();
+        //PrepareTrainingFile();
         List<Token> TokenList = PrepareTestFile_StanfordTokenizer(TweetStr);
         //PrepareTestFile_JavaTokenizer(TweetStr);
 
@@ -113,10 +113,10 @@ public class TEC4SE_Ver1
                             feature = "f";
                         }
                         String tag = tokens[2];
-//                        if (!tag.equalsIgnoreCase("O"))
-//                        {
-//                            tag = tag.substring(0,2)+"NE";
-//                        }
+                        if (!tag.equalsIgnoreCase("O"))
+                        {
+                            tag = tag.substring(0,2)+"NE";
+                        }
                         out.write(word + "\t" + feature + "\t" + tag);
                         if (bufferedReader.ready())
                         {
