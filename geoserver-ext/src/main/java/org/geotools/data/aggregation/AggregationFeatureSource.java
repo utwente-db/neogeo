@@ -270,7 +270,6 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 			if(pa_query){
 				LOGGER.severe("processing the query with Aggregation Index");
 				rs = agg.SQLquery_grid(this.getDataStore().getMask(), iv_first_obj, range);
-				LOGGER.severe("query returns "+rs.getFetchSize()+"tuples");
 				end = System.currentTimeMillis()-start;
 			} else{
 				LOGGER.severe("processing the query in standard SQL");
@@ -279,8 +278,8 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 				type = "standard";
 			}
 			LOGGER.severe("query response time [ms]: "+end);
-			// JF, could be some exceptions in parlist
-			this.getDataStore().logQuery(req, agg, this.getDataStore().getMask(),a, startTime,endTime, range,type,end);
+			// INCOMPLETE: commented out because the exception here could cause problems in grid query result
+			// this.getDataStore().logQuery(req, agg, this.getDataStore().getMask(),a, startTime,endTime, range,type,end);
 
 		} catch (Exception e1) {
 			LOGGER.severe("Caught Exception:"+e1+". There are no results");

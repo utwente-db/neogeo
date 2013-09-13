@@ -205,8 +205,11 @@ public class AggregationDataStore extends ContentDataStore {
 	}
 
 	public PreAggregate createPreAggregate(String typename) throws SQLException{
+		System.out.println("#!JS-Here-1");
 		String tablename = PreAggregate.getTablenameFromTypeName(typename);
+		System.out.println("#!JS-Here-2");
 		String label = PreAggregate.getLabelFromTypeName(typename);
+		System.out.println("#!JS-Here-3");
 		Connection c = getConnection();
 		System.out.println("JF:succes connection: "+c);
 		return new PreAggregate(c,schema,tablename,label);
@@ -235,7 +238,6 @@ public class AggregationDataStore extends ContentDataStore {
 			stmt.close();
 		} catch (SQLException e) {
 			LOGGER.severe("logging of the query failed: "+e.getMessage());
-			e.printStackTrace();
 		}
 
 	}

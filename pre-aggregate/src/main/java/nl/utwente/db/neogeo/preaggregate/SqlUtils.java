@@ -204,6 +204,15 @@ public class SqlUtils {
 	 * 
 	 */
 
+	public static String gen_CAST(Connection c, String v, String type) throws SQLException {
+		switch ( dbType(c) ) {
+		case POSTGRES:
+		case MYSQL:
+			return "CAST("+v+" as "+type+")";
+		}	
+		throw new SQLException("UNEXPECTED");
+	}
+	
 	public static String gen_DIV(Connection c, String l, String r) throws SQLException {
 		switch ( dbType(c) ) {
 		case POSTGRES:
