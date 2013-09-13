@@ -44,7 +44,7 @@ public class TEC4SE_Ver1
         //String TweetStr = "Campuspop:Alle Batavieren kunnen morgen voor 16 Euro kaarten kopen voor Campuspop met Anouk, Candy Dulfer, Ben Saundersenz.#batavierenrace";
         String TweetStr="Niks te doen dit weekend? Festival GOGBOT in Enschede (Sciencefiction, technologie, #robots) http://www.fantasymedia.nl/content/festival-gogbot-2013-enschede-sciencefiction-technologie-robots?utm_source=twitterfeed&utm_medium=twitter … http://2013.gogbot.nl";
 
-        //PrepareTrainingFile();
+        PrepareTrainingFile();
         List<Token> TokenList = PrepareTestFile_StanfordTokenizer(TweetStr);
         //PrepareTestFile_JavaTokenizer(TweetStr);
 
