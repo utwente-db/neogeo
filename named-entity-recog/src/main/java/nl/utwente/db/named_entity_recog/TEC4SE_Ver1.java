@@ -4,18 +4,19 @@
  */
 package nl.utwente.db.named_entity_recog;
 
-import edu.stanford.nlp.ling.CoreAnnotations;
-import edu.stanford.nlp.ling.CoreAnnotations.SentencesAnnotation;
-import edu.stanford.nlp.ling.CoreAnnotations.TextAnnotation;
-import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
-import edu.stanford.nlp.ling.CoreLabel;
-import edu.stanford.nlp.pipeline.Annotation;
-import edu.stanford.nlp.pipeline.PTBTokenizerAnnotator;
-import edu.stanford.nlp.pipeline.StanfordCoreNLP;
-import edu.stanford.nlp.time.TimeAnnotations;
-import edu.stanford.nlp.util.CoreMap;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -27,6 +28,13 @@ import nl.utwente.db.ZehminCRF.corpus.Corpus;
 import nl.utwente.db.ZehminCRF.main.Decoder;
 import nl.utwente.db.ZehminCRF.sp.CRModel_sp1;
 import nl.utwente.db.ZehminCRF.utils.Global;
+import edu.stanford.nlp.ling.CoreAnnotations.SentencesAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations.TextAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
+import edu.stanford.nlp.ling.CoreLabel;
+import edu.stanford.nlp.pipeline.Annotation;
+import edu.stanford.nlp.pipeline.StanfordCoreNLP;
+import edu.stanford.nlp.util.CoreMap;
 
 /**
  *
@@ -34,17 +42,68 @@ import nl.utwente.db.ZehminCRF.utils.Global;
  */
 public class TEC4SE_Ver1
 {
+	private static final String CONFIG_FILENAME = "database.properties";
+
+	public static Connection getConnection(){
+		String hostname = null;
+		String port = null;
+		String username = null;
+		String password = null;
+		String database = null; 
+		
+		Properties prop = new Properties();
+		try {
+			InputStream is =
+					(new TEC4SE_Ver1()).getClass().getClassLoader().getResourceAsStream(CONFIG_FILENAME);
+			prop.load(is);
+			hostname = prop.getProperty("hostname");
+			port = prop.getProperty("port");
+			username = prop.getProperty("username");
+			password = prop.getProperty("password");
+			database = prop.getProperty("database");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			Class.forName("org.postgresql.Driver");
+		} catch (ClassNotFoundException e) {
+			System.out.println("Where is your PostgreSQL JDBC Driver? "
+					+ "Include in your library path!");
+			e.printStackTrace();
+			return null;
+		}
+		System.out.println("PostgreSQL JDBC Driver Registered!");
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(
+					"jdbc:postgresql://"+hostname+":"+port+"/"+database, username, password);
+		} catch (SQLException e) {
+			System.out.println("Connection Failed! Check output console");
+			e.printStackTrace();
+			return null;
+
+		}
+		if (connection != null) {
+			System.out.println("You made it, take control your database now!");
+		} else {
+			System.out.println("Failed to make connection!");
+		}
+		return connection;
+	}
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args)
     {
-       // String TweetStr = "Onderweg naar Enschede voor hopelijk een mooi feestje vanavond. #batavieren";
+    	Connection c = getConnection();
+    	
+        //String TweetStr = "Onderweg naar Enschede voor hopelijk een mooi feestje vanavond. #batavieren";
         //String TweetStr = "Campuspop:Alle Batavieren kunnen morgen voor 16 Euro kaarten kopen voor Campuspop met Anouk, Candy Dulfer, Ben Saundersenz.#batavierenrace";
         String TweetStr="Niks te doen dit weekend? Festival GOGBOT in Enschede (Sciencefiction, technologie, #robots) http://www.fantasymedia.nl/content/festival-gogbot-2013-enschede-sciencefiction-technologie-robots?utm_source=twitterfeed&utm_medium=twitter … http://2013.gogbot.nl";
 
-        PrepareTrainingFile();
+        // PrepareTrainingFile();
         List<Token> TokenList = PrepareTestFile_StanfordTokenizer(TweetStr);
         //PrepareTestFile_JavaTokenizer(TweetStr);
 
@@ -61,6 +120,25 @@ public class TEC4SE_Ver1
         for (int i = 0; i < NEs.size(); i++)
         {
             System.out.println(NEs.get(i).getOffset() + ":" + NEs.get(i).getMention() + "--->" + NEs.get(i).getTag());
+            
+            String candidate = NEs.get(i).getMention();
+            PreparedStatement ps;
+			try {
+				ps = c.prepareStatement("select name,latitude,longitude from geoname where lower(name) = ?;");
+	            candidate = candidate.toLowerCase();
+				ps.setString(1,candidate);
+	            ResultSet rs = ps.executeQuery();
+	            System.out.println(""+ps);
+	            while( rs.next() ) {
+	            		System.out.println("FOUND["+rs.getString("name")+":"+rs.getDouble("latitude")+" "+rs.getDouble("longitude")+"]");
+	            	
+	            }
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+          
+            
         }
     }
 
