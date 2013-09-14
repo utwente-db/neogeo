@@ -1,6 +1,7 @@
 package nl.utwente.db.twitter.server;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Vector;
@@ -15,15 +16,20 @@ import org.json.simple.JSONObject;
 
 public class TweetHandler {
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void main(String[] args) throws Exception {
 		System.out.println("Tweethandler started");
-		Connection c = EntityResolver.geonames_conn;
-
-		Tweet t = new Tweet(exampleTweet);
-		if (!register_enai_tweet(c, t.id_str(), t.getJson()))
-			throw new RuntimeException("Unable to register enain tweet");
-
+	
+		try {
+		String s = enrichTweet(EntityResolver.geonames_conn, new Tweet(exampleTweet) );
+		System.out.println(s);
+		} catch (SQLException e) {
+			System.out.println("CAUGHT: "+e);
+			e.printStackTrace();
+		}
+	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static String enrichTweet(Connection c, Tweet t) throws SQLException {
 		Vector<NamedEntity> eList = EntityResolver.resolveEntity(t.text(),
 				t.lang());
 
@@ -54,20 +60,9 @@ public class TweetHandler {
 		}
 
 		String enriched_json = enriched.toJSONString();
-		enriched_json = convert2uni(enriched_json); // remove unicode chars
-
-		if (!register_enai_enrichment(c, t.id_str(), enriched_json))
-			throw new RuntimeException("Unable to register enain tweet");
+		enriched_json = convert2uni(enriched_json); // remove unicode char
 		
-		System.out.println(enriched_json);
-	}
-	
-	public static boolean register_enai_tweet(Connection c, String id, String json) {
-		return true;
-	}
-	
-	public static boolean register_enai_enrichment(Connection c, String id, String json) {
-		return true;
+		return enriched_json;
 	}
 	
 	private static final String obj2string(Object o) {

@@ -100,6 +100,9 @@ public class EntityResolver
 	// connection should also be visible in other packages
 	public static Connection geonames_conn = getGeonamesConnection();
 
+	public static void refreshConnection() throws SQLException {
+		geonames_conn = getGeonamesConnection();
+	}
     /**
      * @param args the command line arguments
      */
