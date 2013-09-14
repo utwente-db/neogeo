@@ -39,9 +39,9 @@ import edu.stanford.nlp.util.CoreMap;
 
 /**
  *
- * @author badiehm & flokstra
+ * @author badiehm
  */
-public class TEC4SE_Ver1
+public class EntityResolver
 {
 	public static boolean verbose = true;
 	
@@ -57,7 +57,7 @@ public class TEC4SE_Ver1
 		Properties prop = new Properties();
 		try {
 			InputStream is =
-					(new TEC4SE_Ver1()).getClass().getClassLoader().getResourceAsStream(CONFIG_FILENAME);
+					(new EntityResolver()).getClass().getClassLoader().getResourceAsStream(CONFIG_FILENAME);
 			prop.load(is);
 			hostname = prop.getProperty("hostname");
 			port = prop.getProperty("port");
@@ -113,6 +113,7 @@ public class TEC4SE_Ver1
     }
     
 	public static Vector<NamedEntity> resolveEntity(String TweetStr, String lang) {
+		// TODO: make this work both for "nl" end "en" language
 		// PrepareTrainingFile();
 		List<Token> TokenList = PrepareTestFile_StanfordTokenizer(TweetStr);
 		// PrepareTestFile_JavaTokenizer(TweetStr);
@@ -139,9 +140,10 @@ public class TEC4SE_Ver1
 				String candidate = entity.getMention().toLowerCase();
 				ps.setString(1, candidate);
 				ResultSet rs = ps.executeQuery();
+				// System.out.println("XX="+ps);
 				while (rs.next()) {
 					GeoEntity ge = new GeoEntity(entity, rs.getDouble("latitude"),rs.getDouble("longitude"),rs.getString("country"),rs.getString("alternatenames"),rs.getInt("population"),rs.getInt("elevation"),rs.getString("fclass"));
-					if ( verbose )
+					if ( true )
 						System.out.println("RESOLVED[" + ge + "]");
 				}
 			} catch (SQLException e) {
