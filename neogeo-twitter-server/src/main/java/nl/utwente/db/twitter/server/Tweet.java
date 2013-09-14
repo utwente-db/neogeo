@@ -30,6 +30,10 @@ public class Tweet {
 		this.json = json;
 
 	}
+	
+	public String getJson() {
+		return json;
+	}
 
 	private static final String obj2string(Object o) {
 		if ( o != null )
@@ -45,6 +49,14 @@ public class Tweet {
 	
 	public Long id() {
 			return (Long)jrep.getPath("id");
+	}
+	
+	public String text() {
+		return obj2string(jrep.getPath("text"));
+	}
+	
+	public String lang() {
+		return obj2string(jrep.getPath("lang"));
 	}
 	
 	public String place() {

@@ -39,7 +39,7 @@ import edu.stanford.nlp.util.CoreMap;
 
 /**
  *
- * @author badiehm
+ * @author badiehm & flokstra
  */
 public class EntityResolver
 {

@@ -9,7 +9,7 @@ package nl.utwente.db.named_entity_recog;
  * @author badiehm + flokstra
  */
 
-class GeoEntity extends ResolvedEntity {
+public class GeoEntity extends ResolvedEntity {
 
     private double latitude;
     private double longitude;
@@ -26,7 +26,10 @@ class GeoEntity extends ResolvedEntity {
         this.latitude = latitude;
         this.longitude = longitude;
         this.country = country;
-        this.alternatenames = alternatenames;
+        if ( alternatenames != null )
+        	this.alternatenames = alternatenames;
+        else
+        	this.alternatenames = "";
         this.population = population;
         this.elevation = elevation;
         this.fclass = fclass;

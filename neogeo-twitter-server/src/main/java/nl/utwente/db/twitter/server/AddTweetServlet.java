@@ -20,13 +20,8 @@ public class AddTweetServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        // ClassLoader classLoader = getClass().getClassLoader();
-        // File file = new File(classLoader.getResource("quest.zip").getFile());
-
         response.setContentType("text/html");
         String rsp = "<html><head><title>OK</title></head></html>";
-        // response.setContentLength(rsp.length());
-        // response.setHeader("Content-Disposition", "attachment;filename=\"" + file.getName() + "\"");
 
         PrintWriter writer = response.getWriter();
         writer.write(rsp);
@@ -34,7 +29,7 @@ public class AddTweetServlet extends HttpServlet {
         StringBuffer jsonbuff = new StringBuffer();
         String line = null;
         try {
-          System.out.println("INPUT char encoding is: " + request.getCharacterEncoding());
+          // System.out.println("INPUT char encoding is: " + request.getCharacterEncoding());
           BufferedReader reader = request.getReader();
           while ((line = reader.readLine()) != null)
             jsonbuff.append(line);
@@ -59,7 +54,7 @@ public class AddTweetServlet extends HttpServlet {
         			System.out.println("#!CAUGHT: "+e);
         		}
         	} else {
-        		System.out.println("#! NO ENAI RESPOND FOR: "+enriched);
+        		System.out.println("#! DO NOT SEND TWEET TO ENAI: "+enriched);
         	}
         } catch (ParseException e) {
         	System.out.println("INVALID TWEET: "+e +",tweet="+jsonbuff);
