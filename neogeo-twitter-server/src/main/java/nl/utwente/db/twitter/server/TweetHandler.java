@@ -36,7 +36,7 @@ public class TweetHandler {
 		JSONObject enriched = new JSONObject();
 		enriched.put("id", t.id_str());
 		enriched.put("tweet", t.text());
-		enriched.put("language", "nl");
+		enriched.put("language", t.lang());
 		JSONArray geo_list = new JSONArray();
 		enriched.put("geolocations", geo_list);
 		//

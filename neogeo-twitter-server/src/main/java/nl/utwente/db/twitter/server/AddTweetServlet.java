@@ -122,6 +122,8 @@ public class AddTweetServlet extends HttpServlet {
         		    "id        	char(20) PRIMARY KEY,"+
         		    "json_tweet  text,"+
         		    "json_enrich text,"+
+        		    "tries		 int," +
+        		    "last_error	 text," +
         		    "sent        int"+
         		");";
         	st.executeUpdate(sql);

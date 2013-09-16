@@ -112,10 +112,17 @@ public class EntityResolver
         //String TweetStr = "Campuspop:Alle Batavieren kunnen morgen voor 16 Euro kaarten kopen voor Campuspop met Anouk, Candy Dulfer, Ben Saundersenz.#batavierenrace";
         String TweetStr="Niks te doen dit weekend? Festival GOGBOT in Enschede (Sciencefiction, technologie, #robots) http://www.fantasymedia.nl/content/festival-gogbot-2013-enschede-sciencefiction-technologie-robots?utm_source=twitterfeed&utm_medium=twitter … http://2013.gogbot.nl";
 
+        try {
     	resolveEntity(TweetStr, "nl");
+        } catch (SQLException e) {
+        	System.out.println("#!CAUGHT: "+e);
+        	e.printStackTrace();
+        }
     }
     
-	public static Vector<NamedEntity> resolveEntity(String TweetStr, String lang) {
+	public static Vector<NamedEntity> resolveEntity(String TweetStr, String lang) throws SQLException {
+		if ( verbose )
+			System.out.println("#!EntityResolver.resolveEntity() called.");
 		// TODO: make this work both for "nl" end "en" language
 		// PrepareTrainingFile();
 		List<Token> TokenList = PrepareTestFile_StanfordTokenizer(TweetStr);
@@ -137,27 +144,28 @@ public class EntityResolver
 		Vector<NamedEntity> res = new Vector<NamedEntity>();
 		for (int i = 0; i < NEs.size(); i++) {
 			NamedEntity entity = NEs.get(i);
-			try {
-				PreparedStatement ps = geonames_conn
-						.prepareStatement("select name,latitude,longitude,country,alternatenames,population,elevation,fclass from geoname where lower(name) = ?;");
-				String candidate = entity.getMention().toLowerCase();
-				ps.setString(1, candidate);
-				ResultSet rs = ps.executeQuery();
-				// System.out.println("XX="+ps);
-				while (rs.next()) {
-					GeoEntity ge = new GeoEntity(entity, rs.getDouble("latitude"),rs.getDouble("longitude"),rs.getString("country"),rs.getString("alternatenames"),rs.getInt("population"),rs.getInt("elevation"),rs.getString("fclass"));
-					if ( true )
-						System.out.println("RESOLVED[" + ge + "]");
-				}
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+
+			PreparedStatement ps = geonames_conn
+					.prepareStatement("select name,latitude,longitude,country,alternatenames,population,elevation,fclass from geoname where lower(name) = ?;");
+			String candidate = entity.getMention().toLowerCase();
+			ps.setString(1, candidate);
+			ResultSet rs = ps.executeQuery();
+			// System.out.println("XX="+ps);
+			while (rs.next()) {
+				GeoEntity ge = new GeoEntity(entity, rs.getDouble("latitude"),
+						rs.getDouble("longitude"), rs.getString("country"),
+						rs.getString("alternatenames"),
+						rs.getInt("population"), rs.getInt("elevation"),
+						rs.getString("fclass"));
+				if (verbose)
+					System.out.println("RESOLVED[" + ge + "]");
 			}
+
 			if (entity.isResolved())
 				res.add(entity);
 			else {
-				if ( verbose )
-					System.out.println("UNRESOLVED["+entity+"]");
+				if (verbose)
+					System.out.println("UNRESOLVED[" + entity + "]");
 			}
 		}
 		return res;
