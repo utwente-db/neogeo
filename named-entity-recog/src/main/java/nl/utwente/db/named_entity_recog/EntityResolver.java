@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,130 +37,139 @@ import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.util.CoreMap;
 
-
 /**
  *
- * @author badiehm
+ * @author badiehm & flokstra
  */
-public class TEC4SE_Ver1
+public class EntityResolver
 {
+	public static boolean verbose = true;
+	
+	private static final String CONFIG_FILENAME = "database.properties";
 
-    private static final String CONFIG_FILENAME = "database.properties";
+	public static Connection getGeonamesConnection(){
+		String hostname = null;
+		String port = null;
+		String username = null;
+		String password = null;
+		String database = null; 
+		
+		Properties prop = new Properties();
+		try {
+			InputStream is =
+					(new EntityResolver()).getClass().getClassLoader().getResourceAsStream(CONFIG_FILENAME);
+			prop.load(is);
+			hostname = prop.getProperty("hostname");
+			port = prop.getProperty("port");
+			username = prop.getProperty("username");
+			password = prop.getProperty("password");
+			database = prop.getProperty("database");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			Class.forName("org.postgresql.Driver");
+		} catch (ClassNotFoundException e) {
+			System.out.println("Where is your PostgreSQL JDBC Driver? "
+					+ "Include in your library path!");
+			e.printStackTrace();
+			return null;
+		}
+		if ( verbose )
+			System.out.println("PostgreSQL JDBC Driver Registered!");
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(
+					"jdbc:postgresql://"+hostname+":"+port+"/"+database, username, password);
+		} catch (SQLException e) {
+			System.out.println("Connection Failed! Check output console");
+			e.printStackTrace();
+			return null;
 
-    public static Connection getConnection()
-    {
-        String hostname = null;
-        String port = null;
-        String username = null;
-        String password = null;
-        String database = null;
+		}
+		if (connection != null) {
+			if ( verbose )
+				System.out.println("You made it, take control your database now!");
+		} else {
+			throw new RuntimeException("Failed to make connection!");
+		}
+		return connection;
+	}
+	
+	// connection should also be visible in other packages
+	public static Connection geonames_conn = getGeonamesConnection();
 
-        Properties prop = new Properties();
-        try
-        {
-            InputStream is =
-                    (new TEC4SE_Ver1()).getClass().getClassLoader().getResourceAsStream(CONFIG_FILENAME);
-            prop.load(is);
-            hostname = prop.getProperty("hostname");
-            port = prop.getProperty("port");
-            username = prop.getProperty("username");
-            password = prop.getProperty("password");
-            database = prop.getProperty("database");
-        }
-        catch (IOException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        try
-        {
-            Class.forName("org.postgresql.Driver");
-        }
-        catch (ClassNotFoundException e)
-        {
-            System.out.println("Where is your PostgreSQL JDBC Driver? "
-                    + "Include in your library path!");
-            e.printStackTrace();
-            return null;
-        }
-        System.out.println("PostgreSQL JDBC Driver Registered!");
-        Connection connection = null;
-        try
-        {
-            connection = DriverManager.getConnection(
-                    "jdbc:postgresql://" + hostname + ":" + port + "/" + database, username, password);
-        }
-        catch (SQLException e)
-        {
-            System.out.println("Connection Failed! Check output console");
-            e.printStackTrace();
-            return null;
-
-        }
-        if (connection != null)
-        {
-            System.out.println("You made it, take control your database now!");
-        }
-        else
-        {
-            System.out.println("Failed to make connection!");
-        }
-        return connection;
-    }
-
+	public static void refreshConnection() throws SQLException {
+		geonames_conn = getGeonamesConnection();
+	}
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args)
     {
-        Connection c = getConnection();
-
-        //String TweetStr = "Onderweg naar Enschede voor hopelijk een mooi feestje vanavond. #batavieren";
+    	//String TweetStr = "Onderweg naar Enschede voor hopelijk een mooi feestje vanavond. #batavieren";
         //String TweetStr = "Campuspop:Alle Batavieren kunnen morgen voor 16 Euro kaarten kopen voor Campuspop met Anouk, Candy Dulfer, Ben Saundersenz.#batavierenrace";
-        String TweetStr = "Niks te doen dit weekend? Festival GOGBOT in Enschede (Sciencefiction, technologie, #robots) http://www.fantasymedia.nl/content/festival-gogbot-2013-enschede-sciencefiction-technologie-robots?utm_source=twitterfeed&utm_medium=twitter … http://2013.gogbot.nl";
+        String TweetStr="Niks te doen dit weekend? Festival GOGBOT in Enschede (Sciencefiction, technologie, #robots) http://www.fantasymedia.nl/content/festival-gogbot-2013-enschede-sciencefiction-technologie-robots?utm_source=twitterfeed&utm_medium=twitter … http://2013.gogbot.nl";
 
-        // PrepareTrainingFile();
-        List<Token> TokenList = PrepareTestFile_StanfordTokenizer(TweetStr);
-        //PrepareTestFile_JavaTokenizer(TweetStr);
-
-        Corpus train_corpus = new Corpus("crfTrain.txt");
-        //System.out.println("#Training Sentences: " + train_corpus.getNumSentences());
-
-        Corpus test_corpus = new Corpus("crfTest.txt");
-        //System.out.println("#Test Sentences: " + test_corpus.getNumSentences());
-
-        CRModel_sp1 model = new CRModel_sp1(train_corpus, "CRF.model", false);
-
-        List<NamedEntity> NEs = new Decoder(train_corpus, test_corpus, model).decode(TokenList, TweetStr);
-
-        for (int i = 0; i < NEs.size(); i++)
-        {
-            System.out.println(NEs.get(i).getOffset() + ":" + NEs.get(i).getMention() + "--->" + NEs.get(i).getTag());
-
-            String candidate = NEs.get(i).getMention();
-            PreparedStatement ps;
-            try
-            {
-                ps = c.prepareStatement("select name,latitude,longitude from geoname where lower(name) = ?;");
-                candidate = candidate.toLowerCase();
-                ps.setString(1, candidate);
-                ResultSet rs = ps.executeQuery();
-                System.out.println("" + ps);
-                while (rs.next())
-                {
-                    System.out.println("FOUND[" + rs.getString("name") + ":" + rs.getDouble("latitude") + " " + rs.getDouble("longitude") + "]");
-
-                }
-            }
-            catch (SQLException e)
-            {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-
-
+        try {
+    	resolveEntity(TweetStr, "nl");
+        } catch (SQLException e) {
+        	System.out.println("#!CAUGHT: "+e);
+        	e.printStackTrace();
         }
     }
+    
+	public static Vector<NamedEntity> resolveEntity(String TweetStr, String lang) throws SQLException {
+		if ( verbose )
+			System.out.println("#!EntityResolver.resolveEntity() called.");
+		// TODO: make this work both for "nl" end "en" language
+		// PrepareTrainingFile();
+		List<Token> TokenList = PrepareTestFile_StanfordTokenizer(TweetStr);
+		// PrepareTestFile_JavaTokenizer(TweetStr);
+
+		Corpus train_corpus = new Corpus("crfTrain.txt");
+		// System.out.println("#Training Sentences: " +
+		// train_corpus.getNumSentences());
+
+		Corpus test_corpus = new Corpus("crfTest.txt");
+		// System.out.println("#Test Sentences: " +
+		// test_corpus.getNumSentences());
+
+		CRModel_sp1 model = new CRModel_sp1(train_corpus, "CRF.model", false);
+
+		List<NamedEntity> NEs = new Decoder(train_corpus, test_corpus, model)
+				.decode(TokenList, TweetStr);
+
+		Vector<NamedEntity> res = new Vector<NamedEntity>();
+		for (int i = 0; i < NEs.size(); i++) {
+			NamedEntity entity = NEs.get(i);
+
+			PreparedStatement ps = geonames_conn
+					.prepareStatement("select name,latitude,longitude,country,alternatenames,population,elevation,fclass from geoname where lower(name) = ?;");
+			String candidate = entity.getMention().toLowerCase();
+			ps.setString(1, candidate);
+			ResultSet rs = ps.executeQuery();
+			// System.out.println("XX="+ps);
+			while (rs.next()) {
+				GeoEntity ge = new GeoEntity(entity, rs.getDouble("latitude"),
+						rs.getDouble("longitude"), rs.getString("country"),
+						rs.getString("alternatenames"),
+						rs.getInt("population"), rs.getInt("elevation"),
+						rs.getString("fclass"));
+				if (verbose)
+					System.out.println("RESOLVED[" + ge + "]");
+			}
+
+			if (entity.isResolved())
+				res.add(entity);
+			else {
+				if (verbose)
+					System.out.println("UNRESOLVED[" + entity + "]");
+			}
+		}
+		return res;
+	}
 
     private static void PrepareTrainingFile()
     {
@@ -167,7 +177,7 @@ public class TEC4SE_Ver1
         {
             String PathSource = "ned.train";
             String PathTarget = "crfTrain.txt";
-
+            
             ClassLoader classLoader = new Global().getClass().getClassLoader();
             URL url = classLoader.getResource(PathSource);
             if (url == null)
@@ -176,8 +186,8 @@ public class TEC4SE_Ver1
             }
             InputStreamReader isr = new InputStreamReader(new FileInputStream(url.getFile()), "UTF-8");
             BufferedReader bufferedReader = new BufferedReader(isr);
-
-
+            
+            
             url = classLoader.getResource(PathTarget);
             if (url == null)
             {
@@ -185,8 +195,8 @@ public class TEC4SE_Ver1
             }
             FileOutputStream fos = new FileOutputStream(url.getFile());
             OutputStreamWriter out = new OutputStreamWriter(fos, "UTF-8");
-
-
+            
+            
             String line = "";
             while ((line = bufferedReader.readLine()) != null)
             {
@@ -212,7 +222,7 @@ public class TEC4SE_Ver1
                         String tag = tokens[2];
                         if (!tag.equalsIgnoreCase("O"))
                         {
-                            tag = tag.substring(0, 2) + "NE";
+                            tag = tag.substring(0,2)+"NE";
                         }
                         out.write(word + "\t" + feature + "\t" + tag);
                         if (bufferedReader.ready())
@@ -288,7 +298,7 @@ public class TEC4SE_Ver1
         try
         {
             String PathTarget = "crfTest.txt";
-
+            
             ClassLoader classLoader = new Global().getClass().getClassLoader();
             URL url = classLoader.getResource(PathTarget);
             if (url == null)
