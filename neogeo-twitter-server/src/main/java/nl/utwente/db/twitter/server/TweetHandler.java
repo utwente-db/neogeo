@@ -32,12 +32,10 @@ public class TweetHandler {
 	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static String enrichTweet(Connection c, Tweet t) throws SQLException {
-		System.out.println("CALL RESOLVER");
+	public static synchronized String  enrichTweet(Connection c, Tweet t) throws SQLException {
 		System.out.println(EntityResolver.class.getName());
 		Vector<NamedEntity> eList = EntityResolver.resolveEntity(t.text(),
 				t.lang());
-		System.out.println("EXIT FROM RESLVER");
 
 		JSONObject enriched = new JSONObject();
 		enriched.put("id", t.id_str());

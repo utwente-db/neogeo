@@ -53,7 +53,7 @@ public class CRModel_sp3 {
 			m_modelFile = modelFile;
 			readParameters();
 			initCPTPara();
-			System.out.println("Init CPTs Finished! Start to decode...");
+			// System.out.println("Init CPTs Finished! Start to decode...");
 		}
 	}
 	

@@ -6,6 +6,7 @@ package nl.utwente.db.named_entity_recog;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,7 +44,7 @@ import edu.stanford.nlp.util.CoreMap;
 public class EntityResolver
 {
 
-    public static boolean verbose = true;
+    public static boolean verbose = false;
     public static boolean isTrained = false;
     private static final String CONFIG_FILENAME = "database.properties";
 
@@ -135,7 +136,7 @@ public class EntityResolver
 
         try
         {
-            // resolveEntity(TweetStr_en, "en");
+            resolveEntity(TweetStr_en, "en");
             resolveEntity(TweetStr_nl, "nl");
         }
         catch (SQLException e)
@@ -147,8 +148,10 @@ public class EntityResolver
 
     public static Vector<NamedEntity> resolveEntity(String TweetStr, String lang) throws SQLException
     {
-    	System.out.println(TweetStr);
-    	System.out.println(lang);
+    	if ( verbose ) {
+    	System.out.println("resolveEntity: tweet="+TweetStr);
+    	System.out.println("resolveEntity: lang="+lang);
+    	}
     	if ( !"nl".equals(lang) )
     		lang  = "en";
         if (verbose)
@@ -216,13 +219,16 @@ public class EntityResolver
         return res;
     }
 
+    private final static String traindir = "/home/flokstra/crf/train/"; // first try
+    
+    
     private static void PrepareTrainingFile(String lang)
     {
         try
         {
             String PathSource = "";
             int tagIndex=0;
-            if (lang.equalsIgnoreCase("nl"))
+            if ("nl".equalsIgnoreCase(lang))
             {
                 PathSource = "ned.train";
                 tagIndex=2;
@@ -232,7 +238,7 @@ public class EntityResolver
                 PathSource = "eng.train";
                 tagIndex=3;
             }
-            String PathTarget = "crfTrain_"+lang.toLowerCase()+".txt";
+            String PathTarget = "/tmp/" + "crfTrain_"+lang.toLowerCase()+".txt";
 
 //            ClassLoader classLoader = new Global().getClass().getClassLoader();
 //            URL url = classLoader.getResource(PathSource);
@@ -243,19 +249,32 @@ public class EntityResolver
 //            InputStreamReader isr = new InputStreamReader(new FileInputStream(url.getFile()), "UTF-8");
 //            BufferedReader bufferedReader = new BufferedReader(isr);
 
-            String str = FileUtils.getFileAsString(PathSource);
-     
-            InputStream is = new ByteArrayInputStream(str.getBytes());
+            InputStream is = null;
+            String trainfile = null;
+            try {
+            	trainfile = traindir + PathSource;
+            	is = new FileInputStream(trainfile);
+            	if ( verbose )
+            		System.out.println("#!opened training file: "+trainfile);
+            } catch (IOException ignore_e) {
+            	if ( verbose )
+            		System.out.println("#!fail open training file "+trainfile+", try get it from resources");
+            	String str = FileUtils.getFileAsString(PathSource);
+            	is = new ByteArrayInputStream(str.getBytes());
+            	if ( verbose )
+            		System.out.println("#!opened training file from resources: "+PathSource);
+            }
         	BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is));
 
             FileOutputStream fos = new FileOutputStream(PathTarget);
             OutputStreamWriter out = new OutputStreamWriter(fos, "UTF-8");
             
+            int count = 0;
             String line = "";
             while ((line = bufferedReader.readLine()) != null)
             {
-
-                System.out.println(line);
+            	count++;
+                // System.out.println(line);
 
                 if (!line.startsWith("-DOCSTART-"))
                 {
@@ -297,6 +316,8 @@ public class EntityResolver
                     }
                 }
             }
+            if ( verbose )
+            	System.out.println("#!PrepareTrainingFile: convert "+count+" lines from "+PathSource+" into "+PathTarget+".");
             out.close();
             fos.close();
             // isr.close();
@@ -316,7 +337,7 @@ public class EntityResolver
         {
             String PathTarget = "crfTest.txt";
             
-            FileOutputStream fos = new FileOutputStream(PathTarget);
+            FileOutputStream fos = new FileOutputStream("/tmp/"+PathTarget);
             OutputStreamWriter out = new OutputStreamWriter(fos, "UTF-8");
 
             StringTokenizer ST = new StringTokenizer(TweetStr);
@@ -355,7 +376,7 @@ public class EntityResolver
         {
             String PathTarget = "crfTest.txt";
 
-            FileOutputStream fos = new FileOutputStream(PathTarget);
+            FileOutputStream fos = new FileOutputStream("/tmp/"+PathTarget);
             OutputStreamWriter out = new OutputStreamWriter(fos, "UTF-8");
 
             // creates a StanfordCoreNLP object, with POS tagging, lemmatization, NER, parsing, and coreference resolution 

@@ -21,7 +21,7 @@ import org.json.simple.parser.ParseException;
 @MultipartConfig
 public class AddTweetServlet extends HttpServlet {
 
-	private static final boolean respond2enai = false;
+	private static final boolean respond2enai = true;
 	
     private static final long serialVersionUID = 1L;
 
@@ -70,21 +70,16 @@ public class AddTweetServlet extends HttpServlet {
         	} 
         	String enriched = null;
         	try {
-        		System.out.println("REGISTERING ENAI TWEET");
         		register_enai_tweet(c,tweet.id_str(), tweet.getJson());
-        		System.out.println("CALLING TWEETHANDLER");
         		enriched = TweetHandler.enrichTweet(c, tweet);
-        		System.out.println("CALLED TWEETHANDLER");
-        		// register_enai_enrichment(c,tweet.id_str(), enriched, 0);
         	} catch (SQLException e) {
         		System.out.println("#!CAUGHT: "+e);
         		response.sendError(500, "Error during enrichment phase");
             	return;
-        	}
-        	
-        	System.out.println("#!ENRICHED: "+enriched);
+        	}	
         	if ( respond2enai ) {
         		try {
+        			System.out.println("#!ENRICHED2ENAI: "+enriched);
         			HttpUtils.postTweet("http://84.35.254.52:30000/Enrichment", enriched, "UTF-8");
         			register_enai_enrichment(c,tweet.id_str(), enriched, 0);
         		} catch (Exception e) {
@@ -98,7 +93,7 @@ public class AddTweetServlet extends HttpServlet {
         	response.sendError(400, "TWEET PARSE ERROR: "+e);
         	return;
         }
-        System.out.println("TWEET: id="+tweet.id_str()+", tweet="+tweet.tweet());
+        // System.out.println("TWEET: id="+tweet.id_str()+", tweet="+tweet.tweet());
     }
 
     @Override
@@ -114,7 +109,7 @@ public class AddTweetServlet extends HttpServlet {
 	
 	public static void check_enai_tweet_table(Connection c) throws SQLException {
         Statement st = c.createStatement();
-        st.executeUpdate("DROP TABLE "+enai_table+";"); // INCOMPLETE, remove in final version
+        // st.executeUpdate("DROP TABLE "+enai_table+";"); // INCOMPLETE, remove in final version
         ResultSet rs = st.executeQuery("SELECT COUNT(*) from pg_tables WHERE schemaname=\'" + geonames_schema + "\' AND tablename=\'" + enia_tweet_table + "\';");
         rs.next();
         if ( rs.getInt(1) == 0 ) {

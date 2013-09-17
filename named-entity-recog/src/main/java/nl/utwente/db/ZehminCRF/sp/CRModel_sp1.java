@@ -617,7 +617,7 @@ public class CRModel_sp1
         { //decoding
             m_corpus = corpus;
             initCPT();
-            System.out.println("Init CPTs Finished! Start to decode...");
+            // System.out.println("Init CPTs Finished! Start to decode...");
         }
     }
 

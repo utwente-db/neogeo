@@ -24,11 +24,9 @@ public class Corpus
     public Corpus(String filePath)
     {
         m_sentences = new Vector<Sentence>();
-        System.out.println("OPENING: "+filePath);
+        
         // String buf = FileUtils.getFileAsString(filePath);
-        String buf = FileUtils.getFileAsString(new File(filePath));
-
-        System.out.println("GET: "+filePath+"="+buf.length());
+        String buf = FileUtils.getFileAsString(new File("/tmp/"+filePath));
         
         String[] sentences = buf.split("\n\n");
         

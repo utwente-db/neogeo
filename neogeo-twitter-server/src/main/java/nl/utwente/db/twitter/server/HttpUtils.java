@@ -18,7 +18,7 @@ public class HttpUtils {
 		
 		if ( true ) {
 			postTweet("http://"+host+":8080/neogeo-twitter-server/AddTweet",
-					Tweet.exampleTweet, "UTF-8");
+					Tweet.exampleTweet2, "UTF-8");
 		} else {
 			Tweet tweet = null;
 			
