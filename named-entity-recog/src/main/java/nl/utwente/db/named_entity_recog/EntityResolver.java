@@ -127,14 +127,14 @@ public class EntityResolver
      */
     public static void main(String[] args)
     {
-        String TweetStr = "Onderweg naar Enschede voor hopelijk een mooi feestje vanavond. #batavieren";
+        //String TweetStr = "Onderweg naar Enschede voor hopelijk een mooi feestje vanavond. #batavieren";
         //String TweetStr = "Campuspop:Alle Batavieren kunnen morgen voor 16 Euro kaarten kopen voor Campuspop met Anouk, Candy Dulfer, Ben Saundersenz.#batavierenrace";
         //String TweetStr = "Niks te doen dit weekend? Festival GOGBOT in Enschede (Sciencefiction, technologie, #robots) http://www.fantasymedia.nl/content/festival-gogbot-2013-enschede-sciencefiction-technologie-robots?utm_source=twitterfeed&utm_medium=twitter … http://2013.gogbot.nl";
-        //String TweetStr = "Some pictures of our show in Enschede by Paul Bergers!";
+        String TweetStr = "Some pictures of our show in Enschede by Paul Bergers";
 
         try
         {
-            resolveEntity(TweetStr, "nl");
+            resolveEntity(TweetStr, "en");
         }
         catch (SQLException e)
         {
@@ -280,6 +280,13 @@ public class EntityResolver
                     else
                     {
                         out.write("\n");
+                    }
+                }
+                else
+                {
+                    if(!lang.equalsIgnoreCase("nl"))
+                    {
+                        line = bufferedReader.readLine();
                     }
                 }
             }
