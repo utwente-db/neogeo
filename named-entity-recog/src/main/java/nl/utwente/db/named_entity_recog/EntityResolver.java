@@ -5,13 +5,12 @@
 package nl.utwente.db.named_entity_recog;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -28,7 +27,7 @@ import java.util.logging.Logger;
 import nl.utwente.db.ZehminCRF.corpus.Corpus;
 import nl.utwente.db.ZehminCRF.main.Decoder;
 import nl.utwente.db.ZehminCRF.sp.CRModel_sp1;
-import nl.utwente.db.ZehminCRF.utils.Global;
+import nl.utwente.db.neogeo.utils.FileUtils;
 import edu.stanford.nlp.ling.CoreAnnotations.SentencesAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.TextAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
@@ -127,14 +126,17 @@ public class EntityResolver
      */
     public static void main(String[] args)
     {
-        //String TweetStr = "Onderweg naar Enschede voor hopelijk een mooi feestje vanavond. #batavieren";
+        // String TweetStr_nl = "Onderweg naar Enschede voor hopelijk een mooi feestje vanavond. #batavieren";
+        String TweetStr_nl = "Ik zit op de fiets van Enschede naar Almelo, door Hengelo denkend aan Nepal.";
         //String TweetStr = "Campuspop:Alle Batavieren kunnen morgen voor 16 Euro kaarten kopen voor Campuspop met Anouk, Candy Dulfer, Ben Saundersenz.#batavierenrace";
         //String TweetStr = "Niks te doen dit weekend? Festival GOGBOT in Enschede (Sciencefiction, technologie, #robots) http://www.fantasymedia.nl/content/festival-gogbot-2013-enschede-sciencefiction-technologie-robots?utm_source=twitterfeed&utm_medium=twitter … http://2013.gogbot.nl";
-        String TweetStr = "Some pictures of our show in Enschede by Paul Bergers";
+        String TweetStr_en = "Some pictures of our show in Enschede by Paul Bergers";
+
 
         try
         {
-            resolveEntity(TweetStr, "en");
+            // resolveEntity(TweetStr_en, "en");
+            resolveEntity(TweetStr_nl, "nl");
         }
         catch (SQLException e)
         {
@@ -145,18 +147,26 @@ public class EntityResolver
 
     public static Vector<NamedEntity> resolveEntity(String TweetStr, String lang) throws SQLException
     {
+    	System.out.println(TweetStr);
+    	System.out.println(lang);
+    	if ( !"nl".equals(lang) )
+    		lang  = "en";
         if (verbose)
         {
             System.out.println("#!EntityResolver.resolveEntity() called.");
         }
+        
         // TODO: make this work both for "nl" end "en" language
         if (!isTrained)
         {
-            PrepareTrainingFile(lang);
+            PrepareTrainingFile("nl");
+            PrepareTrainingFile("en");
+            isTrained = true;
         }
+        
         List<Token> TokenList = PrepareTestFile_StanfordTokenizer(TweetStr);
         // PrepareTestFile_JavaTokenizer(TweetStr);
-
+        
         Corpus train_corpus = new Corpus("crfTrain_"+lang.toLowerCase()+".txt");
         // System.out.println("#Training Sentences: " +
         // train_corpus.getNumSentences());
@@ -178,7 +188,6 @@ public class EntityResolver
             String candidate = entity.getMention().toLowerCase();
             ps.setString(1, candidate);
             ResultSet rs = ps.executeQuery();
-            // System.out.println("XX="+ps);
             while (rs.next())
             {
                 GeoEntity ge = new GeoEntity(entity, rs.getDouble("latitude"),
@@ -225,25 +234,23 @@ public class EntityResolver
             }
             String PathTarget = "crfTrain_"+lang.toLowerCase()+".txt";
 
-            ClassLoader classLoader = new Global().getClass().getClassLoader();
-            URL url = classLoader.getResource(PathSource);
-            if (url == null)
-            {
-                throw new RuntimeException("Global:readFile: unable to locate resource: " + PathSource);
-            }
-            InputStreamReader isr = new InputStreamReader(new FileInputStream(url.getFile()), "UTF-8");
-            BufferedReader bufferedReader = new BufferedReader(isr);
+//            ClassLoader classLoader = new Global().getClass().getClassLoader();
+//            URL url = classLoader.getResource(PathSource);
+//            if (url == null)
+//            {
+//                throw new RuntimeException("Global:readFile: unable to locate resource: " + PathSource);
+//            }
+//            InputStreamReader isr = new InputStreamReader(new FileInputStream(url.getFile()), "UTF-8");
+//            BufferedReader bufferedReader = new BufferedReader(isr);
 
+            String str = FileUtils.getFileAsString(PathSource);
+     
+            InputStream is = new ByteArrayInputStream(str.getBytes());
+        	BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is));
 
-            url = classLoader.getResource(PathTarget);
-            if (url == null)
-            {
-                throw new RuntimeException("Global:readFile: unable to locate resource: " + PathSource);
-            }
-            FileOutputStream fos = new FileOutputStream(url.getFile());
+            FileOutputStream fos = new FileOutputStream(PathTarget);
             OutputStreamWriter out = new OutputStreamWriter(fos, "UTF-8");
-
-
+            
             String line = "";
             while ((line = bufferedReader.readLine()) != null)
             {
@@ -292,8 +299,9 @@ public class EntityResolver
             }
             out.close();
             fos.close();
-            isr.close();
+            // isr.close();
             bufferedReader.close();
+            // System.exit(0);
         }
         catch (Exception ex)
         {
@@ -307,14 +315,8 @@ public class EntityResolver
         try
         {
             String PathTarget = "crfTest.txt";
-
-            ClassLoader classLoader = new Global().getClass().getClassLoader();
-            URL url = classLoader.getResource(PathTarget);
-            if (url == null)
-            {
-                throw new RuntimeException("Global:readFile: unable to locate resource: " + PathTarget);
-            }
-            FileOutputStream fos = new FileOutputStream(url.getFile());
+            
+            FileOutputStream fos = new FileOutputStream(PathTarget);
             OutputStreamWriter out = new OutputStreamWriter(fos, "UTF-8");
 
             StringTokenizer ST = new StringTokenizer(TweetStr);
@@ -353,20 +355,13 @@ public class EntityResolver
         {
             String PathTarget = "crfTest.txt";
 
-            ClassLoader classLoader = new Global().getClass().getClassLoader();
-            URL url = classLoader.getResource(PathTarget);
-            if (url == null)
-            {
-                throw new RuntimeException("Global:readFile: unable to locate resource: " + PathTarget);
-            }
-            FileOutputStream fos = new FileOutputStream(url.getFile());
+            FileOutputStream fos = new FileOutputStream(PathTarget);
             OutputStreamWriter out = new OutputStreamWriter(fos, "UTF-8");
 
             // creates a StanfordCoreNLP object, with POS tagging, lemmatization, NER, parsing, and coreference resolution 
             Properties props = new Properties();
             props.put("annotators", "tokenize, ssplit");
             StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
-
 
             // create an empty Annotation just with the given text
             Annotation document = new Annotation(TweetStr);
@@ -416,7 +411,7 @@ public class EntityResolver
         }
         catch (Exception ex)
         {
-            Logger.getLogger(TEC4SE_Ver1.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(EntityResolver.class.getName()).log(Level.SEVERE, null, ex);
         }
         return TokensList;
     }

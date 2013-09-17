@@ -100,9 +100,9 @@ public class PreAggregate {
 		this.internalHash = internalHash;
 	}
 
-	public PreAggregate(Connection c, String schema, String table, String label, AggregateAxis axis[], String aggregateColumn, String aggregateType, int aggregateMask, int axisToSplit, long chunkSize, Object[][] newRange) 
+	public PreAggregate(Connection c, String schema, String table, String override_name, String label, AggregateAxis axis[], String aggregateColumn, String aggregateType, int aggregateMask, int axisToSplit, long chunkSize, Object[][] newRange) 
 	throws SQLException {
-		createPreAggregate(c,schema,table,label,axis,aggregateColumn,aggregateType,aggregateMask,axisToSplit,chunkSize,newRange);
+		createPreAggregate(c,schema,table,override_name, label,axis,aggregateColumn,aggregateType,aggregateMask,axisToSplit,chunkSize,newRange);
 	}
 
 	private void _init(Connection c, String schema, String table, String label)
@@ -165,7 +165,7 @@ public class PreAggregate {
 	}
 
 	protected void createPreAggregate(Connection c, String schema,
-			String table, String label, AggregateAxis axis[],
+			String table, String override_name, String label, AggregateAxis axis[],
 			String aggregateColumn, String aggregateType, int aggregateMask, 
 			int i_axisToSplit, long chunkSize, Object[][] newRange) throws SQLException {
 		int i;
@@ -242,7 +242,11 @@ public class PreAggregate {
 		/*
 		 * Generate the table which contains the final index
 		 */
-		String table_pa = schema + "." + table + PA_EXTENSION;
+		String table_pa ; 
+		if ( override_name == null )
+			table_pa = schema + "." + table + PA_EXTENSION;
+		else 
+			table_pa = schema + "." + override_name;
 		sql_build.add("-- create the table containg the pre aggregate index\n");
 		sql_build.add("DROP TABLE IF EXISTS " + table_pa + ";\n");
 		sql_build.add(

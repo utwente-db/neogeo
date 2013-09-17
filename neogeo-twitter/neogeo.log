@@ -26938,3 +26938,108 @@
 10:25:01,895  INFO LobCreatorBuilder:120 - HHH000424: Disabling contextual LOB creation as createClob() method threw error : java.lang.reflect.InvocationTargetException
 10:25:01,906  INFO TransactionFactoryInitiator:68 - HHH000399: Using default transaction strategy (direct JDBC transactions)
 10:25:01,994  INFO HibernateUtils:32 - org.hibernate.internal.SessionFactoryImpl@78ff9053
+16:07:37,892  INFO Version:37 - HCANN000001: Hibernate Commons Annotations {4.0.1.Final}
+16:07:38,356  INFO Version:41 - HHH000412: Hibernate Core {4.1.4.Final}
+16:07:38,363  INFO Environment:239 - HHH000206: hibernate.properties not found
+16:07:38,366  INFO Environment:342 - HHH000021: Bytecode provider name : javassist
+16:07:40,182  INFO Configuration:1985 - HHH000042: Configuring from file: hibernate.cfg.xml
+16:07:41,616  INFO Configuration:2068 - HHH000041: Configured SessionFactory: null
+16:07:45,353  INFO DriverManagerConnectionProviderImpl:96 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+16:07:45,661  INFO DriverManagerConnectionProviderImpl:130 - HHH000115: Hibernate connection pool size: 1
+16:07:45,661  INFO DriverManagerConnectionProviderImpl:133 - HHH000006: Autocommit mode: false
+16:07:45,662  INFO DriverManagerConnectionProviderImpl:147 - HHH000401: using driver [org.postgresql.Driver] at URL [jdbc:postgresql://silo2.ewi.utwente.nl:5432/twitter]
+16:07:45,662  INFO DriverManagerConnectionProviderImpl:152 - HHH000046: Connection properties: {user=flokstra, password=****}
+16:07:49,207  INFO Dialect:122 - HHH000400: Using dialect: org.hibernate.dialect.PostgreSQL82Dialect
+16:07:49,506  INFO LobCreatorBuilder:120 - HHH000424: Disabling contextual LOB creation as createClob() method threw error : java.lang.reflect.InvocationTargetException
+16:07:49,656  INFO TransactionFactoryInitiator:68 - HHH000399: Using default transaction strategy (direct JDBC transactions)
+16:07:52,481  INFO HibernateUtils:32 - org.hibernate.internal.SessionFactoryImpl@78467991
+16:14:34,362  INFO Version:37 - HCANN000001: Hibernate Commons Annotations {4.0.1.Final}
+16:14:34,395  INFO Version:41 - HHH000412: Hibernate Core {4.1.4.Final}
+16:14:34,402  INFO Environment:239 - HHH000206: hibernate.properties not found
+16:14:34,404  INFO Environment:342 - HHH000021: Bytecode provider name : javassist
+16:14:34,482  INFO Configuration:1985 - HHH000042: Configuring from file: hibernate.cfg.xml
+16:14:34,593  INFO Configuration:2068 - HHH000041: Configured SessionFactory: null
+16:14:34,664  INFO DriverManagerConnectionProviderImpl:96 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+16:14:34,672  INFO DriverManagerConnectionProviderImpl:130 - HHH000115: Hibernate connection pool size: 1
+16:14:34,672  INFO DriverManagerConnectionProviderImpl:133 - HHH000006: Autocommit mode: false
+16:14:34,673  INFO DriverManagerConnectionProviderImpl:147 - HHH000401: using driver [org.postgresql.Driver] at URL [jdbc:postgresql://silo2.ewi.utwente.nl:5432/twitter]
+16:14:34,673  INFO DriverManagerConnectionProviderImpl:152 - HHH000046: Connection properties: {user=flokstra, password=****}
+16:14:35,314  INFO Dialect:122 - HHH000400: Using dialect: org.hibernate.dialect.PostgreSQL82Dialect
+16:14:35,327  INFO LobCreatorBuilder:120 - HHH000424: Disabling contextual LOB creation as createClob() method threw error : java.lang.reflect.InvocationTargetException
+16:14:35,401  INFO TransactionFactoryInitiator:68 - HHH000399: Using default transaction strategy (direct JDBC transactions)
+16:14:35,524  INFO HibernateUtils:32 - org.hibernate.internal.SessionFactoryImpl@307bd0d
+16:15:56,718  INFO Version:37 - HCANN000001: Hibernate Commons Annotations {4.0.1.Final}
+16:15:56,729  INFO Version:41 - HHH000412: Hibernate Core {4.1.4.Final}
+16:15:56,735  INFO Environment:239 - HHH000206: hibernate.properties not found
+16:15:56,737  INFO Environment:342 - HHH000021: Bytecode provider name : javassist
+16:15:56,794  INFO Configuration:1985 - HHH000042: Configuring from file: hibernate.cfg.xml
+16:15:56,866  INFO Configuration:2068 - HHH000041: Configured SessionFactory: null
+16:15:56,939  INFO DriverManagerConnectionProviderImpl:96 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+16:15:56,947  INFO DriverManagerConnectionProviderImpl:130 - HHH000115: Hibernate connection pool size: 1
+16:15:56,947  INFO DriverManagerConnectionProviderImpl:133 - HHH000006: Autocommit mode: false
+16:15:56,947  INFO DriverManagerConnectionProviderImpl:147 - HHH000401: using driver [org.postgresql.Driver] at URL [jdbc:postgresql://silo2.ewi.utwente.nl:5432/twitter]
+16:15:56,948  INFO DriverManagerConnectionProviderImpl:152 - HHH000046: Connection properties: {user=flokstra, password=****}
+16:15:57,425  INFO Dialect:122 - HHH000400: Using dialect: org.hibernate.dialect.PostgreSQL82Dialect
+16:15:57,437  INFO LobCreatorBuilder:120 - HHH000424: Disabling contextual LOB creation as createClob() method threw error : java.lang.reflect.InvocationTargetException
+16:15:57,448  INFO TransactionFactoryInitiator:68 - HHH000399: Using default transaction strategy (direct JDBC transactions)
+16:15:57,535  INFO HibernateUtils:32 - org.hibernate.internal.SessionFactoryImpl@5253c3f5
+16:17:16,776  INFO Version:37 - HCANN000001: Hibernate Commons Annotations {4.0.1.Final}
+16:17:16,788  INFO Version:41 - HHH000412: Hibernate Core {4.1.4.Final}
+16:17:16,794  INFO Environment:239 - HHH000206: hibernate.properties not found
+16:17:16,797  INFO Environment:342 - HHH000021: Bytecode provider name : javassist
+16:17:16,856  INFO Configuration:1985 - HHH000042: Configuring from file: hibernate.cfg.xml
+16:17:16,932  INFO Configuration:2068 - HHH000041: Configured SessionFactory: null
+16:17:17,008  INFO DriverManagerConnectionProviderImpl:96 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+16:17:17,016  INFO DriverManagerConnectionProviderImpl:130 - HHH000115: Hibernate connection pool size: 1
+16:17:17,016  INFO DriverManagerConnectionProviderImpl:133 - HHH000006: Autocommit mode: false
+16:17:17,016  INFO DriverManagerConnectionProviderImpl:147 - HHH000401: using driver [org.postgresql.Driver] at URL [jdbc:postgresql://silo2.ewi.utwente.nl:5432/twitter]
+16:17:17,017  INFO DriverManagerConnectionProviderImpl:152 - HHH000046: Connection properties: {user=flokstra, password=****}
+16:17:17,486  INFO Dialect:122 - HHH000400: Using dialect: org.hibernate.dialect.PostgreSQL82Dialect
+16:17:17,498  INFO LobCreatorBuilder:120 - HHH000424: Disabling contextual LOB creation as createClob() method threw error : java.lang.reflect.InvocationTargetException
+16:17:17,509  INFO TransactionFactoryInitiator:68 - HHH000399: Using default transaction strategy (direct JDBC transactions)
+16:17:17,595  INFO HibernateUtils:32 - org.hibernate.internal.SessionFactoryImpl@163b4b1e
+17:00:20,891  INFO Version:37 - HCANN000001: Hibernate Commons Annotations {4.0.1.Final}
+17:00:20,930  INFO Version:41 - HHH000412: Hibernate Core {4.1.4.Final}
+17:00:20,936  INFO Environment:239 - HHH000206: hibernate.properties not found
+17:00:20,938  INFO Environment:342 - HHH000021: Bytecode provider name : javassist
+17:00:21,017  INFO Configuration:1985 - HHH000042: Configuring from file: hibernate.cfg.xml
+17:00:21,123  INFO Configuration:2068 - HHH000041: Configured SessionFactory: null
+17:00:21,195  INFO DriverManagerConnectionProviderImpl:96 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+17:00:21,203  INFO DriverManagerConnectionProviderImpl:130 - HHH000115: Hibernate connection pool size: 1
+17:00:21,203  INFO DriverManagerConnectionProviderImpl:133 - HHH000006: Autocommit mode: false
+17:00:21,203  INFO DriverManagerConnectionProviderImpl:147 - HHH000401: using driver [org.postgresql.Driver] at URL [jdbc:postgresql://silo2.ewi.utwente.nl:5432/twitter]
+17:00:21,203  INFO DriverManagerConnectionProviderImpl:152 - HHH000046: Connection properties: {user=flokstra, password=****}
+17:00:23,333  INFO Dialect:122 - HHH000400: Using dialect: org.hibernate.dialect.PostgreSQL82Dialect
+17:00:23,345  INFO LobCreatorBuilder:120 - HHH000424: Disabling contextual LOB creation as createClob() method threw error : java.lang.reflect.InvocationTargetException
+17:00:23,357  INFO TransactionFactoryInitiator:68 - HHH000399: Using default transaction strategy (direct JDBC transactions)
+17:00:23,442  INFO HibernateUtils:32 - org.hibernate.internal.SessionFactoryImpl@20a29c6e
+17:33:53,523  INFO Version:37 - HCANN000001: Hibernate Commons Annotations {4.0.1.Final}
+17:33:53,552  INFO Version:41 - HHH000412: Hibernate Core {4.1.4.Final}
+17:33:53,557  INFO Environment:239 - HHH000206: hibernate.properties not found
+17:33:53,559  INFO Environment:342 - HHH000021: Bytecode provider name : javassist
+17:33:53,639  INFO Configuration:1985 - HHH000042: Configuring from file: hibernate.cfg.xml
+17:33:53,711  INFO Configuration:2068 - HHH000041: Configured SessionFactory: null
+17:33:53,783  INFO DriverManagerConnectionProviderImpl:96 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+17:33:53,791  INFO DriverManagerConnectionProviderImpl:130 - HHH000115: Hibernate connection pool size: 1
+17:33:53,791  INFO DriverManagerConnectionProviderImpl:133 - HHH000006: Autocommit mode: false
+17:33:53,791  INFO DriverManagerConnectionProviderImpl:147 - HHH000401: using driver [org.postgresql.Driver] at URL [jdbc:postgresql://localhost:5432/twitter]
+17:33:53,791  INFO DriverManagerConnectionProviderImpl:152 - HHH000046: Connection properties: {user=flokstra, password=****}
+17:33:54,106  INFO Dialect:122 - HHH000400: Using dialect: org.hibernate.dialect.PostgreSQL82Dialect
+17:33:54,119  INFO LobCreatorBuilder:120 - HHH000424: Disabling contextual LOB creation as createClob() method threw error : java.lang.reflect.InvocationTargetException
+17:33:54,132  INFO TransactionFactoryInitiator:68 - HHH000399: Using default transaction strategy (direct JDBC transactions)
+17:33:54,438  INFO HibernateUtils:32 - org.hibernate.internal.SessionFactoryImpl@30c06258
+17:38:34,460  INFO Version:37 - HCANN000001: Hibernate Commons Annotations {4.0.1.Final}
+17:38:34,472  INFO Version:41 - HHH000412: Hibernate Core {4.1.4.Final}
+17:38:34,477  INFO Environment:239 - HHH000206: hibernate.properties not found
+17:38:34,479  INFO Environment:342 - HHH000021: Bytecode provider name : javassist
+17:38:34,537  INFO Configuration:1985 - HHH000042: Configuring from file: hibernate.cfg.xml
+17:38:34,609  INFO Configuration:2068 - HHH000041: Configured SessionFactory: null
+17:38:34,682  INFO DriverManagerConnectionProviderImpl:96 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+17:38:34,689  INFO DriverManagerConnectionProviderImpl:130 - HHH000115: Hibernate connection pool size: 1
+17:38:34,690  INFO DriverManagerConnectionProviderImpl:133 - HHH000006: Autocommit mode: false
+17:38:34,690  INFO DriverManagerConnectionProviderImpl:147 - HHH000401: using driver [org.postgresql.Driver] at URL [jdbc:postgresql://localhost:5432/twitter]
+17:38:34,690  INFO DriverManagerConnectionProviderImpl:152 - HHH000046: Connection properties: {user=flokstra, password=****}
+17:38:34,965  INFO Dialect:122 - HHH000400: Using dialect: org.hibernate.dialect.PostgreSQL82Dialect
+17:38:34,977  INFO LobCreatorBuilder:120 - HHH000424: Disabling contextual LOB creation as createClob() method threw error : java.lang.reflect.InvocationTargetException
+17:38:34,990  INFO TransactionFactoryInitiator:68 - HHH000399: Using default transaction strategy (direct JDBC transactions)
+17:38:35,080  INFO HibernateUtils:32 - org.hibernate.internal.SessionFactoryImpl@7c33788d

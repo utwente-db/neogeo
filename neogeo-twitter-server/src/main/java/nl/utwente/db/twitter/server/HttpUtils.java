@@ -14,10 +14,9 @@ public class HttpUtils {
 	private static final String USER_AGENT = "Mozilla/5.0";
 	
 	public static void main(String[] args) throws Exception {
-		// String host = "localhost";
-		String host = "farm15.ewi.utwente.nl";
+		String host = "farm12.ewi.utwente.nl";
 		
-		if ( false ) {
+		if ( true ) {
 			postTweet("http://"+host+":8080/neogeo-twitter-server/AddTweet",
 					Tweet.exampleTweet, "UTF-8");
 		} else {

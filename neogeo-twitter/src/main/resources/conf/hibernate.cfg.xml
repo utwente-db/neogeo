@@ -11,7 +11,9 @@
         <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
         <property name="hibernate.connection.username">flokstra</property>
         <property name="hibernate.connection.password">twitter</property>
-        <property name="hibernate.connection.url">jdbc:postgresql://silo2.ewi.utwente.nl:5432/twitter</property>
+<!--         <property name="hibernate.connection.url">jdbc:postgresql://silo2.ewi.utwente.nl:5432/twitter</property> -->
+		<property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/twitter</property>
+		
         <property name="hibernate.max_fetch_depth">3</property>
 		<property name="hibernate.show_sql">false</property>
 		<property name="hibernate.use_outer_join">true</property>

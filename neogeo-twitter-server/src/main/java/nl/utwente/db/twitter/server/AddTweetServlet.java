@@ -67,11 +67,14 @@ public class AddTweetServlet extends HttpServlet {
         	if ( c == null ) {
         		response.sendError(500, "Unable to connect to geonames database");
             	return;
-        	}
+        	} 
         	String enriched = null;
         	try {
+        		System.out.println("REGISTERING ENAI TWEET");
         		register_enai_tweet(c,tweet.id_str(), tweet.getJson());
+        		System.out.println("CALLING TWEETHANDLER");
         		enriched = TweetHandler.enrichTweet(c, tweet);
+        		System.out.println("CALLED TWEETHANDLER");
         		// register_enai_enrichment(c,tweet.id_str(), enriched, 0);
         	} catch (SQLException e) {
         		System.out.println("#!CAUGHT: "+e);

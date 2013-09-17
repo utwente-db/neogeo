@@ -36,6 +36,7 @@ public class FileUtils {
 		try {
 			while ((line = in.readLine()) != null) {
 				result.append(line);
+				result.append('\n');
 			}
 		} catch (IOException e) {
 			throw new NeoGeoException("IOException", e);

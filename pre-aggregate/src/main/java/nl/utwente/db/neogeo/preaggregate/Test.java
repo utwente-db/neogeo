@@ -226,11 +226,11 @@ public class Test {
 			
 			//System.exit(0);
 
-			GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "uk_neogeo", "myAggregate", "coordinates",-1,200000,null);
+			GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "uk_neogeo", "xx_neogeo_pa", "myAggregate", "coordinates",-1,200000,null);
 			//GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "london_hav_neogeo", "myAggregate");
 			//
 			// pa.boxQuery("count",0.18471,51.60626,0.23073,51.55534); // in the middle of havering map *correction anomaly
-			//			pa.boxQuery("count",-0.058,51.59,0.095,51.483); // left of havering, few tweets
+			// pa.boxQuery("count",-0.058,51.59,0.095,51.483); // left of havering, few tweets
 			// pa.boxQuery("count",-0.058,51.58961,0.095,51.48287); // left of havering, few tweets
 			
 			// pa.boxQuery("count",-0.38326,51.62780,0.14554,51.39572); // a big london query
@@ -284,7 +284,7 @@ public class Test {
 				new MetricAxis("ST_Y(coordinates)","double",""+DFLT_BASEBOXSIZE,DFLT_N),
 			    new MetricAxis("time","timestamp with time zone","360000" /*=10 min*/,(short)16)
 			};
-		PreAggregate pa = new PreAggregate(c,"public", "uk_neogeo", "myAggregate",axis,"char_length(tweet)","bigint",PreAggregate.AGGR_ALL,2,200000,null);
+		PreAggregate pa = new PreAggregate(c,"public", "uk_neogeo", null /*override_name*/, "myAggregate",axis,"char_length(tweet)","bigint",PreAggregate.AGGR_ALL,2,200000,null);
 
 	}
 	

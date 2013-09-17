@@ -20,7 +20,7 @@ public class GeotaggedTweetAggregate extends PreAggregate {
 	}
 	
 	/*  constructor which (re)creates the aggregate */
-	public GeotaggedTweetAggregate(Connection c, String schema, String table, String label, String point_column, int axisToSplit, long chunkSize, Object[][] newRange)
+	public GeotaggedTweetAggregate(Connection c, String schema, String table, String override_name, String label, String point_column, int axisToSplit, long chunkSize, Object[][] newRange)
 		throws SQLException {
 		AggregateAxis axis[] = {
 				new MetricAxis("ST_X("+point_column+")","double",""+DFLT_BASEBOXSIZE,DFLT_N),
@@ -28,7 +28,7 @@ public class GeotaggedTweetAggregate extends PreAggregate {
 				new MetricAxis("ST_Y("+point_column+")","double",""+DFLT_BASEBOXSIZE,DFLT_N)
 			    //, new MetricAxis("time","timestamp with time zone","3600000" /*=1 hour*/,DFLT_N)
 			};
-		createPreAggregate(c,schema,table,label,axis,"char_length(tweet)","bigint",AGGR_ALL,axisToSplit,chunkSize,newRange);
+		createPreAggregate(c,schema,table,override_name, label,axis,"char_length(tweet)","bigint",AGGR_ALL,axisToSplit,chunkSize,newRange);
 	}
 	
 	public long boxQuery(String aggr, double x1, double y1, double x2, double y2) throws SQLException {		

@@ -7,6 +7,7 @@ import java.util.Vector;
 import nl.utwente.db.ZehminCRF.sp.CPT;
 import nl.utwente.db.ZehminCRF.utils.Global;
 import nl.utwente.db.ZehminCRF.utils.StringInteger;
+import nl.utwente.db.neogeo.utils.FileUtils;
 
 /**
  * @author Zhemin Zhu Created on Jul 20, 2012
@@ -22,8 +23,12 @@ public class Corpus
     public Corpus(String filePath)
     {
         m_sentences = new Vector<Sentence>();
-        String buf = Global.readFile(filePath);
+        System.out.println("OPENING: "+filePath);
+        String buf = FileUtils.getFileAsString(filePath);
+        System.out.println("GET: "+filePath+"="+buf.length());
+        
         String[] sentences = buf.split("\n\n");
+        
         for (String sentence : sentences)
         {
             m_sentences.add(new Sentence(sentence));

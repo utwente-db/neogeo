@@ -22,6 +22,11 @@
 			<artifactId>stanford-corenlp</artifactId>
 			<version>3.2.0</version>
 		</dependency>
+		<dependency>
+			<groupId>nl.utwente.db</groupId>
+			<artifactId>neogeo-utils</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 
 	</dependencies>
 
