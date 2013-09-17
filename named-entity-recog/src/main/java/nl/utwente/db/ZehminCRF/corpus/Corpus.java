@@ -1,5 +1,6 @@
 package nl.utwente.db.ZehminCRF.corpus;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.Vector;
@@ -24,7 +25,9 @@ public class Corpus
     {
         m_sentences = new Vector<Sentence>();
         System.out.println("OPENING: "+filePath);
-        String buf = FileUtils.getFileAsString(filePath);
+        // String buf = FileUtils.getFileAsString(filePath);
+        String buf = FileUtils.getFileAsString(new File(filePath));
+
         System.out.println("GET: "+filePath+"="+buf.length());
         
         String[] sentences = buf.split("\n\n");

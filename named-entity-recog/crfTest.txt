@@ -1,0 +1,16 @@
+Ik	t	O
+zit	f	O
+op	f	O
+de	f	O
+fiets	f	O
+van	f	O
+Enschede	t	O
+naar	f	O
+Almelo	t	O
+dwars	f	O
+door	f	O
+Hengelo	t	O
+denkend	f	O
+aan	f	O
+Nepal	t	O
+.	f	O
