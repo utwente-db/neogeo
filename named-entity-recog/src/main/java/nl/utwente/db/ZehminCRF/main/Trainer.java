@@ -34,7 +34,7 @@ public class Trainer {
 		 
 		 //Brown
 		String modelFile = Global.g_BrwonModelFile;
-		Corpus brown_corpus = new Corpus(Global.g_BrwonCorpusFile);
+		Corpus brown_corpus = new Corpus(Global.g_BrwonCorpusFile,false);
 		Corpus training_corpus = brown_corpus.genSubCorpus(0, 100);
 		//NER 
 		/*String modelFile = Global.g_desktop_windows + "NER/NER_trans/ner_model";

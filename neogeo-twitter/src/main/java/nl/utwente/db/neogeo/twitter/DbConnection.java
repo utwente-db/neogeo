@@ -41,6 +41,14 @@ public class DbConnection {
 			e.printStackTrace();
 		}
 	}
+	
+	public void resetProperties(String hostname, String port, String username, String password, String database) {
+		this.hostname = hostname;
+		this.port = port;
+		this.username = username;
+		this.password = password;
+		this.database = database;
+	}
 
 	public Connection getConnection(){
 		try {
@@ -61,7 +69,6 @@ public class DbConnection {
 			System.out.println("Connection Failed! Check output console");
 			e.printStackTrace();
 			return null;
-
 		}
 		if (connection != null) {
 			if ( verbose )

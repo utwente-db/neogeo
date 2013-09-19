@@ -18,17 +18,17 @@ public class Transform_NER {
 		//transform(Global.g_desktop_windows + "NER/NER_orig/ned.testa", Global.g_desktop_windows + "NER/NER_trans/ned.testa" );
 		//transform(Global.g_desktop_windows + "NER/NER_orig/ned.testb", Global.g_desktop_windows + "NER/NER_trans/ned.testb" );
 		Global.g_bWithStartEndSymbols = false;
-		Corpus corpus = new Corpus(Global.g_desktop_windows + "NER/NER_trans/ned.train" );
+		Corpus corpus = new Corpus(Global.g_desktop_windows + "NER/NER_trans/ned.train",false );
 		corpus.transform2MALLET(Global.g_desktop_windows + "NER/NER_mallet_all/ned.train_mallet" );
 		corpus.transform2MALLET_more1(Global.g_desktop_windows + "NER/NER_mallet_more1/ned.train_mallet" );
 		corpus.printStatistics();
 		
-		corpus = new Corpus(Global.g_desktop_windows + "NER/NER_trans/ned.testa" );
+		corpus = new Corpus(Global.g_desktop_windows + "NER/NER_trans/ned.testa",false );
 		corpus.transform2MALLET(Global.g_desktop_windows + "NER/NER_mallet_all/ned.testa_mallet" );
 		corpus.transform2MALLET_more1(Global.g_desktop_windows + "NER/NER_mallet_more1/ned.testa_mallet" );
 		corpus.printStatistics();
 		
-		corpus = new Corpus(Global.g_desktop_windows + "NER/NER_trans/ned.testb" );
+		corpus = new Corpus(Global.g_desktop_windows + "NER/NER_trans/ned.testb",false );
 		corpus.transform2MALLET(Global.g_desktop_windows + "NER/NER_mallet_all/ned.testb_mallet" );
 		corpus.transform2MALLET_more1(Global.g_desktop_windows + "NER/NER_mallet_more1/ned.testb_mallet" );
 		corpus.printStatistics();

@@ -10,6 +10,7 @@ import nl.utwente.db.named_entity_recog.EntityResolver;
 import nl.utwente.db.named_entity_recog.GeoEntity;
 import nl.utwente.db.named_entity_recog.NamedEntity;
 import nl.utwente.db.named_entity_recog.ResolvedEntity;
+import nl.utwente.db.neogeo.twitter.Tweet;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;

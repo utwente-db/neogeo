@@ -19,6 +19,8 @@ public class GeoEntity extends ResolvedEntity {
     private int elevation;
     private String fclass; // feature class
 
+    public static final int minLength = 3;
+    
     public GeoEntity(NamedEntity entity, double latitude, double longitude,String country, String alternatenames, int population, int elevation, String fclass)
     {
     	super(entity,ResolvedEntity.GEO_ENTITY);

@@ -33,6 +33,10 @@ public class Tweet {
 		this.json = json;
 	}
 
+	public String getJson() {
+		return json;
+	}
+	
 	public boolean isValid() {
 		return errorMessage == null;
 	}
@@ -43,9 +47,17 @@ public class Tweet {
 			return null;
 	}
 	
+	public Long id() {
+		return (Long)jrep.getPath("id");
+	}
+	
 	public String id_str() {
 		// return obj2string( jrep.getPath("id"));
 		return this.id_str;
+	}
+	
+	public String lang() {
+		return obj2string( jrep.getPath("lang"));
 	}
 	
 	public String place() {
@@ -53,6 +65,10 @@ public class Tweet {
 		// System.out.println("Place["+this.place+"]="+jrep.getPath("place"));
 		return obj2string( jrep.getPath("place"));
 		// return this.place;
+	}
+	
+	public Object getPath(String p) {
+		return jrep.getPath(p);
 	}
 	
 	public String place_country_code() {
@@ -91,6 +107,10 @@ public class Tweet {
 		// return obj2string( jrep.getPath("text") );
 		return this.tweet;
 	}
+	
+	public String text() {
+		return obj2string( jrep.getPath("text") );
+	}
 
 	public String country() {
 		return obj2string( jrep.getPath("place", "country") );
@@ -121,6 +141,10 @@ public class Tweet {
 	
 	public String user_screen_name() {
 		return obj2string( jrep.getPath("user","screen_name") );
+	}
+	
+	public String user_location() {
+		return obj2string( jrep.getPath("user","location") );
 	}
 
 	public String retweeted() {

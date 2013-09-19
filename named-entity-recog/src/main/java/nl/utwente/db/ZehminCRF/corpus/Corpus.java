@@ -2,6 +2,7 @@ package nl.utwente.db.ZehminCRF.corpus;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Set;
 import java.util.Vector;
 
@@ -17,25 +18,31 @@ import nl.utwente.db.neogeo.utils.FileUtils;
  */
 public class Corpus
 {
-
     private Vector<Sentence> m_sentences;
     private HashMap<String, String> m_mapOF;
 
-    public Corpus(String filePath)
-    {
-        m_sentences = new Vector<Sentence>();
-        
-        // String buf = FileUtils.getFileAsString(filePath);
-        String buf = FileUtils.getFileAsString(new File("/tmp/"+filePath));
-        
-        String[] sentences = buf.split("\n\n");
-        
-        for (String sentence : sentences)
-        {
-            m_sentences.add(new Sentence(sentence));
-        }
-        initMapOF();
-    }
+    private static final Hashtable<String,String[]> scache = new Hashtable<String,String[]>();
+    
+	public Corpus(String filePath, boolean use_cache) {
+		String[] sentences = scache.get(filePath);
+		
+		if (use_cache && sentences != null) {
+			System.out.println("#!Cache-hit: " + filePath);
+		} else {
+			System.out.println("#!Cache-miss["+use_cache+"]: " + filePath);
+
+			String buf = FileUtils
+					.getFileAsString(new File("/tmp/" + filePath));
+			sentences = buf.split("\n\n");
+			if ( use_cache )
+				scache.put(filePath, sentences);
+		}
+		m_sentences = new Vector<Sentence>();
+		for (String sentence : sentences) {
+			m_sentences.add(new Sentence(sentence));
+		}
+		initMapOF();
+	}
 
     public Corpus(Vector<Sentence> sentences)
     {

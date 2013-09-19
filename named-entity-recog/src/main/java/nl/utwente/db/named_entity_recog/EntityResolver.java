@@ -44,7 +44,13 @@ import edu.stanford.nlp.util.CoreMap;
 public class EntityResolver
 {
 
-    public static boolean verbose = false;
+	/* 
+	 * For Mena:
+	 * - I Changed the GeoEntity selection for names.length > 2
+	 * I added a hashtag tokenizer to tokenize strings like #enschede
+	 */
+	
+    public static boolean verbose = true;
     public static boolean isTrained = false;
     private static final String CONFIG_FILENAME = "database.properties";
 
@@ -128,7 +134,7 @@ public class EntityResolver
     public static void main(String[] args)
     {
         // String TweetStr_nl = "Onderweg naar Enschede voor hopelijk een mooi feestje vanavond. #batavieren";
-        String TweetStr_nl = "Ik zit op de fiets van Enschede naar Almelo dwars door Hengelo denkend aan Nepal.";
+        String TweetStr_nl = "Ik zit op de fiets van Enschede naar Almelo dwars door Hengelo denkend aan #Nepal.";
         //String TweetStr = "Campuspop:Alle Batavieren kunnen morgen voor 16 Euro kaarten kopen voor Campuspop met Anouk, Candy Dulfer, Ben Saundersenz.#batavierenrace";
         //String TweetStr = "Niks te doen dit weekend? Festival GOGBOT in Enschede (Sciencefiction, technologie, #robots) http://www.fantasymedia.nl/content/festival-gogbot-2013-enschede-sciencefiction-technologie-robots?utm_source=twitterfeed&utm_medium=twitter … http://2013.gogbot.nl";
         String TweetStr_en = "Some pictures of our show in Enschede by Paul Bergers";
@@ -136,7 +142,7 @@ public class EntityResolver
 
         try
         {
-            resolveEntity(TweetStr_en, "en");
+            // resolveEntity(TweetStr_en, "en");
             resolveEntity(TweetStr_nl, "nl");
         }
         catch (SQLException e)
@@ -170,11 +176,11 @@ public class EntityResolver
         List<Token> TokenList = PrepareTestFile_StanfordTokenizer(TweetStr);
         // PrepareTestFile_JavaTokenizer(TweetStr);
         
-        Corpus train_corpus = new Corpus("crfTrain_"+lang.toLowerCase()+".txt");
+        Corpus train_corpus = new Corpus("crfTrain_"+lang.toLowerCase()+".txt",true);
         // System.out.println("#Training Sentences: " +
         // train_corpus.getNumSentences());
 
-        Corpus test_corpus = new Corpus("crfTest.txt");
+        Corpus test_corpus = new Corpus("crfTest.txt",false);
         // System.out.println("#Test Sentences: " +
         // test_corpus.getNumSentences());
 
@@ -182,27 +188,45 @@ public class EntityResolver
 
         List<NamedEntity> NEs = new Decoder(train_corpus, test_corpus, model).decode(TokenList, TweetStr);
 
+        if (true ) {
+        	int from = TweetStr.indexOf('#', 0);
+        	while ( from != -1 ) {
+        		int p = from + 1;
+        		
+        		while (p<TweetStr.length() && Character.isLetter(TweetStr.charAt(p)))
+        			p++;
+        		String ht = TweetStr.substring(from,p);
+        		if ( ht.length() > GeoEntity.minLength  )
+        			NEs.add(new NamedEntity(ht,"HashTag",from,0.0));
+        		from = TweetStr.indexOf('#', from+1);
+        	}
+        }
+        
         Vector<NamedEntity> res = new Vector<NamedEntity>();
         for (int i = 0; i < NEs.size(); i++)
         {
             NamedEntity entity = NEs.get(i);
 
-            PreparedStatement ps = geonames_conn.prepareStatement("select name,latitude,longitude,country,alternatenames,population,elevation,fclass from geoname where lower(name) = ?;");
-            String candidate = entity.getMention().toLowerCase();
-            ps.setString(1, candidate);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next())
-            {
-                GeoEntity ge = new GeoEntity(entity, rs.getDouble("latitude"),
-                        rs.getDouble("longitude"), rs.getString("country"),
-                        rs.getString("alternatenames"),
-                        rs.getInt("population"), rs.getInt("elevation"),
-                        rs.getString("fclass"));
-                if (verbose)
-                {
-                    System.out.println("RESOLVED[" + ge + "]");
-                }
-            }
+			if (entity.getName().length() >= GeoEntity.minLength) { // lots of false places with 2 letters in tweets
+				PreparedStatement ps = geonames_conn
+						.prepareStatement("select name,latitude,longitude,country,alternatenames,population,elevation,fclass from geoname where lower(name) = ?;");
+				String candidate = entity.getMention().toLowerCase();
+				if ( candidate.startsWith("#") )
+					candidate = candidate.substring(1);
+				ps.setString(1, candidate);
+				ResultSet rs = ps.executeQuery();
+				while (rs.next()) {
+					GeoEntity ge = new GeoEntity(entity,
+							rs.getDouble("latitude"),
+							rs.getDouble("longitude"), rs.getString("country"),
+							rs.getString("alternatenames"),
+							rs.getInt("population"), rs.getInt("elevation"),
+							rs.getString("fclass"));
+					if (verbose) {
+						System.out.println("RESOLVED[" + ge + "]");
+					}
+				}
+			}
 
             if (entity.isResolved())
             {
@@ -239,15 +263,6 @@ public class EntityResolver
                 tagIndex=3;
             }
             String PathTarget = "/tmp/" + "crfTrain_"+lang.toLowerCase()+".txt";
-
-//            ClassLoader classLoader = new Global().getClass().getClassLoader();
-//            URL url = classLoader.getResource(PathSource);
-//            if (url == null)
-//            {
-//                throw new RuntimeException("Global:readFile: unable to locate resource: " + PathSource);
-//            }
-//            InputStreamReader isr = new InputStreamReader(new FileInputStream(url.getFile()), "UTF-8");
-//            BufferedReader bufferedReader = new BufferedReader(isr);
 
             InputStream is = null;
             String trainfile = null;

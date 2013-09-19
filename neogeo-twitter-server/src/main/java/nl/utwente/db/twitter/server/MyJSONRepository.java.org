@@ -1,4 +1,4 @@
-package nl.utwente.db.neogeo.twitter;
+package nl.utwente.db.twitter.server;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -13,10 +13,10 @@ import org.json.simple.parser.ParseException;
 
 public class MyJSONRepository {
 	
-	private static boolean debug = false;
+	private static boolean debug = false; 
 
 	@SuppressWarnings("rawtypes")
-	private Map topJSONMap = null;
+	public Map topJSONMap = null;
 
 	@SuppressWarnings("rawtypes")
 	public MyJSONRepository(Map topJSONMap) {
@@ -31,6 +31,17 @@ public class MyJSONRepository {
 		return null;
 	}
 
+	public String getStringPath(String tag1) throws ParseException {
+		Object res = topJSONMap.get(tag1);
+
+		if (res != null)
+			return res.toString();
+		else {
+			System.err.println("#!ERROR: JSON field \""+tag1+"\" missing");
+			throw new ParseException(2);
+		}
+	}
+	
 	@SuppressWarnings("rawtypes")
 	public Object getPath(String tag1, String tag2) {
 		Object res = topJSONMap.get(tag1);
@@ -170,31 +181,25 @@ public class MyJSONRepository {
 	};
 
 	public static synchronized MyJSONRepository getRepository(
-			String json_encoded) {
-		try {
-			@SuppressWarnings("rawtypes")
-			Map json = (Map) parser.parse(json_encoded, containerFactory);
-			if (debug) {
-				System.out.println("JSON=" + json_encoded);
-				@SuppressWarnings("rawtypes")
-				Iterator iter = json.entrySet().iterator();
-				System.out.println("==JSON iterate result==");
-				while (iter.hasNext()) {
-					@SuppressWarnings("rawtypes")
-					Map.Entry entry = (Map.Entry) iter.next();
-					System.out
-							.println(entry.getKey() + "=>" + entry.getValue());
-				}
+			String json_encoded) throws ParseException {
 
-				System.out.println("==toJSONString()==");
-				System.out.println(JSONValue.toJSONString(json));
+		@SuppressWarnings("rawtypes")
+		Map json = (Map) parser.parse(json_encoded, containerFactory);
+		if (debug) {
+			System.out.println("JSON=" + json_encoded);
+			@SuppressWarnings("rawtypes")
+			Iterator iter = json.entrySet().iterator();
+			System.out.println("==JSON iterate result==");
+			while (iter.hasNext()) {
+				@SuppressWarnings("rawtypes")
+				Map.Entry entry = (Map.Entry) iter.next();
+				System.out.println(entry.getKey() + "=>" + entry.getValue());
 			}
-			return new MyJSONRepository(json);
-		} catch (ParseException pe) {
-			System.out.println("Caught: " + pe);
-			pe.printStackTrace(System.out);
+
+			System.out.println("==toJSONString()==");
+			System.out.println(JSONValue.toJSONString(json));
 		}
-		return null;
+		return new MyJSONRepository(json);
 	}
-	
+
 }

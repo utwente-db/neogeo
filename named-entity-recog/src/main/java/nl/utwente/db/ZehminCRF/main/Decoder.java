@@ -325,10 +325,10 @@ public class Decoder
         //OOF is not perfect. the joint feature is OOV but the partial feature may be not
         //fix it.
 
-        Corpus train_corpus = new Corpus(Global.g_desktop_windows + "CRFTrainingFile.txt");
+        Corpus train_corpus = new Corpus(Global.g_desktop_windows + "CRFTrainingFile.txt",false);
         System.out.println("#Training Sentences: " + train_corpus.getNumSentences());
 
-        Corpus test_corpus = new Corpus(Global.g_desktop_windows + "CRFTestFile.txt");
+        Corpus test_corpus = new Corpus(Global.g_desktop_windows + "CRFTestFile.txt",false);
         System.out.println("#Test Sentences: " + test_corpus.getNumSentences());
 
 
