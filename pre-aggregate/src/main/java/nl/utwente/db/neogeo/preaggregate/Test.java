@@ -68,7 +68,7 @@ public class Test {
 		Test t = new Test();
 		t.readProperties();
 		Connection connection = t.getConnection();
-		runTest2( connection );
+		runTest_nominal( connection );
 	}
 
 	public static void runTest(Connection c) throws Exception {
@@ -183,9 +183,6 @@ public class Test {
 			rs.close();
 
 
-
-
-
 			// GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "london_hav_neogeo", "myAggregate");
 			//
 			// pa.boxQuery("count",0.18471,51.60626,0.23073,51.55534); // in the middle of havering map *correction anomaly
@@ -223,11 +220,9 @@ public class Test {
 			// new TweetConverter("/Users/flokstra/twitter_sm.db",c,"public","london_hav");
 			// new TweetConverter("/Users/flokstra/uk_raw.sql",c,"public","uk");
 			//
-			
-			//System.exit(0);
 
-			GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "uk_neogeo", "xx_neogeo_pa", "myAggregate", "coordinates",-1,200000,null);
-			//GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "london_hav_neogeo", "myAggregate");
+			GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "london_hav_neogeo", null, "myAggregate", "coordinates",-1,200000,null);
+			// GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "london_hav_neogeo", "myAggregate");
 			//
 			// pa.boxQuery("count",0.18471,51.60626,0.23073,51.55534); // in the middle of havering map *correction anomaly
 			// pa.boxQuery("count",-0.058,51.59,0.095,51.483); // left of havering, few tweets
@@ -238,6 +233,8 @@ public class Test {
 
 			// pa.boxQuery3d("count",-0.058,51.58961,0.095,51.48287,new Timestamp(1319000000000L), new Timestamp(1319900000000L)); // left of havering, few tweets
 			// pa.boxQuery3d("count",0.18471,51.60626,0.23073,51.55534,new Timestamp(1319000000000L), new Timestamp(1319900000000L)); // in the middle of havering map *correction anomaly
+
+			pa.boxQuery("count",-0.058,51.59,0.095,51.483); // left of havering, few tweets
 
 			System.exit(0);
 			
@@ -296,6 +293,34 @@ public class Test {
 		double grid_deltaX = 0.25;
 		System.out.println("ORG="+(startX + (pos[0]+1)*grid_deltaX) );
 		System.out.println("NEW="+(startX + ((double)(pos[0]+1))*grid_deltaX) );
+	}
+	
+	public static void runTest_nominal(Connection c) throws Exception {
+		try {
+			String wordlist = "car,banker,health,ball";
+			NominalGeoTaggedTweetAggregate pa = new NominalGeoTaggedTweetAggregate(c, wordlist, "public", "london_hav_neogeo", null, "myAggregate", "coordinates",-1,200000,null);
+			// GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "london_hav_neogeo", "myAggregate");
+			//
+			// pa.boxQuery("count",0.18471,51.60626,0.23073,51.55534); // in the middle of havering map *correction anomaly
+			// pa.boxQuery("count",-0.058,51.59,0.095,51.483); // left of havering, few tweets
+			// pa.boxQuery("count",-0.058,51.58961,0.095,51.48287); // left of havering, few tweets
+			
+			// pa.boxQuery("count",-0.38326,51.62780,0.14554,51.39572); // a big london query
+			// pa.boxQuery("count",-8.4,60,1.9,49); // the entire UK query
+
+			// pa.boxQuery3d("count",-0.058,51.58961,0.095,51.48287,new Timestamp(1319000000000L), new Timestamp(1319900000000L)); // left of havering, few tweets
+			// pa.boxQuery3d("count",0.18471,51.60626,0.23073,51.55534,new Timestamp(1319000000000L), new Timestamp(1319900000000L)); // in the middle of havering map *correction anomaly
+
+			// pa.boxQuery_word("count",-0.058,51.59,0.095,51.483,"banker"); // left of havering, few tweets
+			pa.boxQuery_word("count",0.14,51.627,0.313,51.403,"banker"); // big london query
+			// System.exit(0);
+
+			c.close();
+		} catch (SQLException e) {
+			System.out.println("Caught: " + e);
+			e.printStackTrace(System.out);
+		}
+		System.out.println("#!finished");
 	}
 	
 }

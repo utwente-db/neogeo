@@ -157,7 +157,8 @@ public class Tweet {
 
 	public String coordinatesValue() {
 		Object lo =  jrep.getPath("coordinates", "coordinates");
-		
+		if ( lo == null )
+			lo = jrep.getPath("geo", "coordinates");
 		if ( lo != null && lo instanceof List ) {
 			@SuppressWarnings("rawtypes")
 			List l = (List)lo;
@@ -171,6 +172,69 @@ public class Tweet {
 
 		} else
 			return null;
+	}
+	public String centre_place_bbox() {
+		Object lo = jrep.getPath("place","bounding_box","coordinates");
+		
+		if ( lo != null && lo instanceof LinkedList ) {
+			@SuppressWarnings("rawtypes")
+			List l = (List)((LinkedList)lo).get(0);
+			
+			if ( l.size() == 4) {
+				// so it must be a proper bounding box
+				StringBuffer res  = new StringBuffer();
+				res.append("LINESTRING(");
+				
+				double dc1, dc2, df1, df2;
+				dc1 = dc2= df1 = df2 = -1;
+				double av_dc1 = 0;
+				double av_dc2 = 0;
+				for(int i=0; i<4; i++) {
+					@SuppressWarnings("rawtypes")
+					List pi = (List)l.get(i);
+					
+					dc1 = MyJSONRepository.obj2double(pi.get(0));
+					dc2 = MyJSONRepository.obj2double(pi.get(1));
+					
+					av_dc1 += dc1;
+					av_dc2 += dc2;
+					
+					if ( i == 0 ) {
+						df1 = dc1;
+						df2 = dc2;
+					} else 
+						res.append(",");
+					res.append(dc1);
+					res.append(" ");
+					res.append(dc2);
+					if ( i == 3 ) {
+						if ( !(dc1==df1 && dc2==df2) ) {
+							// close the polygon
+							res.append(",");
+							res.append(df1);
+							res.append(" ");
+							res.append(df2);
+						}
+							
+					}
+				}
+				res.append(")");
+				// System.out.println("RAW="+jrep.getPath("place"));
+				// System.out.println("PLACE="+res);
+				// return res.toString();
+				av_dc1 /= 4;
+				av_dc2 /= 4;
+				res = new StringBuffer();
+				res.append("POINT(");
+				res.append(av_dc1);
+				res.append(" ");
+				res.append(av_dc2);
+				res.append(")");
+				return res.toString();
+			}
+		}
+		throw new RuntimeException("UNEXPECTED EMPTY BBOX FOR PLACE");
+		// return null;
 	}
 	
 	public String place_bbox() {

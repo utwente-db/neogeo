@@ -1056,7 +1056,7 @@ public class PreAggregate {
 		}
 		long direct_result = -1;
 		long pg_direct_time_ms = -1;
-		if ( true && useDirect ) {
+		if ( useDirect ) {
 			String daggr = "x"; 
 			if ( aggr.equals("count") )
 				daggr = "count(*)";
@@ -1091,9 +1091,6 @@ public class PreAggregate {
 
 		// kd.switchSubindexOff();
 
-		Vector<AggrKey> resKeys;
-		resKeys = computePaCells(kd,ranges,axis);
-
 		String sqlaggr;
 		if ( aggr.equals("count") )
 			sqlaggr = "sum(countAggr)";
@@ -1108,7 +1105,7 @@ public class PreAggregate {
 		StringBuffer qb = new StringBuffer("SELECT "+sqlaggr+" FROM "+schema+"."+table+PA_EXTENSION);
 		System.out.println("$ pa-command = "+range_paGridQuery(ranges));
 		long internalCount = 0;
-		if ( true && serversideStairwalk ) {
+		if ( serversideStairwalk ) {
 			// use Postgres internal pacells2d function
 			String pa_grid_str;
 
@@ -1119,6 +1116,9 @@ public class PreAggregate {
 			qb.append(" WHERE ckey=pakey");
 
 		} else {
+			Vector<AggrKey> resKeys;
+			resKeys = computePaCells(kd,ranges,axis);
+			
 			System.out.println("#!create WHERE {ckey=v} query: #keys="+resKeys.size());
 			qb.append(" WHERE ");
 			for (i = 0; i < resKeys.size(); i++) {
@@ -1137,7 +1137,7 @@ public class PreAggregate {
 			System.out.println("# answer = "+result+", time = "+pg_time_ms+"ms");
 			//
 			if ( correction_stat != null ) {
-				// System.out.println("# corr query= " + correction_stat);
+				System.out.println("# corr query= " + correction_stat);
 				pg_time_ms = new Date().getTime();
 				ResultSet rs = correction_stat.executeQuery();
 				if ( !rs.next() )
@@ -1148,7 +1148,7 @@ public class PreAggregate {
 			}
 		}
 		if (true) {
-			System.out.println("# schema="+schema+", table="+table+", Dqres="+resKeys.size());
+			System.out.println("# schema="+schema+", table="+table);
 			System.out.print("# main answer="+result);
 			if ( correction_stat != null )
 				System.out.print(", corrected answer="+(result + correction));
@@ -1221,9 +1221,11 @@ public class PreAggregate {
 
 	private static boolean qverbose = false;
 
-	public static final boolean sw_verbose = false;
+	public static final boolean sw_verbose = true;
 	
 	private static final Vector<Long> stairwalk(int from, int to, int N) {
+		if ( sw_verbose )
+			System.out.println("- stairwalk(from="+from+",to="+to+",N="+N+")");
 		Vector<Long> res = new Vector<Long>();
 		to++; // last step must be to 1 beyond upper bound
 		short level = 0;
@@ -1268,7 +1270,7 @@ public class PreAggregate {
 				}
 			}
 		}
-		if ( sw_verbose ) {
+		if ( true ) {
 			System.out.println("# do stairwalk(from="+from+",to="+(to-1)+",N="+N+") = {");
 			for(int i=0; i<res.size(); i++)
 				System.out.println("\t"+li_toString(res.elementAt(i).longValue()));
@@ -1304,7 +1306,6 @@ public class PreAggregate {
 			throw new RuntimeException("Dimensions for grid_paQuery wrong");
 		StringBuffer sb = new StringBuffer();
 		sb.append("#G|"+kd.kind()+"|");
-		// sb.append((kd.isSubindexed()?"T":"F")+"|");
 		sb.append(kd.levelBits+"|");
 		sb.append(kd.dimensions()+"|");
 		for(int i=0; i<swgc.length; i++) {
@@ -1407,14 +1408,22 @@ public class PreAggregate {
 				" WHERE tableName=\'"+tableName+"\' AND label=\'"+label+"\';"
 		);
 		while( rsi.next() ) {
-			read_axis[rsi.getInt(1)] = new MetricAxis(
-					rsi.getString(2),
-					rsi.getString(3),
-					rsi.getString(4),
-					rsi.getString(5),
-					rsi.getString(6),
-					(short)rsi.getInt(7)
-			);
+			int rsi_i = rsi.getInt(1);
+			String rsi_column = rsi.getString(2);
+			String rsi_type = rsi.getString(3);
+			String rsi_low = rsi.getString(4);
+			String rsi_high = rsi.getString(5);
+			String rsi_BBS = rsi.getString(6);
+			short rsi_N = (short)rsi.getInt(7);
+				
+			if (rsi_type.equals("nominal"))
+				if ( rsi_low.equals(NominalAxis.WORDLISTNOMINAL) )
+					read_axis[rsi_i] = new NominalAxis(null,rsi_column,rsi_high);
+				else
+					read_axis[rsi_i] = new NominalAxis(rsi_column,Integer.parseInt(rsi_low), Integer.parseInt(rsi_high));
+			else
+				read_axis[rsi_i] = new MetricAxis(rsi_column, rsi_type,
+						rsi_low, rsi_high, rsi_BBS, rsi_N);
 		}
 		for (int i=0; i<dimensions; i++) {
 			if ( read_axis[i] == null )
@@ -1471,24 +1480,26 @@ public class PreAggregate {
 		ps.setInt(7,aggregateMask);
 		ps.setInt(8, (int)cnt);
 		for (int i = 0; i < axis.length; i++) {
+			psi.setString(1, tableName);
+			psi.setString(2, label);
+			psi.setInt(3, i);
+			psi.setString(4, axis[i].columnExpression());
+			psi.setString(5, axis[i].type());
 			if (axis[i].isMetric()) {
 				MetricAxis metric = (MetricAxis) axis[i];
-
-				psi.setString(1, tableName);
-				psi.setString(2, label);
-				psi.setInt(3, i);
-				psi.setString(4, metric.columnExpression());
-				psi.setString(5, metric.type());
 				psi.setString(6, metric.storageFormat(metric.low()));
 				psi.setString(7, metric.storageFormat(metric.high()));
 				psi.setString(8, metric.BASEBLOCKSIZE().toString());
-				psi.setInt(9, metric.N());
-				psi.setInt(10, metric.maxLevels());
-				psi.setInt(11, metric.bits());
-				psi.execute();
 			} else {
-				throw new RuntimeException("Unexpected");
+				NominalAxis nominal = (NominalAxis) axis[i];
+				psi.setString(6, nominal.storageFormat(nominal.fromFIELDstore()));
+				psi.setString(7, nominal.storageFormat(nominal.toFIELDstore()));
+				psi.setString(8, "");
 			}
+			psi.setInt(9, axis[i].N());
+			psi.setInt(10, axis[i].maxLevels());
+			psi.setInt(11, axis[i].bits());
+			psi.execute();
 		}
 		ps.execute();
 	}

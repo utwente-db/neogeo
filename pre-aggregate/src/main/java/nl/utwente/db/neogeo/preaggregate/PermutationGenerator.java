@@ -37,16 +37,24 @@ public class PermutationGenerator {
 	
 	int permutation[] = null;
 	int curDim = -1;
-	
+	boolean end_of_p = true;
+
 	public void start() {
-		permutation = new int[dimensions];
-		for(int i=0; i<dimensions; i++)
-			permutation[i] = range_low[i];
-		curDim = dimensions - 1;
-		permutation[curDim]--;
+		if (cardinality() > 0) {
+			permutation = new int[dimensions];
+			for (int i = 0; i < dimensions; i++)
+				permutation[i] = range_low[i];
+			curDim = dimensions - 1;
+			permutation[curDim]--;
+			end_of_p = false;
+		} else {
+			end_of_p = true;
+		}
 	}
 	
 	public boolean next() {
+		if ( end_of_p )
+			return false;
 		if ( ++permutation[curDim] >= range_high[curDim] ) {
 			while ( curDim >0 ) {
 				permutation[curDim] = range_low[curDim];
@@ -59,6 +67,7 @@ public class PermutationGenerator {
 			} 
 			permutation = null;
 			curDim = -1;
+			end_of_p = true;
 			return false;
 		}
 		return true;

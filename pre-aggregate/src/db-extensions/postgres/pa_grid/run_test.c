@@ -10,7 +10,7 @@
 #define MYDEBUG 1
 
 #ifdef MYDEBUG
-#define QVERBOSE 0
+#define QVERBOSE 1
 #endif
 
 #include "pa_grid.template"
@@ -37,7 +37,9 @@ int main() {
   testmulti = 1;
   for(i=0; i<testmulti; i++) {
     pa_grid* grid = create_pa_grid(
-	"#G|X|3|2|4,10,61,153,10|4,9,154,108,10|public.london_hav_neogeo|public.london_hav_neogeo_btree|"
+	// "#G|X|3|2|4,10,62,152,1|4,9,156,106,1|public.london_hav_neogeo|public.london_hav_neogeo_btree|"
+        "#G|X|3|3|4,10,62,152,1|4,9,156,106,1|7,4,2,1,1|public.london_hav_neogeo|public.london_hav_neogeo_btree|"
+	// "#G|X|3|2|4,10,61,153,10|4,9,154,108,10|public.london_hav_neogeo|public.london_hav_neogeo_btree|"
 	// "#G|X|3|2|4,10,-180,40,20|4,9,-127,30,20|public.london_hav_neogeo|public.london_hav_neogeo_btree|"
 	);
     fprintf(stdout,"+ GRID Result={\n");

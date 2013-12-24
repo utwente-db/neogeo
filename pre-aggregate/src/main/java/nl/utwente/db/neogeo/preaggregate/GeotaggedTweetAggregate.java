@@ -22,12 +22,12 @@ public class GeotaggedTweetAggregate extends PreAggregate {
 	/*  constructor which (re)creates the aggregate */
 	public GeotaggedTweetAggregate(Connection c, String schema, String table, String override_name, String label, String point_column, int axisToSplit, long chunkSize, Object[][] newRange)
 		throws SQLException {
+		AggregateAxis x_axis = new MetricAxis("ST_X("+point_column+")","double",""+DFLT_BASEBOXSIZE,DFLT_N);
+		AggregateAxis y_axis = new MetricAxis("ST_Y("+point_column+")","double",""+DFLT_BASEBOXSIZE,DFLT_N);
 		AggregateAxis axis[] = {
-				new MetricAxis("ST_X("+point_column+")","double",""+DFLT_BASEBOXSIZE,DFLT_N),
-				// new AggregateAxis("ST_X("+point_column+")","double","-0.119","0.448",""+DFLT_BASEBOXSIZE,DFLT_N),
-				new MetricAxis("ST_Y("+point_column+")","double",""+DFLT_BASEBOXSIZE,DFLT_N)
-			    //, new MetricAxis("time","timestamp with time zone","3600000" /*=1 hour*/,DFLT_N)
-			};
+			x_axis, 
+			y_axis
+		};
 		createPreAggregate(c,schema,table,override_name, label,axis,"char_length(tweet)","bigint",AGGR_ALL,axisToSplit,chunkSize,newRange);
 	}
 	
@@ -77,6 +77,17 @@ public class GeotaggedTweetAggregate extends PreAggregate {
 		ranges[1][1] = new Double(Math.max(y1,y2));
 		ranges[2][0] = z1;
 		ranges[2][1] = z2;
+		return query(aggr,ranges);
+	}
+	
+	public long boxQuery_nom(String aggr, double x1, double y1, double x2, double y2, int nv) throws SQLException {		
+		Object ranges[][] = new Object[3][2];
+		ranges[0][0] = new Double(Math.min(x1,x2));
+		ranges[0][1] = new Double(Math.max(x1,x2));
+		ranges[1][0] = new Double(Math.min(y1,y2));
+		ranges[1][1] = new Double(Math.max(y1,y2));
+		ranges[2][0] = nv;
+		ranges[2][1] = nv+1;
 		return query(aggr,ranges);
 	}
 	

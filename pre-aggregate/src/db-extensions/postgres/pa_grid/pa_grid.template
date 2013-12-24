@@ -386,6 +386,16 @@ static void copyK(Ktype* Kto, Ktype* Kfrom) {
     }
 }
 
+static void printK(Ktype* K) {
+    int i;
+
+    fprintf(stdout,"K[");
+    for(i=0; i<MAX_DIMENSION; i++) {
+    	fprintf(stdout,"l[%d]=%d ", K->l[i],K->i[i]);
+    }
+    fprintf(stdout,"]");
+}
+
 #define KD_REGULAR_LONG        'L'
 #define KD_BYTE_STRING         'B'
 #define KD_CROSSPRODUCT_LONG   'X'
@@ -429,6 +439,7 @@ static void release_K(pa_grid* grid, Ktype *K) {
      default:
        fprintf(stdout,"#! UNEXPECTED keyFlag\n");
     }
+    // printK(K); fprintf(stdout," = %ld\n",keyValue);
     add2VectorLong(grid->stw_res, keyValue);
 }
 

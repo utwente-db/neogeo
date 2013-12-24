@@ -25,4 +25,4 @@ run_test: run_test.c
 new: clean install sql
 
 backup:
-	(cd ..;tar cvf - $(MODULES) | gzip > ~/$(MODULES).tar.gz; scp ~/$(MODULES).tar.gz silo3.ewi.utwente.nl:/local/flokstra/PostgresC)
+	(cd ..;tar cvf - $(MODULES) | gzip > ~/$(MODULES).tar.gz; scp ~/$(MODULES).tar.gz silo2.ewi.utwente.nl:/local/flokstra/PostgresC)

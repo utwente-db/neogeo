@@ -18,6 +18,8 @@ import oauth.signpost.basic.DefaultOAuthConsumer;
 
 public class TwitterHarvester {
 
+	private static final boolean useDB = true;
+	
 	private static final String CONFIG_FILENAME = "data_machine.properties";
 	static final String uk_coordinates = "-11.887207,50.021858,2.197266,59.040555";
 	static final String nl_coordinates = "3.361816,51.316881,7.229004,53.291489";
@@ -87,30 +89,20 @@ public static void tweetFilter(String country) {
 			// connection to the server
 			conn = (HttpsURLConnection) url.openConnection();
 			consumer.sign(conn);
-			// set the HTTP method
+			//
 			conn.setRequestMethod("GET");
-			// send data
 			conn.setReadTimeout(1000000);
-			//conn.setDoOutput(true);
-			/*OutputStreamWriter wr = new OutputStreamWriter(
-					conn.getOutputStream());
-			String data = null;
-			if (country.equals("uk"))
-				data = URLEncoder.encode("locations", "UTF-8") + "="
-						+ URLEncoder.encode(uk_coordinates, "UTF-8");
-			else if (country.equals("nl"))
-				data = URLEncoder.encode("locations", "UTF-8") + "="
-						+ URLEncoder.encode(nl_coordinates, "UTF-8");
-
-			wr.write(data);
-			wr.flush();*/
-			// read the result returned from the server
+			//
 			rd = new BufferedReader(
 					new InputStreamReader(conn.getInputStream()));
-			TwitterDatabase db = new TwitterDatabase(DbConnection.connector.getConnection());
+			TwitterDatabase db = null;
+			if ( useDB )
+				db = new TwitterDatabase(DbConnection.connector.getConnection());
 			String line = null;
 			while ((line = rd.readLine()) != null) {
-				db.addTweet(line);
+				if ( useDB )
+					db.addTweet(line);
+				// System.out.println("READ: "+line);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

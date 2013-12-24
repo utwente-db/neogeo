@@ -508,6 +508,7 @@ public class  TimestampAxisIndexer implements AxisIndexer {
 	private AxisIndexer	indexer = null;
 	private Object 		BASEBLOCKSIZE;
 	private short		N;
+	private String		type = null;
 	
 	public MetricAxis(
 			String	columnExpression,
@@ -525,9 +526,10 @@ public class  TimestampAxisIndexer implements AxisIndexer {
 			String	type,
 			Object	BASEBLOCKSIZE,
 			short	N) {
-		super(columnExpression, type);
+		super(columnExpression);
 		this.BASEBLOCKSIZE		= BASEBLOCKSIZE;
 		this.N					= N;
+		this.type				= type;
 	}
 	
 	public MetricAxis(
@@ -539,7 +541,11 @@ public class  TimestampAxisIndexer implements AxisIndexer {
 	public boolean isMetric() {
 		return true;
 	}
-	
+
+	public String type() {
+		return this.type;
+	}
+
 	public void setRangeValues(Object low,Object high) {
 		if ( this.BASEBLOCKSIZE == null )
 			throw new RuntimeException("AggregateAxis: BASEBLOCKSIZE undefined");

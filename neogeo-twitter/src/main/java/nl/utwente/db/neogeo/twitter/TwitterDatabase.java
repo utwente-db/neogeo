@@ -19,7 +19,7 @@ public class TwitterDatabase {
 	private int count = 0, no_coord = 0, skipped = 0;
 	private String liveSize = "1 hour";
 	// private String liveSize = "2 hours";
-	private long lastLiveDelete;
+	private long lastLiveDelete = 0;
 	private static long deltaLiveDelete = 5 * 60 * 1000; // 5 minutes
 	
 	TwitterDatabase(Connection c) throws SQLException {
@@ -30,7 +30,7 @@ public class TwitterDatabase {
 		checkTweetTable(schema,live_table);
 		createInsertStatements();
 		//
-		lastLiveDelete = System.currentTimeMillis();
+		// lastLiveDelete = System.currentTimeMillis();
 		// 
 		logMessage("Harvester started.");
 	}
@@ -39,7 +39,6 @@ public class TwitterDatabase {
 		long delta = System.currentTimeMillis() - lastLiveDelete;
 		if ( delta > deltaLiveDelete ) {
 			String sql = "DELETE FROM " + schema + "." + live_table + " WHERE time < (CURRENT_TIMESTAMP - interval \'"+liveSize+"\');";
-			// System.out.println(sql);
 			SqlUtils.executeNORES(c, sql);
 			lastLiveDelete = System.currentTimeMillis();
 		}
@@ -50,6 +49,10 @@ public class TwitterDatabase {
 			Tweet t = null;
 			
 			try {
+				if ( json.length() == 0 ) {
+					logMessage("SKIPPING EMPTY[]:");
+					return;
+				}
 				t = new Tweet(json);
 			} catch (Exception e) {
 				logMessage("SKIPPING["+e+"]:"+json);
@@ -60,7 +63,12 @@ public class TwitterDatabase {
 				System.out.println( t.id() + " = " + t.text());
 			insertRawTuple(t.id(),t.getJson());
 			String coord = t.coordinatesValue();
-			PreparedStatement stat = (coord==null)?live_stat_null:live_stat;
+			if ( coord == null ) {
+				coord = t.centre_place_bbox();
+//				if ( coord != null )
+//					System.out.println("#! CENTRE-COORD: "+coord);
+			}
+			// PreparedStatement stat = (coord==null)?live_stat_null:live_stat;
 			if ( coord != null ) { // incomplete, check?
 				insertTweetTuple(
 					live_stat,
@@ -84,8 +92,10 @@ public class TwitterDatabase {
 					coord,
 					t.in_reply_to_status_id()
 				);
-			} else
+			} else {
 				no_coord++;
+				System.out.println("#! NO-COORD: "+t.getJson());
+			}
 			checkLiveDelete();
 			//
 			if ( (++count % 10000) == 0 )
