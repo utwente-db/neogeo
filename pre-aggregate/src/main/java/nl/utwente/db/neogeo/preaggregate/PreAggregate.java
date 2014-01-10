@@ -167,7 +167,7 @@ public class PreAggregate {
 	protected void createPreAggregate(Connection c, String schema,
 			String table, String override_name, String label, AggregateAxis axis[],
 			String aggregateColumn, String aggregateType, int aggregateMask, 
-			int i_axisToSplit, long chunkSize, Object[][] newRange) throws SQLException {
+			int i_axisToSplit, long chunkSize, Object[][] DELnewRange) throws SQLException {
 		int i;
 		String dimTable[]	 = new String[axis.length];
 

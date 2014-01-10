@@ -1,7 +1,5 @@
 package org.geotools.data.aggregation;
 
-import java.awt.RenderingHints;
-import java.io.File;
 import java.io.IOException;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -10,7 +8,8 @@ import java.util.logging.Logger;
 
 import nl.utwente.db.neogeo.preaggregate.PreAggregate;
 
-import org.geotools.data.*;
+import org.geotools.data.DataStore;
+import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.util.KVP;
 
 // Referenced classes of package org.geotools.data.aggregation:

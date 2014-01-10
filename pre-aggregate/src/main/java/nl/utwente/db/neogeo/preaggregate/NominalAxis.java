@@ -216,7 +216,7 @@ public class NominalAxis extends AggregateAxis {
 		sql.append("\nSELECT "+org_table+".*, "+wl_table+".wordid "+"AS "+columnExpression()+"\nINTO "+new_table+"\nFROM "+org_table+", "+wl_table +
 					"\nWHERE strpos(lower("+org_table+"."+word_collection_column+"),"+wl_table+"."+"word)>0;\n");
 		sql.append("\nDROP TABLE IF EXISTS "+wl_table+";\n");
-		// System.out.println(sql);
+		System.out.println(sql);
 		SqlUtils.executeSCRIPT(c, sql.toString());
 	}
 

@@ -15,11 +15,11 @@ import java.util.logging.Logger;
 
 import nl.utwente.db.neogeo.preaggregate.AggregateAxis;
 import nl.utwente.db.neogeo.preaggregate.MetricAxis;
-import nl.utwente.db.neogeo.preaggregate.SqlUtils;
 import nl.utwente.db.neogeo.preaggregate.MetricAxis.DoubleAxisIndexer;
 import nl.utwente.db.neogeo.preaggregate.MetricAxis.IntegerAxisIndexer;
 import nl.utwente.db.neogeo.preaggregate.MetricAxis.LongAxisIndexer;
 import nl.utwente.db.neogeo.preaggregate.MetricAxis.TimestampAxisIndexer;
+import nl.utwente.db.neogeo.preaggregate.SqlUtils;
 
 import org.geotools.data.store.ContentEntry;
 import org.geotools.referencing.CRS;

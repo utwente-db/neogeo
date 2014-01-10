@@ -304,7 +304,7 @@ function update_date() {
 	OpenLayers.Util.getElement('endday').value + "T" +
 	OpenLayers.Util.getElement('endhour').value + ":" +
 	OpenLayers.Util.getElement('endminute').value + ":00.0Z";
-//	neogeo_uk_agg.mergeNewParams({'time':startstring+'/'+endstring});
+	neogeo_uk_agg.mergeNewParams({'time':startstring+'/'+endstring});
 	neogeo_uk.mergeNewParams({'time':startstring+'/'+endstring});
 }
 
@@ -318,6 +318,6 @@ function update_viewparams() {
 	if(query.checked){
 		viewparams = viewparams+";query:standard";
 	}
-//	neogeo_uk_agg.mergeNewParams({'viewparams':viewparams});
+	neogeo_uk_agg.mergeNewParams({'viewparams':viewparams});
 	neogeo_uk.mergeNewParams({'viewparams':viewparams});
 }

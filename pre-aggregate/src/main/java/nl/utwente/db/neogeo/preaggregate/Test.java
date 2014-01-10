@@ -68,9 +68,21 @@ public class Test {
 		Test t = new Test();
 		t.readProperties();
 		Connection connection = t.getConnection();
-		runTest_nominal( connection );
+		// runTest_nominal( connection );
+		setup_silo3( connection );
 	}
 
+	public static void setup_silo3(Connection c) throws Exception {
+		try {
+			System.out.println("Setting up silo3 again!");
+			GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "uk_neogeo", null, "myAggregate", "coordinates",1 /* axis 2 split*/,200000,null);
+			c.close();
+		} catch (SQLException e) {
+			System.out.println("Caught: " + e);
+			e.printStackTrace(System.out);
+		}
+		System.out.println("#!finished");
+	}
 	public static void runTest(Connection c) throws Exception {
 		try {
 			// new TweetConverter(c,"public","london_hav_raw",c,"public","london_hav");
@@ -221,7 +233,9 @@ public class Test {
 			// new TweetConverter("/Users/flokstra/uk_raw.sql",c,"public","uk");
 			//
 
-			GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "london_hav_neogeo", null, "myAggregate", "coordinates",-1,200000,null);
+			// GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "london_hav_neogeo", null, "myAggregate", "coordinates",0 /* axis 2 split*/,200000,null);
+			GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "nl_all", null, "myAggregate", "coordinates",1 /* axis 2 split*/,200000,null);
+
 			// GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "london_hav_neogeo", "myAggregate");
 			//
 			// pa.boxQuery("count",0.18471,51.60626,0.23073,51.55534); // in the middle of havering map *correction anomaly
@@ -234,8 +248,8 @@ public class Test {
 			// pa.boxQuery3d("count",-0.058,51.58961,0.095,51.48287,new Timestamp(1319000000000L), new Timestamp(1319900000000L)); // left of havering, few tweets
 			// pa.boxQuery3d("count",0.18471,51.60626,0.23073,51.55534,new Timestamp(1319000000000L), new Timestamp(1319900000000L)); // in the middle of havering map *correction anomaly
 
-			pa.boxQuery("count",-0.058,51.59,0.095,51.483); // left of havering, few tweets
-
+			// pa.boxQuery("count",-0.058,51.59,0.095,51.483); // left of havering, few tweets
+			pa.boxQuery("count",4.3, 51.8,4.6,52.1); // ergens bij rotterdam
 			System.exit(0);
 			
 			double vertcells = 70;
@@ -297,22 +311,79 @@ public class Test {
 	
 	public static void runTest_nominal(Connection c) throws Exception {
 		try {
-			String wordlist = "car,banker,health,ball";
-			NominalGeoTaggedTweetAggregate pa = new NominalGeoTaggedTweetAggregate(c, wordlist, "public", "london_hav_neogeo", null, "myAggregate", "coordinates",-1,200000,null);
-			// GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "london_hav_neogeo", "myAggregate");
-			//
-			// pa.boxQuery("count",0.18471,51.60626,0.23073,51.55534); // in the middle of havering map *correction anomaly
-			// pa.boxQuery("count",-0.058,51.59,0.095,51.483); // left of havering, few tweets
-			// pa.boxQuery("count",-0.058,51.58961,0.095,51.48287); // left of havering, few tweets
+			String wordlist = 
+				"klacht,"+
+				"hinder,"+
+				"stank,"+
+				"ruik,"+
+				"lucht,"+
+				"stinkt,"+
+				"meurt,"+
+				"smerig,"+
+				"geur,"+
+				"vies,"+
+				"vieze,"+
+				"ranzig,"+
+				"olie ,"+
+				"gist,"+
+				"chemisch,"+
+				"gas,"+
+				"stof,"+
+				"roet,"+
+				"korrels,"+
+				"deeltjes,"+
+				"poeder,"+
+				"lawaai,"+
+				"overlast,"+
+				"geluid,"+
+				"herrie,"+
+				"horeca,"+
+				"feest,"+
+				"evenement,"+
+				"knal,"+
+				"dreun,"+
+				"ontploffing,"+
+				"explosie,"+
+				"veiligheid,"+
+				"incident,"+
+				"gevaarlijk,"+
+				"ongeval,"+
+				"meting,"+
+				"grip,"+
+				"brand,"+
+				"fakkel,"+
+				"vuur,"+
+				"vlammen,"+
+				"rook,"+
+				"pluim,"+
+				"fik,"+
+				"alarm,"+
+				"sirene,"+
+				"maass,"+
+				"Europoort,"+
+				"Botlek,"+
+				"Pernis,"+
+				"Maasvlakte,"+
+				"Waalhaven,"+
+				"vlaard,"+
+				"briel,"+
+				"spijken,"+
+				"hoogvl,"+
+				"rozenb,"+
+				"westvoorne,"+
+				"schied,"+
+				"prikkel,"+
+				"branderig,"+
+				"storing,"+
+				"stroom"
+			;
+
+			// NominalGeoTaggedTweetAggregate pa = new NominalGeoTaggedTweetAggregate(c, wordlist, "public", "london_hav_neogeo", null, "myAggregate", "coordinates",-1,200000,null);
+			// NominalGeoTaggedTweetAggregate pa = new NominalGeoTaggedTweetAggregate(c, wordlist, "public", "nl_all", null, "myAggregate", "coordinates",1,200000,null);
+			NominalGeoTaggedTweetAggregate pa = new NominalGeoTaggedTweetAggregate(c,"public", "nl_all", "myAggregate");
 			
-			// pa.boxQuery("count",-0.38326,51.62780,0.14554,51.39572); // a big london query
-			// pa.boxQuery("count",-8.4,60,1.9,49); // the entire UK query
-
-			// pa.boxQuery3d("count",-0.058,51.58961,0.095,51.48287,new Timestamp(1319000000000L), new Timestamp(1319900000000L)); // left of havering, few tweets
-			// pa.boxQuery3d("count",0.18471,51.60626,0.23073,51.55534,new Timestamp(1319000000000L), new Timestamp(1319900000000L)); // in the middle of havering map *correction anomaly
-
 			// pa.boxQuery_word("count",-0.058,51.59,0.095,51.483,"banker"); // left of havering, few tweets
-			pa.boxQuery_word("count",0.14,51.627,0.313,51.403,"banker"); // big london query
+			pa.boxQuery_word("count",4.3, 51.8,4.6,52.1,"alarm"); // ergens bij rotterdam
 			// System.exit(0);
 
 			c.close();

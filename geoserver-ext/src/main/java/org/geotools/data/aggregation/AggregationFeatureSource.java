@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Vector;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -143,13 +144,10 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 	}
 
 	protected Area getReaderInternalGetFeatureInfo(Request req ) {
-		//LOGGER.severe("request context "+req.getRawKvp());
-
 		Map<String,Object> kvp = req.getKvp();
-		for(Entry<String,Object> e : kvp.entrySet()){
-			LOGGER.severe("kvp: key="+e.getKey()+"   value="+e.getValue().toString());
-		}
-		// key=BBOX   value=ReferencedEnvelope[0.14668148058431 : 0.273466415399465, 51.5469266059974 : 51.6177065420478]
+//		for(Entry<String,Object> e : kvp.entrySet()){
+//			LOGGER.severe("kvp: key="+e.getKey()+"   value="+e.getValue().toString());
+//		}
 		ReferencedEnvelope re = (ReferencedEnvelope) kvp.get("BBOX");
 		Envelope te = null;
 
@@ -189,23 +187,46 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 		Hints hint = query.getHints();
 
 		// viewparams are under the key VIRTUAL_TABLE_PARAMETERS
-		// format of the valye: key:value;k:v
+		// format of the valye: key:value;
 		// example: testkey:testvalue;secondtestkey:secondtestvalue
 		Map<String, String> values = null;
 		if(hint != null) {
+			// JF, params here?
+			LOGGER.severe("found hints");
+			if ( true ) {
+				for(Entry<Object, Object> e : hint.entrySet()){
+					LOGGER.severe("META hint entry: "+e.getKey()+"="+e.getValue());
+				}
+			}
 			values = (Map<String, String>) hint.get(Hints.VIRTUAL_TABLE_PARAMETERS);
 		}
 		if (values == null) {
 			values = Collections.emptyMap();
-		}
+			LOGGER.severe("found no hint values");
+		} else
+			LOGGER.severe("found hint values: " + values);	
+		
+		Vector<String> keywords = null;
+		
 		for(Entry<String, String> e : values.entrySet()){
+			String kw = e.getKey();
+			
+			if ( kw.toLowerCase().startsWith("keyword") ) {
+				String kv = e.getValue();
+				
+				if ( kv != null && (kv.length() > 0) ) {
+					LOGGER.severe("XXX FOUND KEYWORD: "+kv);
+					if ( keywords == null )
+						keywords = new Vector<String>();
+					keywords.add(kv);
+				}
+			}
 			LOGGER.severe("hint entry: "+e.getKey()+"="+e.getValue());
 		}
 		boolean pa_query = true;
 		if(values.containsKey("query") && values.get("query").equals("standard")){
 			pa_query = false;
 		}
-
 		LOGGER.severe("query properties: "+query.getProperties());
 		LOGGER.severe("extracting the bounding box of the request:");
 		LOGGER.severe("filter: "+query.getFilter().getClass().getCanonicalName());
@@ -223,6 +244,7 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 		LOGGER.severe("Parsed startTime:"+startTime+"    endTime:"+endTime);
 
 		Request req = Dispatcher.REQUEST.get();
+		
 		HttpServletRequest httpReq = req.getHttpRequest();
 		String ip = httpReq.getRemoteAddr();
 		ResultSet rs = null;
@@ -231,12 +253,11 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 		try {
 			Object[][] ret ;
 			String request = req.getRequest();
-			LOGGER.severe("request requets "+request);
 			// GetFeatureInfo
 			if("GetFeatureInfo".equals(req.getRequest())){
 				Area area = getReaderInternalGetFeatureInfo(req);
 				if(area== null) return null;
-				// INCOMPLETE, not working properly
+				// JF, QUERY HERE
 				ret = reformulateQuery(area,startTime,endTime, this.iv_count);
 				double startX = (Double) ret[0][0];
 				double grid_deltaX = ((Double)ret[0][1]) - startX;
@@ -364,6 +385,7 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 		return SCHEMA;
 	}
 
+	// JF INCOMPLETE, EXTEND WITH A wordlist
 	private Object[][] reformulateQuery(Area area, Timestamp start, Timestamp end, int[] iv_count) throws RuntimeException{
 		int i=0;
 		//int[] range = new int[agg.getAxis().length];
@@ -372,14 +394,20 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 			AxisSplitDimension dim = null;
 			LOGGER.severe("axis :"+a.columnExpression());
 			if(a==x) {
-				LOGGER.severe(area.getLowX()+"|"+ area.getHighX()+"|"+ iv_count[0]);
+				double lowx = Math.min(area.getLowX(),area.getHighX());
+				double highx = Math.max(area.getLowX(),area.getHighX());
+				
+				LOGGER.severe(lowx+"|"+highx+"|"+ iv_count[0]);
 				LOGGER.severe("processing axis x:"+a.columnExpression());
-				dim = a.splitAxis(area.getLowX(), area.getHighX(), iv_count[0]);
+				dim = a.splitAxis(lowx,highx, iv_count[0]);
 				i=0;
 			} else if(a==y) {
-				LOGGER.severe(area.getLowY()+"|"+ area.getHighY()+"|"+ iv_count[1]);
+				double lowy = Math.min(area.getLowY(),area.getHighY());
+				double highy = Math.max(area.getLowY(),area.getHighY());
+				
+				LOGGER.severe(lowy+"|"+highy+"|"+ iv_count[1]);
 				LOGGER.severe("processing axis y:"+a.columnExpression());
-				dim = a.splitAxis(area.getLowY(), area.getHighY(), iv_count[1]);
+				dim = a.splitAxis(lowy,highy,iv_count[1]);
 				i=1;
 			} else if(a==time) {
 				LOGGER.severe(start+"|"+ end+"|"+ iv_count[2]);

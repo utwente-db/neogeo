@@ -2,7 +2,6 @@ package org.geotools.data.aggregation;
 
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
