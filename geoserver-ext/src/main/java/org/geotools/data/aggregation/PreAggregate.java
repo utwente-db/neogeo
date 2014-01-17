@@ -19,6 +19,8 @@ import nl.utwente.db.neogeo.preaggregate.MetricAxis.DoubleAxisIndexer;
 import nl.utwente.db.neogeo.preaggregate.MetricAxis.IntegerAxisIndexer;
 import nl.utwente.db.neogeo.preaggregate.MetricAxis.LongAxisIndexer;
 import nl.utwente.db.neogeo.preaggregate.MetricAxis.TimestampAxisIndexer;
+import nl.utwente.db.neogeo.preaggregate.NominalAxis;
+import nl.utwente.db.neogeo.preaggregate.NominalGeoTaggedTweetAggregate;
 import nl.utwente.db.neogeo.preaggregate.SqlUtils;
 
 import org.geotools.data.store.ContentEntry;
@@ -31,7 +33,8 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 
 public class PreAggregate extends
-nl.utwente.db.neogeo.preaggregate.PreAggregate {
+nl.utwente.db.neogeo.preaggregate.NominalGeoTaggedTweetAggregate {
+	// NOMINALCHANGE
 	private static final Logger LOGGER = Logger.getLogger("org.geotools.data.aggregation.PreAggregate");
 	private static final String NAME = "aggregate";
 
@@ -47,21 +50,31 @@ nl.utwente.db.neogeo.preaggregate.PreAggregate {
 	private static final String GEOMETRY_COLUMN_QUERY = "SELECT tablename, substr(columnexpression,6,length(columnexpression)-6) FROM pre_aggregate_axis where tablename || '___' ||label=? and substr(columnexpression,1,4)='ST_X'";
 	//	private static final String BOUNDS_QUERY = "SELECT tablename, substr(columnexpression,1,4), low, high FROM pre_aggregate_axis where tablename || '___' ||label=? and substr(columnexpression,1,3)='ST_' order by columnexpression";
 
-	HashMap<String, MetricAxis> map = new HashMap<String, MetricAxis>();
+	HashMap<String, AggregateAxis> map = new HashMap<String, AggregateAxis>();
 
 	private int crsNumber = -1;
 
 
+	private static String detectNominal(String t) {
+		System.out.println("XXXXXXXXX detectNominal="+t);
+		if ( t.endsWith(NominalGeoTaggedTweetAggregate.NOMINAL_POSTFIX) ) {
+			t = t.replace(NominalGeoTaggedTweetAggregate.NOMINAL_POSTFIX,"");
+			System.out.println("XXXXXXXXX replace detectNominal="+t);
+		}
+		return t;
+	}
+	
 	public PreAggregate(Connection c, String schema, String table, String label) throws SQLException{
-		super(c,schema,table,label);
+		super(c,schema,detectNominal(table),label);
 		for(AggregateAxis a : axis){
 			if(a.columnExpression().startsWith("ST_X")){
-				map.put("x", (MetricAxis) a);
+				map.put("x", a);
 			} else if(a.columnExpression().startsWith("ST_Y")){
-				map.put("y", (MetricAxis) a);
+				map.put("y", a);
 			} else if(a.sqlType().equals(TimestampAxisIndexer.TYPE_EXPRESSION)){
-				map.put("time", (MetricAxis) a);	
-			}
+				map.put("time", a);	
+			} else if ( a instanceof NominalAxis )
+				map.put("nominal",a);
 		}
 	}
 
@@ -190,15 +203,19 @@ nl.utwente.db.neogeo.preaggregate.PreAggregate {
 	}
 
 	public MetricAxis getXaxis(){
-		return map.get("x");
+		return (MetricAxis)map.get("x");
 	}
 
 	public MetricAxis getYaxis(){
-		return map.get("y");
+		return (MetricAxis)map.get("y");
 	}
 
 	public MetricAxis getTimeAxis(){
-		return map.get("time");
+		return (MetricAxis)map.get("time");
+	}
+	
+	public NominalAxis getNominalAxis(){
+		return (NominalAxis)map.get("nominal");
 	}
 
 	public ResultSet StandardSQLQuery_grid(int queryAggregateMask, Object iv_first_obj[][], int iv_count[]) throws SQLException {

@@ -298,17 +298,17 @@ static VectorLong* bounds_check_stairwalk(pa_grid* grid, int dim, VectorLong *v,
     // fprintf(stdout,"#! Doing bounds_check_stairwalk[D=%d](%ld,%ld,%ld)\n",dim,from,to,N);
     if ( from > to ) {
        MYERROR("from > to");
-      // fprintf(stdout,"* skip, from > to\n");
+      // fprintf(stdout,"* bounds skip, from > to\n");
     }
     if ( from > grid->q.d[dim].maxRange ) {
       // cell totally out of bounds, code 2^n-1
-      // fprintf(stdout,"* skip: from(%d) > max(%d) \n",from,grid->q.d[dim].maxRange);
+      // fprintf(stdout,"* bounds skip: from(%d) > max(%d) \n",from,grid->q.d[dim].maxRange);
       return v;
     }
     if ( from < 0 ) {
       if ( to < 0 ) {
         // cell totally out of bounds, code 0
-        // fprintf(stdout,"* skip: [from,to] < 0\n");
+        // fprintf(stdout,"* bounds skip: [from,to] < 0\n");
 	return v;
       }
       // adjust from lo lowest poss value
@@ -455,6 +455,8 @@ static VectorLong* pacells_n(pa_grid* grid, int current_D[]) {
   VectorLong *steps;
   Ktype K;
 
+  resetVectorLong(grid->stw_res);
+  //
   pmut_init(&PG,grid->q.dimensions);
   for(i=0; i<grid->q.dimensions; i++) {
       int gp = current_D[i];
@@ -466,10 +468,12 @@ static VectorLong* pacells_n(pa_grid* grid, int current_D[]) {
     	  grid->q.d[i].start + (gp * grid->q.d[i].cellwidth),
     	  grid->q.d[i].start + ((gp+1) * grid->q.d[i].cellwidth),
     	  grid->q.d[i].N);
-      pmut_setRange(&PG,i,0,vector_sizeLong(steps));
+      if ( vector_sizeLong(steps) > 0 )
+      	pmut_setRange(&PG,i,0,vector_sizeLong(steps));
+      else 
+        return grid->stw_res;
   }
   //
-  resetVectorLong(grid->stw_res);
   pmut_start(&PG);
   while ( pmut_next(&PG) ) {
     resetK(&K);

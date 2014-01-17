@@ -68,8 +68,8 @@ public class Test {
 		Test t = new Test();
 		t.readProperties();
 		Connection connection = t.getConnection();
-		// runTest_nominal( connection );
-		setup_silo3( connection );
+		runTest_nominal( connection );
+		// setup_silo3( connection );
 	}
 
 	public static void setup_silo3(Connection c) throws Exception {
@@ -83,6 +83,7 @@ public class Test {
 		}
 		System.out.println("#!finished");
 	}
+	
 	public static void runTest(Connection c) throws Exception {
 		try {
 			// new TweetConverter(c,"public","london_hav_raw",c,"public","london_hav");
@@ -299,19 +300,20 @@ public class Test {
 
 	}
 	
-	public static void runTest4(Connection c) throws Exception {
-		int pos[] =  new int[1];
-		
-		pos[0] = 5;
-		double startX = 52.25;
-		double grid_deltaX = 0.25;
-		System.out.println("ORG="+(startX + (pos[0]+1)*grid_deltaX) );
-		System.out.println("NEW="+(startX + ((double)(pos[0]+1))*grid_deltaX) );
-	}
-	
 	public static void runTest_nominal(Connection c) throws Exception {
 		try {
+			String wordlist_eng = 
+				NominalAxis.ALL + "," +
+				"complain,"+
+				"alarm,"+
+				"smell,"+
+				"banker," +
+				"car," +
+				"stink"
+			;
+			
 			String wordlist = 
+				NominalAxis.ALL + "," +
 				"klacht,"+
 				"hinder,"+
 				"stank,"+
@@ -367,7 +369,6 @@ public class Test {
 				"Waalhaven,"+
 				"vlaard,"+
 				"briel,"+
-				"spijken,"+
 				"hoogvl,"+
 				"rozenb,"+
 				"westvoorne,"+
@@ -380,11 +381,13 @@ public class Test {
 
 			// NominalGeoTaggedTweetAggregate pa = new NominalGeoTaggedTweetAggregate(c, wordlist, "public", "london_hav_neogeo", null, "myAggregate", "coordinates",-1,200000,null);
 			// NominalGeoTaggedTweetAggregate pa = new NominalGeoTaggedTweetAggregate(c, wordlist, "public", "nl_all", null, "myAggregate", "coordinates",1,200000,null);
-			NominalGeoTaggedTweetAggregate pa = new NominalGeoTaggedTweetAggregate(c,"public", "nl_all", "myAggregate");
+			NominalGeoTaggedTweetAggregate pa = new NominalGeoTaggedTweetAggregate(c,"public", "uk_neogeo", "myAggregate");
+			// NominalGeoTaggedTweetAggregate pa = new NominalGeoTaggedTweetAggregate(c, wordlist_eng, "public", "uk_neogeo", null, "myAggregate", "coordinates",1,200000,null);
+
+			pa.boxQuery_word("count",-0.058,51.59,0.095,51.483,"alarm"); // left of havering, few tweets
+			// pa.test_SQLquery_grid("count",4.3, 51.8,4.6,52.1,"alarm"); // ergens bij rotterdam
 			
-			// pa.boxQuery_word("count",-0.058,51.59,0.095,51.483,"banker"); // left of havering, few tweets
-			pa.boxQuery_word("count",4.3, 51.8,4.6,52.1,"alarm"); // ergens bij rotterdam
-			// System.exit(0);
+			System.exit(0);
 
 			c.close();
 		} catch (SQLException e) {
@@ -393,5 +396,26 @@ public class Test {
 		}
 		System.out.println("#!finished");
 	}
+	
+	public static void runTest_small_nominal(Connection c) throws Exception {
+		try {
+			String wordlist = 
+				NominalAxis.ALL + "," +
+				"banker,"+
+				"car,"+
+				"people,"
+			;
+
+			
+			NominalGeoTaggedTweetAggregate pa = new NominalGeoTaggedTweetAggregate(c, wordlist, "public", "london_hav_neogeo", null, "myAggregate", "coordinates",-1,200000,null);
+			// pa.boxQuery_word("count",0.18471,51.60626,0.23073,51.55534,"banker"); // left of havering, few tweets
+			pa.boxQuery_word("count",-0.38326,51.62780,1.14554,51.39572,NominalAxis.ALL);
+			c.close();
+		} catch (SQLException e) {
+			System.out.println("Caught: " + e);
+			e.printStackTrace(System.out);
+		}
+		System.out.println("#!finished");
+	}	
 	
 }

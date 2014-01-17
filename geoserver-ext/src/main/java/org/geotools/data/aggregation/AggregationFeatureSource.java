@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import nl.utwente.db.neogeo.preaggregate.AggregateAxis;
 import nl.utwente.db.neogeo.preaggregate.AxisSplitDimension;
+import nl.utwente.db.neogeo.preaggregate.NominalAxis;
 
 import org.geoserver.ows.Dispatcher;
 import org.geoserver.ows.Request;
@@ -53,6 +54,7 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 	AggregateAxis x;
 	AggregateAxis y;
 	AggregateAxis time;
+	AggregateAxis nominal;
 
 	private int xSize;
 
@@ -82,6 +84,7 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 		x = agg.getXaxis();
 		y = agg.getYaxis();
 		time = agg.getTimeAxis();
+		nominal = agg.getNominalAxis();
 
 		xSize = data.getXSize();
 		ySize = data.getYSize();
@@ -94,7 +97,9 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 			else if(a==y)
 				iv_count[1] = ySize;
 			else if(a==time)
-				iv_count[2] = timeSize;
+				iv_count[2] = timeSize; // INCOMPLETE
+			else if(a==nominal)
+				iv_count[2] = 1; // INCOMPLETE
 		}
 
 	}
@@ -258,7 +263,7 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 				Area area = getReaderInternalGetFeatureInfo(req);
 				if(area== null) return null;
 				// JF, QUERY HERE
-				ret = reformulateQuery(area,startTime,endTime, this.iv_count);
+				ret = reformulateQuery(area,startTime,endTime, keywords, this.iv_count);
 				double startX = (Double) ret[0][0];
 				double grid_deltaX = ((Double)ret[0][1]) - startX;
 				double endX = startX+grid_deltaX*((Integer)ret[0][2]);
@@ -274,9 +279,9 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 				cnt[1] = (int) Math.round((_endY-_startY) / grid_deltaY);
 				if(cntAxis>2) cnt[2] = this.iv_count[2];
 				a = new Area(_startX, _endX, _startY, _endY);
-				ret = reformulateQuery(a ,startTime,endTime, cnt);
+				ret = reformulateQuery(a ,startTime,endTime, keywords, cnt);
 			} else {
-				ret = reformulateQuery(a,startTime,endTime, this.iv_count);
+				ret = reformulateQuery(a,startTime,endTime, keywords, this.iv_count);
 			}
 			range = new int[ret.length];
 			iv_first_obj = new Object[ret.length][2];
@@ -290,6 +295,7 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 			String type = "grid";
 			if(pa_query){
 				LOGGER.severe("processing the query with Aggregation Index");
+				// NOMINALCHANGE
 				rs = agg.SQLquery_grid(this.getDataStore().getMask(), iv_first_obj, range);
 				end = System.currentTimeMillis()-start;
 			} else{
@@ -386,7 +392,7 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 	}
 
 	// JF INCOMPLETE, EXTEND WITH A wordlist
-	private Object[][] reformulateQuery(Area area, Timestamp start, Timestamp end, int[] iv_count) throws RuntimeException{
+	private Object[][] reformulateQuery(Area area, Timestamp start, Timestamp end, Vector<String> vword, int[] iv_count) throws RuntimeException{
 		int i=0;
 		//int[] range = new int[agg.getAxis().length];
 		Object[][] iv_obj = new Object[agg.getAxis().length][3];
@@ -414,13 +420,29 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 				LOGGER.severe("processing axis time:"+a.columnExpression());
 				dim = a.splitAxis(start, end, iv_count[2]);
 				i=2;
+			} else if (a==nominal) {
+				String select_word = NominalAxis.ALL;
+				LOGGER.severe("processing axis nominal:");
+				if ( vword != null && vword.size() > 0 ) {
+					if ( vword.size() > 1 )
+						System.out.println("INCOMPLETE: cannot select on Multiple words");
+					select_word = vword.get(0);
+				} 
+				i = 2; // INCOMPLETE, could be different with time
+				iv_obj[i][0] = select_word;
+				iv_obj[i][1] = select_word;
+				iv_obj[i][2] = 1;
+				dim = null;
+				LOGGER.severe("nominal axis select on word: \""+select_word+"\"");
 			}
 			//if(dim==null) throw new Exception("query area out of available data domain due to problems in axis "+a.columnExpression());
 			//			range[i] = dim.getCount();
-			LOGGER.severe("dim values:"+dim.toString());
-			iv_obj[i][0] = dim.getStart();
-			iv_obj[i][1] = dim.getEnd();
-			iv_obj[i][2] = dim.getCount();
+			if (dim != null) {
+				LOGGER.severe("dim values:" + dim.toString());
+				iv_obj[i][0] = dim.getStart();
+				iv_obj[i][1] = dim.getEnd();
+				iv_obj[i][2] = dim.getCount();
+			}
 		}
 		//		ResultSet rs = agg.SQLquery_grid(PreAggregate.AGGR_COUNT, iv_first_obj, range);
 		//		return rs;

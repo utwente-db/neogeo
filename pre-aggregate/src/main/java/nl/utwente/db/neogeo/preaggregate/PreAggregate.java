@@ -758,6 +758,21 @@ public class PreAggregate {
 										+ i);
 					iv_size[i] = iv_last[i] - iv_first[i];
 				}
+			} else {
+				// it must be Nominal
+				NominalAxis nax = (NominalAxis)axis[i];
+				if ( ! (iv_first_obj[i][RMIN] instanceof String ) || ! (iv_first_obj[i][RMAX] instanceof String ) )
+					throw new SQLException(
+							"bad String bound on dimension " + i);
+				iv_first[i] = nax.getWordIndex((String)iv_first_obj[i][RMIN]);
+				if ( iv_first[i] < 0 )
+					throw new SQLException(
+							"unknown word "+iv_first_obj[i][RMIN]+" dimension " + i);
+				if ( iv_first[i] != nax.getWordIndex((String)iv_first_obj[i][RMAX]) )
+					throw new SQLException(
+							"Nominal String bounds must be equal on dimension " + i);
+				iv_last[i] = iv_first[i] + 1;
+				iv_size[i] = 1;
 			}
 		}
 		// now have all the info we need
@@ -935,7 +950,6 @@ public class PreAggregate {
 		String sql = "SELECT "+sqlgkey.toString()+"0 as gkey"+sqlaggr+" FROM "+schema+"."+table+" WHERE true "+sqlwhere.toString()+
 						" GROUP BY "+sqlgroupby.toString();
 		sql = sql.substring(0, sql.length()-1);
-		System.out.println("XXX="+sql);			
 		result = SqlUtils.execute(c, sql);
 		//
 		return result;
@@ -961,9 +975,18 @@ public class PreAggregate {
 		for (i = 0; i < axis.length; i++) {
 			if (axis[i].isMetric()) {
 				MetricAxis metric = (MetricAxis) axis[i];
-				// TODO: do out of range checks
-				ranges[i][RMIN] = metric.getIndex(obj_range[i][RMIN], true);
-				ranges[i][RMAX] = metric.getIndex(obj_range[i][RMAX], true);
+				int i_rmin = metric.getIndex(obj_range[i][RMIN], true);
+				int i_rmax = metric.getIndex(obj_range[i][RMAX], true);
+				ranges[i][RMIN] = i_rmin;
+				if ( i_rmin == MetricAxis.INDEX_TOO_SMALL ) {
+					i_rmin = 0;
+					obj_range[i][RMIN] = metric.low();
+				}
+				ranges[i][RMAX] = i_rmax;
+				if ( i_rmax == MetricAxis.INDEX_TOO_LARGE ) {
+					i_rmax = metric.axisSize();
+					obj_range[i][RMAX] = metric.high();
+				}
 
 				if (metric.exactIndex(obj_range[i][RMAX])) {
 					ranges[i][RMAX] -= 1; // adjust upper bound
@@ -993,7 +1016,6 @@ public class PreAggregate {
 		String sqlaggr = b_sqlaggr.substring(1); // rome heading ,
 
 		StringBuffer qb = new StringBuffer("SELECT " + extra_select + sqlaggr + " FROM "+schema+"."+table+PA_EXTENSION);
-		// System.out.println("$ pa-command = "+range_paGridQuery(ranges));
 		qb.append(cellCondition(ranges));
 		return qb.toString();
 	}
@@ -1036,17 +1058,22 @@ public class PreAggregate {
 			int rmax = axis[i].getIndex(obj_range[i][RMAX],true);
 			ranges[i][RMAX] = rmax;
 			if (axis[i].isMetric()) {
-				MetricAxis metric = (MetricAxis) axis[i];
-				if (true) {
-					// System.out.println("#!RANGE CONVERSION: "+metric);
-					// System.out.println("#!RMIN["+obj_range[i][RMIN]+"]="+rmin+(metric.exactIndex(obj_range[i][RMIN])?"(EXACT)":"")+", RMAX["+obj_range[i][RMAX]+"]="+rmax+(axis[i].exactIndex(obj_range[i][RMAX])?"(EXACT)":""));
-					if (metric.exactIndex(obj_range[i][RMAX])) {
-						// System.out.println("########## ADJUST UPPER BOUND ###########");
-						ranges[i][RMAX] = rmax - 1; // adjust upper bound
-					} else {
-						System.out.println("#! NO CORRECTION!!!!");
-					}
+				MetricAxis metric = (MetricAxis)axis[i];
+				
+				int i_rmin = metric.getIndex(obj_range[i][RMIN], true);
+				int i_rmax = metric.getIndex(obj_range[i][RMAX], true);
+				ranges[i][RMIN] = i_rmin;
+				if ( i_rmin == MetricAxis.INDEX_TOO_SMALL ) {
+					i_rmin = 0;
+					obj_range[i][RMIN] = metric.low();
 				}
+				ranges[i][RMAX] = i_rmax;
+				if ( i_rmax == MetricAxis.INDEX_TOO_LARGE ) {
+					i_rmax = metric.axisSize();
+					obj_range[i][RMAX] = metric.high();
+				}
+				ranges[i][RMIN] = i_rmin;
+				ranges[i][RMAX] = i_rmax;
 				if (doResultCorrection
 						&& (!metric.exactIndex(obj_range[i][RMIN]) || !metric
 								.exactIndex(obj_range[i][RMAX]))) {
@@ -1109,7 +1136,6 @@ public class PreAggregate {
 			// use Postgres internal pacells2d function
 			String pa_grid_str;
 
-			
 			pa_grid_str = "pa_grid_cell('"+range_paGridQuery(ranges)+"') AS pakey "; // 2 times faster
 			qb.append(", ");
 			qb.append(pa_grid_str);
@@ -1295,7 +1321,10 @@ public class PreAggregate {
 
 		for(int i=0; i<range.length; i++) {
 			swgc[i][0] = range[i][RMIN]; // start
-			swgc[i][1] = range[i][RMAX] - range[i][RMIN]; // width
+			if ( (range[i][RMAX]<0) || (range[i][RMIN]<0) )
+				swgc[i][1] = 0;
+			else
+				swgc[i][1] = range[i][RMAX] - range[i][RMIN]; // width
 			swgc[i][2] = 1; // gridcells
 		}
 		return grid_paGridQuery(swgc);

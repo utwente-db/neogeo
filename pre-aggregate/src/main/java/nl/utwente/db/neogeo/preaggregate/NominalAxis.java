@@ -45,13 +45,6 @@ public class NominalAxis extends AggregateAxis {
 	
 	public static final String WORDLISTNOMINAL = "WordlistNominal";
 	
-//	public String columnExpression() {
-//		if ( wordlistNominal() )
-//				return super.columnExpression()+"_wid";
-//		else
-//			return super.columnExpression();
-//	}
-//	
 	public String fromFIELDstore() {
 		if (wordlistNominal()) 
 			return WORDLISTNOMINAL;
@@ -65,6 +58,8 @@ public class NominalAxis extends AggregateAxis {
 		else
 			return ""+to;
 	}
+	
+	public static final String ALL = "ALL";
 	
 	public static String[] tokenize_words(String wordlist_str) {
 		int nWords = 0;
@@ -211,7 +206,11 @@ public class NominalAxis extends AggregateAxis {
 		sql.append("DROP TABLE IF EXISTS "+wl_table+";\n");
 		sql.append("CREATE TABLE "+wl_table+" (word text,wordid int);\n");
 		for(int i=0; i<wordlist.length; i++) {
-			sql.append("INSERT INTO "+wl_table+" (word,wordid) VALUES(\'" + wordlist[i].toLowerCase() + "\',"+i+");\n");
+			String match_str = wordlist[i];
+			
+			if ( match_str.equals(ALL))
+				match_str = "";
+			sql.append("INSERT INTO "+wl_table+" (word,wordid) VALUES(\'" + match_str.toLowerCase() + "\',"+i+");\n");
 		}
 		sql.append("\nSELECT "+org_table+".*, "+wl_table+".wordid "+"AS "+columnExpression()+"\nINTO "+new_table+"\nFROM "+org_table+", "+wl_table +
 					"\nWHERE strpos(lower("+org_table+"."+word_collection_column+"),"+wl_table+"."+"word)>0;\n");

@@ -1,7 +1,9 @@
 package nl.utwente.db.neogeo.preaggregate;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Vector;
 
 public class NominalGeoTaggedTweetAggregate extends PreAggregate {
 
@@ -47,5 +49,51 @@ public class NominalGeoTaggedTweetAggregate extends PreAggregate {
 		ranges[2][1] = nv+1;
 		return query(aggr,ranges);
 	}
+
+	public long test_SQLquery_grid(String aggr, double x1, double y1, double x2, double y2, String word2match) throws SQLException {		
+		Object ranges[][] = new Object[2][2];
+		ranges[0][0] = new Double(Math.min(x1,x2));
+		ranges[0][1] = new Double(Math.max(x1,x2));
+		ranges[1][0] = new Double(Math.min(y1,y2));
+		ranges[1][1] = new Double(Math.max(y1,y2));
+		
+		int iv_count[] = new int[2];
+		iv_count[0] = 1;
+		iv_count[1] = 1;
+		
+		Vector<String> wv = null;
+		if ( word2match != null ) {
+			wv = new Vector<String>();
+			wv.add(word2match);
+		}
+		
+		ResultSet rs = delete_SQLquery_grid(AGGR_COUNT,ranges,iv_count,wv);
+		
+		return 99;
+	}
 	
+	public ResultSet delete_SQLquery_grid(int queryAggregateMask, Object iv_first_obj[][], int iv_count[], Vector<String> swv) throws SQLException {
+		String selectWord = NominalAxis.ALL;
+		
+		if ( swv != null && (swv.size() > 0) ) {
+			if ( swv.size() > 1 )
+				System.out.println("INCOMPLETE: only able to select 1 word at this moment");
+			selectWord = swv.get(0);
+		}
+		Object new_ranges[][] = new Object[3][2];
+		new_ranges[0][0] = iv_first_obj[0][0];
+		new_ranges[0][1] = iv_first_obj[0][1];
+		new_ranges[1][0] = iv_first_obj[1][0];
+		new_ranges[1][1] = iv_first_obj[1][1];
+		new_ranges[2][0] = selectWord;
+		new_ranges[2][1] = selectWord;	
+		
+		int new_iv_count[] = new int[3];
+		new_iv_count[0] = iv_count[0];
+		new_iv_count[1] = iv_count[1];
+		new_iv_count[2] = 1;
+
+		return super.SQLquery_grid(queryAggregateMask,new_ranges,new_iv_count);
+	}
+
 }
