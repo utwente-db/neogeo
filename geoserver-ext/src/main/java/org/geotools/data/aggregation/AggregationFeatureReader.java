@@ -10,10 +10,8 @@ import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 
-import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.store.ContentState;
-import org.geotools.feature.SchemaException;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.opengis.feature.simple.SimpleFeature;
@@ -67,12 +65,13 @@ public class AggregationFeatureReader implements FeatureReader {
 		this.attributes = attributes;
 		this.rs = rs;
 		
-		try {
-			areatype = DataUtilities.createType("http://www.nurc.nato.int", "area");
-		} catch (SchemaException e) {
-			System.out.println("SETTING TYPE FAILS:");
-			e.printStackTrace();
-		}
+//		try {
+//			areatype = DataUtilities.createType("http://www.nurc.nato.int",
+//					"area");
+//		} catch (SchemaException e) {
+//			System.out.println("SETTING TYPE FAILS:");
+//			e.printStackTrace();
+//		}
 		
 		if(rs!=null)
 			_init();
