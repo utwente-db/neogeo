@@ -10,8 +10,10 @@ import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 
+import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.store.ContentState;
+import org.geotools.feature.SchemaException;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.opengis.feature.simple.SimpleFeature;
@@ -46,6 +48,8 @@ public class AggregationFeatureReader implements FeatureReader {
 	private Map<String, Class> attributes = null;
 
 	private AggregationDataStore data;
+	
+	SimpleFeatureType areatype = null;
 
 	//    public AggregationFeatureReader(Area area) throws IOException {
 	public AggregationFeatureReader(ContentState contentState, ResultSet rs, 
@@ -55,12 +59,21 @@ public class AggregationFeatureReader implements FeatureReader {
 		state = contentState;
 		data = (AggregationDataStore)contentState.getEntry().getDataStore();
 		builder = new SimpleFeatureBuilder(state.getFeatureType());
+		// XXXX INCOMPLETE: set prefix or namespace of the result objects here
 		geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
 		row = 0;
 		this.iv_first_obj = iv_first_obj;
 		this.range = range;
 		this.attributes = attributes;
 		this.rs = rs;
+		
+		try {
+			areatype = DataUtilities.createType("http://www.nurc.nato.int", "area");
+		} catch (SchemaException e) {
+			System.out.println("SETTING TYPE FAILS:");
+			e.printStackTrace();
+		}
+		
 		if(rs!=null)
 			_init();
 	}
@@ -155,7 +168,10 @@ public class AggregationFeatureReader implements FeatureReader {
 
 			LinearRing lr = geometryFactory.createLinearRing(coordinates);
 			builder.set("area", geometryFactory.createPolygon(lr, null) );
-			return this.buildFeature();
+			SimpleFeature res = this.buildFeature();
+			if ( areatype != null )
+				SimpleFeatureBuilder.retype(res, areatype);
+			return res;
 		} catch (SQLException e) {
 			LOGGER.severe("Serious problem with the database query! "+e.getMessage());
 			e.printStackTrace();

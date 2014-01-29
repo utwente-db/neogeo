@@ -31,9 +31,8 @@ import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-
 public class PreAggregate extends
-nl.utwente.db.neogeo.preaggregate.NominalGeoTaggedTweetAggregate {
+nl.utwente.db.neogeo.preaggregate.PreAggregate {
 	// NOMINALCHANGE
 	private static final Logger LOGGER = Logger.getLogger("org.geotools.data.aggregation.PreAggregate");
 	private static final String NAME = "aggregate";

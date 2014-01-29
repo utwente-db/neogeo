@@ -1,3 +1,15 @@
 This directory contains a Postgres extension for fast generating pre-aggregate
 keys. The functions are called when the PreAggregate.serversideStairwalk
 boolean is set to true in Java.
+
+Do:
+
+make 
+# this creates the dynamic library
+
+make install
+# this installs the library in the postgres installation
+
+make sql
+# declare the module in the database you want, you may have to change the
+# DATABASE macro in the Makefile for this
