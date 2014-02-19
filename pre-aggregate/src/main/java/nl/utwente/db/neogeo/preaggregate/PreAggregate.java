@@ -1,5 +1,8 @@
 package nl.utwente.db.neogeo.preaggregate;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,7 +16,7 @@ import java.util.logging.Logger;
 public class PreAggregate {
 	private static final Logger LOGGER = Logger.getLogger("org.geotools.data.aggregation.PreAggregate");
 	
-	private final boolean gen_optimized = false;
+	private final boolean gen_optimized = true;
 
 	/*
 	 * Experiment setup variables
@@ -368,6 +371,19 @@ public class PreAggregate {
 		if ( true ) {
 			System.out.println("\n#! SCRIPT:\n"+sql_build.getScript());
 			System.out.flush(); // flush before possible crash
+			PrintWriter writer;
+			try {
+				writer = new PrintWriter("script.sql", "UTF-8");
+				writer.println(sql_build.getScript());
+				writer.flush();
+				writer.close();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		sql_build.executeBatch();
 		create_time_ms = new Date().getTime() - create_time_ms;
