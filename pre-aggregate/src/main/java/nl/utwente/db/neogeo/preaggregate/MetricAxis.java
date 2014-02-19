@@ -458,16 +458,16 @@ public class  TimestampAxisIndexer implements AxisIndexer {
 			if(cnt<=0) cnt=1;
 			int startl; //= this.low;
 			int endl;   //= this.high;
-			if(low==null) {
+			if(low==null || !(low instanceof Long) || (Long)low<this.low) {
 				low = this.low();
 			}
 			startl = getIndex(low, false);
-			if(high==null)
+			if(high==null || !(high instanceof Long) || (Long)high<this.high) 
 				high = this.high();
 			endl = getIndex(high, false);
 			
 			if(endl<=startl) throw new RuntimeException("end value "+endl+" is less than start value "+startl);
-//			if(start>this.high || end<this.low)
+//			if(startl>this.high || endl<this.low)
 				// query out of range of the available data
 //				throw new RuntimeException("query out of range of the available data: (start,end,high,low)=("+start+","+end+","+this.low+","+this.high+")");
 //			long startl = start/BASEBLOCKSIZE;
@@ -476,7 +476,7 @@ public class  TimestampAxisIndexer implements AxisIndexer {
 			// in the case of a split along a single chunk, no alignment with the factor is possible!
 			if(cnt==1) {
 				// return new AxisSplitDimension(new Timestamp(startl*BASEBLOCKSIZE), new Timestamp(endl*BASEBLOCKSIZE), 1);
-				return new AxisSplitDimension(new Timestamp(this.low+startl*BASEBLOCKSIZE), new Timestamp(this.low+endl*BASEBLOCKSIZE), 1);
+				return new AxisSplitDimension(low, high, 1);
 			}
 			
 			int deltal = (endl-startl)/(cnt-1);

@@ -71,14 +71,14 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 		String typename = entry.getTypeName();
 		typename = PreAggregate.stripTypeName(typename);
 
+		AggregationDataStore data = this.getDataStore();
 		try {
-			AggregationDataStore data = getDataStore();			
+			//AggregationDataStore data = getDataStore();			
 			agg = data.createPreAggregate(typename);
 		} catch (SQLException e) {
-			LOGGER.severe("SQLException for creating the PreAggregate object:"+e.getMessage());
+			LOGGER.severe("SQLException for creating the PreAggregate object for type:"+typename+"\n"+e.getMessage());
 			e.printStackTrace();
 		}
-		AggregationDataStore data = this.getDataStore();
 		if ( agg == null )
 			System.out.println("#!HOLY SHIT: null pointer: agg!");
 		x = agg.getXaxis();
