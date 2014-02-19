@@ -93,6 +93,7 @@ function init() {
 			this.addControls([navigation,zoomBox,this.sf]);
 			// To make the custom navtoolbar use the regular navtoolbar style
 			this.displayClass = 'olControlNavToolbar'
+			
 		},
 
 
@@ -130,10 +131,6 @@ function init() {
 		projection: 'EPSG:3857',
 		layers: [
 		         new OpenLayers.Layer.Google(
-		        		 "Google Physical",
-		        		 {type: google.maps.MapTypeId.TERRAIN}
-		         ),
-		         new OpenLayers.Layer.Google(
 		        		 "Google Streets", // the default
 		        		 {numZoomLevels: 20}
 		         ),
@@ -144,6 +141,10 @@ function init() {
 		         new OpenLayers.Layer.Google(
 		        		 "Google Satellite",
 		        		 {type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 22}
+		         ),
+		         new OpenLayers.Layer.Google(
+		        		 "Google Physical",
+		        		 {type: google.maps.MapTypeId.TERRAIN}
 		         )
 		         ],
 		         //center: new OpenLayers.LonLat(-0.1, 51)
@@ -160,13 +161,13 @@ function init() {
 	});
 
 	neogeo_uk = new OpenLayers.Layer.WMS(
-			"tweets UK", "http://silo3.ewi.utwente.nl:9090/geoserver/nurc/wms",
+			"sos_raw", "http://data.projects.nspyre.nl:8080/geoserver/strukton/wms",
 			{
-				layers: 'nurc:uk_neogeo',
-				maxfeatures: 100,
+				layers: 'strukton:raw_coord_geoserver',
+				maxfeatures: 1000,
 				format: 'image/gif',
-				transparent: 'true'
-					//time: '2002-09-01T00:00:00.0Z/2002-10-01T23:59:59.999Z',
+				transparent: 'true',
+				time: '2002-09-01T00:00:00.0Z/2014-10-01T23:59:59.999Z'
 					//styleMap: new OpenLayers.StyleMap(style)
 			},{
 				opacity: 0.5
@@ -219,12 +220,12 @@ function init() {
 //			}; 
 //	neogeo_uk.styleMap = new OpenLayers.StyleMap(new OpenLayers.Style(style_green)); 
 	neogeo_uk_agg = new OpenLayers.Layer.WMS(
-			"tweet aggregate UK", "http://silo3.ewi.utwente.nl:9090/geoserver/nurc/wms",
+			"sos aggregate", "http://data.projects.nspyre.nl:8080/geoserver/strukton/wms",
 			{
-				layers: 'nurc:aggregate_uk_neogeo___myAggregate',
+				layers: 'strukton:aggregate_raw_coord___myAggregate',
 				format: 'image/gif',
-				transparent: 'true'
-					//time: '2002-09-01T00:00:00.0Z/2002-10-01T23:59:59.999Z',
+				transparent: 'true',
+				time: '2002-09-01T00:00:00.0Z/2014-10-01T23:59:59.999Z'
 					//styleMap: new OpenLayers.StyleMap(style)
 			}, {
 				singleTile: true,
@@ -238,6 +239,7 @@ function init() {
 
 	var panel = new OpenLayers.Control.CustomNavToolbar();
 	panel.setLayer([neogeo_uk_agg.params.LAYERS, neogeo_uk.params.LAYERS]);
+//	panel.setLayer([neogeo_uk.params.LAYERS]);
 	
 //	map.addControl(new OpenLayers.Control.PanZoomBar({
 //	position: new OpenLayers.Pixel(2, 15)
@@ -255,15 +257,19 @@ function init() {
 	map.events.register('click', map, function (e) {
 		if(panel.sf.active){
 			document.getElementById('nodelist').innerHTML = "Loading... please wait...";
+			var startstring =get_start_date(); 
+			var endstring = get_end_date();
+			
 			var params = {
 					REQUEST: "GetFeatureInfo",
 					EXCEPTIONS: "application/vnd.ogc.se_xml",
 					BBOX: map.getExtent().toBBOX(),
+					TIME: startstring+'/'+endstring,
 					SERVICE: "WMS",
 					INFO_FORMAT: 'text/html',
 					QUERY_LAYERS: neogeo_uk.params.LAYERS,
-					FEATURE_COUNT: 50,
-					Layers: 'nurc:uk_neogeo',
+					FEATURE_COUNT: 100,
+					Layers: 'strukton:raw_coord_geoserver',
 					WIDTH: map.size.w,
 					HEIGHT: map.size.h,
 					format: format,
@@ -281,7 +287,7 @@ function init() {
 			params.y = parseInt(e.xy.y);
 //			}
 			// merge filters
-			OpenLayers.loadURL("http://silo3.ewi.utwente.nl:9090/geoserver/nurc/wms", params, this, setHTML, setHTML);
+			OpenLayers.loadURL("http://data.projects.nspyre.nl:8080/geoserver/strukton/wms", params, this, setHTML, setHTML);
 			OpenLayers.Event.stop(e);
 		}
 	});
@@ -293,18 +299,28 @@ function init() {
 	};
 }
 
-function update_date() {
+function get_start_date(){
 	var startstring = OpenLayers.Util.getElement('startyear').value + "-" +
 	OpenLayers.Util.getElement('startmonth').value + "-" +
 	OpenLayers.Util.getElement('startday').value + "T" +
 	OpenLayers.Util.getElement('starthour').value + ":" +
 	OpenLayers.Util.getElement('startminute').value + ":00.0Z";
+	return startstring;
+}
+
+function get_end_date(){
 	var endstring = OpenLayers.Util.getElement('endyear').value + "-" +
 	OpenLayers.Util.getElement('endmonth').value + "-" +
 	OpenLayers.Util.getElement('endday').value + "T" +
 	OpenLayers.Util.getElement('endhour').value + ":" +
 	OpenLayers.Util.getElement('endminute').value + ":00.0Z";
-	neogeo_uk_agg.mergeNewParams({'time':startstring+'/'+endstring});
+	return endstring;
+}
+
+function update_date() {
+	var startstring =get_start_date(); 
+	var endstring = get_end_date();
+	//neogeo_uk_agg.mergeNewParams({'time':startstring+'/'+endstring});
 	neogeo_uk.mergeNewParams({'time':startstring+'/'+endstring});
 }
 
@@ -318,6 +334,6 @@ function update_viewparams() {
 	if(query.checked){
 		viewparams = viewparams+";query:standard";
 	}
-	neogeo_uk_agg.mergeNewParams({'viewparams':viewparams});
-	neogeo_uk.mergeNewParams({'viewparams':viewparams});
+	//neogeo_uk_agg.mergeNewParams({'viewparams':viewparams});
+	//neogeo_uk.mergeNewParams({'viewparams':viewparams});
 }
