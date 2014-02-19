@@ -222,7 +222,7 @@ function init() {
 	neogeo_uk_agg = new OpenLayers.Layer.WMS(
 			"sos aggregate", "http://data.projects.nspyre.nl:8080/geoserver/strukton/wms",
 			{
-				layers: 'strukton:aggregate_raw_coord___myAggregate',
+				layers: 'strukton:aggregate_raw_coord_geoserver_agg___sos_aggregate_time',
 				format: 'image/gif',
 				transparent: 'true',
 				time: '2002-09-01T00:00:00.0Z/2014-10-01T23:59:59.999Z'
