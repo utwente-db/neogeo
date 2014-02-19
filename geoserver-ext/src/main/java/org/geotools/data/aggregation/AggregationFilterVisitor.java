@@ -123,7 +123,9 @@ public class AggregationFilterVisitor extends DefaultFilterVisitor {
 			area = updateBounds(area,a);
 			LOGGER.severe("low level area: "+a.toString());
 		} else if(val instanceof Date){
-			LOGGER.severe(val.toString());
+			// used date format by geoserver: Thu Oct 02 01:59:59 CEST 2014
+			//"EEE MMM dd HH:mm:ss z yyyy"
+			LOGGER.severe("date: "+val.getClass().getCanonicalName()+": "+val.toString());
 			updateTime((Date)val);
 		} else {
 			LOGGER.log(level,"type of literal val: "+val.getClass().getCanonicalName());
@@ -140,19 +142,24 @@ public class AggregationFilterVisitor extends DefaultFilterVisitor {
 	}
 
 	private void updateTime(Date t){
-		if(startTime==-1)
+		LOGGER.severe("current time constraint: ["+startTime+","+endTime+"] and new time constraint: "+t.getTime());
+		if(startTime==-1){
 			startTime = t.getTime();
-		else if(endTime==-1){
-			if(t.getTime()>startTime)
+			LOGGER.severe("set start time: "+startTime);
+		} else if(endTime==-1){
+			if(t.getTime()>startTime){
 				endTime = t.getTime();
-			else {
+				LOGGER.severe("set end time: "+endTime);
+			} else {
 				endTime = startTime;
 				startTime = t.getTime();
+				LOGGER.severe("set start time and update end time: ["+startTime+","+endTime+"]");
 			}
 		}else {
 			// starTime and endTime are already set
 			if(t.getTime()>startTime && t.getTime()<endTime)
 				throw new RuntimeException("unexpected update of time in filter parsing");
+			else LOGGER.severe("time constraint not updated!");
 		}
 	}
 
@@ -161,9 +168,9 @@ public class AggregationFilterVisitor extends DefaultFilterVisitor {
 		LOGGER.log(level, filter.getClass().getCanonicalName());
 		area = agg.getArea();
 		try{
-		long[] timebounds = agg.getTimeBounds();
-		startTime = timebounds[0];
-		endTime = timebounds[1];
+//			long[] timebounds = agg.getTimeBounds();
+//			startTime = timebounds[0];
+//			endTime = timebounds[1];
 		} catch(NullPointerException e){
 			LOGGER.severe("PreAggregate does not contain a time dimension");
 		}
@@ -489,12 +496,14 @@ public class AggregationFilterVisitor extends DefaultFilterVisitor {
 	}
 
 	public Timestamp getStartTime(){
-		if(startTime==-1) return null;
+		if(startTime==-1) return new Timestamp(agg.getTimeBounds()[0]);
+		LOGGER.severe("get start time: "+startTime);
 		return new Timestamp(startTime);
 	}
 
 	public Timestamp getEndTime(){
-		if(endTime == -1) return null;
+		if(endTime == -1) return new Timestamp(agg.getTimeBounds()[1]);
+		LOGGER.severe("get end time: "+endTime);
 		return new Timestamp(endTime);
 	}
 
