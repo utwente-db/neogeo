@@ -8,6 +8,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Properties;
 
 public class Test {
@@ -68,8 +70,26 @@ public class Test {
 		Test t = new Test();
 		t.readProperties();
 		Connection connection = t.getConnection();
-		runTest_nominal( connection );
+		// runTest_nominal( connection );
 		// setup_silo3( connection );
+		runTest_time(connection);
+	}
+	
+	@SuppressWarnings("deprecation")
+	public static void runTest_time(Connection c) throws Exception {
+		SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yy-MM-dd:HH:mm:SS");
+		Date from = DATE_FORMAT.parse("2004-09-15:23:57:36");
+		Timestamp ts_from = new Timestamp(from.getTime() );
+		Date to = DATE_FORMAT.parse("2014-01-06:00:00:57");
+		Timestamp ts_to = new Timestamp(to.getTime() );
+		Date split = DATE_FORMAT.parse("2014-01-06:00:00:57");
+		//Timestamp ts_split = new Timestamp(split.getTime() );
+		//System.out.println("ts_from="+ts_from);
+		System.out.println("ts_to  ="+ts_to);
+		AggregateAxis time_axis = new MetricAxis("time","timestamp with time zone",ts_from,ts_to,"86400",(short)4);
+		System.out.println("TIME-AXIS="+time_axis);
+		System.out.println("TIME-SPLIT="+time_axis.splitAxis(ts_from,ts_to,1));
+		
 	}
 
 	public static void setup_silo3(Connection c) throws Exception {
@@ -379,9 +399,9 @@ public class Test {
 				"stroom"
 			;
 
-			// NominalGeoTaggedTweetAggregate pa = new NominalGeoTaggedTweetAggregate(c, wordlist, "public", "london_hav_neogeo", null, "myAggregate", "coordinates",-1,200000,null);
+			NominalGeoTaggedTweetAggregate pa = new NominalGeoTaggedTweetAggregate(c, wordlist, "public", "london_hav_neogeo", null, "myAggregate", "coordinates",-1,200000,null);
 			// NominalGeoTaggedTweetAggregate pa = new NominalGeoTaggedTweetAggregate(c, wordlist, "public", "nl_all", null, "myAggregate", "coordinates",1,200000,null);
-			NominalGeoTaggedTweetAggregate pa = new NominalGeoTaggedTweetAggregate(c,"public", "uk_neogeo", "myAggregate");
+			// NominalGeoTaggedTweetAggregate pa = new NominalGeoTaggedTweetAggregate(c,"public", "uk_neogeo", "myAggregate");
 			// NominalGeoTaggedTweetAggregate pa = new NominalGeoTaggedTweetAggregate(c, wordlist_eng, "public", "uk_neogeo", null, "myAggregate", "coordinates",1,200000,null);
 
 			pa.boxQuery_word("count",-0.058,51.59,0.095,51.483,"alarm"); // left of havering, few tweets

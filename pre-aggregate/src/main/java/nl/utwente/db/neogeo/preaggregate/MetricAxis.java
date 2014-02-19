@@ -474,7 +474,10 @@ public class  TimestampAxisIndexer implements AxisIndexer {
 //			long endl = end/BASEBLOCKSIZE;
 		
 			// in the case of a split along a single chunk, no alignment with the factor is possible!
-			if(cnt==1) return new AxisSplitDimension(new Timestamp(startl*BASEBLOCKSIZE), new Timestamp(endl*BASEBLOCKSIZE), 1);
+			if(cnt==1) {
+				// return new AxisSplitDimension(new Timestamp(startl*BASEBLOCKSIZE), new Timestamp(endl*BASEBLOCKSIZE), 1);
+				return new AxisSplitDimension(new Timestamp(this.low+startl*BASEBLOCKSIZE), new Timestamp(this.low+endl*BASEBLOCKSIZE), 1);
+			}
 			
 			int deltal = (endl-startl)/(cnt-1);
 			if((endl-startl)%(cnt-1) > 0) deltal++;
@@ -497,7 +500,8 @@ public class  TimestampAxisIndexer implements AxisIndexer {
 			}
 			LOGGER.severe("axis splitter result (_start,_end,cnt)=("+_start+","+_end+","+cnt+")");
 			if(cnt>0)
-				return new AxisSplitDimension(new Timestamp(_start*BASEBLOCKSIZE), new Timestamp((_start+deltal)*BASEBLOCKSIZE),cnt);
+				// return new AxisSplitDimension(new Timestamp(_start*BASEBLOCKSIZE), new Timestamp((_start+deltal)*BASEBLOCKSIZE),cnt);
+				return new AxisSplitDimension(new Timestamp(this.low+_start*BASEBLOCKSIZE), new Timestamp(this.low+(_start+deltal)*BASEBLOCKSIZE),cnt);
 			throw new RuntimeException("remaining count value is less than or euqal to 0: "+cnt);
 		}
 
@@ -513,8 +517,8 @@ public class  TimestampAxisIndexer implements AxisIndexer {
 	public MetricAxis(
 			String	columnExpression,
 			String	type,
-			String	low,
-			String	high,
+			Object	low,
+			Object	high,
 			String	BASEBLOCKSIZE,
 			short	N) {
 		this(columnExpression,type);
