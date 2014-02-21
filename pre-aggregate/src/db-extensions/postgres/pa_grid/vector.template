@@ -6,6 +6,9 @@ typedef struct VECTORNAME {
 
 static VECTORNAME* VFUN(createVector)(int max_size) {
   VECTORNAME* v = (VECTORNAME*)MYALLOC(sizeof(VECTORNAME));
+
+  if ( !v )
+  	return NULL;
   v->size = 0;
   v->max_size = max_size;
   v->values  = (VECTORTYPE*)MYALLOC(v->max_size*sizeof(VECTORTYPE));

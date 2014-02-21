@@ -14,12 +14,21 @@
  *
  */
 
-#define VECTOR_DFLT_SIZE 1024
+#define VECTOR_DFLT_SIZE 8192
+
+static void * epalloc(int size) {
+    void* res;
+
+    res = palloc(size);
+    if ( ! res ) {
+    	MYERROR("epalloc(): out of memory\n");
+    }
+    return res;
+}
 
 #define VECTORNAME VectorLong
 #define VECTORTYPE long
 #define VFUN(X)       X ## Long
-
 #include "vector.template"
 
 #undef VECTORNAME
@@ -34,16 +43,6 @@
 /*
  * Some utility fun
  */
-
-static void * epalloc(int size) {
-    void* res;
-
-    res = palloc(size);
-    if ( ! res ) {
-    	MYERROR("epalloc(): out of memory\n");
-    }
-    return res;
-}
 
 static long my_abs(long l) {
   return (l<0) ? -l : l;
@@ -259,7 +258,8 @@ static VectorLong* stairwalk(VectorLong *v, int from, int to, int N) {
       res = v;
       resetVectorLong(res);
     } else {
-      res = createVectorLong(VECTOR_DFLT_SIZE);
+      if ( !(res = createVectorLong(VECTOR_DFLT_SIZE) ) )
+      	return NULL;
     }
 #ifdef MYDEBUG
     if (QVERBOSE)
@@ -330,7 +330,8 @@ static VectorLong* bounds_check_stairwalk(pa_grid* grid, int dim, VectorLong *v,
       // fprintf(stdout,"* adjust to %d -> %d\n",to,grid->q.d[dim].maxRange);
       to = grid->q.d[dim].maxRange;
     }
-    res = stairwalk(v,from,to,N);
+    if ( !(res = stairwalk(v,from,to,N)))
+    	return NULL;
     return res;
 }
 
@@ -471,13 +472,14 @@ static VectorLong* pacells_n(pa_grid* grid, int current_D[]) {
   for(i=0; i<grid->q.dimensions; i++) {
       int gp = current_D[i];
       steps = vector_getVector(grid->stairs,i);
-      bounds_check_stairwalk(
+      if ( !bounds_check_stairwalk(
           grid,
 	  i,
           steps,
     	  grid->q.d[i].start + (gp * grid->q.d[i].cellwidth),
     	  grid->q.d[i].start + ((gp+1) * grid->q.d[i].cellwidth),
-    	  grid->q.d[i].N);
+    	  grid->q.d[i].N) )
+	  return NULL;
       if ( vector_sizeLong(steps) > 0 )
       	pmut_setRange(&PG,i,0,vector_sizeLong(steps));
       else 
@@ -502,7 +504,7 @@ static VectorLong* pacells_n(pa_grid* grid, int current_D[]) {
   return grid->stw_res;
 }
 
-static void loadcell_pa_grid(pa_grid* grid, int current_D[]) {
+static int loadcell_pa_grid(pa_grid* grid, int current_D[]) {
   int i;
 
   grid->gridKey = 0;
@@ -512,8 +514,10 @@ static void loadcell_pa_grid(pa_grid* grid, int current_D[]) {
       // fprintf(stdout,"#### y_log2({%d} %ld, %ld)[%ld]\n",my_log2(grid->q.d[i].gridsize),current_D[i],grid->q.d[i].gridsize,grid->gridKey);
   }
   // fprintf(stdout,"#### gridKey = %ld\n",grid->gridKey);
-  grid->stw_res = pacells_n(grid, current_D);
+  if ( !(grid->stw_res = pacells_n(grid, current_D)))
+  	return 0;
   grid->current_stw_res = -1;
+  return 1;
 }
 
 static int next_pa_grid(pa_grid* grid) {
@@ -530,7 +534,8 @@ static int next_pa_grid(pa_grid* grid) {
       grid->current_D[0] = 0;
     }
       }
-      loadcell_pa_grid(grid,grid->current_D);
+      if ( !loadcell_pa_grid(grid,grid->current_D) )
+      	return -1;
       return next_pa_grid(grid);
     } else
       grid->cellKey = vector_getLong(grid->stw_res, grid->current_stw_res);
@@ -579,11 +584,19 @@ static pa_grid* create_pa_grid(char *p) {
   int i;
   pa_grid* grid        = (pa_grid*)MYALLOC(sizeof(pa_grid));
 
+  if ( !grid )
+  	return NULL;
   decode_paGridQuery(p, &grid->q);
-  grid->stw_res    = createVectorLong(VECTOR_DFLT_SIZE);
-  grid->stairs = createVectorVector(MAX_DIMENSION);
+  if ( !(grid->stw_res    = createVectorLong(VECTOR_DFLT_SIZE)))
+  	return NULL;
+  if ( !(grid->stairs = createVectorVector(MAX_DIMENSION)))
+  	return NULL;
   for(i=0; i<grid->q.dimensions; i++) {
-      add2VectorVector(grid->stairs, createVectorLong(VECTOR_DFLT_SIZE));
+        VectorLong* vl;
+
+	if ( !(vl=createVectorLong(VECTOR_DFLT_SIZE)))
+		return NULL;
+        add2VectorVector(grid->stairs, vl);
   }
   if ( (grid->q.d[0].gridsize > 0) && (grid->q.d[1].gridsize > 0) ) {
     grid->end_of_grid = 0;
@@ -594,8 +607,8 @@ static pa_grid* create_pa_grid(char *p) {
     grid->end_of_grid = 1; // terminate
   }
   grid->values = (char **) MYALLOC(2 * sizeof(char *));
-  grid->values[0] = (char *) MYALLOC(24 * sizeof(char));
-  grid->values[1] = (char *) MYALLOC(24 * sizeof(char));
+  grid->values[0] = (char *) MYALLOC(64 * sizeof(char));
+  grid->values[1] = (char *) MYALLOC(64 * sizeof(char));
   return grid;
 }
 

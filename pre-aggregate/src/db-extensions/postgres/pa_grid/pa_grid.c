@@ -59,7 +59,12 @@ compute_pa_grid(PG_FUNCTION_ARGS)
 	// FILE* f = fopen("/tmp/LOG","a");
 	// fprintf(f,"KEY=[%s]\n",VARDATA(arg1));
 	// fclose(f);
-	funcctx->user_fctx = create_pa_grid(VARDATA(arg1));
+	if ( !(funcctx->user_fctx = create_pa_grid(VARDATA(arg1)))) {
+            ereport(ERROR,
+                    (errcode(ERRCODE_FEATURE_NOT_SUPPORTED), // INCOMPLETE
+                     errmsg("possible memory error  "
+                            )));
+	}
 	grid = (pa_grid*)funcctx->user_fctx;
 
         MemoryContextSwitchTo(oldcontext);
@@ -71,7 +76,14 @@ compute_pa_grid(PG_FUNCTION_ARGS)
 
     attinmeta = funcctx->attinmeta;
 
-    if ( next_pa_grid(grid) )
+    int nextVal = next_pa_grid(grid);
+    if ( nextVal < 0 ) {
+           ereport(ERROR,
+                   (errcode(ERRCODE_FEATURE_NOT_SUPPORTED), // INCOMPLETE
+                    errmsg("possible memory error  "
+                           )));
+    }
+    if ( nextVal )
     {
         HeapTuple    tuple;
         Datum        result;
