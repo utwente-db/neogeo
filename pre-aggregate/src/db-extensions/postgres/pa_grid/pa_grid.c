@@ -8,7 +8,7 @@
 PG_MODULE_MAGIC;
 #endif
 
-#define MYALLOC(X)  palloc(X)
+#define MYALLOC(X)  epalloc(X)
 #define MYFREE(X)   pfree(X)
 
 #include "pa_grid.template"

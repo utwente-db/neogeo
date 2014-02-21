@@ -35,6 +35,16 @@
  * Some utility fun
  */
 
+static void * epalloc(int size) {
+    void* res;
+
+    res = palloc(size);
+    if ( ! res ) {
+    	MYERROR("epalloc(): out of memory\n");
+    }
+    return res;
+}
+
 static long my_abs(long l) {
   return (l<0) ? -l : l;
 }
