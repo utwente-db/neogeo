@@ -31,8 +31,8 @@ public class Corpus
 		} else {
 			System.out.println("#!Cache-miss["+use_cache+"]: " + filePath);
 
-			String buf = FileUtils
-					.getFileAsString(new File("/tmp/" + filePath));
+			//String buf = FileUtils.getFileAsString(new File("/tmp/" + filePath));
+                        String buf = FileUtils.getFileAsString(new File("F:/Projects/neogeo/named-entity-recog/" + filePath));
 			sentences = buf.split("\n\n");
 			if ( use_cache )
 				scache.put(filePath, sentences);

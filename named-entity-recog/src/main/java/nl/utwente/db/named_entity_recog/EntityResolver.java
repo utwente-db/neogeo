@@ -36,6 +36,7 @@ import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.util.CoreMap;
+import nl.utwente.db.ZehminCRF.corpus.Sentence;
 
 /**
  *
@@ -134,7 +135,8 @@ public class EntityResolver
     public static void main(String[] args)
     {
         // String TweetStr_nl = "Onderweg naar Enschede voor hopelijk een mooi feestje vanavond. #batavieren";
-        String TweetStr_nl = "Ik zit op de fiets van Enschede naar Almelo dwars door Hengelo denkend aan #Nepal.";
+        //String TweetStr_nl = "Ik zit op de fiets van Enschede naar Almelo dwars door Hengelo denkend aan #Nepal.";
+        String TweetStr_nl = "Ik zit op de fiets van Den Haag naar Den Bosch, door Bad Bentheim denkend aan Nepal.";
         //String TweetStr = "Campuspop:Alle Batavieren kunnen morgen voor 16 Euro kaarten kopen voor Campuspop met Anouk, Candy Dulfer, Ben Saundersenz.#batavierenrace";
         //String TweetStr = "Niks te doen dit weekend? Festival GOGBOT in Enschede (Sciencefiction, technologie, #robots) http://www.fantasymedia.nl/content/festival-gogbot-2013-enschede-sciencefiction-technologie-robots?utm_source=twitterfeed&utm_medium=twitter … http://2013.gogbot.nl";
         String TweetStr_en = "Some pictures of our show in Enschede by Paul Bergers";
@@ -143,7 +145,8 @@ public class EntityResolver
         try
         {
             // resolveEntity(TweetStr_en, "en");
-            resolveEntity(TweetStr_nl, "nl");
+            //resolveEntity(TweetStr_nl, "nl");
+            resolveEntityFast(TweetStr_nl, "nl");
         }
         catch (SQLException e)
         {
@@ -242,9 +245,84 @@ public class EntityResolver
         }
         return res;
     }
-
-    private final static String traindir = "/home/flokstra/crf/train/"; // first try
     
+    public static Vector<NamedEntity> resolveEntityFast(String TweetStr, String lang) throws SQLException
+    {
+        if ( verbose ) {
+    	System.out.println("resolveEntity: tweet="+TweetStr);
+    	System.out.println("resolveEntity: lang="+lang);
+    	}
+    	if ( !"nl".equals(lang) )
+    		lang  = "en";
+        if (verbose)
+        {
+            System.out.println("#!EntityResolver.resolveEntity() called.");
+        }
+        
+        // TODO: make this work both for "nl" end "en" language
+        if (!isTrained)
+        {
+            PrepareTrainingFile("nl");
+            PrepareTrainingFile("en");
+            isTrained = true;
+        }
+
+        List<Token> TokenList = new ArrayList<Token>();
+        Vector<Sentence> CRFsentences=new Vector<Sentence>();        
+
+        Corpus train_corpus = new Corpus("crfTrain_" + lang.toLowerCase() + ".txt",true);
+        CRModel_sp1 model = new CRModel_sp1(train_corpus, "CRF.model", false);
+        // System.out.println("#Training Sentences: " +
+        // train_corpus.getNumSentences());
+
+        //To be called with every new tweet
+        PrepareTestFile_StanfordTokenizerFast(TweetStr,TokenList,CRFsentences);
+        Corpus test_corpus = new Corpus(CRFsentences); 
+        // System.out.println("#Test Sentences: " +
+        // test_corpus.getNumSentences());      
+        
+
+        List<NamedEntity> NEs = new Decoder(train_corpus, test_corpus, model).decode(TokenList, TweetStr);
+
+        Vector<NamedEntity> res = new Vector<NamedEntity>();
+        for (int i = 0; i < NEs.size(); i++)
+        {
+            NamedEntity entity = NEs.get(i);
+
+            PreparedStatement ps = geonames_conn.prepareStatement("select name,latitude,longitude,country,alternatenames,population,elevation,fclass from geoname where lower(name) = ?;");
+            String candidate = entity.getMention().toLowerCase();
+            ps.setString(1, candidate);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next())
+            {
+                GeoEntity ge = new GeoEntity(entity, rs.getDouble("latitude"),
+                        rs.getDouble("longitude"), rs.getString("country"),
+                        rs.getString("alternatenames"),
+                        rs.getInt("population"), rs.getInt("elevation"),
+                        rs.getString("fclass"));
+                if (verbose)
+                {
+                    System.out.println("RESOLVED[" + ge + "]");
+                }
+            }
+
+            if (entity.isResolved())
+            {
+                res.add(entity);
+            }
+            else
+            {
+                if (verbose)
+                {
+                    System.out.println("UNRESOLVED[" + entity + "]");
+                }
+            }
+        }
+        return res;
+    }
+
+    //private final static String traindir = "/home/flokstra/crf/train/"; // first try
+    private final static String traindir = "F:/Projects/neogeo/named-entity-recog/target/classes/";
     
     private static void PrepareTrainingFile(String lang)
     {
@@ -262,7 +340,8 @@ public class EntityResolver
                 PathSource = "eng.train";
                 tagIndex=3;
             }
-            String PathTarget = "/tmp/" + "crfTrain_"+lang.toLowerCase()+".txt";
+            //String PathTarget = "/tmp/" + "crfTrain_"+lang.toLowerCase()+".txt";
+            String PathTarget = "F:/Projects/neogeo/named-entity-recog/" + "crfTrain_"+lang.toLowerCase()+".txt";
 
             InputStream is = null;
             String trainfile = null;
@@ -450,5 +529,67 @@ public class EntityResolver
             Logger.getLogger(EntityResolver.class.getName()).log(Level.SEVERE, null, ex);
         }
         return TokensList;
+    }
+    
+    private static void PrepareTestFile_StanfordTokenizerFast(String TweetStr,List<Token> TokensList,Vector<Sentence> CRFsentences)
+    {
+        TokensList.clear();
+        StringBuffer SB=new StringBuffer();
+        try
+        {
+            // creates a StanfordCoreNLP object, with POS tagging, lemmatization, NER, parsing, and coreference resolution 
+            Properties props = new Properties();
+            props.put("annotators", "tokenize, ssplit");
+            StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
+
+            // create an empty Annotation just with the given text
+            Annotation document = new Annotation(TweetStr);
+
+            // run all Annotators on this text
+            pipeline.annotate(document);
+
+            // these are all the sentences in this document
+            // a CoreMap is essentially a Map that uses class objects as keys and has values with custom types
+            List<CoreMap> sentences = document.get(SentencesAnnotation.class);
+            int sentenceSize = sentences.size();
+            int sentenceCnt = 0;
+            for (CoreMap sentence : sentences)
+            {
+                // traversing the words in the current sentence
+                // a CoreLabel is a CoreMap with additional token-specific methods
+                sentenceCnt++;
+                List<CoreLabel> Tokens = sentence.get(TokensAnnotation.class);
+                int tokenSize = Tokens.size();
+                int tokenCnt = 0;
+                for (CoreLabel token : Tokens)
+                {
+                    tokenCnt++;
+                    String word = token.get(TextAnnotation.class);
+                    int offset = token.beginPosition();
+                    TokensList.add(new Token(word, offset));
+                    String feature = "";
+                    if (Character.isUpperCase(word.charAt(0)))
+                    {
+                        feature = "t";
+                    }
+                    else
+                    {
+                        feature = "f";
+                    }
+                    SB.append(word + "\t" + feature + "\t" + "O");
+                    if (!(sentenceCnt == sentenceSize && tokenCnt == tokenSize))
+                    {
+                        SB.append("\n");
+                    }
+                }
+            }
+            Sentence CRFsentence=new Sentence(SB.toString());
+            CRFsentences.add(CRFsentence);
+
+        }
+        catch (Exception ex)
+        {
+            Logger.getLogger(EntityResolver.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

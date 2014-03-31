@@ -649,7 +649,7 @@ toen	f	O
 nog	f	O
 PVV	t	B-NE
 )	f	O
-Ën	t	O
+èn	f	O
 met	f	O
 de	f	O
 SP	t	B-NE
@@ -1126,7 +1126,7 @@ debacle	f	O
 .	f	O
 
 Die	t	O
-officiÎle	f	O
+officiële	f	O
 reden	f	O
 gaf	f	O
 Verwilghen	t	B-NE
@@ -1179,7 +1179,7 @@ Dierickx	t	I-NE
 en	f	O
 schepen	f	O
 voor	f	O
-FinanciÎn	t	B-NE
+Financiën	t	B-NE
 Marcel	t	B-NE
 Borms	t	I-NE
 .	f	O
@@ -1668,7 +1668,7 @@ hele	f	O
 buurt	f	O
 rond	f	O
 de	f	O
-crËche	f	O
+crèche	f	O
 is	f	O
 hermetisch	f	O
 afgesloten	f	O
@@ -2141,7 +2141,7 @@ gehouden	f	O
 
 Ramotti	t	B-NE
 is	f	O
-ÈÈn	t	O
+één	f	O
 van	f	O
 de	f	O
 weinige	f	O
@@ -2212,7 +2212,7 @@ staatshervorming	f	O
 
 Niet	t	O
 in	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 en	f	O
 niet	f	O
 in	f	O
@@ -2361,13 +2361,13 @@ wijze	f	O
 .	f	O
 
 In	t	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 was	f	O
 dat	f	O
 dan	f	O
 nog	f	O
 vaak	f	O
-ÈÈn	t	O
+één	f	O
 strekking	f	O
 binnen	f	O
 de	f	O
@@ -2513,7 +2513,7 @@ ruzie	f	O
 .	f	O
 
 De	t	O
-crypto-maÁonnieke	f	O
+crypto-maçonnieke	f	O
 opleiding	f	O
 van	f	O
 prins	f	O
@@ -2553,7 +2553,7 @@ vrijdag	f	O
 juni	f	O
 2000	f	O
 
-BelgiÎ	t	B-NE
+België	t	B-NE
 vroeg	f	O
 natuurlijk	f	O
 om	f	O
@@ -2574,7 +2574,7 @@ monarchie	f	O
 Dat	t	O
 is	f	O
 in	f	O
-Groot-BrittanniÎ	t	B-NE
+Groot-Brittannië	t	B-NE
 zo	f	O
 ,	f	O
 dat	f	O
@@ -2595,7 +2595,7 @@ is	f	O
 uiteraard	f	O
 ook	f	O
 in	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 het	f	O
 geval	f	O
 .	f	O
@@ -2693,14 +2693,14 @@ zijn	f	O
 macht	f	O
 te	f	O
 behouden	f	O
-Èn	t	O
+én	f	O
 hij	f	O
 moest	f	O
 zijn	f	O
 toevlucht	f	O
 nemen	f	O
 tot	f	O
-canapÈpolitiek	f	O
+canapépolitiek	f	O
 ,	f	O
 schemerzones	f	O
 en	f	O
@@ -3194,7 +3194,7 @@ De	t	O
 ingehuurde	f	O
 zakenbank	f	O
 Lazard	t	B-NE
-FrËres	t	I-NE
+Frères	t	I-NE
 leurde	f	O
 al	f	O
 sinds	f	O
@@ -3419,7 +3419,7 @@ Invensys	t	B-NE
 .	f	O
 
 De	t	B-NE
-FinanciÎle	t	I-NE
+Financiële	t	I-NE
 Morgen	t	I-NE
 
 vrijdag	f	O
@@ -3431,7 +3431,7 @@ juni	f	O
 auteur	f	O
 
 Terugkeer	t	O
-Eli·n	t	B-NE
+Elián	t	B-NE
 naar	f	O
 Cuba	t	B-NE
 stap	f	O
@@ -3443,7 +3443,7 @@ In	t	O
 de	f	O
 Joegoslavische	t	B-NE
 republiek	f	O
-ServiÎ	t	B-NE
+Servië	t	B-NE
 zijn	f	O
 de	f	O
 afgelopen	f	O
@@ -3485,8 +3485,8 @@ van	f	O
 het	f	O
 Cubaanse	t	B-NE
 bootvluchtelingetje	f	O
-Eli·n	t	B-NE
-Gonz·lez	t	I-NE
+Elián	t	B-NE
+González	t	I-NE
 uit	f	O
 de	f	O
 Verenigde	t	B-NE
@@ -3550,7 +3550,7 @@ te	f	O
 varen	f	O
 van	f	O
 het	f	O
-ServiÎ	t	B-NE
+Servië	t	B-NE
 van	f	O
 Slobodan	t	B-NE
 Milosevic	t	I-NE
@@ -3652,7 +3652,7 @@ in	f	O
 de	f	O
 rechtszaak	f	O
 die	f	O
-Eli·ns	t	B-NE
+Eliáns	t	B-NE
 familie	f	O
 uit	f	O
 Miami	t	B-NE
@@ -3892,7 +3892,7 @@ en	f	O
 een	f	O
 vliegtuig	f	O
 richting	f	O
-LibiÎ	t	B-NE
+Libië	t	B-NE
 eiste	f	O
 .	f	O
 
@@ -4265,7 +4265,7 @@ Een	t	O
 door	f	O
 het	f	O
 Hoog	t	B-NE
-ComitÈ	t	I-NE
+Comité	t	I-NE
 van	f	I-NE
 Toezicht	t	I-NE
 in	f	O
@@ -4277,7 +4277,7 @@ haar	f	O
 advocaat	f	O
 aan	f	O
 zijn	f	O
-cliÎnt	f	O
+cliënt	f	O
 laat	f	O
 geen	f	O
 twijfel	f	O
@@ -4680,7 +4680,7 @@ Casagrande	t	B-NE
 verleden	f	O
 week	f	O
 maandag	f	O
-geÔmponeerd	f	O
+geïmponeerd	f	O
 en	f	O
 ook	f	O
 in	f	O
@@ -4841,9 +4841,9 @@ van	f	O
 morgen	f	O
 over	f	O
 de	f	O
-MontgenËvre	t	B-NE
+Montgenèvre	t	B-NE
 en	f	O
-SestriËre	t	B-NE
+Sestrière	t	B-NE
 .	f	O
 
 pagina	f	O
@@ -5305,7 +5305,7 @@ in	f	O
 de	f	O
 Ronde	t	B-NE
 van	f	I-NE
-ItaliÎ	t	I-NE
+Italië	t	I-NE
 .	f	O
 
 De	t	O
@@ -5884,7 +5884,7 @@ Col	t	B-NE
 8	f	O
 .	f	O
 
-W¸st	t	B-NE
+Wüst	t	B-NE
 (	f	O
 Dui	t	B-NE
 /	f	O
@@ -6226,7 +6226,7 @@ z.t.	f	O
 
 Ronde	t	B-NE
 van	f	I-NE
-ItaliÎ:17de	t	I-NE
+Italië:17de	t	I-NE
 rit	f	O
 :	f	O
 1	f	O
@@ -6235,7 +6235,7 @@ rit	f	O
 Grote	t	B-NE
 Prijs	t	I-NE
 van	f	I-NE
-WalloniÎ	t	I-NE
+Wallonië	t	I-NE
 (	f	O
 categorie	f	O
 1.2	f	O
@@ -6321,10 +6321,10 @@ publicatie	f	O
 
 Ronde	t	B-NE
 van	f	I-NE
-ItaliÎ	t	I-NE
+Italië	t	I-NE
 :	f	O
 
-Klˆden	t	B-NE
+Klöden	t	B-NE
 (	f	O
 Dui	t	B-NE
 )	f	O
@@ -6498,7 +6498,7 @@ Zwe	t	B-NE
 15	f	O
 .	f	O
 
-Bˆlts	t	B-NE
+Bölts	t	B-NE
 (	f	O
 Dui	t	B-NE
 )	f	O
@@ -6672,7 +6672,7 @@ Ita	t	B-NE
 4	f	O
 .	f	O
 
-NoË	t	B-NE
+Noè	t	B-NE
 (	f	O
 Ita	t	B-NE
 )	f	O
@@ -6697,7 +6697,7 @@ Den	t	B-NE
 9	f	O
 .	f	O
 
-Bˆlts	t	B-NE
+Bölts	t	B-NE
 (	f	O
 Dui	t	B-NE
 )	f	O
@@ -6715,7 +6715,7 @@ Col	t	B-NE
 8	f	O
 .	f	O
 
-Klˆden	t	B-NE
+Klöden	t	B-NE
 (	f	O
 Dui	t	B-NE
 )	f	O
@@ -6725,7 +6725,7 @@ op	f	O
 3	f	O
 .	f	O
 
-W¸st	t	B-NE
+Wüst	t	B-NE
 (	f	O
 Dui	t	B-NE
 )	f	O
@@ -6789,7 +6789,7 @@ u	f	O
 2	f	O
 .	f	O
 
-NoË	t	B-NE
+Noè	t	B-NE
 (	f	O
 Ita	t	B-NE
 )	f	O
@@ -7087,7 +7087,7 @@ Tour	t	B-NE
 eigenlijk	f	O
 liever	f	O
 de	f	O
-DauphinÈ	t	B-NE
+Dauphiné	t	B-NE
 (	f	O
 4	f	O
 -	f	O
@@ -7243,7 +7243,7 @@ voor	f	O
 bekeken	f	O
 .	f	O
 
-EÈn	t	O
+Eén	t	O
 ding	f	O
 moge	f	O
 bij	f	O
@@ -7280,7 +7280,7 @@ Wereldbeker	t	B-NE
 nodig	f	O
 alvorens	f	O
 de	f	O
-dËclic	f	O
+dèclic	f	O
 zich	f	O
 aankondigde	f	O
 .	f	O
@@ -7470,7 +7470,7 @@ Godefroot	t	I-NE
 de	f	O
 GP	t	B-NE
 van	f	I-NE
-WalloniÎ	t	I-NE
+Wallonië	t	I-NE
 (	f	O
 1.2	f	O
 )	f	O
@@ -7769,7 +7769,7 @@ lijst	f	O
 .	f	O
 
 Nummer	t	O
-ÈÈn	t	O
+één	f	O
 op	f	O
 de	f	O
 lijst	f	O
@@ -7799,7 +7799,7 @@ gemeente	f	O
 wordt	f	O
 aangevoerd	f	O
 door	f	O
-AndrÈ	t	B-NE
+André	t	B-NE
 Crahay	t	I-NE
 ,	f	O
 een	f	O
@@ -8174,7 +8174,7 @@ Ethiopische	t	B-NE
 minister	f	O
 .	f	O
 
-EthiopiÎ	t	B-NE
+Ethiopië	t	B-NE
 deed	f	O
 die	f	O
 nadat	f	O
@@ -8197,7 +8197,7 @@ terugveroverd	f	O
 
 sectie	f	O
 
-WÈl	t	O
+Wél	t	O
 wil	f	O
 Addis	t	B-NE
 Abeba	t	I-NE
@@ -8253,7 +8253,7 @@ uitspraak	f	O
 
 Eritrea	t	B-NE
 en	f	O
-EthiopiÎ	t	B-NE
+Ethiopië	t	B-NE
 zijn	f	O
 het	f	O
 oneens	f	O
@@ -8266,11 +8266,11 @@ de	f	O
 huidige	f	O
 situatie	f	O
 algemeen	f	O
-geÔnterpreteerd	f	O
+geïnterpreteerd	f	O
 als	f	O
 een	f	O
 waarin	f	O
-EthiopiÎ	t	B-NE
+Ethiopië	t	B-NE
 wegens	f	O
 zijn	f	O
 recente	f	O
@@ -8341,7 +8341,7 @@ de	f	O
 persagentschappen	f	O
 
 Volgens	t	O
-EthiopiÎ	t	B-NE
+Ethiopië	t	B-NE
 is	f	O
 het	f	O
 wapengekletter	f	O
@@ -8394,10 +8394,10 @@ beetje	f	O
 als	f	O
 klappen	f	O
 met	f	O
-ÈÈn	t	O
+één	f	O
 hand	f	O
 :	f	O
-EthiopiÎ	t	B-NE
+Ethiopië	t	B-NE
 en	f	O
 Eritrea	t	B-NE
 ,	f	O
@@ -8452,7 +8452,7 @@ hertekenen	f	O
 ,	f	O
 zou	f	O
 er	f	O
-financiÎle	f	O
+financiële	f	O
 compensatie	f	O
 moeten	f	O
 komen	f	O
@@ -8496,7 +8496,7 @@ jaar	f	O
 oude	f	O
 conflict	f	O
 tussen	f	O
-EthiopiÎ	t	B-NE
+Ethiopië	t	B-NE
 en	f	O
 Eritrea	t	B-NE
 ,	f	O
@@ -8718,7 +8718,7 @@ te	f	O
 verdelen	f	O
 .	f	O
 
-FinanciÎle	t	O
+Financiële	t	O
 participatie	f	O
 kan	f	O
 de	f	O
@@ -8805,7 +8805,7 @@ in	f	O
 handen	f	O
 van	f	O
 de	f	O
-privÈ-sector	f	O
+privé-sector	f	O
 te	f	O
 geven	f	O
 "	f	O
@@ -8820,7 +8820,7 @@ bezwoer	f	O
 de	f	O
 regering	f	O
 de	f	O
-privÈ-maatschappijen	f	O
+privé-maatschappijen	f	O
 in	f	O
 de	f	O
 verzekeringssector	f	O
@@ -9071,7 +9071,7 @@ gehandicapten	f	O
 en	f	O
 werklozen	f	O
 in	f	O
-financiÎle	f	O
+financiële	f	O
 nood	f	O
 krijgen	f	O
 niets	f	O
@@ -9705,7 +9705,7 @@ dergelijke	f	O
 maatregelen	f	O
 ,	f	O
 maar	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 blijft	f	O
 achter	f	O
 .	f	O
@@ -10027,7 +10027,7 @@ van	f	O
 1994	f	O
 er	f	O
 in	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 1.200	f	O
 personen	f	O
 gestorven	f	O
@@ -10256,7 +10256,7 @@ Verkeer	t	B-NE
 Economische	t	B-NE
 Zaken	t	I-NE
 en	f	O
-FinanciÎn	t	B-NE
+Financiën	t	B-NE
 .	f	O
 
 Mijn	t	O
@@ -10359,7 +10359,7 @@ dat	f	O
 de	f	O
 Antwerpse	t	B-NE
 advocaat	f	O
-AndrÈ	t	B-NE
+André	t	B-NE
 Gantman	t	I-NE
 als	f	O
 lobbyman	f	O
@@ -10389,7 +10389,7 @@ bij	f	O
 het	f	O
 kabinet	f	O
 van	f	O
-FinanciÎn	t	B-NE
+Financiën	t	B-NE
 .	f	O
 
 "	f	O
@@ -10624,7 +10624,7 @@ hij	f	O
 Toenmalig	t	O
 minister	f	O
 van	f	O
-FinanciÎn	t	B-NE
+Financiën	t	B-NE
 Philippe	t	B-NE
 Maystadt	t	I-NE
 (	f	O
@@ -10758,10 +10758,10 @@ de	f	O
 lessen	f	O
 van	f	O
 de	f	O
-financiÎle	f	O
+financiële	f	O
 crises	f	O
 in	f	O
-AziÎ	t	B-NE
+Azië	t	B-NE
 is	f	O
 dat	f	O
 het	f	O
@@ -10783,7 +10783,7 @@ dergelijke	f	O
 veranderingen	f	O
 .	f	O
 
-Kˆhler	t	B-NE
+Köhler	t	B-NE
 heeft	f	O
 verder	f	O
 gezegd	f	O
@@ -10844,7 +10844,7 @@ Chuan	t	B-NE
 Leekpai	t	I-NE
 ,	f	O
 vroeg	f	O
-Kˆhler	t	B-NE
+Köhler	t	B-NE
 lering	f	O
 te	f	O
 trekken	f	O
@@ -10921,7 +10921,7 @@ in	f	O
 juli	f	O
 1997	f	O
 de	f	O
-financiÎle	f	O
+financiële	f	O
 crisis	f	O
 die	f	O
 vervolgens	f	O
@@ -10972,7 +10972,7 @@ het	f	O
 de	f	O
 problemen	f	O
 in	f	O
-AziÎ	t	B-NE
+Azië	t	B-NE
 niet	f	O
 tijdig	f	O
 zag	f	O
@@ -10982,12 +10982,12 @@ aankomen	f	O
 publicatiedatum	f	O
 
 Horst	t	B-NE
-Kˆhler	t	I-NE
+Köhler	t	I-NE
 
 Dit	t	O
 heeft	f	O
 Horst	t	B-NE
-Kˆhler	t	I-NE
+Köhler	t	I-NE
 ,	f	O
 de	f	O
 in	f	O
@@ -11008,7 +11008,7 @@ hij	f	O
 een	f	O
 rondreis	f	O
 door	f	O
-AziÎ	t	B-NE
+Azië	t	B-NE
 maakt	f	O
 .	f	O
 
@@ -11032,7 +11032,7 @@ te	f	O
 nemen	f	O
 ,	f	O
 aldus	f	O
-Kˆhler	t	B-NE
+Köhler	t	B-NE
 .	f	O
 
 Het	t	O
@@ -11055,7 +11055,7 @@ Congres	t	B-NE
 ,	f	O
 zo	f	O
 meent	f	O
-Kˆhler	t	B-NE
+Köhler	t	B-NE
 .	f	O
 
 Directeur	t	O
@@ -11073,7 +11073,7 @@ luisteren	f	O
 sectie	f	O
 
 De	t	B-NE
-FinanciÎle	t	I-NE
+Financiële	t	I-NE
 Morgen	t	I-NE
 
 Algemeen	t	O
@@ -11389,7 +11389,7 @@ maken	f	O
 tussen	f	O
 speculatieve	f	O
 en	f	O
-reÎle	f	O
+reële	f	O
 transacties	f	O
 .	f	O
 
@@ -11474,7 +11474,7 @@ Daarnaast	t	O
 wil	f	O
 de	f	O
 commissie	f	O
-FinanciÎn	t	B-NE
+Financiën	t	B-NE
 van	f	O
 de	f	O
 Senaat	t	B-NE
@@ -11553,7 +11553,7 @@ zien	f	O
 besliste	f	O
 minister	f	O
 van	f	O
-FinanciÎn	t	B-NE
+Financiën	t	B-NE
 Didier	t	B-NE
 Reynders	t	I-NE
 (	f	O
@@ -11588,7 +11588,7 @@ winsten	f	O
 '	f	O
 ondemocratisch	f	O
 en	f	O
-inefficiÎnt	f	O
+inefficiënt	f	O
 '	f	O
 
 Quaden	t	B-NE
@@ -11626,7 +11626,7 @@ John	t	B-NE
 Vandaele	t	I-NE
 
 Commissie	t	B-NE
-FinanciÎn	t	I-NE
+Financiën	t	I-NE
 
 Die	t	O
 heffing	f	O
@@ -11638,7 +11638,7 @@ het	f	O
 Vlaams	t	B-NE
 netwerk	f	I-NE
 tegen	f	I-NE
-financiÎle	f	I-NE
+financiële	f	I-NE
 speculatie	f	I-NE
 ,	f	O
 dat	f	O
@@ -11654,7 +11654,7 @@ ngo's	f	O
 .	f	O
 
 De	t	B-NE
-FinanciÎle	t	I-NE
+Financiële	t	I-NE
 Morgen	t	I-NE
 
 '	f	O
@@ -11731,7 +11731,7 @@ Martin	t	I-NE
 noemde	f	O
 de	f	O
 heffing	f	O
-inefficiÎnt	f	O
+inefficiënt	f	O
 ,	f	O
 ondemocratisch	f	O
 en	f	O
@@ -11772,7 +11772,7 @@ Quaden	t	B-NE
 wees	f	O
 erop	f	O
 dat	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 met	f	O
 de	f	O
 zogenaamde	f	O
@@ -11835,7 +11835,7 @@ publicatiedatum	f	O
 
 Schepen	t	O
 van	f	O
-FinanciÎn	t	B-NE
+Financiën	t	B-NE
 Hugo	t	B-NE
 Schiltz	t	I-NE
 (	f	O
@@ -11941,7 +11941,7 @@ de	f	O
 gemeenten	f	O
 een	f	O
 aantal	f	O
-financiÎle	f	O
+financiële	f	O
 beleidskeuzen	f	O
 kunnen	f	O
 bespreken	f	O
@@ -12379,7 +12379,7 @@ onderschrijven	f	O
 .	f	O
 
 De	t	B-NE
-FinanciÎle	t	I-NE
+Financiële	t	I-NE
 Morgen	t	I-NE
 
 De	t	O
@@ -12698,7 +12698,7 @@ van	f	O
 de	f	O
 Wasserbilligse	t	B-NE
 politie	f	O
-AndrÈ	t	B-NE
+André	t	B-NE
 Colas	t	I-NE
 kon	f	O
 enkel	f	O
@@ -12820,7 +12820,7 @@ uit	f	O
 Algerije	t	B-NE
 maar	f	O
 uit	f	O
-TunesiÎ	t	B-NE
+Tunesië	t	B-NE
 afkomstig	f	O
 is	f	O
 en	f	O
@@ -13143,7 +13143,7 @@ theater	f	O
 ,	f	O
 film	f	O
 ,	f	O
-cafÈ	f	O
+café	f	O
 ...	f	O
 
 Peter-Jan	t	B-NE
@@ -13156,7 +13156,7 @@ stelt	f	O
 tenminste	f	O
 het	f	O
 Vrouwen	t	B-NE
-OverlegcomitÈ	t	I-NE
+Overlegcomité	t	I-NE
 (	f	O
 VOC	t	B-NE
 )	f	O
@@ -13697,7 +13697,7 @@ keer	f	O
 dat	f	O
 ze	f	O
 op	f	O
-ÈÈn	t	O
+één	f	O
 overwinning	f	O
 van	f	O
 de	f	O
@@ -14365,7 +14365,7 @@ paria	f	O
 Buitenland	t	B-NE
 
 Tijdens	t	O
-scËnes	f	O
+scènes	f	O
 waaruit	f	O
 weinig	f	O
 vertrouwen	f	O
@@ -15037,7 +15037,7 @@ sprake	f	O
 en	f	O
 alleen	f	O
 Justine	t	B-NE
-HÈnin	t	I-NE
+Hénin	t	I-NE
 gaf	f	O
 blijk	f	O
 van	f	O
@@ -15698,7 +15698,7 @@ in	f	O
 Ik	t	O
 leefde	f	O
 tot	f	O
-ÈÈn	t	O
+één	f	O
 uur	f	O
 voor	f	O
 de	f	O
@@ -16168,7 +16168,7 @@ zulke	f	O
 momenten	f	O
 in	f	O
 je	f	O
-carriËre	f	O
+carrière	f	O
 moet	f	O
 je	f	O
 genieten	f	O
@@ -17376,7 +17376,7 @@ Spa	t	B-NE
 -	f	O
 Agenor	t	B-NE
 (	f	O
-HaÔ	t	B-NE
+Haï	t	B-NE
 )	f	O
 6	f	O
 -	f	O
@@ -19022,7 +19022,7 @@ stonden	f	O
 op	f	O
 een	f	O
 internetsite	f	O
-geÔndexeerd	f	O
+geïndexeerd	f	O
 en	f	O
 konden	f	O
 via	f	O
@@ -19244,7 +19244,7 @@ bulletins	f	O
 exemplaren	f	O
 .	f	O
 
-EÈn	t	O
+Eén	t	O
 winnaar	f	O
 met	f	O
 zes	f	O
@@ -19470,7 +19470,7 @@ Euro	t	B-NE
 2000	f	I-NE
 de	f	O
 match	f	O
-BelgiÎ-Turkije	t	B-NE
+België-Turkije	t	B-NE
 gespeeld	f	O
 .	f	O
 
@@ -19737,7 +19737,7 @@ is	f	O
 "	f	O
 ,	f	O
 zei	f	O
-GabriÎls	t	B-NE
+Gabriëls	t	B-NE
 .	f	O
 
 vrijdag	f	O
@@ -19761,7 +19761,7 @@ Volksgezondheid	t	B-NE
 ,	f	O
 respectievelijk	f	O
 Jaak	t	B-NE
-GabriÎls	t	I-NE
+Gabriëls	t	I-NE
 (	f	O
 VLD	t	B-NE
 )	f	O
@@ -19852,7 +19852,7 @@ genomen	f	O
 melkstalen	f	O
 bleek	f	O
 er	f	O
-ÈÈn	t	O
+één	f	O
 positief	f	O
 .	f	O
 
@@ -19902,7 +19902,7 @@ ook	f	O
 bij	f	O
 klanten	f	O
 :	f	O
-oliÎn	f	O
+oliën	f	O
 ,	f	O
 cement	f	O
 dat	f	O
@@ -19961,7 +19961,7 @@ ligt	f	O
 de	f	O
 PCB-norm	t	B-NE
 die	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 hanteert	f	O
 sinds	f	O
 de	f	O
@@ -20098,7 +20098,7 @@ slachthuis	f	O
 gevoerd	f	O
 en	f	O
 6	f	O
-geÎxporteerd	f	O
+geëxporteerd	f	O
 naar	f	O
 het	f	O
 buitenland	f	O
@@ -20398,7 +20398,7 @@ preventiecontracten	f	O
 ,	f	O
 die	f	O
 momenteel	f	O
-geÎvalueerd	f	O
+geëvalueerd	f	O
 worden	f	O
 ,	f	O
 zullen	f	O
@@ -20424,7 +20424,7 @@ verdedigingskosten	f	O
 te	f	O
 dekken	f	O
 :	f	O
-privÈ-verzekeringsmaatschappijen	f	O
+privé-verzekeringsmaatschappijen	f	O
 of	f	O
 ziekenfondsen	f	O
 .	f	O
@@ -20537,7 +20537,7 @@ van	f	O
 onder	f	O
 meer	f	O
 de	f	O
-financiÎle	f	O
+financiële	f	O
 delinquentie	f	O
 ,	f	O
 het	f	O
@@ -20627,7 +20627,7 @@ van	f	O
 samenwerking	f	O
 met	f	O
 de	f	O
-privÈ-sector	f	O
+privé-sector	f	O
 ,	f	O
 waarop	f	O
 in	f	O
@@ -20638,7 +20638,7 @@ kwam	f	O
 toen	f	O
 ter	f	O
 zake	f	O
-ideeÎn	f	O
+ideeën	f	O
 werden	f	O
 gelanceerd	f	O
 voor	f	O
@@ -20905,7 +20905,7 @@ Tour	t	B-NE
 gezet	f	O
 .	f	O
 
-BelgiÎ	t	B-NE
+België	t	B-NE
 :	f	O
 Lotto	t	B-NE
 (	f	O
@@ -20930,7 +20930,7 @@ rekening	f	O
 Wildcards	t	O
 :	f	O
 
-ItaliÎ	t	B-NE
+Italië	t	B-NE
 :	f	O
 Mapei	t	B-NE
 -	f	I-NE
@@ -20996,14 +20996,14 @@ Tour	t	B-NE
 .	f	O
 
 Alleen	t	O
-naÔef	f	O
+naïef	f	O
 .	f	O
 
 Spanje	t	B-NE
 :	f	O
 Banesto	t	B-NE
 (	f	O
-Z¸lle	t	B-NE
+Zülle	t	B-NE
 )	f	O
 --	f	O
 Once	t	B-NE
@@ -21800,7 +21800,7 @@ Denemarken	t	B-NE
 Memory	t	B-NE
 Card	t	I-NE
 (	f	O
-Sandstˆd	t	B-NE
+Sandstöd	t	B-NE
 )	f	O
 
 Bonjour	t	B-NE
@@ -21842,7 +21842,7 @@ van	f	I-NE
 de	f	I-NE
 Oise	t	I-NE
 (	f	O
-Sandstˆdt	t	B-NE
+Sandstödt	t	B-NE
 )	f	O
 en	f	O
 geen	f	O
@@ -21868,7 +21868,7 @@ het	f	O
 adres	f	O
 van	f	O
 de	f	O
-SociÈtÈ	t	B-NE
+Société	t	B-NE
 du	f	I-NE
 Tour	t	I-NE
 de	f	I-NE
@@ -22084,7 +22084,7 @@ Tour	t	B-NE
 Frankrijk	t	B-NE
 :	f	O
 AG2R	t	B-NE
-PrÈvoyance	t	I-NE
+Prévoyance	t	I-NE
 (	f	O
 Kirsipuu	t	B-NE
 )	f	O
@@ -22095,7 +22095,7 @@ Vandenbroucke	t	B-NE
 )	f	O
 --	f	O
 La	t	B-NE
-FranÁaise	t	I-NE
+Française	t	I-NE
 des	f	I-NE
 Jeux	t	I-NE
 (	f	O
@@ -22107,7 +22107,7 @@ Festina	t	B-NE
 Casero	t	B-NE
 )	f	O
 --	f	O
-CrÈdit	t	B-NE
+Crédit	t	B-NE
 Agricole	t	I-NE
 (	f	O
 Julich	t	B-NE
@@ -22708,7 +22708,7 @@ met	f	O
 een	f	O
 vliegtuig	f	O
 richting	f	O
-LibiÎ	t	B-NE
+Libië	t	B-NE
 wilde	f	O
 .	f	O
 
@@ -22857,7 +22857,7 @@ frank	f	O
 miljoen	f	O
 euro	f	O
 )	f	O
-geÎist	f	O
+geëist	f	O
 hebben	f	O
 ,	f	O
 maar	f	O
@@ -22936,7 +22936,7 @@ sliepen	f	O
 pagina	f	O
 
 Buiten	t	O
-ÈÈn	t	O
+één	f	O
 Belgisch	t	B-NE
 meisje	f	O
 van	f	O
@@ -23184,7 +23184,7 @@ is	f	O
 voorstander	f	O
 van	f	O
 de	f	O
-linguÔstische	f	O
+linguïstische	f	O
 zuivering	f	O
 van	f	O
 Brussel	t	B-NE
@@ -23334,7 +23334,7 @@ en	f	O
 bruinen	f	O
 ,	f	O
 was	f	O
-ÈÈn	t	O
+één	f	O
 groot	f	O
 eerbetoon	f	O
 aan	f	O
@@ -23476,7 +23476,7 @@ wijk	f	O
 ,	f	O
 mobiliseert	f	O
 de	f	O
-energieÎn	f	O
+energieën	f	O
 rond	f	O
 een	f	O
 collectieve	f	O
@@ -23784,7 +23784,7 @@ was	f	O
 en	f	O
 die	f	O
 nu	f	O
-ÈÈn	t	O
+één	f	O
 van	f	O
 Brussels	t	B-NE
 vele	f	O
@@ -23802,7 +23802,7 @@ editie	f	O
 Er	t	O
 zijn	f	O
 twee	f	O
-officiÎle	f	O
+officiële	f	O
 talen	f	O
 in	f	O
 mijn	f	O
@@ -23836,7 +23836,7 @@ sponsors	f	O
 misschien	f	O
 niet	f	O
 graag	f	O
-geÔdentificeerd	f	O
+geïdentificeerd	f	O
 zouden	f	O
 worden	f	O
 met	f	O
@@ -24095,7 +24095,7 @@ publicatie	f	O
 In	t	O
 opvolging	f	O
 van	f	O
-FranÁoise	t	B-NE
+Françoise	t	B-NE
 Gustin	t	I-NE
 werd	f	O
 zopas	f	O
@@ -24244,11 +24244,11 @@ Volgens	t	O
 de	f	O
 advocaten	f	O
 van	f	O
-HabrÈ	t	B-NE
+Habré	t	B-NE
 kan	f	O
 Senegal	t	B-NE
 hun	f	O
-cliÎnt	f	O
+cliënt	f	O
 niet	f	O
 veroordelen	f	O
 op	f	O
@@ -24288,7 +24288,7 @@ onduidelijk	f	O
 .	f	O
 
 De	t	O
-HabrÈ-zaak	t	B-NE
+Habré-zaak	t	B-NE
 is	f	O
 een	f	O
 van	f	O
@@ -24337,7 +24337,7 @@ Chileense	t	B-NE
 generaal	f	O
 .	f	O
 
-HabrÈ	t	B-NE
+Habré	t	B-NE
 werd	f	O
 meteen	f	O
 onder	f	O
@@ -24456,7 +24456,7 @@ de	f	O
 talloze	f	O
 mensen	f	O
 die	f	O
-HabrÈ	t	B-NE
+Habré	t	B-NE
 deed	f	O
 vermoorden	f	O
 in	f	O
@@ -24513,7 +24513,7 @@ zich	f	O
 over	f	O
 de	f	O
 zaak-Hissene	f	B-NE
-HabrÈ	t	I-NE
+Habré	t	I-NE
 ,	f	O
 een	f	O
 voormalige	f	O
@@ -24561,7 +24561,7 @@ naar	f	O
 gerechtigheid	f	O
 .	f	O
 
-HabrÈ	t	B-NE
+Habré	t	B-NE
 vertrok	f	O
 in	f	O
 ballingschap	f	O
@@ -24586,7 +24586,7 @@ laatste	f	O
 tijd	f	O
 ook	f	O
 in	f	O
-HabrÈs	t	B-NE
+Habrés	t	B-NE
 geval	f	O
 aanwijzingen	f	O
 dat	f	O
@@ -24602,7 +24602,7 @@ opportuun	f	O
 vinden	f	O
 .	f	O
 
-HabrÈ	t	B-NE
+Habré	t	B-NE
 greep	f	O
 in	f	O
 1982	f	O
@@ -24650,7 +24650,7 @@ aan	f	O
 de	f	O
 zijde	f	O
 van	f	O
-HabrÈ	t	B-NE
+Habré	t	B-NE
 geschaard	f	O
 .	f	O
 
@@ -24704,10 +24704,10 @@ president	f	O
 Abdoulaye	t	B-NE
 Wade	t	I-NE
 heeft	f	O
-MadickÈ	t	B-NE
+Madické	t	B-NE
 Niang	t	I-NE
 ,	f	O
-HabrÈs	t	B-NE
+Habrés	t	B-NE
 advocaat	f	O
 ,	f	O
 aangesteld	f	O
@@ -24757,7 +24757,7 @@ bekend	f	O
 
 auteur	f	O
 
-geÎxporteerd	f	O
+geëxporteerd	f	O
 naar	f	O
 landen	f	O
 waar	f	O
@@ -24963,7 +24963,7 @@ dan	f	O
 weer	f	O
 een	f	O
 technisch	f	O
-comitÈ	f	O
+comité	f	O
 van	f	O
 twaalf	f	O
 personen	f	O
@@ -25118,7 +25118,7 @@ betwist	f	O
 dat	f	O
 het	f	O
 om	f	O
-confidentiÎle	f	O
+confidentiële	f	O
 gegevens	f	O
 ging	f	O
 .	f	O
@@ -25241,7 +25241,7 @@ Het	t	O
 voorstel	f	O
 kwam	f	O
 van	f	O
-AndrÈ	t	B-NE
+André	t	B-NE
 Gantman	t	I-NE
 ,	f	O
 in	f	O
@@ -25300,7 +25300,7 @@ bestond	f	O
 
 Na	t	O
 een	f	O
-carriËre	f	O
+carrière	f	O
 van	f	O
 31	f	O
 jaar	f	O
@@ -25399,7 +25399,7 @@ angstvallig	f	O
 over	f	O
 gewaakt	f	O
 dat	f	O
-·lle	f	O
+álle	f	O
 belangrijke	f	O
 beslissingen	f	O
 gebeurden	f	O
@@ -25410,7 +25410,7 @@ alle	f	O
 overheden	f	O
 .	f	O
 
-DÈsirÈ	t	B-NE
+Désiré	t	B-NE
 Van	t	I-NE
 den	f	I-NE
 Stockt	t	I-NE
@@ -25422,9 +25422,9 @@ verantwoordelijk	f	O
 voor	f	O
 de	f	O
 scheepskredieten	f	O
-Èn	t	O
+én	f	O
 als	f	O
-privÈ-persoon	f	O
+privé-persoon	f	O
 fiscaal	f	O
 adviseur	f	O
 van	f	O
@@ -25480,7 +25480,7 @@ Rosenfeld	t	B-NE
 niet	f	O
 alleen	f	O
 een	f	O
-cliÎnt	f	O
+cliënt	f	O
 maar	f	O
 ook	f	O
 een	f	O
@@ -25610,7 +25610,7 @@ hij	f	O
 
 Ontslagen	t	O
 NMKN-directeur	t	B-NE
-DÈsirÈ	t	B-NE
+Désiré	t	B-NE
 Van	t	I-NE
 den	f	I-NE
 Stockt	t	I-NE
@@ -25787,7 +25787,7 @@ gekregen	f	O
 Met	t	O
 het	f	O
 optreden	f	O
-zÈlf	f	O
+zélf	f	O
 viel	f	O
 het	f	O
 daarentegen	f	O
@@ -25845,7 +25845,7 @@ Arista-label	t	B-NE
 maar	f	O
 bovendien	f	O
 de	f	O
-Èchte	t	O
+échte	f	O
 verantwoordelijke	f	O
 is	f	O
 voor	f	O
@@ -25945,7 +25945,7 @@ een	f	O
 laagje	f	O
 stopverf	f	O
 geven	f	O
-Èn	t	O
+én	f	O
 bij	f	O
 je	f	O
 schoonouders	f	O
@@ -26071,7 +26071,7 @@ fladderen	f	O
 
 Beheerste	t	O
 en	f	O
-geÔnspireerde	f	O
+geïnspireerde	f	O
 Carlos	t	B-NE
 Santana	t	I-NE
 in	f	O
@@ -26085,7 +26085,7 @@ zelf	f	O
 speelde	f	O
 vloeiend	f	O
 en	f	O
-geÔnspireerd	f	O
+geïnspireerd	f	O
 ,	f	O
 en	f	O
 wanneer	f	O
@@ -26520,7 +26520,7 @@ verschenen	f	O
 ,	f	O
 werden	f	O
 wereldwijde	f	O
-nummerÈÈnhits	f	O
+nummeréénhits	f	O
 ,	f	O
 en	f	O
 een	f	O
@@ -26588,7 +26588,7 @@ de	f	O
 groep	f	O
 uitgebreid	f	O
 met	f	O
-TourÈ	t	B-NE
+Touré	t	B-NE
 Kunda	t	I-NE
 ,	f	O
 het	f	O
@@ -26650,12 +26650,12 @@ ooit	f	O
 
 U	t	O
 mag	f	O
-ÈÈn	t	O
+één	f	O
 keer	f	O
 raden	f	O
 wie	f	O
 hem	f	O
-d‡t	f	O
+dàt	f	O
 idee	f	O
 heeft	f	O
 ingefluisterd	f	O
@@ -26811,7 +26811,7 @@ gebied	f	O
 zo	f	O
 groot	f	O
 als	f	O
-HawaÔ	t	B-NE
+Hawaï	t	B-NE
 verloren	f	O
 als	f	O
 gevolg	f	O
@@ -26895,7 +26895,7 @@ grootste	f	O
 Japanse	t	B-NE
 houtkapbedrijf	f	O
 in	f	O
-BraziliÎ	t	B-NE
+Brazilië	t	B-NE
 informeerde	f	O
 de	f	O
 politie	f	O
@@ -27168,7 +27168,7 @@ een	f	O
 formule	f	O
 waarbinnen	f	O
 zijn	f	O
-ideeÎn	f	O
+ideeën	f	O
 ,	f	O
 stellingnames	f	O
 en	f	O
@@ -27256,7 +27256,7 @@ Televisie	t	B-NE
 Vermeulen	t	B-NE
 zet	f	O
 zijn	f	O
-theorieÎn	f	O
+theorieën	f	O
 uiteen	f	O
 op	f	O
 televisie	f	O
@@ -27366,7 +27366,7 @@ voelt	f	O
 Elke	t	O
 uitzending	f	O
 duurt	f	O
-tweeÎneenhalf	f	O
+tweeëneenhalf	f	O
 uur	f	O
 ,	f	O
 maar	f	O
@@ -27470,7 +27470,7 @@ beter	f	O
 waarin	f	O
 hij	f	O
 allerlei	f	O
-controversiÎle	f	O
+controversiële	f	O
 stellingen	f	O
 poneerde	f	O
 over	f	O
@@ -28007,7 +28007,7 @@ Hal	t	B-NE
 hoewel	f	O
 een	f	O
 tikje	f	O
-naÔef	f	O
+naïef	f	O
 ,	f	O
 best	f	O
 intelligent	f	O
@@ -28326,7 +28326,7 @@ was	f	O
 
 Tijdens	t	O
 de	f	O
-vrijscËne	f	O
+vrijscène	f	O
 tussen	f	O
 Hal	t	B-NE
 en	f	O
@@ -28366,7 +28366,7 @@ Aidan	t	B-NE
 Chambers	t	I-NE
 geen	f	O
 enkele	f	O
-vrijscËne	f	O
+vrijscène	f	O
 heeft	f	O
 uitgeschreven	f	O
 ,	f	O
@@ -28684,7 +28684,7 @@ aan	f	O
 De	t	B-NE
 Morgen	t	I-NE
 
-OkÈ	t	O
+Oké	t	O
 ,	f	O
 het	f	O
 weegt	f	O
@@ -28721,7 +28721,7 @@ frisse	f	O
 duik	f	O
 in	f	O
 diens	f	O
-privÈ-openluchtzwembad	f	O
+privé-openluchtzwembad	f	O
 .	f	O
 
 sectie	f	O
@@ -28791,7 +28791,7 @@ een	f	O
 zomers	f	O
 sfeertje	f	O
 te	f	O
-creÎren	f	O
+creëren	f	O
 in	f	O
 een	f	O
 of	f	O
@@ -28914,7 +28914,7 @@ en	f	O
 Martine	t	B-NE
 Prenen	t	I-NE
 maar	f	O
-ÈÈn	t	O
+één	f	O
 centrale	f	O
 gast	f	O
 en	f	O
@@ -29332,7 +29332,7 @@ van	f	O
 het	f	O
 Meer	t	O
 van	f	O
-GenËve	t	B-NE
+Genève	t	B-NE
 .	f	O
 
 publicatiedatum	f	O
@@ -29748,7 +29748,7 @@ werd	f	O
 de	f	O
 directie	f	O
 van	f	O
-privÈ-luchtvaartmaatschappij	f	O
+privé-luchtvaartmaatschappij	f	O
 Itar	t	B-NE
 (	f	O
 Air	t	B-NE
@@ -29772,7 +29772,7 @@ belast	f	O
 met	f	O
 aankoop	f	O
 in	f	O
-Groot-BrittanniÎ	t	B-NE
+Groot-Brittannië	t	B-NE
 van	f	O
 drie	f	O
 helikopters	f	O
@@ -29781,7 +29781,7 @@ twee	f	O
 Bell	t	B-NE
 Rangers	t	I-NE
 en	f	O
-ÈÈn	t	O
+één	f	O
 Agusta	t	B-NE
 )	f	O
 .	f	O
@@ -29926,7 +29926,7 @@ waarin	f	O
 van	f	O
 een	f	O
 gelijkaardige	f	O
-presidentiÎle	f	O
+presidentiële	f	O
 bestelling	f	O
 gewag	f	O
 wordt	f	O
@@ -30083,7 +30083,7 @@ voor	f	O
 Kabila	t	B-NE
 een	f	O
 '	f	O
-presidentiÎle	f	O
+presidentiële	f	O
 luxehelikopter	f	O
 '	f	O
 bestelde	f	O
@@ -30273,7 +30273,7 @@ transitland	f	O
 in	f	O
 dit	f	O
 geval	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 ,	f	O
 moet	f	O
 dat	f	O
@@ -30305,7 +30305,7 @@ bodyguards	f	O
 ideaal	f	O
 voor	f	O
 een	f	O
-presidentiÎle	f	O
+presidentiële	f	O
 escorte	f	O
 dus	f	O
 .	f	O
@@ -30588,7 +30588,7 @@ samenwerken	f	O
 .	f	O
 
 Zes	t	O
-wereldpremiËres	f	O
+wereldpremières	f	O
 in	f	O
 nieuw	f	O
 seizoen	f	O
@@ -31022,7 +31022,7 @@ frank	f	O
 .	f	O
 
 Het	t	O
-financiÎle	f	O
+financiële	f	O
 evenwicht	f	O
 is	f	O
 nu	f	O
@@ -31063,7 +31063,7 @@ werd	f	O
 voorgezeten	f	O
 door	f	O
 burgemeester	f	O
-FranÁois-Xavier	t	B-NE
+François-Xavier	t	B-NE
 de	f	I-NE
 Donnea	t	I-NE
 .	f	O
@@ -31428,7 +31428,7 @@ te	f	O
 manipuleren	f	O
 en	f	O
 te	f	O
-beÔnvloeden	f	O
+beïnvloeden	f	O
 was	f	O
 door	f	O
 de	f	O
@@ -31457,7 +31457,7 @@ Uw	t	O
 karakter	f	O
 wordt	f	O
 makkelijk	f	O
-beÔnvloed	f	O
+beïnvloed	f	O
 door	f	O
 individuen	f	O
 die	f	O
@@ -31668,7 +31668,7 @@ aanklager	f	O
 had	f	O
 20	f	O
 jaar	f	O
-geÎist	f	O
+geëist	f	O
 .	f	O
 
 VN-Tribunaal	t	B-NE
@@ -31876,7 +31876,7 @@ traagheid	f	O
 Voor	t	O
 de	f	O
 modale	f	O
-IndiÎr	t	B-NE
+Indiër	t	B-NE
 betekent	f	O
 zulks	f	O
 dat	f	O
@@ -32158,7 +32158,7 @@ van	f	O
 de	f	O
 1	f	O
 miljard	f	O
-IndiÎrs	t	B-NE
+Indiërs	t	B-NE
 resideren	f	O
 er	f	O
 slechts	f	O
@@ -32342,7 +32342,7 @@ Westen	t	B-NE
 is	f	O
 dat	f	O
 50	f	O
-‡	f	O
+à	f	O
 100	f	O
 .	f	O
 
@@ -32357,7 +32357,7 @@ auteur	f	O
 Televisie	t	B-NE
 
 In	t	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 zendt	f	O
 alleen	f	O
 de	f	O
@@ -32391,7 +32391,7 @@ tegelijk	f	O
 .	f	O
 
 Eerst	t	O
-VTM-cafÈ	t	B-NE
+VTM-café	t	B-NE
 geopend	f	O
 in	f	O
 Oostende	t	B-NE
@@ -32414,7 +32414,7 @@ landen	f	O
 Daar	t	O
 heeft	f	O
 het	f	O
-cafÈ	f	O
+café	f	O
 onderdak	f	O
 gevonden	f	O
 in	f	O
@@ -32427,7 +32427,7 @@ Bagatelle	t	I-NE
 .	f	O
 
 Eerst	t	O
-VTM-cafÈ	t	B-NE
+VTM-café	t	B-NE
 geopend	f	O
 in	f	O
 OostendeBij	t	B-NE
@@ -32447,7 +32447,7 @@ films	f	O
 tegelijk	f	O
 draaien	f	O
 met	f	O
-ÈÈn	t	O
+één	f	O
 opname	f	O
 .	f	O
 
@@ -32541,7 +32541,7 @@ investeerder	f	O
 ADS-Leisuregroup	t	B-NE
 van	f	O
 zakenman	f	O
-AimÈ	t	B-NE
+Aimé	t	B-NE
 Desimpel	t	I-NE
 ontvingen	f	O
 een	f	O
@@ -32562,10 +32562,10 @@ inwijding	f	O
 van	f	O
 het	f	O
 eerste	f	O
-cafÈ	f	O
+café	f	O
 van	f	O
 de	f	O
-commerciÎle	f	O
+commerciële	f	O
 zender	f	O
 bij	f	O
 te	f	O
@@ -32604,7 +32604,7 @@ naar	f	O
 La	t	B-NE
 Dame	t	I-NE
 aux	f	I-NE
-CamÈlias	t	I-NE
+Camélias	t	I-NE
 van	f	O
 Alexandre	t	B-NE
 Dumas	t	I-NE
@@ -32714,7 +32714,7 @@ is	f	O
 woensdagavond	f	O
 het	f	O
 eerste	f	O
-VTM-cafÈ	t	B-NE
+VTM-café	t	B-NE
 geopend	f	O
 .	f	O
 
@@ -34171,7 +34171,7 @@ voorbij	f	O
 of	f	O
 SBS	t	B-NE
 start	f	O
-ÈÈn	t	O
+één	f	O
 of	f	O
 twee	f	O
 nieuwe	f	O
@@ -34528,7 +34528,7 @@ voor	f	O
 de	f	O
 oostkust	f	O
 van	f	O
-MaleisiÎ	t	B-NE
+Maleisië	t	B-NE
 op	f	O
 het	f	O
 kleine	f	O
@@ -34852,7 +34852,7 @@ gebeurt	f	O
 .	f	O
 
 In	t	O
-Groot-BrittanniÎ	t	B-NE
+Groot-Brittannië	t	B-NE
 wordt	f	O
 VT4	t	B-NE
 door	f	O
@@ -35469,7 +35469,7 @@ waren	f	O
 de	f	O
 VS	t	B-NE
 en	f	O
-Groot-BrittanniÎ	t	B-NE
+Groot-Brittannië	t	B-NE
 dicht	f	O
 wegens	f	O
 Memorial	t	B-NE
@@ -35481,7 +35481,7 @@ Brussel	t	B-NE
 ,	f	O
 Amsterdam	t	B-NE
 ,	f	O
-Z¸rich	t	B-NE
+Zürich	t	B-NE
 en	f	O
 de	f	O
 Scandinavische	t	B-NE
@@ -35597,7 +35597,7 @@ indexpunten	f	O
 .	f	O
 
 De	t	B-NE
-FinanciÎle	t	I-NE
+Financiële	t	I-NE
 Morgen	t	I-NE
 
 Goldman	t	B-NE
@@ -36250,7 +36250,7 @@ dergelijke	f	O
 maatregel	f	O
 bezwaarlijk	f	O
 door	f	O
-ÈÈn	t	O
+één	f	O
 minister	f	O
 kan	f	O
 worden	f	O
@@ -36334,7 +36334,7 @@ een	f	O
 brochure	f	O
 extra	f	O
 worden	f	O
-geÔnformeerd	f	O
+geïnformeerd	f	O
 .	f	O
 
 publicatie	f	O
@@ -36859,7 +36859,7 @@ interpretatie	f	O
 Gesteund	t	O
 op	f	O
 dit	f	O
-continu¸m	f	O
+continuüm	f	O
 van	f	O
 de	f	O
 omgevingsfactoren	f	O
@@ -37261,7 +37261,7 @@ Geert	t	B-NE
 De	t	I-NE
 Vlieger	t	I-NE
 ,	f	O
-FrÈdÈric	t	B-NE
+Frédéric	t	B-NE
 Herpoel	t	I-NE
 ,	f	O
 Jacky	t	B-NE
@@ -37458,7 +37458,7 @@ telecomoperatoren	f	O
 en	f	O
 hun	f	O
 mobiele	f	O
-cliÎnten	f	O
+cliënten	f	O
 .	f	O
 
 editie	f	O
@@ -37484,7 +37484,7 @@ jaar	f	O
 pagina	f	O
 
 De	t	B-NE
-FinanciÎle	t	I-NE
+Financiële	t	I-NE
 Morgen	t	I-NE
 
 Met	t	O
@@ -37621,7 +37621,7 @@ prijs	f	O
 voor	f	O
 pulp	f	O
 ,	f	O
-ÈÈn	t	O
+één	f	O
 van	f	O
 zijn	f	O
 grondstoffen	f	O
@@ -37638,7 +37638,7 @@ het	f	O
 ook	f	O
 om	f	O
 andere	f	O
-cliÎnten	f	O
+cliënten	f	O
 met	f	O
 wereldwijde	f	O
 activiteiten	f	O
@@ -37763,7 +37763,7 @@ Readiris-software	t	B-NE
 van	f	O
 Iris	t	B-NE
 wordt	f	O
-geÔntegreerd	f	O
+geïntegreerd	f	O
 in	f	O
 het	f	O
 boekhoudpakket	f	O
@@ -38801,7 +38801,7 @@ de	f	O
 meeste	f	O
 posities	f	O
 de	f	O
-hiÎrarchie	f	O
+hiërarchie	f	O
 heel	f	O
 duidelijk	f	O
 is	f	O
@@ -38827,7 +38827,7 @@ krijgt	f	O
 ,	f	O
 is	f	O
 er	f	O
-ÈÈn	t	O
+één	f	O
 post	f	O
 waar	f	O
 men	f	O
@@ -38976,7 +38976,7 @@ voetballers	f	O
 die	f	O
 ooit	f	O
 voor	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 gespeeld	f	O
 hebben	f	O
 .	f	O
@@ -40031,14 +40031,14 @@ de	f	O
 natuurlijke	f	O
 selectie	f	O
 in	f	O
-AustraliÎ	t	B-NE
+Australië	t	B-NE
 ,	f	O
 waar	f	O
 de	f	O
 huidkankersterfte	f	O
 bij	f	O
 de	f	O
-geÔmmigreerde	f	O
+geïmmigreerde	f	O
 blanke	f	O
 Europeanen	t	B-NE
 hoog	f	O
@@ -40073,7 +40073,7 @@ veroudert	f	O
 Niet-rokers	t	O
 hebben	f	O
 ongeveer	f	O
-ÈÈn	t	O
+één	f	O
 kans	f	O
 op	f	O
 tien	f	O
@@ -40146,7 +40146,7 @@ een	f	O
 vergelijking	f	O
 met	f	O
 een	f	O
-Ècht	t	O
+écht	f	O
 gezondheidsprobleem	f	O
 :	f	O
 roken	f	O
@@ -40222,7 +40222,7 @@ verre	f	O
 voorouders	f	O
 hadden	f	O
 geen	f	O
-zonnecrËmes	f	O
+zonnecrèmes	f	O
 en	f	O
 het	f	O
 valt	f	O
@@ -40257,7 +40257,7 @@ deze	f	O
 kans	f	O
 rond	f	O
 de	f	O
-ÈÈn	t	O
+één	f	O
 op	f	O
 drie	f	O
 (	f	O
@@ -40542,7 +40542,7 @@ halveert	f	O
 je	f	O
 sterfterisico	f	O
 met	f	O
-ÈÈn	t	O
+één	f	O
 per	f	O
 duizend	f	O
 daalt	f	O
@@ -40835,7 +40835,7 @@ Blanke	t	O
 emigranten	f	O
 die	f	O
 naar	f	O
-AustraliÎ	t	B-NE
+Australië	t	B-NE
 emigreerden	f	O
 op	f	O
 kinderleeftijd	f	O
@@ -40850,7 +40850,7 @@ de	f	O
 daar	f	O
 geboren	f	O
 blanke	f	O
-AustraliÎr	t	B-NE
+Australiër	t	B-NE
 .	f	O
 
 auteur	f	O
@@ -40862,7 +40862,7 @@ zich	f	O
 in	f	O
 met	f	O
 allerhande	f	O
-zonnecrËmes	f	O
+zonnecrèmes	f	O
 .	f	O
 
 editie	f	O
@@ -41044,7 +41044,7 @@ maand	f	O
 
 Wie	t	O
 naar	f	O
-AustraliÎ	t	B-NE
+Australië	t	B-NE
 emigreerden	f	O
 op	f	O
 oudere	f	O
@@ -41181,7 +41181,7 @@ denk	f	O
 dat	f	O
 bij	f	O
 overheid	f	O
-Èn	t	O
+én	f	O
 media	f	O
 daarvoor	f	O
 de	f	O
@@ -41461,7 +41461,7 @@ een	f	O
 besmettingsbron	f	O
 en	f	O
 een	f	O
-reÎel	f	O
+reëel	f	O
 risico	f	O
 voor	f	O
 de	f	O
@@ -41501,7 +41501,7 @@ ingezet	f	O
 De	t	B-NE
 Morgen	t	I-NE
 
-BelgiÎ	t	B-NE
+België	t	B-NE
 heeft	f	O
 na	f	O
 de	f	O
@@ -41672,7 +41672,7 @@ onverwachts	f	O
 
 auteur	f	O
 
-BelgiÎ	t	B-NE
+België	t	B-NE
 wil	f	O
 het	f	O
 voortouw	f	O
@@ -41686,7 +41686,7 @@ de	f	O
 regeringscommissaris	f	O
 een	f	O
 eerste	f	O
-principiÎle	f	O
+principiële	f	O
 stap	f	O
 moeten	f	O
 worden	f	O
@@ -41711,7 +41711,7 @@ persbriefings	f	O
 van	f	O
 de	f	O
 ministers	f	O
-GabriÎls	t	B-NE
+Gabriëls	t	B-NE
 en	f	O
 Aelvoet	t	B-NE
 aangetoond	f	O
@@ -41781,7 +41781,7 @@ Luc	t	B-NE
 Huyse	t	I-NE
 en	f	O
 Francis	t	B-NE
-DelpereÈ	t	I-NE
+Delpereé	t	I-NE
 en	f	O
 voorts	f	O
 ook	f	O
@@ -41950,7 +41950,7 @@ horizontale	f	O
 tussen	f	O
 departementen	f	O
 )	f	O
-coˆrdinatie	f	O
+coördinatie	f	O
 organiseren	f	O
 .	f	O
 
@@ -42158,7 +42158,7 @@ doen	f	O
 .	f	O
 
 Je	t	O
-creÎert	f	O
+creëert	f	O
 bijkomende	f	O
 problemen	f	O
 "	f	O
@@ -42168,7 +42168,7 @@ Gminder	t	B-NE
 .	f	O
 
 Dat	t	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 intussen	f	O
 met	f	O
 zijn	f	O
@@ -42215,7 +42215,7 @@ Europese	t	B-NE
 Commissie	t	I-NE
 is	f	O
 men	f	O
-ÈÈn	t	O
+één	f	O
 jaar	f	O
 na	f	O
 de	f	O
@@ -42371,7 +42371,7 @@ dat	f	O
 de	f	O
 maatregelen	f	O
 voor	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 niet	f	O
 veralgemeend	f	O
 werden	f	O
@@ -42403,7 +42403,7 @@ berichtgeving	f	O
 
 Maar	t	O
 dat	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 ook	f	O
 beslist	f	O
 heeft	f	O
@@ -42499,7 +42499,7 @@ was	f	O
 enkel	f	O
 mogelijk	f	O
 na	f	O
-certifiÎring	f	O
+certifiëring	f	O
 van	f	O
 veilige	f	O
 bedrijven	f	O
@@ -42551,7 +42551,7 @@ De	t	O
 jongste	f	O
 voedselcrisis	f	O
 in	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 toont	f	O
 duidelijk	f	O
 aan	f	O
@@ -42601,7 +42601,7 @@ aldus	f	O
 Gminder	t	B-NE
 .	f	O
 
-BelgiÎ	t	B-NE
+België	t	B-NE
 voert	f	O
 nu	f	O
 een	f	O
@@ -42645,7 +42645,7 @@ Leven	t	I-NE
 
 Boos	t	O
 omdat	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 aanvankelijk	f	O
 weigerde	f	O
 te	f	O
@@ -42722,7 +42722,7 @@ De	t	O
 besmetting	f	O
 was	f	O
 in	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 .	f	O
 
 Ook	t	O
@@ -42843,7 +42843,7 @@ Algemeen	t	O
 
 Dat	t	O
 Europa	t	B-NE
-BelgiÎ	t	B-NE
+België	t	B-NE
 maatregelen	f	O
 oplegde	f	O
 voor	f	O
@@ -42897,7 +42897,7 @@ Europa	t	B-NE
 was	f	O
 boos	f	O
 op	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 .	f	O
 
 Dat	t	O
@@ -42908,7 +42908,7 @@ Unie	t	I-NE
 in	f	O
 tegenstelling	f	O
 tot	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 ,	f	O
 zelf	f	O
 niet	f	O
@@ -43077,7 +43077,7 @@ Portugal	t	I-NE
 aan	f	O
 haar	f	O
 internationale	f	O
-carriËre	f	O
+carrière	f	O
 begon	f	O
 .	f	O
 
@@ -43114,10 +43114,10 @@ Ala	t	B-NE
 dos	f	I-NE
 Namorados	t	I-NE
 ,	f	O
-MÌsia	t	B-NE
+Mísia	t	B-NE
 en	f	O
 Paulo	t	B-NE
-BraganÁa	t	I-NE
+Bragança	t	I-NE
 )	f	O
 blijven	f	O
 stevig	f	O
@@ -43156,7 +43156,7 @@ Salgueiro	t	B-NE
 publicatie	f	O
 
 '	f	O
-Oxal·	t	B-NE
+Oxalá	t	B-NE
 '	f	O
 blijft	f	O
 een	f	O
@@ -43191,7 +43191,7 @@ Salgueiro	t	I-NE
 drie	f	O
 gitaristen	f	O
 en	f	O
-ÈÈn	t	O
+één	f	O
 toetsenman	f	O
 hun	f	O
 publiek	f	O
@@ -43302,8 +43302,8 @@ de	f	O
 vorig	f	O
 jaar	f	O
 overleden	f	O
-Am·lia	t	B-NE
-RodrÌgues	t	I-NE
+Amália	t	B-NE
+Rodrígues	t	I-NE
 zijn	f	O
 meest	f	O
 gerenommeerde	f	O
@@ -43368,7 +43368,7 @@ boeg	f	O
 .	f	O
 
 '	f	O
-Oxal·	t	B-NE
+Oxalá	t	B-NE
 '	f	O
 klinkt	f	O
 jazzy	f	O
@@ -43420,11 +43420,11 @@ herverpakt	f	O
 nummer	f	O
 uit	f	O
 O	t	B-NE
-ParaÌso	t	I-NE
+Paraíso	t	I-NE
 ,	f	O
 hun	f	O
 op	f	O
-ÈÈn	t	O
+één	f	O
 na	f	O
 voorlaatste	f	O
 werkstuk	f	O
@@ -43478,7 +43478,7 @@ singer-songwriter	f	O
 gitarist	f	O
 Pedro	t	B-NE
 Ayres	t	I-NE
-Magalh„es	t	I-NE
+Magalhães	t	I-NE
 ,	f	O
 snarenvirtuoos	f	O
 Pedro	t	B-NE
@@ -43487,7 +43487,7 @@ Peixoto	t	I-NE
 akoestische	f	O
 bassist	f	O
 Fernando	t	B-NE
-J˙dice	t	I-NE
+Júdice	t	I-NE
 en	f	O
 synthesizerspeler	f	O
 Carlos	t	B-NE
@@ -43573,7 +43573,7 @@ opgenomen	f	O
 nieuwe	f	O
 nummer	f	O
 '	f	O
-Oxal·	t	B-NE
+Oxalá	t	B-NE
 '	f	O
 .	f	O
 
@@ -43673,7 +43673,7 @@ assim	f	O
 ,	f	O
 sou	f	O
 este	f	O
-mistÈrio	f	O
+mistério	f	O
 "	f	O
 ,	f	O
 zingt	f	O
@@ -43770,7 +43770,7 @@ procent	f	O
 
 Uit	t	O
 een	f	O
-enquÍte	f	O
+enquête	f	O
 van	f	O
 Dimarso	t	B-NE
 in	f	O
@@ -43898,7 +43898,7 @@ komt	f	O
 .	f	O
 
 De	t	B-NE
-FinanciÎle	t	I-NE
+Financiële	t	I-NE
 Morgen	t	I-NE
 
 Slechts	t	O
@@ -43988,7 +43988,7 @@ ambitie	f	O
 hebben	f	O
 om	f	O
 nummer	f	O
-ÈÈn	t	O
+één	f	O
 te	f	O
 zijn	f	O
 .	f	O
@@ -44065,7 +44065,7 @@ hand	f	O
 .	f	O
 
 De	t	O
-enquÍte	f	O
+enquête	f	O
 bevroeg	f	O
 een	f	O
 aantal	f	O
@@ -44400,7 +44400,7 @@ Zij	t	O
 vrezen	f	O
 dat	f	O
 de	f	O
-initiÎle	f	O
+initiële	f	O
 investering	f	O
 van	f	O
 50	f	O
@@ -44628,7 +44628,7 @@ dinsdag	f	O
 liet	f	O
 horen	f	O
 als	f	O
-principiÎle	f	O
+principiële	f	O
 stelling	f	O
 .	f	O
 
@@ -44806,7 +44806,7 @@ alles	f	O
 te	f	O
 koop	f	O
 in	f	O
-ÈÈn	t	O
+één	f	O
 winkel	f	O
 .	f	O
 
@@ -45365,7 +45365,7 @@ topambtenaar	f	O
 
 '	f	O
 In	t	O
-ÈÈn	t	O
+één	f	O
 zin	f	O
 samengevat	f	O
 :	f	O
@@ -45783,7 +45783,7 @@ na	f	O
 twintig	f	O
 minuten	f	O
 al	f	O
-ÈÈn	t	O
+één	f	O
 graad	f	O
 warmer	f	O
 dan	f	O
@@ -46027,7 +46027,7 @@ een	f	O
 sociale	f	O
 vereniging	f	O
 waar	f	O
-nÌet	f	O
+níet	f	O
 aan	f	O
 sport	f	O
 werd	f	O
@@ -46265,9 +46265,9 @@ komen	f	O
 voor	f	O
 erkenning	f	O
 ,	f	O
-Èn	t	O
+én	f	O
 dus	f	O
-subsidiÎring	f	O
+subsidiëring	f	O
 ,	f	O
 door	f	O
 de	f	O
@@ -46312,7 +46312,7 @@ en	f	O
 dan	f	O
 ook	f	O
 niet	f	O
-subsidiÎren	f	O
+subsidiëren	f	O
 --	f	O
 van	f	O
 welke	f	O
@@ -46821,7 +46821,7 @@ mensen	f	O
 die	f	O
 zonder	f	O
 enige	f	O
-financiÎle	f	O
+financiële	f	O
 compensatie	f	O
 ,	f	O
 al	f	O
@@ -46992,7 +46992,7 @@ sector	f	O
 
 Erkenning	t	O
 brengt	f	O
-subsidiÎring	f	O
+subsidiëring	f	O
 mee	f	O
 ,	f	O
 zelfs	f	O
@@ -47099,7 +47099,7 @@ Morgen	t	I-NE
 
 Van	t	O
 enig	f	O
-financiÎle	f	O
+financiële	f	O
 stimulans	f	O
 voor	f	O
 die	f	O
@@ -47137,12 +47137,12 @@ en	f	O
 met	f	O
 zelfs	f	O
 een	f	O
-semi-officiÎle	f	O
+semi-officiële	f	O
 religiositeit	f	O
 ,	f	O
 erkennen	f	O
 of	f	O
-subsidiÎren	f	O
+subsidiëren	f	O
 geen	f	O
 enkele	f	O
 eredienst	f	O
@@ -47419,17 +47419,17 @@ Nederland	t	B-NE
 ,	f	O
 Ierlan	t	B-NE
 ,	f	O
-CataloniÎ	t	B-NE
+Catalonië	t	B-NE
 ,	f	O
 Baskenland	t	B-NE
 ,	f	O
-Groot-BrittanniÎ	t	B-NE
+Groot-Brittannië	t	B-NE
 ,	f	O
 Griekenland	t	B-NE
 ,	f	O
 Portugal	t	B-NE
 en	f	O
-ItaliÎ	t	B-NE
+Italië	t	B-NE
 ?	f	O
 
 De	t	B-NE
@@ -47549,7 +47549,7 @@ over	f	O
 de	f	O
 Duitse	t	B-NE
 avonturier	f	O
-R¸diger	t	B-NE
+Rüdiger	t	B-NE
 Nehberg	t	I-NE
 ,	f	O
 die	f	O
@@ -47567,7 +47567,7 @@ de	f	O
 Atlantische	t	B-NE
 Oceaan	t	I-NE
 naar	f	O
-BraziliÎ	t	B-NE
+Brazilië	t	B-NE
 is	f	O
 gevaren	f	O
 om	f	O
@@ -47684,7 +47684,7 @@ sociale	f	O
 apartheid	f	O
 van	f	O
 de	f	O
-industriÎle	f	O
+industriële	f	O
 samenleving	f	O
 '	f	O
 
@@ -47725,7 +47725,7 @@ sociale	f	O
 apartheid	f	O
 van	f	O
 de	f	O
-industriÎle	f	O
+industriële	f	O
 samenleving	f	O
 .	f	O
 
@@ -47751,7 +47751,7 @@ synergie	f	O
 een	f	O
 meerwaarde	f	O
 te	f	O
-creÎren	f	O
+creëren	f	O
 .	f	O
 
 Zij	t	O
@@ -47908,7 +47908,7 @@ tweede	f	O
 de	f	O
 interne	f	O
 ,	f	O
-intuÔtieve	f	O
+intuïtieve	f	O
 blik	f	O
 van	f	O
 de	f	O
@@ -47977,7 +47977,7 @@ Martine	t	B-NE
 De	t	I-NE
 Gos	t	I-NE
 is	f	O
-opleidingscoˆrdinator	f	O
+opleidingscoördinator	f	O
 Drama	t	B-NE
 van	f	O
 de	f	O
@@ -48285,7 +48285,7 @@ persoonlijkheden	f	O
 --	f	O
 ongeacht	f	O
 hun	f	O
-initiÎle	f	O
+initiële	f	O
 opleiding	f	O
 of	f	O
 interesse	f	O
@@ -48407,7 +48407,7 @@ verstaan	f	O
 :	f	O
 een	f	O
 onderwijskundige	f	O
-Èn	t	O
+én	f	O
 een	f	O
 maatschappelijke	f	O
 .	f	O
@@ -48516,7 +48516,7 @@ onderwijzer	f	O
 en	f	O
 aan	f	O
 de	f	O
-industriÎle	f	O
+industriële	f	O
 hogeschool	f	O
 voor	f	O
 ingenieur	f	O
@@ -48971,7 +48971,7 @@ vullen	f	O
 publicatiedatum	f	O
 
 Aan	t	O
-patiÎnten	f	O
+patiënten	f	O
 die	f	O
 last	f	O
 hebben	f	O
@@ -49224,7 +49224,7 @@ kunt	f	O
 gooien	f	O
 .	f	O
 
-ThÈ	t	B-NE
+Thé	t	B-NE
 Lau	t	I-NE
 leest	f	O
 het	f	O
@@ -49295,7 +49295,7 @@ de	f	O
 dansvoorstelling	f	O
 Limbus	t	B-NE
 Patrum	t	I-NE
-LatrinitÈ	t	I-NE
+Latrinité	t	I-NE
 in	f	O
 het	f	O
 Nieuwpoorttheater	t	B-NE
@@ -49315,7 +49315,7 @@ Deens	t	B-NE
 Cultureel	t	I-NE
 Centrum	t	I-NE
 in	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 .	f	O
 
 publicatie	f	O
@@ -49401,7 +49401,7 @@ Brugge	t	B-NE
 loopt	f	O
 de	f	O
 fototentoonstelling	f	O
-BelgiÎ-Holland	t	B-NE
+België-Holland	t	B-NE
 die	f	O
 ,	f	O
 u	f	O
@@ -49873,7 +49873,7 @@ men	f	O
 de	f	O
 stadiontoewijzing	f	O
 niet	f	O
-n·	f	O
+ná	f	O
 de	f	O
 lottrekking	f	O
 in	f	O
@@ -49984,7 +49984,7 @@ voel	f	O
 jij	f	O
 je	f	O
 in	f	O
-ÈÈn	t	O
+één	f	O
 keer	f	O
 leeg	f	O
 en	f	O
@@ -50241,7 +50241,7 @@ geslaagde	f	O
 C-klasse	t	B-NE
 een	f	O
 aantal	f	O
-potentiÎle	f	O
+potentiële	f	O
 klanten	f	O
 van	f	O
 de	f	O
@@ -50343,7 +50343,7 @@ Vijftig	t	O
 jaar	f	O
 Porsche	t	B-NE
 in	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 
 De	t	O
 genodigden	f	O
@@ -50574,7 +50574,7 @@ steeds	f	O
 .	f	O
 
 In	t	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 ,	f	O
 waar	f	O
 we	f	O
@@ -50881,7 +50881,7 @@ Wie	t	O
 kent	f	O
 Huberti	t	B-NE
 of	f	O
-LamoriniËre	t	B-NE
+Lamorinière	t	B-NE
 nog	f	O
 ,	f	O
 tenzij	f	O
@@ -51194,7 +51194,7 @@ een	f	O
 pictoralistische	f	O
 foto	f	O
 van	f	O
-LÈonard	t	B-NE
+Léonard	t	B-NE
 Misonne	t	I-NE
 .	f	O
 
@@ -51299,7 +51299,7 @@ uit	f	O
 de	f	O
 beslotenheid	f	O
 van	f	O
-privÈ-verzamelingen	f	O
+privé-verzamelingen	f	O
 en	f	O
 opslagplaatsen	f	O
 werd	f	O
@@ -51415,8 +51415,8 @@ Vallotton	t	B-NE
 herinnerende	f	O
 landschap	f	O
 van	f	O
-LÈon	t	B-NE
-FrÈdÈric	t	I-NE
+Léon	t	B-NE
+Frédéric	t	I-NE
 ,	f	O
 dat	f	O
 ook	f	O
@@ -51651,7 +51651,7 @@ Walter	t	B-NE
 Vaes	t	I-NE
 --	f	O
 van	f	O
-wiÈ	f	O
+wié	f	O
 ?	f	O
 
 Bij	t	O
@@ -52068,7 +52068,7 @@ er	f	O
 ook	f	O
 een	f	O
 zogeheten	f	O
-commerciÎle	f	O
+commerciële	f	O
 uitvoering	f	O
 volgen	f	O
 ,	f	O
@@ -53128,7 +53128,7 @@ de	f	O
 eigenaardige	f	O
 Waalse	t	B-NE
 naam	f	O
-BËtche-al-Rotche	t	B-NE
+Bètche-al-Rotche	t	B-NE
 .	f	O
 
 Nu	t	O
@@ -53510,7 +53510,7 @@ oostelijke	f	O
 deel	f	O
 van	f	O
 de	f	O
-BËtche-al-Rotche	t	B-NE
+Bètche-al-Rotche	t	B-NE
 ,	f	O
 de	f	O
 gang	f	O
@@ -53594,7 +53594,7 @@ vondsten	f	O
 zit	f	O
 verspreid	f	O
 in	f	O
-privÈ-	f	O
+privé-	f	O
 en	f	O
 openbare	f	O
 collecties	f	O
@@ -54289,7 +54289,7 @@ Morgen	t	I-NE
 
 pagina	f	O
 
-EÈn	t	O
+Eén	t	O
 ambtenaar	f	O
 wilde	f	O
 zijn	f	O
@@ -54372,7 +54372,7 @@ dat	f	O
 verontrustte	f	O
 de	f	O
 Ieperse	t	B-NE
-patriciÎrs	f	O
+patriciërs	f	O
 ,	f	O
 die	f	O
 zo	f	O
@@ -54436,7 +54436,7 @@ oorlog	f	O
 en	f	O
 kijkt	f	O
 een	f	O
-ge¸niformeerde	f	O
+geüniformeerde	f	O
 levensgrote	f	O
 soldatenpop	f	O
 je	f	O
@@ -54863,7 +54863,7 @@ Wereldoorlog	t	I-NE
 Archeobotanisch	t	O
 en	f	O
 -	f	O
-zoˆlogisch	f	O
+zoölogisch	f	O
 onderzoek	f	O
 wees	f	O
 uit	f	O
@@ -55012,7 +55012,7 @@ overblijfselen	f	O
 van	f	O
 de	f	O
 oude	f	O
-industriÎle	f	O
+industriële	f	O
 buitenparochie	f	O
 opgraaft	f	O
 in	f	O
@@ -55433,7 +55433,7 @@ die	f	O
 verdedigingsconstructie	f	O
 niet	f	O
 zeer	f	O
-efficiÎnt	f	O
+efficiënt	f	O
 .	f	O
 
 Tussen	t	O
@@ -55533,7 +55533,7 @@ nauw	f	O
 met	f	O
 de	f	O
 algemene	f	O
-hygiÎne	f	O
+hygiëne	f	O
 .	f	O
 
 Helaas	t	O
@@ -55766,7 +55766,7 @@ In	t	O
 Brussel	t	B-NE
 wil	f	O
 burgemeester	f	O
-FranÁois-Xavier	t	B-NE
+François-Xavier	t	B-NE
 de	f	I-NE
 Donnea	t	I-NE
 (	f	O
@@ -55847,7 +55847,7 @@ jammer	f	O
 .	f	O
 
 In	t	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 zouden	f	O
 750.000	f	O
 skaters	f	O
@@ -55949,7 +55949,7 @@ openbare	f	O
 plaatsen	f	O
 .	f	O
 
-MichËle	t	B-NE
+Michèle	t	B-NE
 Vanderplaetsen	t	I-NE
 
 Brussel	t	B-NE
@@ -55993,10 +55993,10 @@ rap	f	O
 en	f	O
 techno	f	O
 au	f	O
-sÈrieux	f	O
+sérieux	f	O
 .	f	O
 
-MichËle	t	B-NE
+Michèle	t	B-NE
 Van	t	I-NE
 der	f	I-NE
 Plaetsen	t	I-NE
@@ -56431,7 +56431,7 @@ alles	f	O
 alleen	f	O
 in	f	O
 een	f	O
-geÔnstitutionaliseerde	f	O
+geïnstitutionaliseerde	f	O
 omgeving	f	O
 kan	f	O
 .	f	O
@@ -56631,7 +56631,7 @@ Er	t	O
 is	f	O
 meer	f	O
 dan	f	O
-ÈÈn	t	O
+één	f	O
 verklaring	f	O
 voor	f	O
 het	f	O
@@ -56639,7 +56639,7 @@ fenomeen	f	O
 ,	f	O
 zo	f	O
 stelt	f	O
-ÈÈn	t	O
+één	f	O
 van	f	O
 de	f	O
 auteurs	f	O
@@ -56772,7 +56772,7 @@ Dat	t	O
 blijkt	f	O
 uit	f	O
 een	f	O
-IsraÎlische	t	B-NE
+Israëlische	t	B-NE
 studie	f	O
 .	f	O
 
@@ -56802,7 +56802,7 @@ gemiddeld	f	O
 iets	f	O
 meer	f	O
 dan	f	O
-ÈÈn	t	O
+één	f	O
 uur	f	O
 later	f	O
 de	f	O
@@ -56991,7 +56991,7 @@ leeftijden	f	O
 op	f	O
 ,	f	O
 werden	f	O
-ÈÈn	t	O
+één	f	O
 of	f	O
 twee	f	O
 keer	f	O
@@ -57046,8 +57046,8 @@ en	f	O
 meisjes	f	O
 van	f	O
 een	f	O
-IsraÎlische	t	B-NE
-privÈ-school	f	O
+Israëlische	t	B-NE
+privé-school	f	O
 .	f	O
 
 De	t	B-NE
@@ -57119,7 +57119,7 @@ onderzoek	f	O
 wees	f	O
 uit	f	O
 dat	f	O
-ÈÈn	t	O
+één	f	O
 derde	f	O
 van	f	O
 de	f	O
@@ -57313,7 +57313,7 @@ gemiddeld	f	O
 iets	f	O
 meer	f	O
 dan	f	O
-ÈÈn	t	O
+één	f	O
 uur	f	O
 later	f	O
 de	f	O
@@ -57451,7 +57451,7 @@ het	f	O
 minstens	f	O
 vijf	f	O
 minuten	f	O
-vÛÛr	f	O
+vóór	f	O
 ze	f	O
 erin	f	O
 slaagden	f	O
@@ -57717,7 +57717,7 @@ een	f	O
 Rara-achtige	t	B-NE
 actiegroep	f	O
 die	f	O
-ComitÈ	t	B-NE
+Comité	t	B-NE
 van	f	I-NE
 de	f	I-NE
 Waakzaamheid	t	I-NE
@@ -57941,10 +57941,10 @@ niet	f	O
 de	f	O
 bedoeling	f	O
 om	f	O
-ÈÈn	t	O
+één	f	O
 van	f	O
 de	f	O
-theorieÎn	f	O
+theorieën	f	O
 voor	f	O
 de	f	O
 oplossing	f	O
@@ -58006,9 +58006,9 @@ de	f	O
 maatstaven	f	O
 van	f	O
 de	f	O
-privÈ-sector	f	O
+privé-sector	f	O
 ,	f	O
-ÈÈn	t	O
+één	f	O
 systeembeheerder	f	O
 per	f	O
 50	f	O
@@ -58106,10 +58106,10 @@ veeleer	f	O
 negatief	f	O
 op	f	O
 de	f	O
-ideeÎn	f	O
+ideeën	f	O
 van	f	O
 de	f	O
-informaticacoˆrdinatoren	f	O
+informaticacoördinatoren	f	O
 .	f	O
 
 "	f	O
@@ -58121,9 +58121,9 @@ hanteren	f	O
 als	f	O
 in	f	O
 de	f	O
-privÈ-sector	f	O
+privé-sector	f	O
 ,	f	O
-ÈÈn	t	O
+één	f	O
 systeembeheerder	f	O
 per	f	O
 50	f	O
@@ -58199,7 +58199,7 @@ rendement	f	O
 auteur	f	O
 
 De	t	O
-informaticacoˆrdinator	f	O
+informaticacoördinator	f	O
 is	f	O
 vandaag	f	O
 verantwoordelijk	f	O
@@ -58244,7 +58244,7 @@ Vlaanderen	t	B-NE
 "	f	O
 
 De	t	O
-informaticacoˆrdinator	f	O
+informaticacoördinator	f	O
 is	f	O
 ten	f	O
 slotte	f	O
@@ -58315,7 +58315,7 @@ uitgeput	f	O
 .	f	O
 
 Een	t	O
-informaticacoˆrdinator	f	O
+informaticacoördinator	f	O
 kent	f	O
 geen	f	O
 vakantieperioden	f	O
@@ -58385,7 +58385,7 @@ moet	f	O
 de	f	O
 taak	f	O
 van	f	O
-informaticacoˆrdinator	f	O
+informaticacoördinator	f	O
 losgekoppeld	f	O
 worden	f	O
 van	f	O
@@ -58395,7 +58395,7 @@ lesgeven	f	O
 .	f	O
 
 Informatica	t	O
-Coˆrdinatoren	t	O
+Coördinatoren	t	O
 vragen	f	O
 eigen	f	O
 statuut	f	O
@@ -58461,7 +58461,7 @@ ik	f	O
 gedurende	f	O
 dertien	f	O
 uur	f	O
-informaticacoˆrdinator	f	O
+informaticacoördinator	f	O
 .	f	O
 
 "	f	O
@@ -58673,7 +58673,7 @@ achterop	f	O
 Jaak	t	B-NE
 Palmans	t	I-NE
 is	f	O
-hoofdcoˆrdinator	f	O
+hoofdcoördinator	f	O
 informatica	f	O
 binnen	f	O
 het	f	O
@@ -58705,7 +58705,7 @@ wegvallen	f	O
 Johan	t	B-NE
 Rottiers	t	I-NE
 is	f	O
-informaticacoˆrdinator	f	O
+informaticacoördinator	f	O
 van	f	O
 het	f	O
 Kardinaal	t	B-NE
@@ -58773,7 +58773,7 @@ met	f	O
 de	f	O
 functie	f	O
 van	f	O
-informaticacoˆrdinator	f	O
+informaticacoördinator	f	O
 .	f	O
 
 "	f	O
@@ -58835,7 +58835,7 @@ door	f	O
 een	f	O
 directie	f	O
 voor	f	O
-informaticacoˆrdinatoren	f	O
+informaticacoördinatoren	f	O
 worden	f	O
 gegeven	f	O
 ,	f	O
@@ -58862,7 +58862,7 @@ Op	t	O
 mei	f	O
 ondertekenden	f	O
 503	f	O
-informaticacoˆrdinatoren	f	O
+informaticacoördinatoren	f	O
 van	f	O
 het	f	O
 Vlaams	t	B-NE
@@ -59326,7 +59326,7 @@ Wekenlang	t	O
 werd	f	O
 ,	f	O
 juist	f	O
-vÛÛr	f	O
+vóór	f	O
 het	f	O
 nieuws	f	O
 ,	f	O
@@ -59931,7 +59931,7 @@ als	f	O
 decor	f	O
 voor	f	O
 videogames	f	O
-‡	f	O
+à	f	O
 la	f	O
 Lara	t	B-NE
 Croft	t	I-NE
@@ -59999,7 +59999,7 @@ bij	f	O
 het	f	O
 bouwen	f	O
 van	f	O
-kopieÎn	f	O
+kopieën	f	O
 van	f	O
 monumenten	f	O
 ,	f	O
@@ -60095,7 +60095,7 @@ Elsa	t	B-NE
 in	f	O
 Ispra	t	B-NE
 ,	f	O
-ItaliÎ	t	B-NE
+Italië	t	B-NE
 .	f	O
 
 "	f	O
@@ -60347,7 +60347,7 @@ Maar	t	O
 hun	f	O
 testen	f	O
 met	f	O
-kopieÎn	f	O
+kopieën	f	O
 waren	f	O
 alleen	f	O
 goed	f	O
@@ -60538,7 +60538,7 @@ arm	f	O
 
 Het	t	O
 wereldwijde	f	O
-carriËrenetwerk	f	O
+carrièrenetwerk	f	O
 Monster.com	t	B-NE
 wil	f	O
 ,	f	O
@@ -60630,7 +60630,7 @@ internetportaal	f	O
 editie	f	O
 
 De	t	B-NE
-FinanciÎle	t	I-NE
+Financiële	t	I-NE
 Morgen	t	I-NE
 
 Monster.ca	t	B-NE
@@ -60734,7 +60734,7 @@ Allianz	t	B-NE
 bleef	f	O
 ,	f	O
 als	f	O
-ÈÈn	t	O
+één	f	O
 van	f	O
 de	f	O
 grootste	f	O
@@ -60776,7 +60776,7 @@ nieuwe	f	O
 polis	f	O
 aanbieden	f	O
 tegen	f	O
-potentiÎle	f	O
+potentiële	f	O
 schade	f	O
 die	f	O
 via	f	O
@@ -61003,7 +61003,7 @@ levercellen	f	O
 zogenaamde	f	O
 '	f	O
 spontaan	f	O
-geÔmmortaliseerde	f	O
+geïmmortaliseerde	f	O
 hepatocyten	f	O
 '	f	O
 .	f	O
@@ -61037,7 +61037,7 @@ de	f	O
 ontwikkeling	f	O
 van	f	O
 een	f	O
-bio-artificiÎle	f	O
+bio-artificiële	f	O
 kunstlever	f	O
 ,	f	O
 die	f	O
@@ -61099,7 +61099,7 @@ proces	f	O
 
 De	t	O
 spontaan	f	O
-geÔmmortaliseerde	f	O
+geïmmortaliseerde	f	O
 hepatocyten	f	O
 zouden	f	O
 in	f	O
@@ -61145,7 +61145,7 @@ zijn	f	O
 onderzoek	f	O
 '	f	O
 actief	f	O
-beÔnvloedde	f	O
+beïnvloedde	f	O
 '	f	O
 .	f	O
 
@@ -61266,7 +61266,7 @@ bedrag	f	O
 kleven	f	O
 op	f	O
 het	f	O
-geÔnvesteerde	f	O
+geïnvesteerde	f	O
 kapitaal	f	O
 en	f	O
 wijst	f	O
@@ -61741,7 +61741,7 @@ ervan	f	O
 overtuigd	f	O
 ook	f	O
 in	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 in	f	O
 overeenkomst	f	O
 met	f	O
@@ -61772,7 +61772,7 @@ spelers	f	O
 aantrekt	f	O
 .	f	O
 
-MichËle	t	B-NE
+Michèle	t	B-NE
 Van	t	I-NE
 der	f	I-NE
 Plaetsen	t	I-NE
@@ -61793,7 +61793,7 @@ QuizPeople	t	B-NE
 nu	f	O
 ook	f	O
 in	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 
 Elk	t	O
 uur	f	O
@@ -61926,7 +61926,7 @@ html	f	B-NE
 .	f	O
 
 De	t	B-NE
-FinanciÎle	t	I-NE
+Financiële	t	I-NE
 Morgen	t	I-NE
 
 In	t	O
@@ -61944,7 +61944,7 @@ te	f	O
 winnen	f	O
 ,	f	O
 een	f	O
-privÈ-vliegtuig	f	O
+privé-vliegtuig	f	O
 ,	f	O
 een	f	O
 Harley	t	B-NE
@@ -62302,7 +62302,7 @@ ze	f	O
 wel	f	O
 over	f	O
 een	f	O
-efficiÎnt	f	O
+efficiënt	f	O
 bestelsysteem	f	O
 en	f	O
 een	f	O
@@ -62370,7 +62370,7 @@ tevoorschijn	f	O
 
 Alles	t	O
 vanuit	f	O
-ÈÈn	t	O
+één	f	O
 plaats	f	O
 in	f	O
 de	f	O
@@ -62544,7 +62544,7 @@ bij	f	O
 .	f	O
 
 De	t	B-NE
-FinanciÎle	t	I-NE
+Financiële	t	I-NE
 Morgen	t	I-NE
 
 Distributie-experts	t	O
@@ -62673,7 +62673,7 @@ van	f	O
 kracht	f	O
 waren	f	O
 voor	f	O
-EthiopiÎ	t	B-NE
+Ethiopië	t	B-NE
 de	f	O
 provincie	f	O
 in	f	O
@@ -62768,7 +62768,7 @@ meeste	f	O
 kaarten	f	O
 die	f	O
 buiten	f	O
-EthiopiÎ	t	B-NE
+Ethiopië	t	B-NE
 zijn	f	O
 gepubliceerd	f	O
 .	f	O
@@ -62900,7 +62900,7 @@ is	f	O
 een	f	O
 ex-provincie	f	O
 van	f	O
-EthiopiÎ	t	B-NE
+Ethiopië	t	B-NE
 en	f	O
 werd	f	O
 in	f	O
@@ -62988,7 +62988,7 @@ II	t	I-NE
 ,	f	O
 die	f	O
 toen	f	O
-ÈÈn	t	O
+één	f	O
 van	f	O
 de	f	O
 weinige	f	O
@@ -63103,7 +63103,7 @@ auteur	f	O
 
 Wat	t	O
 wil	f	O
-EthiopiÎ	t	B-NE
+Ethiopië	t	B-NE
 ?	f	O
 
 Bronnen	t	O
@@ -63118,7 +63118,7 @@ Reuters	t	B-NE
 
 Bovendien	t	O
 aast	f	O
-EthiopiÎ	t	B-NE
+Ethiopië	t	B-NE
 op	f	O
 de	f	O
 haven	f	O
@@ -63425,7 +63425,7 @@ Hij	t	O
 trachtte	f	O
 vruchteloos	f	O
 een	f	O
-financiÎle	f	O
+financiële	f	O
 dienstenbedrijf	f	O
 op	f	O
 te	f	O
@@ -63496,7 +63496,7 @@ raad	f	O
 hoe	f	O
 hij	f	O
 hoe	f	O
-potentiÎle	f	O
+potentiële	f	O
 investeerders	f	O
 moet	f	O
 benaderen	f	O
@@ -63588,12 +63588,12 @@ zelfhulpgroep	f	O
 op	f	O
 
 De	t	B-NE
-FinanciÎle	t	I-NE
+Financiële	t	I-NE
 Morgen	t	I-NE
 
 De	t	O
 antwoorden	f	O
-variÎren	f	O
+variëren	f	O
 van	f	O
 :	f	O
 "	f	O
@@ -63834,7 +63834,7 @@ Het	t	O
 leven	f	O
 en	f	O
 de	f	O
-carriËre	f	O
+carrière	f	O
 van	f	O
 Tina	t	B-NE
 Turner	t	I-NE
@@ -63874,7 +63874,7 @@ schril	f	O
 contrast	f	O
 met	f	O
 hun	f	O
-privÈ-leven	f	O
+privé-leven	f	O
 .	f	O
 
 editie	f	O
@@ -64780,7 +64780,7 @@ psychologisch	f	O
 drama	f	O
 van	f	O
 Louis	t	B-NE
-BuÒuel	t	I-NE
+Buñuel	t	I-NE
 uit	f	O
 1967	f	O
 naar	f	O
@@ -64931,7 +64931,7 @@ haar	f	O
 buurman	f	O
 (	f	O
 Victor	t	B-NE
-Lˆw	t	I-NE
+Löw	t	I-NE
 )	f	O
 ,	f	O
 bij	f	O
@@ -64973,7 +64973,7 @@ moet	f	O
 worden	f	O
 in	f	O
 een	f	O
-masturbatiescËne	f	O
+masturbatiescène	f	O
 in	f	O
 bad	f	O
 .	f	O
@@ -64991,7 +64991,7 @@ Renee	t	B-NE
 Soutendijk	t	I-NE
 ,	f	O
 Victor	t	B-NE
-Lˆw	t	I-NE
+Löw	t	I-NE
 en	f	O
 Maud	t	B-NE
 Hempel	t	I-NE
@@ -65329,7 +65329,7 @@ Wat	t	O
 vinden	f	O
 leraars	f	O
 nu	f	O
-zÈlf	f	O
+zélf	f	O
 van	f	O
 hun	f	O
 job	f	O
@@ -65359,7 +65359,7 @@ altijd	f	O
 maar	f	O
 tien	f	O
 op	f	O
-drieÎntwintig	f	O
+drieëntwintig	f	O
 ,	f	O
 dat	f	O
 alles	f	O
@@ -65499,7 +65499,7 @@ dit	f	O
 lokaal	f	O
 niet	f	O
 in	f	O
-ÈÈn	t	O
+één	f	O
 kring	f	O
 .	f	O
 
@@ -65653,7 +65653,7 @@ de	f	O
 jongeren	f	O
 vinden	f	O
 dat	f	O
-okÈ	f	O
+oké	f	O
 .	f	O
 
 Welke	t	O
@@ -65856,7 +65856,7 @@ West	t	B-NE
 Side	t	I-NE
 Story	t	I-NE
 hooguit	f	O
-ÈÈn	t	O
+één	f	O
 keer	f	O
 gezien	f	O
 hebben	f	O
@@ -66372,7 +66372,7 @@ Tunis	t	B-NE
 de	f	O
 hoofdstad	f	O
 van	f	O
-TunesiÎ	t	B-NE
+Tunesië	t	B-NE
 ,	f	O
 naar	f	O
 Kairouan	t	B-NE
@@ -66523,7 +66523,7 @@ het	f	O
 slechte	f	O
 weer	f	O
 in	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 en	f	O
 Frankrijk	t	B-NE
 om	f	O
@@ -66693,7 +66693,7 @@ in	f	O
 de	f	O
 golf	f	O
 van	f	O
-GabËs	t	B-NE
+Gabès	t	B-NE
 ,	f	O
 Djerba	t	B-NE
 .	f	O
@@ -66832,7 +66832,7 @@ volgen	f	O
 
 Hier	t	O
 werd	f	O
-ÈÈn	t	O
+één	f	O
 van	f	O
 de	f	O
 Star	t	B-NE
@@ -66860,7 +66860,7 @@ Donderdag	t	O
 
 Jean-Pierre	t	B-NE
 ,	f	O
-ÈÈn	t	O
+één	f	O
 van	f	O
 de	f	O
 ervaren	f	O
@@ -67044,7 +67044,7 @@ voortzetten	f	O
 
 De	t	O
 modale	f	O
-TunesiÎr	t	B-NE
+Tunesiër	t	B-NE
 vindt	f	O
 dit	f	O
 alles	f	O
@@ -67124,7 +67124,7 @@ drie	f	O
 uren	f	O
 oud	f	O
 of	f	O
-TunesiÎ	t	B-NE
+Tunesië	t	B-NE
 ontvouwt	f	O
 zijn	f	O
 gevaren	f	O
@@ -67148,7 +67148,7 @@ drinken	f	O
 in	f	O
 een	f	O
 klein	f	O
-cafÈ	f	O
+café	f	O
 ,	f	O
 waar	f	O
 de	f	O
@@ -67338,7 +67338,7 @@ opgesteld	f	O
 ,	f	O
 de	f	O
 rally	f	O
-CaÔro-Dakar	t	B-NE
+Caïro-Dakar	t	B-NE
 waardig	f	O
 .	f	O
 
@@ -67426,7 +67426,7 @@ XR's	t	B-NE
 
 Veertig	t	O
 kilometer	f	O
-oriÎntatie	f	O
+oriëntatie	f	O
 met	f	O
 het	f	O
 kompas	f	O
@@ -68433,7 +68433,7 @@ rot	f	O
 gewerkt	f	O
 voor	f	O
 je	f	O
-carriËre	f	O
+carrière	f	O
 ,	f	O
 of	f	O
 je	f	O
@@ -68617,7 +68617,7 @@ waren	f	O
 met	f	O
 astrologie	f	O
 ,	f	O
-reÔncarnatie	f	O
+reïncarnatie	f	O
 en	f	O
 tarotkaarten	f	O
 .	f	O
@@ -68737,7 +68737,7 @@ als	f	O
 godsdienstsocioloog	f	O
 ,	f	O
 in	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 vaak	f	O
 verguisd	f	O
 wegens	f	O
@@ -68977,7 +68977,7 @@ bezighouden	f	O
 met	f	O
 gevoelens	f	O
 en	f	O
-intuÔtie	f	O
+intuïtie	f	O
 .	f	O
 
 "	f	O
@@ -69006,7 +69006,7 @@ ik	f	O
 
 Vooral	t	O
 nadat	f	O
-ÈÈn	t	O
+één	f	O
 van	f	O
 zijn	f	O
 pupillen	f	O
@@ -69364,7 +69364,7 @@ maar	f	O
 succes	f	O
 hebben	f	O
 als	f	O
-geÔnteresseerden	f	O
+geïnteresseerden	f	O
 er	f	O
 ook	f	O
 echt	f	O
@@ -69401,7 +69401,7 @@ sektarisme	f	O
 dat	f	O
 er	f	O
 slechts	f	O
-ÈÈn	t	O
+één	f	O
 waarheid	f	O
 is	f	O
 .	f	O
@@ -69502,7 +69502,7 @@ dekt	f	O
 editie	f	O
 
 Bij	t	O
-zweethutceremonieÎn	f	O
+zweethutceremonieën	f	O
 heb	f	O
 je	f	O
 wel	f	O
@@ -69692,7 +69692,7 @@ tarotkaartlezingen	f	O
 ,	f	O
 bio-energetica	f	O
 ,	f	O
-zweethutceremonieÎn	f	O
+zweethutceremonieën	f	O
 ,	f	O
 moonlodges	f	O
 ,	f	O
@@ -69772,7 +69772,7 @@ hoog	f	O
 opgeleid	f	O
 ,	f	O
 40	f	O
-‡	f	O
+à	f	O
 45	f	O
 jaar	f	O
 oud	f	O
@@ -70160,7 +70160,7 @@ piek	f	O
 rond	f	O
 de	f	O
 40	f	O
-‡	f	O
+à	f	O
 45	f	O
 jaar	f	O
 .	f	O
@@ -70237,7 +70237,7 @@ een	f	O
 paar	f	O
 van	f	O
 dergelijke	f	O
-ceremonieÎn	f	O
+ceremonieën	f	O
 plaatsvinden	f	O
 .	f	O
 
@@ -70286,7 +70286,7 @@ krijgen	f	O
 zoals	f	O
 tai-ji	f	O
 en	f	O
-neurolinguÔstisch	f	O
+neurolinguïstisch	f	O
 programmeren	f	O
 (	f	O
 NLP	t	B-NE
@@ -70478,7 +70478,7 @@ zullen	f	O
 worden	f	O
 uitgetest	f	O
 in	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 ,	f	O
 Nederland	t	B-NE
 ,	f	O
@@ -70533,7 +70533,7 @@ onderwerp	f	O
 "	f	O
 ,	f	O
 verduidelijkt	f	O
-Flex-coˆrdinator	t	B-NE
+Flex-coördinator	t	B-NE
 Kaspar	t	B-NE
 Peeters	t	I-NE
 .	f	O
@@ -70575,7 +70575,7 @@ Het	t	O
 gebruik	f	O
 van	f	O
 deze	f	O
-technologieÎn	f	O
+technologieën	f	O
 laat	f	O
 een	f	O
 ontvangst	f	O
@@ -70698,7 +70698,7 @@ kampplaats	f	O
 telkens	f	O
 moet	f	O
 worden	f	O
-geÔnstalleerd	f	O
+geïnstalleerd	f	O
 
 '	f	O
 Flex	t	B-NE
@@ -70776,7 +70776,7 @@ hun	f	O
 klasgenoten	f	O
 .	f	O
 
-EÈn	t	O
+Eén	t	O
 pakket	f	O
 is	f	O
 gericht	f	O
@@ -70920,7 +70920,7 @@ van	f	O
 afstandsleren	f	O
 via	f	O
 draadloze	f	O
-technologieÎn	f	O
+technologieën	f	O
 :	f	O
 Flex	t	B-NE
 ,	f	O
@@ -70975,7 +70975,7 @@ dat	f	O
 nieuwe	f	O
 leer-	f	O
 en	f	O
-communicatietechnologieÎn	f	O
+communicatietechnologieën	f	O
 een	f	O
 significantere	f	O
 rol	f	O
@@ -71056,7 +71056,7 @@ moet	f	O
 worden	f	O
 opgericht	f	O
 en	f	O
-geÔnstalleerd	f	O
+geïnstalleerd	f	O
 .	f	O
 
 pagina	f	O
@@ -71172,7 +71172,7 @@ onderwijs	f	O
 "	f	O
 ,	f	O
 aldus	f	O
-coˆrdinatrice	f	O
+coördinatrice	f	O
 Sabine	t	B-NE
 Reynolds	t	I-NE
 van	f	O
@@ -72428,7 +72428,7 @@ grasmaaien	f	O
 publicatie	f	O
 
 De	t	B-NE
-FinanciÎle	t	I-NE
+Financiële	t	I-NE
 Morgen	t	I-NE
 
 Maairobot	t	O
@@ -72443,7 +72443,7 @@ overnemen	f	O
 .	f	O
 
 Een	t	O
-IsraÎlisch	t	B-NE
+Israëlisch	t	B-NE
 elektronicabedrijf	f	O
 heeft	f	O
 een	f	O
@@ -72478,7 +72478,7 @@ en	f	O
 tafelpoten	f	O
 en	f	O
 verslindt	f	O
-efficiÎnt	f	O
+efficiënt	f	O
 alle	f	O
 pluisjes	f	O
 en	f	O
@@ -72487,7 +72487,7 @@ restjes	f	O
 
 pagina	f	O
 
-MichËle	t	B-NE
+Michèle	t	B-NE
 Van	t	I-NE
 der	f	I-NE
 Plaetsen	t	I-NE
@@ -72570,7 +72570,7 @@ digitale	f	O
 informatie	f	O
 publiceren	f	O
 of	f	O
-kopiÎren	f	O
+kopiëren	f	O
 .	f	O
 
 Vertaling	t	O
@@ -72639,7 +72639,7 @@ het	f	O
 kan	f	O
 functioneren	f	O
 zonder	f	O
-ÈÈn	t	O
+één	f	O
 centraal	f	O
 --	f	O
 en	f	O
@@ -72776,7 +72776,7 @@ copyrighthouders	f	O
 ook	f	O
 niet	f	O
 langer	f	O
-ÈÈn	t	O
+één	f	O
 doelwit	f	O
 hebben	f	O
 .	f	O
@@ -72829,7 +72829,7 @@ allemaal	f	O
 aan	f	O
 deze	f	O
 nieuwe	f	O
-technologieÎn	f	O
+technologieën	f	O
 aangepast	f	O
 ,	f	O
 geleerd	f	O
@@ -73032,7 +73032,7 @@ anarchie	f	O
 editie	f	O
 
 De	t	B-NE
-FinanciÎle	t	I-NE
+Financiële	t	I-NE
 Morgen	t	I-NE
 
 Freenet	t	B-NE
@@ -73112,7 +73112,7 @@ gebruikmaken	f	O
 van	f	O
 de	f	O
 nieuwe	f	O
-distributietechnologieÎn	f	O
+distributietechnologieën	f	O
 --	f	O
 programma's	f	O
 die	f	O
@@ -73291,7 +73291,7 @@ de	f	O
 bedrijven	f	O
 die	f	O
 complexe	f	O
-technologieÎn	f	O
+technologieën	f	O
 ontwikkelen	f	O
 om	f	O
 informatie	f	O
@@ -73587,7 +73587,7 @@ Morgen	t	I-NE
 
 Insmeren	t	O
 met	f	O
-zonnebrandcrËme	f	O
+zonnebrandcrème	f	O
 kan	f	O
 geen	f	O
 kwaad	f	O
@@ -73741,7 +73741,7 @@ gedaan	f	O
 zelfs	f	O
 niet	f	O
 in	f	O
-AustraliÎ	t	B-NE
+Australië	t	B-NE
 .	f	O
 
 LANG=NL	t	O
@@ -74134,7 +74134,7 @@ Het	t	O
 is	f	O
 daarom	f	O
 veel	f	O
-efficiÎnter	f	O
+efficiënter	f	O
 de	f	O
 mensen	f	O
 in	f	O
@@ -74179,7 +74179,7 @@ gering	f	O
 dat	f	O
 een	f	O
 echte	f	O
-kankerpatiÎnt	f	O
+kankerpatiënt	f	O
 wacht	f	O
 op	f	O
 die	f	O
@@ -74512,7 +74512,7 @@ en	f	O
 haveloze	f	O
 zwervers	f	O
 gisteren	f	O
-BovÈ	t	B-NE
+Bové	t	B-NE
 toe	f	O
 te	f	O
 juichen	f	O
@@ -74605,7 +74605,7 @@ McDonald's	t	B-NE
 "	f	O
 McDonalds	t	B-NE
 is	f	O
-hÈt	f	O
+hét	f	O
 symbool	f	O
 van	f	O
 de	f	O
@@ -74724,7 +74724,7 @@ beschuldigden	f	O
 toe	f	O
 .	f	O
 
-BovÈ	t	B-NE
+Bové	t	B-NE
 :	f	O
 '	f	O
 Wij	t	O
@@ -74767,8 +74767,8 @@ is	f	O
 .	f	O
 "	f	O
 
-JosÈ	t	B-NE
-BovÈ	t	I-NE
+José	t	B-NE
+Bové	t	I-NE
 vertelt	f	O
 bijna	f	O
 onvermoeibaar	f	O
@@ -74785,10 +74785,10 @@ die	f	O
 als	f	O
 eerbetoon	f	O
 aan	f	O
-BovÈ	t	B-NE
+Bové	t	B-NE
 Millau	t	I-NE
 in	f	O
-ÈÈn	t	O
+één	f	O
 grote	f	O
 kermis	f	O
 omtoverden	f	O
@@ -74883,7 +74883,7 @@ doen	f	O
 .	f	O
 
 Maar	t	O
-BovÈ	t	B-NE
+Bové	t	B-NE
 rekent	f	O
 niet	f	O
 enkel	f	O
@@ -74940,8 +74940,8 @@ ergste	f	O
 gevreesd	f	O
 .	f	O
 
-JosÈ	t	B-NE
-BovÈ	t	I-NE
+José	t	B-NE
+Bové	t	I-NE
 spiedt	f	O
 wat	f	O
 onrustig	f	O
@@ -74989,7 +74989,7 @@ Palais	t	B-NE
 de	f	I-NE
 Justice	t	I-NE
 van	f	O
-BovÈ	t	B-NE
+Bové	t	B-NE
 en	f	O
 de	f	O
 zijnen	f	O
@@ -75024,7 +75024,7 @@ voor	f	O
 proces	f	O
 tegen	f	O
 plattelandsleider	f	O
-BovÈ	t	B-NE
+Bové	t	B-NE
 
 Schroef	t	O
 per	f	O
@@ -75057,7 +75057,7 @@ vakbonden	f	O
 consumenten	f	O
 en	f	O
 producenten	f	O
-ÈÈn	t	O
+één	f	O
 front	f	O
 moeten	f	O
 vormen	f	O
@@ -75161,7 +75161,7 @@ actie	f	O
 "	f	O
 ,	f	O
 blikt	f	O
-BovÈ	t	B-NE
+Bové	t	B-NE
 terug	f	O
 op	f	O
 die	f	O
@@ -75185,7 +75185,7 @@ de	f	O
 globalisering	f	O
 .	f	O
 
-BovÈ	t	B-NE
+Bové	t	B-NE
 laat	f	O
 geen	f	O
 gelegenheid	f	O
@@ -75272,7 +75272,7 @@ gagner	f	O
 
 Een	t	O
 handwuivende	f	O
-BovÈ	t	B-NE
+Bové	t	B-NE
 bekeek	f	O
 het	f	O
 van	f	O
@@ -75314,7 +75314,7 @@ Morgen	t	I-NE
 Even	t	O
 later	f	O
 zou	f	O
-BovÈ	t	B-NE
+Bové	t	B-NE
 zijn	f	O
 boodschap	f	O
 nog	f	O
@@ -76184,7 +76184,7 @@ te	f	O
 weiden	f	O
 over	f	O
 de	f	O
-ideeÎn	f	O
+ideeën	f	O
 die	f	O
 ten	f	O
 grondslag	f	O
@@ -76394,7 +76394,7 @@ de	f	O
 werknemers	f	O
 van	f	O
 de	f	O
-privÈ-sector	f	O
+privé-sector	f	O
 .	f	O
 
 Op	t	O
@@ -76425,8 +76425,8 @@ tegen	f	O
 de	f	O
 Franse	t	B-NE
 plattelandsleider	f	O
-JosÈ	t	B-NE
-BovÈ	t	I-NE
+José	t	B-NE
+Bové	t	I-NE
 en	f	O
 negen	f	O
 anderen	f	O
@@ -76509,7 +76509,7 @@ Smicer	t	B-NE
 Tsj	t	B-NE
 )	f	O
 ,	f	O
-S¸k¸r	t	B-NE
+Sükür	t	B-NE
 (	f	O
 Tur	t	B-NE
 )	f	O
@@ -76666,7 +76666,7 @@ McManaman	t	B-NE
 Eng	t	B-NE
 )	f	O
 ,	f	O
-Mj‰llby	t	B-NE
+Mjällby	t	B-NE
 (	f	O
 Zwe	t	B-NE
 )	f	O
@@ -76815,7 +76815,7 @@ Morgen	t	I-NE
 editie	f	O
 
 De	t	B-NE
-FinanciÎle	t	I-NE
+Financiële	t	I-NE
 Morgen	t	I-NE
 
 publicatiedatum	f	O
@@ -76829,7 +76829,7 @@ het	f	O
 winters	f	O
 afschaffen	f	O
 van	f	O
-ÈÈn	t	O
+één	f	O
 van	f	O
 de	f	O
 twee	f	O
@@ -77024,9 +77024,9 @@ blijft	f	O
 het	f	O
 accijnsverschil	f	O
 tussen	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 en	f	O
-Groot-BrittanniÎ	t	B-NE
+Groot-Brittannië	t	B-NE
 de	f	O
 overtocht	f	O
 aantrekkelijk	f	O
@@ -77132,7 +77132,7 @@ en	f	O
 alcohol	f	O
 .	f	O
 
-FinanciÎle	t	O
+Financiële	t	O
 cijfers	f	O
 werden	f	O
 niet	f	O
@@ -77310,7 +77310,7 @@ interventie	f	O
 van	f	O
 Ecolo-senator	t	B-NE
 Josy	t	B-NE
-DubiÈ	t	I-NE
+Dubié	t	I-NE
 .	f	O
 
 Ruim	t	O
@@ -77455,7 +77455,7 @@ terug	f	O
 .	f	O
 
 Volgens	t	O
-DubiÈ	t	B-NE
+Dubié	t	B-NE
 was	f	O
 op	f	O
 de	f	O
@@ -77620,7 +77620,7 @@ baas	f	O
 bij	f	O
 Vreemdelingenzaken	t	B-NE
 ,	f	O
-StÈphane	t	B-NE
+Stéphane	t	B-NE
 Schewebach	t	I-NE
 ,	f	O
 is	f	O
@@ -77711,7 +77711,7 @@ op	f	O
 "	f	O
 ,	f	O
 zegt	f	O
-DubiÈ	t	B-NE
+Dubié	t	B-NE
 .	f	O
 
 Ook	t	O
@@ -77932,7 +77932,7 @@ dochter	f	O
 is	f	O
 tegenwoordig	f	O
 de	f	O
-privÈ-secretaresse	f	O
+privé-secretaresse	f	O
 van	f	O
 Van	t	B-NE
 Mechelen	t	I-NE
@@ -78108,7 +78108,7 @@ juli	f	O
 
 Voor	t	O
 de	f	O
-privÈ-exploitanten	f	O
+privé-exploitanten	f	O
 die	f	O
 een	f	O
 contract	f	O
@@ -78162,7 +78162,7 @@ boot	f	O
 vliegt	f	O
 in	f	O
 een	f	O
-privÈ-jet	f	O
+privé-jet	f	O
 en	f	O
 is	f	O
 allesbehalve	f	O
@@ -78182,7 +78182,7 @@ achter	f	O
 Celera	t	B-NE
 ,	f	O
 het	f	O
-privÈ-consortium	f	O
+privé-consortium	f	O
 dat	f	O
 er	f	O
 onlangs	f	O
@@ -78415,7 +78415,7 @@ Bij	t	O
 de	f	O
 bookmakers	f	O
 staat	f	O
-ÈÈn	t	O
+één	f	O
 man	f	O
 met	f	O
 stip	f	O
@@ -78603,7 +78603,7 @@ En	t	O
 dan	f	O
 volgen	f	O
 de	f	O
-ComitÈs	t	B-NE
+Comités	t	B-NE
 de	f	I-NE
 Pouvoir	t	I-NE
 Populaires	t	I-NE
@@ -78624,7 +78624,7 @@ Braeckman	t	I-NE
 Want	t	O
 het	f	O
 enorme	f	O
-defilÈ	f	O
+defilé	f	O
 ,	f	O
 op	f	O
 de	f	O
@@ -78639,7 +78639,7 @@ herdoopt	f	O
 tot	f	O
 Boulevard	t	B-NE
 Triomphal	t	I-NE
-Èn	t	O
+én	f	O
 opnieuw	f	O
 geasfalteerd	f	O
 ,	f	O
@@ -78652,7 +78652,7 @@ succes	f	O
 Buitenland	t	B-NE
 
 "	f	O
-CongÈ	t	O
+Congé	t	O
 ,	f	O
 dat	f	O
 betekent	f	O
@@ -78686,7 +78686,7 @@ met	f	O
 een	f	O
 beurtrol	f	O
 ,	f	O
-ÈÈn	t	O
+één	f	O
 dag	f	O
 op	f	O
 de	f	O
@@ -78846,7 +78846,7 @@ feest	f	O
 
 Op	t	O
 het	f	O
-appËl	f	O
+appèl	f	O
 ontbraken	f	O
 echter	f	O
 de	f	O
@@ -79080,7 +79080,7 @@ leken	f	O
 gisteren	f	O
 niet	f	O
 erg	f	O
-geÔnteresseerd	f	O
+geïnteresseerd	f	O
 in	f	O
 het	f	O
 gebeuren	f	O
@@ -79088,7 +79088,7 @@ gebeuren	f	O
 
 Voor	t	O
 president	f	O
-Laurent-DÈsirÈ	t	B-NE
+Laurent-Désiré	t	B-NE
 Kabila	t	I-NE
 tussen	f	O
 zijn	f	O
@@ -79128,14 +79128,14 @@ moe	f	O
 .	f	O
 
 Slechts	t	O
-ÈÈn	t	O
+één	f	O
 bevriend	f	O
 staatshoofd	f	O
 ,	f	O
 Sam	t	B-NE
 Nujoma	t	I-NE
 van	f	O
-NamibiÎ	t	B-NE
+Namibië	t	B-NE
 ,	f	O
 was	f	O
 ingegaan	f	O
@@ -79144,7 +79144,7 @@ de	f	O
 uitnodiging	f	O
 van	f	O
 president	f	O
-Laurent-DÈsirÈ	t	B-NE
+Laurent-Désiré	t	B-NE
 Kabila	t	I-NE
 om	f	O
 in	f	O
@@ -79304,7 +79304,7 @@ Algemeen	t	O
 Zelfs	t	O
 voor	f	O
 de	f	O
-officiÎle	f	O
+officiële	f	O
 tribune	f	O
 ,	f	O
 waar	f	O
@@ -79327,7 +79327,7 @@ kalm	f	O
 
 Toch	t	O
 bleef	f	O
-ÈÈn	t	O
+één	f	O
 speler	f	O
 afwezig	f	O
 ,	f	O
@@ -80979,7 +80979,7 @@ Unicef	t	B-NE
 gaan	f	O
 meer	f	O
 dan	f	O
-ÈÈn	t	O
+één	f	O
 miljoen	f	O
 Mexicaanse	t	B-NE
 kinderen	f	O
@@ -81138,7 +81138,7 @@ Mexico	t	B-NE
 ,	f	O
 zegt	f	O
 Ana	t	B-NE
-Fern·ndez	t	I-NE
+Fernández	t	I-NE
 ,	f	O
 politicologe	f	O
 aan	f	O
@@ -81462,7 +81462,7 @@ politici	f	O
 "	f	O
 ,	f	O
 zegt	f	O
-Fern·ndez	t	B-NE
+Fernández	t	B-NE
 .	f	O
 
 Er	t	O
@@ -81676,7 +81676,7 @@ Soup	t	I-NE
 Imperial	t	B-NE
 Invest	t	I-NE
 wou	f	O
-diversifiÎren	f	O
+diversifiëren	f	O
 .	f	O
 
 Eerder	t	O
@@ -81710,7 +81710,7 @@ gaat	f	O
 het	f	O
 over	f	O
 20	f	O
-‡	f	O
+à	f	O
 25	f	O
 procent	f	O
 van	f	O
@@ -81769,7 +81769,7 @@ gestapt	f	O
 .	f	O
 
 De	t	B-NE
-FinanciÎle	t	I-NE
+Financiële	t	I-NE
 Morgen	t	I-NE
 
 Waarom	t	O
@@ -81863,7 +81863,7 @@ nvdr	f	O
 
 Het	t	O
 nieuwe	f	O
-directiecomitÈ	f	O
+directiecomité	f	O
 en	f	O
 de	f	O
 nieuwe	f	O
@@ -81912,7 +81912,7 @@ gelegd	f	O
 
 Wij	t	O
 wilden	f	O
-diversifiÎren	f	O
+diversifiëren	f	O
 .	f	O
 
 Hoeveel	t	O
@@ -81999,7 +81999,7 @@ nastreven	f	O
 
 Zij	t	O
 waren	f	O
-geÔnteresseerd	f	O
+geïnteresseerd	f	O
 om	f	O
 te	f	O
 participeren	f	O
@@ -82179,7 +82179,7 @@ zijn	f	O
 Vlamingen	t	B-NE
 die	f	O
 ook	f	O
-geÔnteresseerd	f	O
+geïnteresseerd	f	O
 zijn	f	O
 in	f	O
 een	f	O
@@ -82188,7 +82188,7 @@ in	f	O
 de	f	O
 grote	f	O
 Vlaamse	t	B-NE
-financiÎle	f	O
+financiële	f	O
 groep	f	O
 .	f	O
 "	f	O
@@ -82253,7 +82253,7 @@ pagina	f	O
 Imperial	t	B-NE
 Invest	t	I-NE
 wou	f	O
-diversifiÎren	f	O
+diversifiëren	f	O
 "	f	O
 
 "	f	O
@@ -82262,7 +82262,7 @@ willen	f	O
 zowel	f	O
 langs	f	O
 de	f	O
-financiÎle	f	O
+financiële	f	O
 kant	f	O
 als	f	O
 op	f	O
@@ -82341,7 +82341,7 @@ Neen.	t	O
 we	f	O
 waren	f	O
 allebei	f	O
-geÔnteresseerd	f	O
+geïnteresseerd	f	O
 .	f	O
 
 Houdt	t	B-NE
@@ -82423,7 +82423,7 @@ het	f	O
 voorzitterschap	f	O
 in	f	O
 het	f	O
-directiecomitÈ	f	O
+directiecomité	f	O
 .	f	O
 
 Het	t	O
@@ -82514,7 +82514,7 @@ familie	f	O
 Collin	t	B-NE
 in	f	O
 het	f	O
-directiecomitÈ	f	O
+directiecomité	f	O
 zitting	f	O
 hebben	f	O
 .	f	O
@@ -82525,7 +82525,7 @@ Algemeen	t	O
 
 publicatiedatum	f	O
 
-PrivÈ-partners	t	O
+Privé-partners	t	O
 mogen	f	O
 uiteraard	f	O
 nog	f	O
@@ -82568,7 +82568,7 @@ verhinderen	f	O
 dat	f	O
 gemeenten	f	O
 in	f	O
-financiÎle	f	O
+financiële	f	O
 problemen	f	O
 zouden	f	O
 komen	f	O
@@ -82624,7 +82624,7 @@ de	f	O
 gemeenteraad	f	O
 .	f	O
 
-PrivÈ-sector	t	O
+Privé-sector	t	O
 niet	f	O
 meer	f	O
 gewenst	f	O
@@ -82700,7 +82700,7 @@ zuivere	f	O
 intercommunales	f	O
 ,	f	O
 zonder	f	O
-privÈ-inbreng	f	O
+privé-inbreng	f	O
 .	f	O
 
 Brussel	t	B-NE
@@ -82721,7 +82721,7 @@ gemengde	f	O
 intercommunales	f	O
 
 Het	t	O
-privÈ-aandeel	f	O
+privé-aandeel	f	O
 in	f	O
 intercommunales	f	O
 bedraagt	f	O
@@ -82863,7 +82863,7 @@ plaats	f	O
 meer	f	O
 zijn	f	O
 voor	f	O
-privÈ-partners	f	O
+privé-partners	f	O
 in	f	O
 intercommunales	f	O
 .	f	O
@@ -83065,7 +83065,7 @@ aantal	f	O
 raffinaderijen	f	O
 hersteld	f	O
 en	f	O
-geÔnspecteerd	f	O
+geïnspecteerd	f	O
 .	f	O
 
 Wij	t	O
@@ -83185,7 +83185,7 @@ bestaan	f	O
 .	f	O
 
 De	t	B-NE
-FinanciÎle	t	I-NE
+Financiële	t	I-NE
 Morgen	t	I-NE
 
 auteur	f	O
@@ -83236,7 +83236,7 @@ kernwapens	f	O
 In	t	O
 1986	f	O
 richt	f	O
-BovÈ	t	B-NE
+Bové	t	B-NE
 samen	f	O
 met	f	O
 medestanders	f	O
@@ -83289,7 +83289,7 @@ Amerikanen	t	B-NE
 
 editie	f	O
 
-BovÈ	t	B-NE
+Bové	t	B-NE
 koos	f	O
 voor	f	O
 directe	f	O
@@ -83300,7 +83300,7 @@ levensweg	f	O
 
 Algemeen	t	O
 
-BovÈ	t	B-NE
+Bové	t	B-NE
 werd	f	O
 een	f	O
 symbool	f	O
@@ -83381,7 +83381,7 @@ lang	f	O
 En	t	O
 passant	f	O
 vernietigde	f	O
-BovÈ	t	B-NE
+Bové	t	B-NE
 nog	f	O
 wat	f	O
 ggo-velden	f	O
@@ -83403,8 +83403,8 @@ identiteit	f	O
 behoort	f	O
 ,	f	O
 groeide	f	O
-JosÈ	t	B-NE
-BovÈ	t	I-NE
+José	t	B-NE
+Bové	t	I-NE
 pas	f	O
 uit	f	O
 tot	f	O
@@ -83475,8 +83475,8 @@ meer	f	O
 loslaten	f	O
 .	f	O
 
-JosÈ	t	B-NE
-BovÈ	t	I-NE
+José	t	B-NE
+Bové	t	I-NE
 :	f	O
 een	f	O
 hedendaagse	f	O
@@ -83489,7 +83489,7 @@ Algemeen	t	B-NE
 3	f	O
 )	f	O
 
-BovÈ	t	B-NE
+Bové	t	B-NE
 wordt	f	O
 wel	f	O
 eens	f	O
@@ -83554,7 +83554,7 @@ zou	f	O
 brengen	f	O
 .	f	O
 
-BovÈ	t	B-NE
+Bové	t	B-NE
 is	f	O
 een	f	O
 man	f	O
@@ -83612,14 +83612,14 @@ juli	f	O
 De	t	O
 nu	f	O
 46-jarige	f	O
-BovÈ	t	B-NE
+Bové	t	B-NE
 groeide	f	O
 intellectueel	f	O
 op	f	O
 in	f	O
 het	f	O
 links	f	O
-geÔnspireerde	f	O
+geïnspireerde	f	O
 verzet	f	O
 en	f	O
 rekent	f	O
@@ -83754,7 +83754,7 @@ groeipotentieel	f	O
 van	f	O
 Colruyt	t	B-NE
 in	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 zorgt	f	O
 wel	f	O
 voor	f	O
@@ -84011,7 +84011,7 @@ in	f	O
 Brussel	t	B-NE
 en	f	O
 La	t	B-NE
-LouviËre	t	I-NE
+Louvière	t	I-NE
 overgenomen	f	O
 ,	f	O
 ter	f	O
@@ -84043,7 +84043,7 @@ concentreren	f	O
 .	f	O
 
 De	t	B-NE
-FinanciÎle	t	I-NE
+Financiële	t	I-NE
 Morgen	t	I-NE
 
 Analisten	t	O
@@ -84081,7 +84081,7 @@ dat	f	O
 vanaf	f	O
 5	f	O
 juli	f	O
-ÈÈn	t	O
+één	f	O
 oud	f	O
 aandeel	f	O
 Auximines	t	B-NE
@@ -84091,12 +84091,12 @@ voor	f	O
 drie	f	O
 nieuwe	f	O
 en	f	O
-ÈÈn	t	O
+één	f	O
 oud	f	O
 aandeel	f	O
 Belgo-Katanga	t	B-NE
 voor	f	O
-ÈÈn	t	O
+één	f	O
 nieuw	f	O
 aandeel	f	O
 Auximines	t	B-NE
@@ -84316,7 +84316,7 @@ de	f	O
 fusie	f	O
 van	f	O
 Fortis	t	B-NE
-BelgiÎ	t	I-NE
+België	t	I-NE
 en	f	O
 Fortis	t	B-NE
 Nederland	t	I-NE
@@ -84523,7 +84523,7 @@ fusienieuws	f	O
 publicatie	f	O
 
 De	t	B-NE
-FinanciÎle	t	I-NE
+Financiële	t	I-NE
 Morgen	t	I-NE
 
 KBC	t	B-NE
@@ -84738,7 +84738,7 @@ de	f	O
 Spaanse	t	B-NE
 ex-premier	f	O
 Felipe	t	B-NE
-Gonz·lez	t	I-NE
+González	t	I-NE
 zullen	f	O
 zijn	f	O
 .	f	O
@@ -84888,7 +84888,7 @@ EU	t	B-NE
 publicatiedatum	f	O
 
 Frank	t	B-NE
-Schlˆmer	t	I-NE
+Schlömer	t	I-NE
 
 Dat	t	O
 meldde	f	O
@@ -85044,7 +85044,7 @@ het	f	O
 eerst	f	O
 
 De	t	B-NE
-FinanciÎle	t	I-NE
+Financiële	t	I-NE
 Morgen	t	I-NE
 
 Ook	t	O
@@ -85067,7 +85067,7 @@ frank	f	O
 Medivision	t	B-NE
 ,	f	O
 een	f	O
-IsraÎlische	t	B-NE
+Israëlische	t	B-NE
 onderneming	f	O
 voor	f	O
 medische	f	O
@@ -85474,7 +85474,7 @@ beslissing	f	O
 ,	f	O
 zegt	f	O
 advocate	f	O
-InËs	t	B-NE
+Inès	t	B-NE
 Wouters	t	I-NE
 .	f	O
 
@@ -85701,7 +85701,7 @@ politie	f	O
 had	f	O
 ons	f	O
 al	f	O
-geÔnformeerd	f	O
+geïnformeerd	f	O
 dat	f	O
 hij	f	O
 wild	f	O
@@ -85805,7 +85805,7 @@ vallen	f	O
 Voor	t	O
 elke	f	O
 speler	f	O
-ÈÈn	t	O
+één	f	O
 .	f	O
 
 Toen	t	O
@@ -85948,7 +85948,7 @@ een	f	O
 wereldgoal	f	O
 maakt	f	O
 tegen	f	O
-ArgentiniÎ	t	B-NE
+Argentinië	t	B-NE
 (	f	O
 WK	t	B-NE
 1998	f	I-NE
@@ -86014,7 +86014,7 @@ al	f	O
 gehad	f	O
 ,	f	O
 dat	f	O
-intuÔtieve	f	O
+intuïtieve	f	O
 .	f	O
 
 Dat	t	O
@@ -86072,7 +86072,7 @@ dacht	f	O
 :	f	O
 toch	f	O
 niet	f	O
-wÈÈr	f	O
+wéér	f	O
 ?	f	O
 "	f	O
 
@@ -86230,7 +86230,7 @@ land	f	O
 inmiddels	f	O
 al	f	O
 minstens	f	O
-ÈÈn	t	O
+één	f	O
 wereldtitel	f	O
 en	f	O
 twee	f	O
@@ -86378,7 +86378,7 @@ doet	f	O
 bedrijven	f	O
 doorlichten	f	O
 ,	f	O
-efficiÎntie	f	O
+efficiëntie	f	O
 meten	f	O
 en	f	O
 verbeteringen	f	O
@@ -86418,7 +86418,7 @@ trouwens	f	O
 
 editie	f	O
 
-D‡t	t	O
+Dàt	t	O
 is	f	O
 een	f	O
 waardige	f	O
@@ -86700,7 +86700,7 @@ zo	f	O
 lang	f	O
 tot	f	O
 de	f	O
-ÈÈn	t	O
+één	f	O
 miste	f	O
 en	f	O
 de	f	O
@@ -86971,7 +86971,7 @@ op	f	O
 het	f	O
 vlak	f	O
 van	f	O
-efficiÎntie	f	O
+efficiëntie	f	O
 iets	f	O
 verschrikkelijk	f	O
 belangrijks	f	O
@@ -87165,7 +87165,7 @@ behoefte	f	O
 zit	f	O
 .	f	O
 
-VÌer	t	O
+Víer	t	O
 op	f	O
 vijf	f	O
 .	f	O
@@ -87173,7 +87173,7 @@ vijf	f	O
 
 Als	t	O
 er	f	O
-ÈÈn	t	O
+één	f	O
 moment	f	O
 geweest	f	O
 is	f	O
@@ -87184,7 +87184,7 @@ waaruit	f	O
 bleek	f	O
 dat	f	O
 het	f	O
-gÈÈn	f	O
+géén	f	O
 loterij	f	O
 is	f	O
 ,	f	O
@@ -87444,7 +87444,7 @@ analyseren	f	O
 Goed	t	O
 ,	f	O
 ik	f	O
-bÈn	f	O
+bén	f	O
 geen	f	O
 voetbaldeskundige	f	O
 .	f	O
@@ -87615,7 +87615,7 @@ wereldrecord	f	O
 door	f	O
 tweemaal	f	O
 in	f	O
-ÈÈn	t	O
+één	f	O
 wedstrijd	f	O
 te	f	O
 missen	f	O
@@ -87795,7 +87795,7 @@ Zidane	t	B-NE
 .	f	O
 
 Het	t	O
-Ènige	t	O
+énige	f	O
 wat	f	O
 ze	f	O
 hoorden	f	O
@@ -87803,7 +87803,7 @@ te	f	O
 weten	f	O
 was	f	O
 :	f	O
-niÈt	f	O
+niét	f	O
 rechts	f	O
 beneden	f	O
 !	f	O
@@ -87822,7 +87822,7 @@ geoefend	f	O
 .	f	O
 
 Wedstrijd	t	O
-geÎindigd	f	O
+geëindigd	f	O
 op	f	O
 1	f	O
 --	f	O
@@ -87846,7 +87846,7 @@ echt	f	O
 wanneer	f	O
 blijkt	f	O
 welke	f	O
-trofeeÎn	f	O
+trofeeën	f	O
 Oranje	t	B-NE
 hierdoor	f	O
 zoal	f	O
@@ -87872,7 +87872,7 @@ vertalen	f	O
 
 Algemeen	t	O
 
-Nederland--BraziliÎ	t	B-NE
+Nederland--Brazilië	t	B-NE
 .	f	O
 
 "	f	O
@@ -87993,7 +87993,7 @@ publicatie	f	O
 
 Je	t	O
 kan	f	O
-wÈl	f	O
+wél	f	O
 trainen	f	O
 op	f	O
 penalty's	f	O
@@ -88016,7 +88016,7 @@ nader	f	O
 order	f	O
 horen	f	O
 strafschoppen	f	O
-wÈl	f	O
+wél	f	O
 bij	f	O
 het	f	O
 spel	f	O
@@ -88168,7 +88168,7 @@ er	f	O
 ooit	f	O
 drie	f	O
 in	f	O
-ÈÈn	t	O
+één	f	O
 wedstrijd	f	O
 miste	f	O
 .	f	O
@@ -88330,7 +88330,7 @@ winnaars	f	O
 en	f	O
 outsiders	f	O
 als	f	O
-Z¸lle	t	B-NE
+Zülle	t	B-NE
 ,	f	O
 Dufaux	t	B-NE
 ,	f	O
@@ -88400,7 +88400,7 @@ er	f	O
 is	f	O
 maar	f	O
 een	f	O
-PyreneeÎn-rit	t	B-NE
+Pyreneeën-rit	t	B-NE
 ,	f	O
 maar	f	O
 dat	f	O
@@ -88905,7 +88905,7 @@ en	f	O
 het	f	O
 ego	f	O
 van	f	O
-ÈÈn	t	O
+één	f	O
 man	f	O
 "	f	O
 ,	f	O
@@ -89024,7 +89024,7 @@ zonder	f	O
 a	f	O
 priori's	f	O
 of	f	O
-sympathieÎn	f	O
+sympathieën	f	O
 voor	f	O
 deze	f	O
 of	f	O
@@ -89164,7 +89164,7 @@ Kongo-problematiek	t	B-NE
 Dat	t	O
 van	f	O
 een	f	O
-HervÈ	t	B-NE
+Hervé	t	B-NE
 Hasquin	t	I-NE
 ,	f	O
 die	f	O
@@ -89195,7 +89195,7 @@ te	f	O
 trekken	f	O
 ,	f	O
 met	f	O
-TÈlÈ	t	B-NE
+Télé	t	B-NE
 Bruxelles	t	I-NE
 in	f	O
 zijn	f	O
@@ -89217,7 +89217,7 @@ Kabila's	t	B-NE
 eerste	f	O
 bezoek	f	O
 aan	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 ,	f	O
 te	f	O
 vergasten	f	O
@@ -89465,7 +89465,7 @@ worst	f	O
 wezen	f	O
 .	f	O
 
-BelgiÎ	t	B-NE
+België	t	B-NE
 blijft	f	O
 wel	f	O
 de	f	O
@@ -89651,7 +89651,7 @@ ander	f	O
 soort	f	O
 '	f	O
 Belgique	t	B-NE
-‡	f	O
+à	f	O
 papa	f	O
 '	f	O
 de	f	O
@@ -89774,7 +89774,7 @@ kilowattuur	f	O
 ,	f	O
 wat	f	O
 hen	f	O
-ÈÈn	t	O
+één	f	O
 van	f	O
 de	f	O
 grootste	f	O
@@ -89877,7 +89877,7 @@ voorsprong	f	O
 op	f	O
 de	f	O
 andere	f	O
-geÔnteresseerden	f	O
+geïnteresseerden	f	O
 benutten	f	O
 .	f	O
 
@@ -90010,10 +90010,10 @@ gebudgetteerd	f	O
 .	f	O
 
 De	t	B-NE
-FinanciÎle	t	I-NE
+Financiële	t	I-NE
 Morgen	t	I-NE
 
-EÈn	t	O
+Eén	t	O
 van	f	O
 de	f	O
 grote	f	O
@@ -90028,7 +90028,7 @@ al	f	O
 verschillende	f	O
 contracten	f	O
 in	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 binnenhaalde	f	O
 .	f	O
 
@@ -90138,7 +90138,7 @@ frank	f	O
 die	f	O
 destijds	f	O
 aan	f	O
-FrËre	t	B-NE
+Frère	t	B-NE
 werden	f	O
 betaald	f	O
 .	f	O
@@ -90338,7 +90338,7 @@ Delville	t	B-NE
 ageert	f	O
 sinds	f	O
 Albert	t	B-NE
-FrËre	t	I-NE
+Frère	t	I-NE
 in	f	O
 1996	f	O
 zijn	f	O
@@ -90635,11 +90635,11 @@ aan	f	O
 zonder	f	O
 dat	f	O
 er	f	O
-ÈÈn	t	O
+één	f	O
 frank	f	O
 moet	f	O
 worden	f	O
-geÔnvesteerd	f	O
+geïnvesteerd	f	O
 .	f	O
 
 Algemeen	t	O
@@ -90721,7 +90721,7 @@ Riquet	t	B-NE
 .	f	O
 
 De	t	B-NE
-FinanciÎle	t	I-NE
+Financiële	t	I-NE
 Morgen	t	I-NE
 
 pagina	f	O
@@ -90810,7 +90810,7 @@ komen	f	O
 hard	f	O
 aan	f	O
 in	f	O
-Groot-BrittanniÎ	t	B-NE
+Groot-Brittannië	t	B-NE
 ,	f	O
 waar	f	O
 de	f	O
@@ -90881,7 +90881,7 @@ gevolgen	f	O
 zou	f	O
 hebben	f	O
 voor	f	O
-Groot-BrittanniÎ	t	B-NE
+Groot-Brittannië	t	B-NE
 .	f	O
 
 Maar	t	O
@@ -90922,7 +90922,7 @@ procent	f	O
 .	f	O
 
 De	t	B-NE
-FinanciÎle	t	I-NE
+Financiële	t	I-NE
 Morgen	t	I-NE
 
 Ruben	t	B-NE
@@ -91081,7 +91081,7 @@ Duitsland	t	B-NE
 om	f	O
 met	f	O
 kanselier	f	O
-Schrˆder	t	B-NE
+Schröder	t	B-NE
 over	f	O
 de	f	O
 Britse	t	B-NE
@@ -91378,7 +91378,7 @@ om	f	O
 ten	f	O
 volle	f	O
 voor	f	O
-financiÎle	f	O
+financiële	f	O
 participatie	f	O
 te	f	O
 kiezen	f	O
@@ -91450,7 +91450,7 @@ moeten	f	O
 worden	f	O
 was	f	O
 een	f	O
-essentiÎle	f	O
+essentiële	f	O
 voorwaarde	f	O
 om	f	O
 het	f	O
@@ -91525,7 +91525,7 @@ worden	f	O
 uitgekeerd	f	O
 maar	f	O
 opnieuw	f	O
-geÔnvesteerd	f	O
+geïnvesteerd	f	O
 worden	f	O
 in	f	O
 de	f	O
@@ -91751,7 +91751,7 @@ Iedereen	t	O
 mag	f	O
 delen	f	O
 in	f	O
-financiÎle	f	O
+financiële	f	O
 wel	f	O
 en	f	O
 wee	f	O
@@ -91878,7 +91878,7 @@ kapitaalsparticipatie	f	O
 .	f	O
 
 De	t	B-NE
-FinanciÎle	t	I-NE
+Financiële	t	I-NE
 Morgen	t	I-NE
 
 Er	t	O
@@ -92016,7 +92016,7 @@ Belga	t	B-NE
 sectie	f	O
 
 De	t	B-NE
-FinanciÎle	t	I-NE
+Financiële	t	I-NE
 Morgen	t	I-NE
 
 publicatiedatum	f	O
@@ -92497,7 +92497,7 @@ naar	f	O
 de	f	O
 Alpen-	t	B-NE
 en	f	O
-PyreneeÎn-cols	t	B-NE
+Pyreneeën-cols	t	B-NE
 .	f	O
 
 pagina	f	O
@@ -93016,7 +93016,7 @@ andere	f	O
 kant	f	O
 zou	f	O
 ik	f	O
-wÈl	f	O
+wél	f	O
 zijn	f	O
 portefeuille	f	O
 willen	f	O
@@ -93084,7 +93084,7 @@ Hij	t	O
 heeft	f	O
 destijds	f	O
 natuurlijk	f	O
-wÈl	f	O
+wél	f	O
 de	f	O
 Nobelprijs	t	B-NE
 gekregen	f	O
@@ -93170,8 +93170,8 @@ toe	f	O
 leiden	f	O
 dat	f	O
 openbare	f	O
-Èn	t	O
-privÈ-sector	f	O
+én	f	O
+privé-sector	f	O
 afgelopen	f	O
 maandag	f	O
 tijdens	f	O
@@ -93221,7 +93221,7 @@ toe	f	O
 aan	f	O
 de	f	O
 grote	f	O
-commerciÎle	f	O
+commerciële	f	O
 belangen	f	O
 die	f	O
 aan	f	O
@@ -93307,7 +93307,7 @@ die	f	O
 overheidslabs	f	O
 ,	f	O
 er	f	O
-wÈl	f	O
+wél	f	O
 toe	f	O
 aan	f	O
 om	f	O
@@ -93318,7 +93318,7 @@ te	f	O
 vervroegen	f	O
 .	f	O
 
-EÈn	t	O
+Eén	t	O
 ding	f	O
 lijkt	f	O
 wel	f	O
@@ -93327,7 +93327,7 @@ te	f	O
 staan	f	O
 :	f	O
 deze	f	O
-controversiÎle	f	O
+controversiële	f	O
 wetenschapper	f	O
 heeft	f	O
 alles	f	O
@@ -93375,7 +93375,7 @@ hebben	f	O
 daar	f	O
 de	f	O
 op	f	O
-ÈÈn	t	O
+één	f	O
 na	f	O
 grootste	f	O
 computer	f	O
@@ -93441,7 +93441,7 @@ toevertrouwen	f	O
 
 Dat	t	O
 die	f	O
-commerciÎle	f	O
+commerciële	f	O
 belangen	f	O
 er	f	O
 zijn	f	O
@@ -93466,7 +93466,7 @@ boot	f	O
 vliegt	f	O
 met	f	O
 een	f	O
-privÈ-jet	f	O
+privé-jet	f	O
 en	f	O
 is	f	O
 allesbehalve	f	O
@@ -93486,7 +93486,7 @@ achter	f	O
 Celera	t	B-NE
 ,	f	O
 het	f	O
-privÈ-consortium	f	O
+privé-consortium	f	O
 dat	f	O
 er	f	O
 onlangs	f	O
@@ -93507,7 +93507,7 @@ Jean-Paul	t	B-NE
 Mulders	t	I-NE
 
 Zijn	t	O
-commerciÎle	f	O
+commerciële	f	O
 trekjes	f	O
 wekten	f	O
 bij	f	O
@@ -93799,7 +93799,7 @@ het	f	O
 toch	f	O
 maar	f	O
 doen	f	O
-hË	f	O
+hè	f	O
 ,	f	O
 het	f	O
 gaat	f	O
@@ -93867,7 +93867,7 @@ legde	f	O
 aan	f	O
 het	f	O
 eigenhandig	f	O
-creÎren	f	O
+creëren	f	O
 van	f	O
 het	f	O
 eenvoudigste	f	O
@@ -94311,7 +94311,7 @@ Ilah	t	B-NE
 Cordelia	t	B-NE
 is	f	O
 inderdaad	f	O
-geÎnt	f	O
+geënt	f	O
 op	f	O
 mij	f	O
 .	f	O
@@ -94373,7 +94373,7 @@ situaties	f	O
 die	f	O
 een	f	O
 beetje	f	O
-gÍnant	f	O
+gênant	f	O
 zijn	f	O
 ,	f	O
 en	f	O
@@ -94822,7 +94822,7 @@ ondertussen	f	O
 toch	f	O
 wat	f	O
 zijn	f	O
-carriËre	f	O
+carrière	f	O
 betreft	f	O
 ,	f	O
 een	f	O
@@ -94925,7 +94925,7 @@ wordt	f	O
 door	f	O
 niemand	f	O
 echt	f	O
-beÔnvloed	f	O
+beïnvloed	f	O
 ,	f	O
 zegt	f	O
 ze	f	O
@@ -95104,7 +95104,7 @@ gaat	f	O
 ook	f	O
 voor	f	O
 zijn	f	O
-carriËre	f	O
+carrière	f	O
 ,	f	O
 maar	f	O
 zegt	f	O
@@ -95117,7 +95117,7 @@ dingen	f	O
 
 Daarvoor	t	O
 werd	f	O
-ÈÈn	t	O
+één	f	O
 Kinky	t	B-NE
 &	f	I-NE
 Cosey-strookje	t	I-NE
@@ -95340,7 +95340,7 @@ Grootaers-types	t	I-NE
 (	f	O
 hoofdredacteur	f	O
 van	f	O
-ChÈ	t	B-NE
+Ché	t	B-NE
 en	f	O
 P-Magazine	t	B-NE
 ,	f	O
@@ -95378,7 +95378,7 @@ reeks	f	O
 is	f	O
 dan	f	O
 weer	f	O
-geÔnspireerd	f	O
+geïnspireerd	f	O
 door	f	O
 iemand	f	O
 uit	f	O
@@ -95548,7 +95548,7 @@ Weyer	t	I-NE
 We	t	O
 hebben	f	O
 toen	f	O
-geÎxperimenteerd	f	O
+geëxperimenteerd	f	O
 met	f	O
 Ief	t	B-NE
 the	f	I-NE
@@ -95557,7 +95557,7 @@ en	f	O
 Het	t	B-NE
 Vergiet	t	I-NE
 van	f	I-NE
-BelgiÎ	t	I-NE
+België	t	I-NE
 (	f	O
 een	f	O
 strip	f	O
@@ -95612,7 +95612,7 @@ dagelijkse	f	O
 portie	f	O
 absurde	f	O
 en	f	O
-gÍnante	f	O
+gênante	f	O
 situaties	f	O
 
 "	f	O
@@ -95828,9 +95828,9 @@ hun	f	O
 achterban	f	O
 .	f	O
 
-PicquÈ	t	B-NE
+Picqué	t	B-NE
 en	f	O
-GabriÎls	t	B-NE
+Gabriëls	t	B-NE
 zullen	f	O
 binnenkort	f	O
 ,	f	O
@@ -95856,7 +95856,7 @@ strakke	f	O
 koopjesregeling	f	O
 ,	f	O
 zoals	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 die	f	O
 kent	f	O
 ,	f	O
@@ -95973,7 +95973,7 @@ raadplegen	f	O
 
 Dat	t	O
 in	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 de	f	O
 overheidsbemoeienis	f	O
 zo	f	O
@@ -95995,7 +95995,7 @@ land	f	O
 .	f	O
 
 De	t	B-NE
-FinanciÎle	t	I-NE
+Financiële	t	I-NE
 Morgen	t	I-NE
 
 De	t	O
@@ -96096,7 +96096,7 @@ Minister	t	O
 voor	f	O
 Kmo's	t	B-NE
 Jaak	t	B-NE
-GabriÎls	t	I-NE
+Gabriëls	t	I-NE
 ,	f	O
 een	f	O
 liberaal	f	O
@@ -96161,7 +96161,7 @@ verschuiven	f	O
 publicatiedatum	f	O
 
 Minister	t	O
-PicquÈ	t	B-NE
+Picqué	t	B-NE
 wil	f	O
 van	f	O
 sperperiode	f	O
@@ -96301,7 +96301,7 @@ winkeliers	f	O
 zich	f	O
 met	f	O
 hun	f	O
-wÈl	f	O
+wél	f	O
 toegestane	f	O
 prijskortingen	f	O
 soms	f	O
@@ -96320,12 +96320,12 @@ van	f	O
 de	f	O
 koopjesdata	f	O
 is	f	O
-PicquÈ	t	B-NE
+Picqué	t	B-NE
 ,	f	O
 in	f	O
 tegenstelling	f	O
 tot	f	O
-GabriÎls	t	B-NE
+Gabriëls	t	B-NE
 ,	f	O
 geen	f	O
 voorstander	f	O
@@ -96362,7 +96362,7 @@ de	f	O
 handelspraktijken	f	O
 .	f	O
 
-BelgiÎ	t	B-NE
+België	t	B-NE
 is	f	O
 in	f	O
 Europa	t	B-NE
@@ -96467,7 +96467,7 @@ Zelfstandigen	t	I-NE
 op	f	O
 vraag	f	O
 van	f	O
-GabriÎls	t	B-NE
+Gabriëls	t	B-NE
 uitbracht	f	O
 .	f	O
 
@@ -96486,7 +96486,7 @@ overgedaan	f	O
 Demottes	t	B-NE
 opvolger	f	O
 Charles	t	B-NE
-PicquÈ	t	I-NE
+Picqué	t	I-NE
 (	f	O
 PS	t	B-NE
 )	f	O
@@ -96914,7 +96914,7 @@ totstandkoming	f	O
 van	f	O
 het	f	O
 GEN	t	B-NE
-coˆrdineert	f	O
+coördineert	f	O
 .	f	O
 
 Brussel	t	B-NE
@@ -96938,7 +96938,7 @@ niet	f	O
 te	f	O
 vervallen	f	O
 in	f	O
-irreÎle	f	O
+irreële	f	O
 en	f	O
 onhaalbare	f	O
 schema's	f	O
@@ -96955,7 +96955,7 @@ vervoersmaatschappij	f	O
 blijven	f	O
 en	f	O
 geen	f	O
-immobiliÎnmaatschappij	f	O
+immobiliënmaatschappij	f	O
 worden	f	O
 .	f	O
 "	f	O
@@ -97221,7 +97221,7 @@ komt	f	O
 ook	f	O
 een	f	O
 groot	f	O
-cultuurcafÈ	f	O
+cultuurcafé	f	O
 .	f	O
 
 De	t	O
@@ -97303,7 +97303,7 @@ concertzaal	f	O
 met	f	O
 '	f	O
 grand	f	O
-cafÈ	f	O
+café	f	O
 '	f	O
 
 De	t	O
@@ -97346,7 +97346,7 @@ theater	f	O
 ,	f	O
 dans	f	O
 en	f	O
-poÎzie	f	O
+poëzie	f	O
 ,	f	O
 zijn	f	O
 mogelijk	f	O
@@ -97358,12 +97358,12 @@ Concertzaal	t	O
 ,	f	O
 foyer	f	O
 ,	f	O
-cultuurcafÈ	f	O
+cultuurcafé	f	O
 en	f	O
 inkom	f	O
 kunnen	f	O
 zelfs	f	O
-ÈÈn	t	O
+één	f	O
 ineenlopende	f	O
 ruimte	f	O
 voor	f	O
@@ -97423,7 +97423,7 @@ de	f	O
 entree	f	O
 met	f	O
 de	f	O
-rococofaÁade	f	O
+rococofaçade	f	O
 ,	f	O
 uit	f	O
 de	f	O
@@ -97458,7 +97458,7 @@ in	f	O
 een	f	O
 permanent	f	O
 geopend	f	O
-cultuurcafÈ	f	O
+cultuurcafé	f	O
 (	f	O
 honderd	f	O
 zitplaatsen	f	O
@@ -97470,7 +97470,7 @@ allure	f	O
 van	f	O
 een	f	O
 grand	f	O
-cafÈ	f	O
+café	f	O
 ,	f	O
 dat	f	O
 rechtstreeks	f	O
@@ -97510,7 +97510,7 @@ van	f	I-NE
 Vlaanderen	t	I-NE
 ,	f	O
 het	f	O
-PoÎziecentrum	t	B-NE
+Poëziecentrum	t	B-NE
 en	f	O
 het	f	B-NE
 Muziek	t	I-NE
@@ -97580,7 +97580,7 @@ de	f	O
 zeven	f	O
 meter	f	O
 diepe	f	O
-b¸hne	f	O
+bühne	f	O
 op	f	O
 kelderniveau	f	O
 .	f	O
@@ -97741,9 +97741,9 @@ achtergevel	f	O
 de	f	O
 grens	f	O
 tussen	f	O
-b¸hne	f	O
+bühne	f	O
 en	f	O
-achterb¸hne	f	O
+achterbühne	f	O
 vormen	f	O
 ,	f	O
 maar	f	O
@@ -97755,7 +97755,7 @@ feestelijke	f	O
 mondaine	f	O
 foyer	f	O
 en	f	O
-cultuurcafÈ	f	O
+cultuurcafé	f	O
 .	f	O
 
 Volgens	t	O
@@ -97923,7 +97923,7 @@ in	f	O
 Brussel	t	B-NE
 werden	f	O
 de	f	O
-officiÎle	f	O
+officiële	f	O
 feestelijkheden	f	O
 op	f	O
 de	f	O
@@ -97981,7 +97981,7 @@ de	f	O
 Amerikaanse	t	B-NE
 ambassadeur	f	O
 in	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 ,	f	O
 in	f	O
 overleg	f	O
@@ -98290,7 +98290,7 @@ melden	f	O
 
 Algemeen	t	O
 
-ItaliÎ	t	B-NE
+Italië	t	B-NE
 :	f	O
 Toldo	t	B-NE
 ,	f	O
@@ -98396,7 +98396,7 @@ Op	t	O
 zijn	f	O
 kwartfinale	f	O
 tegen	f	O
-RoemeniÎ	t	B-NE
+Roemenië	t	B-NE
 na	f	O
 was	f	O
 het	f	O
@@ -98414,7 +98414,7 @@ de	f	O
 Azzurri	t	B-NE
 .	f	O
 
-Frankrijk-ItaliÎ	t	B-NE
+Frankrijk-Italië	t	B-NE
 
 Frankrijk	t	B-NE
 :	f	O
@@ -98615,7 +98615,7 @@ bij	f	O
 oudere	f	O
 werknemers	f	O
 scoort	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 op	f	O
 dit	f	O
 vlak	f	O
@@ -98934,7 +98934,7 @@ snel-Belgwet	f	B-NE
 .	f	O
 
 In	t	O
-ÈÈn	t	O
+één	f	O
 ruk	f	O
 door	f	O
 benadrukte	f	O
@@ -99035,7 +99035,7 @@ onmiddellijk	f	O
 redenen	f	O
 om	f	O
 de	f	O
-onderwijsfinanciÎn	f	O
+onderwijsfinanciën	f	O
 te	f	O
 verhogen	f	O
 met	f	O
@@ -99128,7 +99128,7 @@ VLD	t	B-NE
 )	f	O
 best	f	O
 wat	f	O
-ideeÎn	f	O
+ideeën	f	O
 .	f	O
 
 Opinies	t	B-NE
@@ -99363,7 +99363,7 @@ dat	f	O
 de	f	O
 activiteitsgraad	f	O
 in	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 omhoog	f	O
 moet	f	O
 .	f	O
@@ -99447,7 +99447,7 @@ gesteld	f	O
 en	f	O
 niet	f	O
 alle	f	O
-categorieÎn	f	O
+categorieën	f	O
 van	f	O
 leerkrachten	f	O
 over	f	O
@@ -99971,7 +99971,7 @@ hij	f	O
 begon	f	O
 gaandeweg	f	O
 zelfs	f	O
-Ècht	t	O
+écht	f	O
 op	f	O
 Davids	t	B-NE
 te	f	O
@@ -100508,7 +100508,7 @@ dat	f	O
 Nederland	t	B-NE
 (	f	O
 eigenlijk	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 ,	f	O
 maar	f	O
 een	f	O
@@ -100780,7 +100780,7 @@ dorp	f	O
 werd	f	O
 jammer	f	O
 genoeg	f	O
-tot··l	f	O
+totáál	f	O
 verwoest	f	O
 door	f	O
 een	f	O
@@ -101224,7 +101224,7 @@ bekijkt	f	O
 de	f	O
 Boerenoorlog	t	B-NE
 voor	f	O
-ÈÈn	t	O
+één	f	O
 keer	f	O
 van	f	O
 de	f	O
@@ -101276,7 +101276,7 @@ Vrystaat	t	I-NE
 In	t	O
 een	f	O
 verlaten	f	O
-cafÈ	f	O
+café	f	O
 schetst	f	O
 een	f	O
 man	f	O
@@ -101444,7 +101444,7 @@ Rotterdam	t	B-NE
 met	f	O
 als	f	O
 gasten	f	O
-AndrÈ	t	B-NE
+André	t	B-NE
 Van	t	I-NE
 Duin	t	I-NE
 ,	f	O
@@ -101547,7 +101547,7 @@ editie	f	O
 
 De	t	O
 idyllische	f	O
-faÁade	f	O
+façade	f	O
 camoufleert	f	O
 echter	f	O
 een	f	O
@@ -101566,7 +101566,7 @@ Verstraete	t	I-NE
 
 auteur	f	O
 
-BelgiÎ-Nederland	t	B-NE
+België-Nederland	t	B-NE
 
 "	f	O
 We	t	O
@@ -101800,7 +101800,7 @@ zaak	f	O
 ziet	f	O
 als	f	O
 een	f	O
-privÈ-aangelegenheid	f	O
+privé-aangelegenheid	f	O
 ,	f	O
 hebben	f	O
 zich	f	O
@@ -102491,7 +102491,7 @@ de	f	O
 boeddhistische	f	O
 Ogyen	t	B-NE
 Kunzang	t	I-NE
-Chˆling	t	I-NE
+Chöling	t	I-NE
 (OKC)-beweging	f	I-NE
 ,	f	O
 waarvoor	f	O
@@ -102820,7 +102820,7 @@ van	f	O
 de	f	O
 OKC-beweging	t	B-NE
 in	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 ,	f	O
 weigerde	f	O
 een	f	O
@@ -102851,7 +102851,7 @@ met	f	O
 haar	f	O
 zoon	f	O
 in	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 .	f	O
 
 Tussen	t	O
@@ -103158,7 +103158,7 @@ bestond	f	O
 uit	f	O
 een	f	O
 kom	f	O
-maÔsmeel	f	O
+maïsmeel	f	O
 met	f	O
 wat	f	O
 warm	f	O
@@ -103762,7 +103762,7 @@ meer	f	O
 dan	f	O
 ze	f	O
 van	f	O
-Eli·n	t	B-NE
+Elián	t	B-NE
 houden	f	O
 ?	f	O
 
@@ -103799,7 +103799,7 @@ zijn	f	O
 bijvoorbeeld	f	O
 boeken	f	O
 die	f	O
-Eli·n	t	B-NE
+Elián	t	B-NE
 en	f	O
 zijn	f	O
 schoolvriendjes	f	O
@@ -103839,7 +103839,7 @@ is	f	O
 het	f	O
 Cubaanse	t	B-NE
 vluchtelingetje	f	O
-Eli·n	t	B-NE
+Elián	t	B-NE
 Gonzalez	t	I-NE
 terug	f	O
 in	f	O
@@ -103995,11 +103995,11 @@ Het	t	O
 ware	f	O
 mirakel	f	O
 van	f	O
-Eli·n	t	B-NE
+Elián	t	B-NE
 
 Nu	t	O
-Eli·n	t	B-NE
-Gonz·lez	t	I-NE
+Elián	t	B-NE
+González	t	I-NE
 eindelijk	f	O
 terug	f	O
 is	f	O
@@ -104162,7 +104162,7 @@ zijn	f	O
 De	t	O
 metamorfose	f	O
 van	f	O
-Eli·n	t	B-NE
+Elián	t	B-NE
 in	f	O
 Iets	t	B-NE
 Betekenisvols	t	I-NE
@@ -104308,7 +104308,7 @@ het	f	O
 kleine	f	O
 brugje	f	O
 dat	f	O
-Eli·n	t	B-NE
+Elián	t	B-NE
 gebouwd	f	O
 heeft	f	O
 ,	f	O
@@ -104321,12 +104321,12 @@ permanente	f	O
 brug	f	O
 naar	f	O
 alle	f	O
-Eli·ns	t	B-NE
+Eliáns	t	B-NE
 en	f	O
 Elianas	t	B-NE
 .	f	O
 
-Eli·n	t	B-NE
+Elián	t	B-NE
 zou	f	O
 zo	f	O
 eindelijk	f	O
@@ -104356,7 +104356,7 @@ tijd	f	O
 geweest	f	O
 is	f	O
 ,	f	O
-Eli·n	t	B-NE
+Elián	t	B-NE
 zou	f	O
 het	f	O
 recht	f	O
@@ -104441,7 +104441,7 @@ dagen	f	O
 en	f	O
 nachten	f	O
 over	f	O
-Eli·n	t	B-NE
+Elián	t	B-NE
 waakten	f	O
 en	f	O
 hem	f	O
@@ -104465,7 +104465,7 @@ mogelijkheid	f	O
 de	f	O
 kans	f	O
 dat	f	O
-Eli·ns	t	B-NE
+Eliáns	t	B-NE
 beproevingen	f	O
 werkelijk	f	O
 tot	f	O
@@ -104481,7 +104481,7 @@ een	f	O
 betere	f	O
 manier	f	O
 om	f	O
-Eli·ns	t	B-NE
+Eliáns	t	B-NE
 overleving	f	O
 te	f	O
 vieren	f	O
@@ -104605,7 +104605,7 @@ aan	f	O
 de	f	O
 strijd	f	O
 om	f	O
-Eli·n	t	B-NE
+Elián	t	B-NE
 ,	f	O
 over	f	O
 wiens	f	O
@@ -104698,7 +104698,7 @@ te	f	O
 leven	f	O
 ,	f	O
 zou	f	O
-Eli·n	t	B-NE
+Elián	t	B-NE
 misschien	f	O
 ook	f	O
 niet	f	O
@@ -104729,7 +104729,7 @@ Terug	t	O
 in	f	O
 Cuba	t	B-NE
 zal	f	O
-Eli·n	t	B-NE
+Elián	t	B-NE
 kunnen	f	O
 genieten	f	O
 van	f	O
@@ -104865,7 +104865,7 @@ prachtig	f	O
 geschenk	f	O
 zijn	f	O
 voor	f	O
-Eli·n	t	B-NE
+Elián	t	B-NE
 en	f	O
 voor	f	O
 alle	f	O
@@ -104957,7 +104957,7 @@ geweest	f	O
 ,	f	O
 als	f	O
 we	f	O
-Eli·n	t	B-NE
+Elián	t	B-NE
 maar	f	O
 niet	f	O
 zouden	f	O
@@ -105836,7 +105836,7 @@ Morgen	t	I-NE
 :	f	O
 
 Belkis	t	B-NE
-Sˆg¸toglu	t	I-NE
+Sögütoglu	t	I-NE
 ,	f	O
 van	f	O
 origine	f	O
@@ -106631,7 +106631,7 @@ miljoen	f	O
 werknemers	f	O
 in	f	O
 de	f	O
-privÈ-sector	f	O
+privé-sector	f	O
 al	f	O
 een	f	O
 aanvullende	f	O
@@ -106656,7 +106656,7 @@ miljoen	f	O
 werknemers	f	O
 in	f	O
 de	f	O
-privÈ-sector	f	O
+privé-sector	f	O
 .	f	O
 
 auteur	f	O
@@ -106939,7 +106939,7 @@ miljoen	f	O
 werknemers	f	O
 in	f	O
 de	f	O
-privÈ-sector	f	O
+privé-sector	f	O
 op	f	O
 deze	f	O
 manier	f	O
@@ -107064,7 +107064,7 @@ de	f	O
 bezitter	f	O
 van	f	O
 de	f	O
-commerciÎle	f	O
+commerciële	f	O
 rechten	f	O
 ,	f	O
 geen	f	O
@@ -107400,7 +107400,7 @@ De	t	O
 groenen	f	B-NE
 verwachten	f	O
 dat	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 ,	f	O
 als	f	O
 voorzitter	f	O
@@ -107473,7 +107473,7 @@ de	f	O
 mensenhandel	f	O
 moeten	f	O
 Europees	t	B-NE
-gecoˆrdineerd	f	O
+gecoördineerd	f	O
 worden	f	O
 .	f	O
 
@@ -107732,7 +107732,7 @@ thuis	f	O
 .	f	O
 
 Hoe	t	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 de	f	O
 Kongolezen	t	B-NE
 beschaafde	f	O
@@ -107745,7 +107745,7 @@ ogen	f	O
 toe	f	O
 hoe	f	O
 de	f	O
-ÈvoluÈs	t	O
+évolués	f	O
 zich	f	O
 na	f	O
 WO	t	B-NE
@@ -107848,7 +107848,7 @@ Palace	t	I-NE
 .	f	O
 
 "	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 heeft	f	O
 zijn	f	O
 grootste	f	O
@@ -107991,16 +107991,16 @@ achterhoofd	f	O
 '	f	O
 voedde	f	O
 '	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 '	f	O
 zijn	f	O
 '	f	O
-ÈvoluÈs	t	O
+évolués	f	O
 op	f	O
 .	f	O
 
 De	t	O
-ÈvoluÈs	t	O
+évolués	f	O
 mochten	f	O
 plots	f	O
 wel	f	O
@@ -108033,7 +108033,7 @@ Kanza	t	I-NE
 ,	f	O
 die	f	O
 als	f	O
-ÈvoluÈ	t	O
+évolué	f	O
 afstudeerde	f	O
 in	f	O
 Leuven	t	B-NE
@@ -108047,7 +108047,7 @@ kolonialen	f	O
 vonden	f	O
 de	f	O
 term	f	O
-ÈvoluÈ	t	O
+évolué	f	O
 een	f	O
 te	f	O
 grote	f	O
@@ -108089,7 +108089,7 @@ gemaakt	f	O
 "	f	O
 De	t	O
 term	f	O
-ÈvoluÈ	t	O
+évolué	f	O
 werd	f	O
 gaandeweg	f	O
 door	f	O
@@ -108102,7 +108102,7 @@ door	f	O
 de	f	O
 term	f	O
 '	f	O
-Èvoluant	t	O
+évoluant	f	O
 '	f	O
 ,	f	O
 wat	f	O
@@ -108114,7 +108114,7 @@ was	f	O
 ,	f	O
 zegt	f	O
 Lumumba-biograaf	t	B-NE
-BenoÓt	t	B-NE
+Benoît	t	B-NE
 Verhaeghen	t	I-NE
 ,	f	O
 verbonden	f	O
@@ -108162,7 +108162,7 @@ ver	f	O
 weg	f	O
 van	f	O
 mijn	f	O
-citÈ	f	O
+cité	f	O
 .	f	O
 
 Algemeen	t	O
@@ -108178,7 +108178,7 @@ veertigste	f	O
 verjaardag	f	O
 .	f	O
 
-BelgiÎ	t	B-NE
+België	t	B-NE
 ging	f	O
 er	f	O
 toen	f	O
@@ -108247,7 +108247,7 @@ men	f	O
 zeggen	f	O
 dat	f	O
 de	f	O
-ÈvoluÈ	t	O
+évolué	f	O
 na	f	O
 WO	t	B-NE
 II	t	I-NE
@@ -108301,7 +108301,7 @@ vernis	f	O
 de	f	O
 zwarten	f	O
 zijn	f	O
-na‰pers	f	O
+naäpers	f	O
 ,	f	O
 daaronder	f	O
 schuilt	f	O
@@ -108329,7 +108329,7 @@ zwarte	f	O
 moet	f	O
 in	f	O
 een	f	O
-vacu¸m	f	O
+vacuüm	f	O
 gehouden	f	O
 worden	f	O
 ,	f	O
@@ -108371,7 +108371,7 @@ moesten	f	O
 '	f	O
 in	f	O
 een	f	O
-vacu¸m	f	O
+vacuüm	f	O
 gehouden	f	O
 worden	f	O
 ,	f	O
@@ -108467,7 +108467,7 @@ onafhankelijkheidsbeweging	f	O
 zag	f	O
 onder	f	O
 de	f	O
-ÈvoluÈs	t	O
+évolués	f	O
 het	f	O
 licht	f	O
 .	f	O
@@ -108488,7 +108488,7 @@ Verdienste	t	I-NE
 "	f	O
 en	f	O
 217	f	O
-geÔmmatriculeerden	f	O
+geïmmatriculeerden	f	O
 .	f	O
 
 "	f	O
@@ -108655,11 +108655,11 @@ feite	f	O
 bleven	f	O
 zulke	f	O
 '	f	O
-ÈvoluÈs	t	O
+évolués	f	O
 '	f	O
 natuurlijk	f	O
-quantitÈ	f	O
-nÈgligeable	f	O
+quantité	f	O
+négligeable	f	O
 .	f	O
 
 "	f	O
@@ -108713,7 +108713,7 @@ blanken	f	O
 
 "	f	O
 De	t	O
-ÈvoluÈs	t	O
+évolués	f	O
 werden	f	O
 verscheurd	f	O
 tussen	f	O
@@ -108822,7 +108822,7 @@ te	f	O
 kunnen	f	O
 studeren	f	O
 in	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 moest	f	O
 onze	f	O
 familie	f	O
@@ -108915,7 +108915,7 @@ waren	f	O
 de	f	O
 zogeheten	f	O
 '	f	O
-ÈvoluÈs	t	O
+évolués	f	O
 '	f	O
 ,	f	O
 Kongolezen	t	B-NE
@@ -109021,11 +109021,11 @@ Het	t	O
 zelfbewustzijn	f	O
 van	f	O
 de	f	O
-ÈvoluÈs	t	O
+évolués	f	O
 groeide	f	O
 ,	f	O
 maar	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 stak	f	O
 stokken	f	O
 tussen	f	O
@@ -109059,7 +109059,7 @@ gewone	f	O
 bevolking	f	O
 ,	f	O
 de	f	O
-ÈvoluÈ	t	O
+évolué	f	O
 en	f	O
 de	f	O
 blanke	f	O
@@ -109121,7 +109121,7 @@ het	f	O
 stadion	f	O
 en	f	O
 in	f	O
-cafÈs	f	O
+cafés	f	O
 ,	f	O
 maar	f	O
 in	f	O
@@ -109294,7 +109294,7 @@ Leopoldstad	t	B-NE
 
 "	f	O
 De	t	O
-ÈvoluÈs	t	O
+évolués	f	O
 kregen	f	O
 een	f	O
 keizerrijk	f	O
@@ -109384,7 +109384,7 @@ onderwerpen	f	O
 publicatie	f	O
 
 De	t	O
-ÈvoluÈ	t	O
+évolué	f	O
 van	f	O
 1956	f	O
 was	f	O
@@ -109412,7 +109412,7 @@ de	f	O
 Belgische	t	B-NE
 minister	f	O
 van	f	O
-KoloniÎn	t	B-NE
+Koloniën	t	B-NE
 Buisseret	t	B-NE
 een	f	O
 stel	f	O
@@ -109481,7 +109481,7 @@ onafhankelijkheid	f	O
 van	f	O
 Kongo	t	B-NE
 droeg	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 het	f	O
 land	f	O
 over	f	O
@@ -109510,7 +109510,7 @@ met	f	O
 vernederende	f	O
 status	f	O
 van	f	O
-ÈvoluÈ	t	O
+évolué	f	O
 
 Door	t	O
 de	f	O
@@ -109530,7 +109530,7 @@ te	f	O
 gaan	f	O
 studeren	f	O
 in	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 ,	f	O
 waar	f	O
 hij	f	O
@@ -109567,7 +109567,7 @@ Belgen	t	B-NE
 zijn	f	O
 carte	f	O
 de	f	O
-mÈrite	f	O
+mérite	f	O
 civique	f	O
 halen	f	O
 ,	f	O
@@ -109583,7 +109583,7 @@ aankon	f	O
 
 '	f	O
 De	t	O
-ÈvoluÈs	t	O
+évolués	f	O
 moesten	f	O
 plots	f	O
 wel	f	O
@@ -109675,7 +109675,7 @@ Rabaey	t	I-NE
 Het	t	O
 was	f	O
 zeer	f	O
-gÍnant	f	O
+gênant	f	O
 .	f	O
 "	f	O
 
@@ -109865,11 +109865,11 @@ geld	f	O
 .	f	O
 
 De	t	B-NE
-FinanciÎle	t	I-NE
+Financiële	t	I-NE
 Morgen	t	I-NE
 
 Precies	t	O
-ÈÈn	t	O
+één	f	O
 jaar	f	O
 geleden	f	O
 werd	f	O
@@ -109938,7 +109938,7 @@ uitgekomen	f	O
 
 sectie	f	O
 
-EÈn	t	O
+Eén	t	O
 jaar	f	O
 na	f	O
 taxfree	f	O
@@ -109997,7 +109997,7 @@ Lehner	t	B-NE
 zijn	f	O
 Ewald	t	B-NE
 en	f	O
-Hˆppner	t	B-NE
+Höppner	t	B-NE
 schuldig	f	O
 aan	f	O
 "	f	O
@@ -110020,7 +110020,7 @@ juli	f	O
 Drie	t	O
 jaar	f	O
 cel	f	O
-geÎist	f	O
+geëist	f	O
 tegen	f	O
 voormalige	f	O
 DDR-sportchef	t	B-NE
@@ -110042,7 +110042,7 @@ Sport	t	B-NE
 
 Sportchef	t	O
 Manfred	t	B-NE
-Hˆppner	t	I-NE
+Höppner	t	I-NE
 ,	f	O
 de	f	O
 andere	f	O
@@ -110075,7 +110075,7 @@ is	f	O
 drie	f	O
 jaar	f	O
 cel	f	O
-geÎist	f	O
+geëist	f	O
 tegen	f	O
 de	f	O
 voormalig	f	O
@@ -110159,7 +110159,7 @@ hem	f	O
 gevraagd	f	O
 werd	f	O
 of	f	O
-ItaliÎ	t	B-NE
+Italië	t	B-NE
 onverdiend	f	O
 had	f	O
 gewonnen	f	O
@@ -110320,7 +110320,7 @@ afloop	f	O
 van	f	O
 de	f	O
 wedstrijd	f	O
-ItaliÎ-RoemeniÎ	t	B-NE
+Italië-Roemenië	t	B-NE
 zat	f	O
 meer	f	O
 voetbalwijsheid	f	O
@@ -110406,7 +110406,7 @@ hoe	f	O
 de	f	O
 aarde	f	O
 tijdelijk	f	O
-ÈÈn	t	O
+één	f	O
 zingende	f	O
 ,	f	O
 oranjekleurige	f	O
@@ -110477,7 +110477,7 @@ en	f	O
 ze	f	O
 zijn	f	O
 zeer	f	O
-efficiÎnt	f	O
+efficiënt	f	O
 in	f	O
 de	f	O
 afwerking	f	O
@@ -110720,7 +110720,7 @@ afhouden	f	O
 .	f	O
 "	f	O
 
-ItaliÎ	t	B-NE
+Italië	t	B-NE
 geluk	f	O
 ?	f	O
 
@@ -111131,7 +111131,7 @@ gemakkelijk	f	O
 
 Kandidaat	t	O
 nummer	f	O
-ÈÈn	t	O
+één	f	O
 om	f	O
 Rijkaard	t	B-NE
 op	f	O
@@ -111266,7 +111266,7 @@ op	f	O
 het	f	O
 veld	f	O
 van	f	O
-RÈsidence	t	B-NE
+Résidence	t	B-NE
 Victoria	t	I-NE
 .	f	O
 
@@ -111440,7 +111440,7 @@ maken	f	O
 
 editie	f	O
 
-ItaliÎ	t	B-NE
+Italië	t	B-NE
 voelde	f	O
 zich	f	O
 er	f	O
@@ -111553,7 +111553,7 @@ zeggen	f	O
 dat	f	O
 ik	f	O
 naar	f	O
-ItaliÎ	t	B-NE
+Italië	t	B-NE
 wil	f	O
 .	f	O
 "	f	O
@@ -111669,7 +111669,7 @@ verloren	f	O
 halve	f	O
 finale	f	O
 tegen	f	O
-ItaliÎ	t	B-NE
+Italië	t	B-NE
 .	f	O
 
 Maar	t	O
@@ -111745,9 +111745,9 @@ aangegeven	f	O
 nu	f	O
 zijn	f	O
 internationale	f	O
-carriËre	f	O
+carrière	f	O
 te	f	O
-beÎindigen	f	O
+beëindigen	f	O
 .	f	O
 
 Maar	t	O
@@ -111806,7 +111806,7 @@ functie	f	O
 als	f	O
 bondscoach	f	O
 te	f	O
-ambiÎren	f	O
+ambiëren	f	O
 .	f	O
 
 Ieder	t	O
@@ -111898,7 +111898,7 @@ sentimenten	f	O
 die	f	O
 hij	f	O
 als	f	O
-sÈlectionneur	f	O
+sélectionneur	f	O
 niet	f	O
 hoort	f	O
 te	f	O
@@ -112093,7 +112093,7 @@ die	f	O
 actie	f	O
 maar	f	O
 matig	f	O
-appreciÎren	f	O
+appreciëren	f	O
 en	f	O
 stuurde	f	O
 op	f	O
@@ -112214,7 +112214,7 @@ bastion	f	O
 .	f	O
 
 Met	t	O
-ÈÈn	t	O
+één	f	O
 hand	f	O
 op	f	O
 de	f	O
@@ -112336,7 +112336,7 @@ en	f	O
 de	f	O
 beloften	f	O
 van	f	O
-TunesiÎ	t	B-NE
+Tunesië	t	B-NE
 alvorens	f	O
 hij	f	O
 in	f	O
@@ -112438,7 +112438,7 @@ hij	f	O
 als	f	O
 adjunct	f	O
 van	f	O
-AimÈ	t	B-NE
+Aimé	t	B-NE
 Jacquet	t	I-NE
 zag	f	O
 --	f	O
@@ -112530,7 +112530,7 @@ adjunct	f	O
 tot	f	O
 achterdochtige	f	O
 '	f	O
-sÈlectionneur	f	O
+sélectionneur	f	O
 "	f	O
 
 '	f	O
@@ -112914,7 +112914,7 @@ WTA	t	B-NE
 )	f	O
 of	f	O
 de	f	O
-FranÁaise	t	B-NE
+Française	t	B-NE
 Nathalie	t	B-NE
 Dechy	t	I-NE
 (	f	O
@@ -112939,7 +112939,7 @@ van	f	O
 Wimbledon	t	B-NE
 in	f	O
 haar	f	O
-carriËre	f	O
+carrière	f	O
 .	f	O
 
 Maar	t	O
@@ -113148,7 +113148,7 @@ enkele	f	O
 kolommen	f	O
 aan	f	O
 ,	f	O
-geÔntroduceerd	f	O
+geïntroduceerd	f	O
 als	f	O
 de	f	O
 '	f	O
@@ -113193,7 +113193,7 @@ Gisteren	t	O
 versloeg	f	O
 ze	f	O
 de	f	O
-IsraÎlische	t	B-NE
+Israëlische	t	B-NE
 Anna	t	B-NE
 Smashnova	t	I-NE
 (	f	O
@@ -113294,7 +113294,7 @@ klant	f	O
 ,	f	O
 in	f	O
 zijn	f	O
-carriËre	f	O
+carrière	f	O
 die	f	O
 al	f	O
 dertien	f	O
@@ -113370,7 +113370,7 @@ piepen	f	O
 en	f	O
 om	f	O
 zijn	f	O
-reÎle	f	O
+reële	f	O
 waarde	f	O
 op	f	O
 grandslamniveau	f	O
@@ -113378,7 +113378,7 @@ in	f	O
 te	f	O
 schatten	f	O
 is	f	O
-ÈÈn	t	O
+één	f	O
 stuntzege	f	O
 een	f	O
 nogal	f	O
@@ -113863,7 +113863,7 @@ procent	f	O
 .	f	O
 
 De	t	B-NE
-FinanciÎle	t	I-NE
+Financiële	t	I-NE
 Morgen	t	I-NE
 
 zaterdag	f	O
@@ -113931,7 +113931,7 @@ werd	f	O
 op	f	O
 minder	f	O
 dan	f	O
-ÈÈn	t	O
+één	f	O
 vierde	f	O
 berekend	f	O
 waardoor	f	O
@@ -114002,7 +114002,7 @@ Algemeen	t	O
 
 Als	t	O
 u	f	O
-ItaliÎ	t	B-NE
+Italië	t	B-NE
 tipt	f	O
 voor	f	O
 de	f	O
@@ -114022,7 +114022,7 @@ Vrij	t	O
 inspiratieloos	f	O
 maar	f	O
 toch	f	O
-efficiÎnt	f	O
+efficiënt	f	O
 .	f	O
 
 Deze	t	O
@@ -114046,7 +114046,7 @@ De	t	B-NE
 Morgen	t	I-NE
 
 Deze	t	O
-officiÎle	f	O
+officiële	f	O
 site	f	O
 van	f	O
 het	f	O
@@ -114184,7 +114184,7 @@ onder	f	O
 de	f	O
 druk	f	O
 en	f	O
-ItaliÎ	t	B-NE
+Italië	t	B-NE
 behaalde	f	O
 vanop	f	O
 de	f	O
@@ -115610,7 +115610,7 @@ Schotse	t	B-NE
 international	f	O
 zal	f	O
 waarschijnlijk	f	O
-financiÎle	f	O
+financiële	f	O
 genoegdoening	f	O
 eisen	f	O
 .	f	O
@@ -115650,7 +115650,7 @@ Jeugdsport	t	I-NE
 '	f	O
 krijgt	f	O
 een	f	O
-financiÎle	f	O
+financiële	f	O
 injectie	f	O
 van	f	O
 100	f	O
@@ -115669,7 +115669,7 @@ op	f	O
 zijn	f	O
 riijdersduo	f	O
 Mika	t	B-NE
-H‰kkinen	t	I-NE
+Häkkinen	t	I-NE
 -	f	O
 David	t	B-NE
 Coulthard	t	I-NE
@@ -115729,7 +115729,7 @@ Gama	t	I-NE
 geschorst	f	O
 voor	f	O
 alle	f	O
-officiÎle	f	O
+officiële	f	O
 competities	f	O
 
 De	t	B-NE
@@ -115791,7 +115791,7 @@ de	f	O
 aanbeden	f	O
 spits	f	O
 Hakan	t	B-NE
-S¸k¸r	t	I-NE
+Sükür	t	I-NE
 (	f	O
 onlangs	f	O
 getransfereerd	f	O
@@ -115840,7 +115840,7 @@ maken	f	O
 De	t	O
 Finse	t	B-NE
 titelverdediger	f	O
-H‰kkinen	t	B-NE
+Häkkinen	t	B-NE
 (	f	O
 31	f	O
 )	f	O
@@ -115899,7 +115899,7 @@ tijdelijk	f	O
 geschorst	f	O
 voor	f	O
 alle	f	O
-officiÎle	f	O
+officiële	f	O
 competities	f	O
 .	f	O
 
@@ -116029,7 +116029,7 @@ en	f	O
 convergentiezones	f	O
 .	f	O
 
-VÛÛr	t	O
+Vóór	t	O
 de	f	O
 buien	f	O
 zijn	f	O
@@ -116781,7 +116781,7 @@ toch	f	O
 wel	f	O
 met	f	O
 andere	f	O
-parlementariÎrs	f	O
+parlementariërs	f	O
 spreken	f	O
 .	f	O
 "	f	O
@@ -116821,7 +116821,7 @@ publicatiedatum	f	O
 Volgens	t	O
 de	f	O
 kwaliteitskrant	f	O
-S¸ddeutsche	t	B-NE
+Süddeutsche	t	B-NE
 Zeitung	t	I-NE
 gedroeg	f	O
 de	f	O
@@ -117045,7 +117045,7 @@ uitgesloten	f	O
 .	f	O
 
 De	t	O
-S¸ddeutsche	t	B-NE
+Süddeutsche	t	B-NE
 schreef	f	O
 nog	f	O
 :	f	O
@@ -117150,7 +117150,7 @@ aan	f	O
 "	f	O
 
 Frank	t	B-NE
-Schlˆmer	t	I-NE
+Schlömer	t	I-NE
 
 Der	t	B-NE
 Tagesspiegel	t	I-NE
@@ -117189,7 +117189,7 @@ juli	f	O
 
 Kanselier	t	O
 Gerhard	t	B-NE
-Schrˆder	t	I-NE
+Schröder	t	I-NE
 had	f	O
 voorwaar	f	O
 medelijden	f	O
@@ -117276,7 +117276,7 @@ van	f	O
 "	f	O
 
 Frank	t	B-NE
-Schlˆmer	t	I-NE
+Schlömer	t	I-NE
 
 Nochtans	t	O
 bestaat	f	O
@@ -117303,7 +117303,7 @@ Kohl	t	B-NE
 de	f	O
 macht	f	O
 aan	f	O
-Schrˆder	t	B-NE
+Schröder	t	B-NE
 moest	f	O
 overdragen	f	O
 .	f	O
@@ -117380,7 +117380,7 @@ ID	t	I-NE
 )	f	O
 en	f	O
 Carl	t	B-NE
-DecaluwÈ	t	I-NE
+Decaluwé	t	I-NE
 (	f	O
 CVP	t	B-NE
 )	f	O
@@ -117422,7 +117422,7 @@ wordt	f	O
 .	f	O
 
 Volgens	t	O
-AndrÈ	t	B-NE
+André	t	B-NE
 Denys	t	I-NE
 (	f	O
 VLD	t	B-NE
@@ -117539,7 +117539,7 @@ ze	f	O
 de	f	O
 kweekprogramma's	f	O
 wil	f	O
-intensifiÎren	f	O
+intensifiëren	f	O
 .	f	O
 
 publicatie	f	O
@@ -117676,7 +117676,7 @@ al	f	O
 in	f	O
 '94	f	O
 in	f	O
-WalloniÎ	t	B-NE
+Wallonië	t	B-NE
 .	f	O
 
 "	f	O
@@ -117992,7 +117992,7 @@ VS	t	B-NE
 76	f	O
 .	f	O
 
-JosÈ	t	B-NE
+José	t	B-NE
 Maria	t	I-NE
 Jimenez	t	I-NE
 (	f	O
@@ -118003,7 +118003,7 @@ pagina	f	O
 
 Festina	t	B-NE
 
-FrÈdÈric	t	B-NE
+Frédéric	t	B-NE
 Guesdon	t	I-NE
 (	f	O
 Fra	t	B-NE
@@ -118233,7 +118233,7 @@ Spa	t	B-NE
 18	f	O
 .	f	O
 
-StÈphane	t	B-NE
+Stéphane	t	B-NE
 Heulot	t	I-NE
 (	f	O
 Fra	t	B-NE
@@ -118290,7 +118290,7 @@ Ita	t	B-NE
 118	f	O
 .	f	O
 
-SÈbastien	t	B-NE
+Sébastien	t	B-NE
 Hinault	t	I-NE
 (	f	O
 Fra	t	B-NE
@@ -118323,7 +118323,7 @@ sectie	f	O
 99	f	O
 .	f	O
 
-FranÁois	t	B-NE
+François	t	B-NE
 Simon	t	I-NE
 (	f	O
 Fra	t	B-NE
@@ -118377,7 +118377,7 @@ Ita	t	B-NE
 )	f	O
 
 Walter	t	B-NE
-BÈnÈteau	t	I-NE
+Bénéteau	t	I-NE
 (	f	O
 Fra	t	B-NE
 )	f	O
@@ -118516,7 +118516,7 @@ editie	f	O
 77	f	O
 .	f	O
 
-JosÈ	t	B-NE
+José	t	B-NE
 Angel	t	I-NE
 Vidal	t	I-NE
 (	f	O
@@ -118553,7 +118553,7 @@ Nazon	t	I-NE
 Fra	t	B-NE
 )	f	O
 
-CÈdric	t	B-NE
+Cédric	t	B-NE
 Vasseur	t	I-NE
 (	f	O
 Fra	t	B-NE
@@ -118805,7 +118805,7 @@ Jos	t	B-NE
 Braeckevelt	t	I-NE
 
 Pascal	t	B-NE
-HervÈ	t	I-NE
+Hervé	t	I-NE
 (	f	O
 Fra	t	B-NE
 )	f	O
@@ -118859,7 +118859,7 @@ Oos	t	B-NE
 )	f	O
 
 La	t	B-NE
-FranÁaise	t	I-NE
+Française	t	I-NE
 des	f	I-NE
 Jeux	t	I-NE
 
@@ -118888,7 +118888,7 @@ Ita	t	B-NE
 
 Sportdirecteur	t	O
 :	f	O
-ThÈo	t	B-NE
+Théo	t	B-NE
 De	t	I-NE
 Rooy	t	I-NE
 
@@ -118951,7 +118951,7 @@ Tom	t	B-NE
 Steels	t	I-NE
 
 Laurent	t	B-NE
-LefËvre	t	I-NE
+Lefèvre	t	I-NE
 (	f	O
 Fra	t	B-NE
 )	f	O
@@ -119004,7 +119004,7 @@ Ita	t	B-NE
 
 Sportdirecteur	t	O
 :	f	O
-Jean-RenÈ	t	B-NE
+Jean-René	t	B-NE
 Bernaudeau	t	I-NE
 
 Sportdirecteur	t	O
@@ -119046,7 +119046,7 @@ Cofidis	t	B-NE
 98	f	O
 .	f	O
 
-CrÈdit	t	B-NE
+Crédit	t	B-NE
 Agricole	t	I-NE
 
 Emmanuel	t	B-NE
@@ -119058,7 +119058,7 @@ Fra	t	B-NE
 11	f	O
 .	f	O
 
-BenoÓt	t	B-NE
+Benoît	t	B-NE
 Salmon	t	I-NE
 (	f	O
 Fra	t	B-NE
@@ -119088,7 +119088,7 @@ Spa	t	B-NE
 )	f	O
 
 Udo	t	B-NE
-Bˆlts	t	I-NE
+Bölts	t	I-NE
 (	f	O
 Dui	t	B-NE
 )	f	O
@@ -119109,7 +119109,7 @@ Boven	t	I-NE
 Ned	t	B-NE
 )	f	O
 
-BenoÓt	t	B-NE
+Benoît	t	B-NE
 Joachim	t	I-NE
 (	f	O
 Lux	t	B-NE
@@ -119292,7 +119292,7 @@ Ned	t	B-NE
 )	f	O
 
 Alex	t	B-NE
-Z¸lle	t	I-NE
+Zülle	t	I-NE
 (	f	O
 Zwi	t	B-NE
 )	f	O
@@ -119442,7 +119442,7 @@ Casero	t	I-NE
 Spa	t	B-NE
 )	f	O
 
-SÈbastien	t	B-NE
+Sébastien	t	B-NE
 Demarbaix	t	I-NE
 
 52	f	O
@@ -119517,7 +119517,7 @@ Ned	t	B-NE
 165	f	O
 .	f	O
 
-GrÈgory	t	B-NE
+Grégory	t	B-NE
 Gwiazdowski	t	I-NE
 (	f	O
 Pol	t	B-NE
@@ -119532,7 +119532,7 @@ Morin	t	I-NE
 Fra	t	B-NE
 )	f	O
 
-JosÈ	t	B-NE
+José	t	B-NE
 Luis	t	I-NE
 Arrieta	t	I-NE
 (	f	O
@@ -119615,7 +119615,7 @@ Verheyen	t	I-NE
 .	f	O
 
 David	t	B-NE
-MoncoutiÈ	t	I-NE
+Moncoutié	t	I-NE
 (	f	O
 Fra	t	B-NE
 )	f	O
@@ -119648,7 +119648,7 @@ VS	t	B-NE
 )	f	O
 
 Pascal	t	B-NE
-DÈramÈ	t	I-NE
+Déramé	t	I-NE
 (	f	O
 Fra	t	B-NE
 )	f	O
@@ -119780,7 +119780,7 @@ Sera	t	I-NE
 Blauw	t	O
 mirakel	f	O
 ,	f	O
-ItaliÎ	t	B-NE
+Italië	t	B-NE
 is	f	O
 in	f	O
 de	f	O
@@ -120065,7 +120065,7 @@ kiezen	f	O
 bewust	f	O
 voor	f	O
 hun	f	O
-carriËre	f	O
+carrière	f	O
 voor	f	O
 ze	f	O
 '	f	O
@@ -120077,7 +120077,7 @@ beginnen	f	O
 
 auteur	f	O
 
-CarriËrepil	t	O
+Carrièrepil	t	O
 moet	f	O
 anticonceptiepil	f	O
 vervangen	f	O
@@ -120139,7 +120139,7 @@ zou	f	O
 door	f	O
 de	f	O
 '	f	O
-carriËrepil	f	O
+carrièrepil	f	O
 '	f	O
 jaren	f	O
 kunnen	f	O
@@ -120245,7 +120245,7 @@ vijftien	f	O
 jaar	f	O
 voordat	f	O
 zo'n	f	O
-carriËrepil	f	O
+carrièrepil	f	O
 eventueel	f	O
 op	f	O
 de	f	O
@@ -120364,7 +120364,7 @@ de	f	O
 dag	f	O
 en	f	O
 met	f	O
-ÈÈn	t	O
+één	f	O
 of	f	O
 meerdere	f	O
 studiogasten	f	O
@@ -120379,7 +120379,7 @@ van	f	O
 Michel	t	B-NE
 Wuyts	t	I-NE
 en	f	O
-JosÈ	t	B-NE
+José	t	B-NE
 De	t	I-NE
 Cauwer	t	I-NE
 .	f	O
@@ -120772,7 +120772,7 @@ zijn	f	O
 inzet	f	O
 voor	f	O
 de	f	O
-kankerpatiÎnten	f	O
+kankerpatiënten	f	O
 hebben	f	O
 de	f	O
 Texaan	t	B-NE
@@ -120846,7 +120846,7 @@ maar	f	O
 sloeg	f	O
 toch	f	O
 nog	f	O
-ÈÈn	t	O
+één	f	O
 keer	f	O
 toe	f	O
 .	f	O
@@ -120921,7 +120921,7 @@ een	f	O
 sterk	f	O
 klimnummer	f	O
 naar	f	O
-SestriËre	t	B-NE
+Sestrière	t	B-NE
 .	f	O
 
 Ik	t	O
@@ -121030,7 +121030,7 @@ hem	f	O
 opgerichte	f	O
 fonds	f	O
 voor	f	O
-kankerpatiÎnten	f	O
+kankerpatiënten	f	O
 .	f	O
 
 Mede	t	O
@@ -121147,7 +121147,7 @@ Hij	t	O
 gaf	f	O
 daardoor	f	O
 honderdduizenden	f	O
-kankerpatiÎnten	f	O
+kankerpatiënten	f	O
 weer	f	O
 hoop	f	O
 om	f	O
@@ -121334,7 +121334,7 @@ Tour-winst	t	B-NE
 van	f	O
 een	f	O
 vroegere	f	O
-kankerpatiÎnt	f	O
+kankerpatiënt	f	O
 heel	f	O
 wat	f	O
 losgeweekt	f	O
@@ -121899,7 +121899,7 @@ Michel	t	B-NE
 Wuyts	t	I-NE
 en	f	O
 cocommentator	f	O
-JosÈ	t	B-NE
+José	t	B-NE
 De	t	I-NE
 Cauwer	t	I-NE
 .	f	O
@@ -122121,7 +122121,7 @@ de	f	O
 dag	f	O
 en	f	O
 met	f	O
-ÈÈn	t	O
+één	f	O
 of	f	O
 meerdere	f	O
 studiogasten	f	O
@@ -122203,7 +122203,7 @@ Eurorace	t	I-NE
 en	f	O
 de	f	O
 Renault	t	B-NE
-MÈgane	t	I-NE
+Mégane	t	I-NE
 Cup	t	I-NE
 in	f	O
 Spa	t	B-NE
@@ -122286,7 +122286,7 @@ van	f	O
 hen	f	O
 door	f	O
 de	f	O
-knieÎn	f	O
+knieën	f	O
 .	f	O
 
 Er	t	O
@@ -122515,7 +122515,7 @@ leefde	f	O
 het	f	O
 noordwesten	f	O
 van	f	O
-ItaliÎ	t	B-NE
+Italië	t	B-NE
 in	f	O
 de	f	O
 ban	f	O
@@ -122764,7 +122764,7 @@ geloof	f	O
 ik	f	O
 maar	f	O
 over	f	O
-ÈÈn	t	O
+één	f	O
 gezin	f	O
 ,	f	O
 tegenover	f	O
@@ -122954,7 +122954,7 @@ gemeenteraadszitting	f	O
 behandelen	f	O
 en	f	O
 zich	f	O
-distantiÎren	f	O
+distantiëren	f	O
 van	f	O
 de	f	O
 manier	f	O
@@ -123034,7 +123034,7 @@ Eigen	t	O
 berichtgeving	f	O
 
 Annemie	t	B-NE
-BultÈ	t	I-NE
+Bulté	t	I-NE
 
 "	f	O
 Elke	t	O
@@ -123482,7 +123482,7 @@ om	f	O
 de	f	O
 prestatie	f	O
 van	f	O
-ItaliÎ	t	B-NE
+Italië	t	B-NE
 te	f	O
 beoordelen	f	O
 .	f	O
@@ -123787,7 +123787,7 @@ gewisseld	f	O
 .	f	O
 
 In	t	O
-ItaliÎ	t	B-NE
+Italië	t	B-NE
 zijn	f	O
 ze	f	O
 het	f	O
@@ -123823,7 +123823,7 @@ bij	f	O
 Milan	t	B-NE
 .	f	O
 
-ItaliÎ	t	B-NE
+Italië	t	B-NE
 kan	f	O
 dan	f	O
 ook	f	O
@@ -123952,7 +123952,7 @@ Facchetti	t	B-NE
 werden	f	O
 helden	f	O
 in	f	O
-ItaliÎ	t	B-NE
+Italië	t	B-NE
 .	f	O
 
 Niet	t	O
@@ -124092,7 +124092,7 @@ zijn	f	O
 prijskaartje	f	O
 steeg	f	O
 tot	f	O
-ÈÈn	t	O
+één	f	O
 miljard	f	O
 frank	f	O
 .	f	O
@@ -124302,7 +124302,7 @@ voetballers	f	O
 
 editie	f	O
 
-ItaliÎ	t	B-NE
+Italië	t	B-NE
 mankeert	f	O
 een	f	O
 nummer	f	O
@@ -124724,14 +124724,14 @@ Imola	t	B-NE
 Herbert	t	B-NE
 op	f	O
 de	f	O
-N¸rburgring	t	B-NE
+Nürburgring	t	B-NE
 .	f	O
 
 "	f	O
 De	t	O
 zege	f	O
 in	f	O
-MontrÈal	t	B-NE
+Montréal	t	B-NE
 ,	f	O
 twee	f	O
 weken	f	O
@@ -124796,7 +124796,7 @@ publicatie	f	O
 Momenteel	t	O
 telt	f	O
 Schumacher	t	B-NE
-tweeÎntwintig	f	O
+tweeëntwintig	f	O
 punten	f	O
 voorsprong	f	O
 op	f	O
@@ -125041,7 +125041,7 @@ beter	f	O
 "	f	O
 
 Mika	t	B-NE
-H‰kkinen	t	I-NE
+Häkkinen	t	I-NE
 volgt	f	O
 op	f	O
 twee	f	O
@@ -125108,7 +125108,7 @@ is	f	O
 dit	f	O
 het	f	O
 op	f	O
-ÈÈn	t	O
+één	f	O
 na	f	O
 hoogste	f	O
 cijfer	f	O
@@ -125685,14 +125685,14 @@ Drucker	t	I-NE
 en	f	O
 zijn	f	O
 ploegleider	f	O
-RaphaÎl	t	B-NE
+Raphaël	t	B-NE
 Geminiani	t	I-NE
 .	f	O
 
 auteur	f	O
 
 Le	t	B-NE
-mystËre	f	I-NE
+mystère	f	I-NE
 Anquetil	t	I-NE
 Ned	t	B-NE
 3	f	I-NE
@@ -125837,7 +125837,7 @@ Ned	t	B-NE
 18.35	f	O
 
 Woubi	t	B-NE
-ChÈri	t	I-NE
+Chéri	t	I-NE
 Arte	t	B-NE
 01.40	f	O
 
@@ -126091,7 +126091,7 @@ Morozevitsj	t	B-NE
 3,5	f	O
 .	f	O
 
-AlexeÔ	t	B-NE
+Alexeï	t	B-NE
 Sjirov	t	I-NE
 was	f	O
 overschaakt	f	O
@@ -126525,7 +126525,7 @@ g4	f	O
 
 Ze	t	O
 is	f	O
-geÔnspireerd	f	O
+geïnspireerd	f	O
 op	f	O
 de	f	O
 Russisch-Japanse	t	B-NE
@@ -126886,7 +126886,7 @@ g2	f	O
 h2	f	O
 .	f	O
 
-EÈn	t	O
+Eén	t	O
 ronde	f	O
 voor	f	O
 het	f	O
@@ -127000,7 +127000,7 @@ groep	f	I-NE
 vertolkte	f	O
 onze	f	O
 landgenoot	f	O
-MichaÔl	t	B-NE
+Michaïl	t	B-NE
 Goerevitsj	t	I-NE
 een	f	O
 dramatische	f	O
@@ -127078,7 +127078,7 @@ Ta1	t	O
 Halverwege	t	O
 leek	f	O
 de	f	O
-OekraÔener	t	B-NE
+Oekraïener	t	B-NE
 Vassily	t	B-NE
 Ivantsjoek	t	I-NE
 soeverein	f	O
@@ -127177,7 +127177,7 @@ Lc6	t	O
 Een	t	O
 dit	f	O
 keer	f	O
-stoÔcijnse	f	O
+stoïcijnse	f	O
 Gary	t	B-NE
 Kasparov	t	I-NE
 had	f	O
@@ -127221,7 +127221,7 @@ het	f	O
 begin	f	O
 van	f	O
 zijn	f	O
-grootmeestercarriËre	f	O
+grootmeestercarrière	f	O
 werkte	f	O
 de	f	O
 bliksemsnelle	f	O
@@ -127233,7 +127233,7 @@ steevast	f	O
 in	f	O
 minder	f	O
 dan	f	O
-ÈÈn	t	O
+één	f	O
 uur	f	O
 af	f	O
 .	f	O
@@ -127355,7 +127355,7 @@ jaar	f	O
 dat	f	O
 de	f	O
 nummer	f	O
-ÈÈn	t	O
+één	f	O
 van	f	O
 de	f	O
 wereld	f	O
@@ -127500,7 +127500,7 @@ Madras	t	B-NE
 We	t	O
 hadden	f	O
 maar	f	O
-ÈÈn	t	O
+één	f	O
 schaakklok	f	O
 .	f	O
 
@@ -127628,7 +127628,7 @@ Zijn	t	O
 belangrijkste	f	O
 concurrent	f	O
 ,	f	O
-SergeÔ	t	B-NE
+Sergeï	t	B-NE
 Roebljevsky	t	I-NE
 ,	f	O
 kreeg	f	O
@@ -127646,7 +127646,7 @@ Belg	t	B-NE
 )	f	O
 op	f	O
 de	f	O
-knieÎn	f	O
+knieën	f	O
 ,	f	O
 eindigde	f	O
 zo	f	O
@@ -127822,7 +127822,7 @@ zoals	f	O
 daar	f	O
 zijn	f	O
 de	f	O
-cafÈstoel	f	O
+caféstoel	f	O
 of	f	O
 het	f	O
 terrastafeltje	f	O
@@ -127972,7 +127972,7 @@ subversiviteit	f	O
 gelijkstaat	f	O
 met	f	O
 het	f	O
-kopiÎren	f	O
+kopiëren	f	O
 van	f	O
 blauwdrukken	f	O
 voor	f	O
@@ -127993,7 +127993,7 @@ Ach	t	O
 ,	f	O
 ik	f	O
 kan	f	O
-Prˆpper	t	B-NE
+Pröpper	t	B-NE
 zijn	f	O
 enthousiasme	f	O
 nog	f	O
@@ -128007,7 +128007,7 @@ donderdagavond	f	O
 tijdens	f	O
 de	f	O
 match	f	O
-Nederland--ItaliÎ	t	B-NE
+Nederland--Italië	t	B-NE
 zelf	f	O
 kon	f	O
 vaststellen	f	O
@@ -128161,7 +128161,7 @@ nu	f	O
 ,	f	O
 schrijft	f	O
 Henk	t	B-NE
-Prˆpper	t	I-NE
+Pröpper	t	I-NE
 de	f	O
 hysterie	f	O
 van	f	O
@@ -128171,7 +128171,7 @@ af	f	O
 die	f	O
 via	f	O
 miljoenen	f	O
-poriÎn	f	O
+poriën	f	O
 in	f	O
 zijn	f	O
 bloedbaan	f	O
@@ -128453,7 +128453,7 @@ samen	f	O
 met	f	O
 Marianne	t	B-NE
 naar	f	O
-Nederland-ItaliÎ	t	B-NE
+Nederland-Italië	t	B-NE
 te	f	O
 ...	f	O
 
@@ -128481,7 +128481,7 @@ gezien	f	O
 ,	f	O
 in	f	O
 een	f	O
-cafÈ	f	O
+café	f	O
 vol	f	O
 Italianen	t	B-NE
 die	f	O
@@ -128797,14 +128797,14 @@ naar	f	O
 pus	f	O
 .	f	O
 
-Nederland-ArgentiniÎ	t	B-NE
+Nederland-Argentinië	t	B-NE
 twee	f	O
 jaar	f	O
 geleden	f	O
 hadden	f	O
 ze	f	O
 in	f	O
-ItaliÎ	t	B-NE
+Italië	t	B-NE
 gezien	f	O
 ,	f	O
 de	f	O
@@ -128817,7 +128817,7 @@ EK	t	B-NE
 in	f	O
 Engeland	t	B-NE
 in	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 .	f	O
 
 Hij	t	O
@@ -129383,7 +129383,7 @@ hier	f	O
 De	t	O
 gil	f	O
 van	f	O
-zoÎven	f	O
+zoëven	f	O
 had	f	O
 zijn	f	O
 mond	f	O
@@ -129499,7 +129499,7 @@ samen	f	O
 met	f	O
 Marianne	t	B-NE
 naar	f	O
-Nederland-ItaliÎ	t	B-NE
+Nederland-Italië	t	B-NE
 te	f	O
 kijken	f	O
 .	f	O
@@ -129724,7 +129724,7 @@ is	f	O
 .	f	O
 
 '	f	O
-GÛÛÛÛÛd	t	O
+Góóóóód	t	O
 morning	f	O
 East	t	B-NE
 Timor	t	I-NE
@@ -129841,7 +129841,7 @@ presenteer	f	O
 .	f	O
 
 '	f	O
-GÛÛÛÛÛd	t	O
+Góóóóód	t	O
 morning	f	O
 East	t	B-NE
 Timor	t	I-NE
@@ -130104,7 +130104,7 @@ het	f	O
 vertrek	f	O
 van	f	O
 de	f	O
-IndonesiÎrs	t	B-NE
+Indonesiërs	t	B-NE
 waren	f	O
 ze	f	O
 hun	f	O
@@ -130669,7 +130669,7 @@ belangrijk	f	O
 "	f	O
 ,	f	O
 stelde	f	O
-Marie-ThÈrËse	t	B-NE
+Marie-Thérèse	t	B-NE
 Coenen	t	I-NE
 (	f	O
 Ecolo	t	B-NE
@@ -130805,8 +130805,8 @@ van	f	O
 de	f	O
 Cubaanse	t	B-NE
 jongen	f	O
-Eli·n	t	B-NE
-Gonz·les	t	I-NE
+Elián	t	B-NE
+Gonzáles	t	I-NE
 is	f	O
 daar	f	O
 een	f	O
@@ -131130,7 +131130,7 @@ De	t	O
 klachten	f	O
 kwamen	f	O
 vier	f	O
-‡	f	O
+à	f	O
 vijf	f	O
 uur	f	O
 na	f	O
@@ -131366,7 +131366,7 @@ vonden	f	O
 is	f	O
 indrukwekkend	f	O
 :	f	O
-bacteriÎn	f	O
+bacteriën	f	O
 en	f	O
 ziektekiemen	f	O
 in	f	O
@@ -131515,9 +131515,9 @@ twee	f	O
 in	f	O
 Spanje	t	B-NE
 en	f	O
-Groot-BrittanniÎ	t	B-NE
+Groot-Brittannië	t	B-NE
 en	f	O
-ÈÈn	t	O
+één	f	O
 in	f	O
 Duitsland	t	B-NE
 --	f	O
@@ -131612,12 +131612,12 @@ verdict	f	O
 werd	f	O
 niet	f	O
 op	f	O
-ÈÈn	t	O
+één	f	O
 dag	f	O
 geveld	f	O
 .	f	O
 
-EÈn	t	O
+Eén	t	O
 op	f	O
 de	f	O
 drie	f	O
@@ -131705,7 +131705,7 @@ meenemen	f	O
 De	t	O
 conclusie	f	O
 voor	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 nadat	f	O
 de	f	O
 controleurs	f	O
@@ -131730,12 +131730,12 @@ personeel	f	O
 en	f	O
 gebrek	f	O
 aan	f	O
-hygiÎne	f	O
+hygiëne	f	O
 .	f	O
 
 Daarmee	t	O
 bengelt	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 aan	f	O
 de	f	O
 staart	f	O
@@ -131760,7 +131760,7 @@ krijgen	f	O
 sectie	f	O
 
 In	t	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 kregen	f	O
 twee	f	O
 wegrestaurants	f	O
@@ -131777,7 +131777,7 @@ maakten	f	O
 de	f	O
 score	f	O
 voor	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 alvast	f	O
 slecht	f	O
 .	f	O
@@ -131793,7 +131793,7 @@ personeel	f	O
 en	f	O
 gebrek	f	O
 aan	f	O
-hygiÎne	f	O
+hygiëne	f	O
 
 Enkel	t	O
 als	f	O
@@ -131813,7 +131813,7 @@ het	f	O
 Verenigd	t	B-NE
 Koninkrijk	t	I-NE
 ,	f	O
-ItaliÎ	t	B-NE
+Italië	t	B-NE
 en	f	O
 Spanje	t	B-NE
 ,	f	O
@@ -131893,7 +131893,7 @@ De	t	B-NE
 Backer	t	I-NE
 en	f	O
 de	f	O
-coˆrdinator	f	O
+coördinator	f	O
 van	f	O
 de	f	O
 undercoveragenten	f	O
@@ -131941,7 +131941,7 @@ drugs	f	O
 verhandelde	f	O
 ,	f	O
 zowel	f	O
-cocaÔne	f	O
+cocaïne	f	O
 ,	f	O
 cannabis	f	O
 als	f	O
@@ -132285,7 +132285,7 @@ Skyshops	t	I-NE
 .	f	O
 
 Precies	t	O
-ÈÈn	t	O
+één	f	O
 jaar	f	O
 geleden	f	O
 werd	f	O
@@ -132328,7 +132328,7 @@ die	f	O
 we	f	O
 er	f	O
 gaan	f	O
-creÎren	f	O
+creëren	f	O
 .	f	O
 
 Blauw-rode	t	O
@@ -132435,7 +132435,7 @@ Sterke	t	O
 drank	f	O
 is	f	O
 in	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 zelfs	f	O
 met	f	O
 heffingen	f	O
@@ -132660,7 +132660,7 @@ bij	f	O
 al	f	O
 is	f	O
 het	f	O
-commerciÎle	f	O
+commerciële	f	O
 verlies	f	O
 zeer	f	O
 goed	f	O
@@ -132726,7 +132726,7 @@ wat	f	O
 mensen	f	O
 die	f	O
 naar	f	O
-ItaliÎ	t	B-NE
+Italië	t	B-NE
 vliegen	f	O
 ,	f	O
 graag	f	O
@@ -132748,7 +132748,7 @@ BIAC	t	B-NE
 ,	f	O
 heeft	f	O
 in	f	O
-ÈÈn	t	O
+één	f	O
 jaar	f	O
 tijd	f	O
 600	f	O
@@ -132807,7 +132807,7 @@ een	f	O
 zestigtal	f	O
 werknemers	f	O
 moeten	f	O
-beÎindigen	f	O
+beëindigen	f	O
 .	f	O
 
 Nog	t	O
@@ -132868,7 +132868,7 @@ Belgische	t	B-NE
 douane	f	O
 waterdichte	f	O
 garanties	f	O
-geÎist	f	O
+geëist	f	O
 om	f	O
 misbruik	f	O
 tegen	f	O
@@ -133124,7 +133124,7 @@ flinke	f	O
 groei	f	O
 van	f	O
 de	f	O
-commerciÎle	f	O
+commerciële	f	O
 activiteiten	f	O
 .	f	O
 
@@ -133314,7 +133314,7 @@ op	f	O
 kleding	f	O
 ,	f	O
 de	f	O
-HermËs-winkel	t	B-NE
+Hermès-winkel	t	B-NE
 werd	f	O
 vervangen	f	O
 door	f	O
@@ -133353,7 +133353,7 @@ van	f	O
 deze	f	O
 producten	f	O
 niet	f	O
-zÈlf	f	O
+zélf	f	O
 willen	f	O
 betalen	f	O
 ,	f	O
@@ -133387,7 +133387,7 @@ post-taxfreetijdperk	f	O
 Algemeen	t	O
 
 De	t	B-NE
-FinanciÎle	t	I-NE
+Financiële	t	I-NE
 Morgen	t	I-NE
 
 Die	t	O
@@ -133545,7 +133545,7 @@ Travel	t	B-NE
 Value	t	I-NE
 maken	f	O
 een	f	O
-commerciÎle	f	O
+commerciële	f	O
 activiteit	f	O
 ,	f	O
 ondanks	f	O
@@ -133726,7 +133726,7 @@ sigaretten	f	O
 mochten	f	O
 aanschaffen	f	O
 zo	f	O
-potentiÎle	f	O
+potentiële	f	O
 klanten	f	O
 geworden	f	O
 .	f	O
@@ -133775,7 +133775,7 @@ waarbij	f	O
 de	f	O
 zuivering	f	O
 in	f	O
-ÈÈn	t	O
+één	f	O
 tank	f	O
 gebeurt	f	O
 .	f	O
@@ -134127,7 +134127,7 @@ frank	f	O
 .	f	O
 
 In	t	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 bouwde	f	O
 Waterleau	t	B-NE
 mee	f	O
@@ -134321,7 +134321,7 @@ kende	f	O
 het	f	O
 heel	f	O
 wat	f	O
-potentiÎle	f	O
+potentiële	f	O
 klanten	f	O
 in	f	O
 de	f	O
@@ -134349,7 +134349,7 @@ ontwikkelde	f	O
 ondertussen	f	O
 een	f	O
 eigen	f	O
-procÈdÈ	f	O
+procédé	f	O
 waar	f	O
 het	f	O
 patenten	f	O
@@ -134379,7 +134379,7 @@ de	f	O
 BDBH	t	B-NE
 .	f	O
 
-HabituÈs	t	O
+Habitués	t	O
 van	f	O
 het	f	O
 jaarlijkse	f	O
@@ -134434,7 +134434,7 @@ het	f	O
 water	f	O
 toegevoegd	f	O
 waarna	f	O
-bacteriÎn	f	O
+bacteriën	f	O
 hun	f	O
 werk	f	O
 doen	f	O
@@ -134961,14 +134961,14 @@ de	f	O
 weet	f	O
 over	f	O
 het	f	O
-privÈ-leven	f	O
+privé-leven	f	O
 van	f	O
 de	f	O
 man	f	O
 .	f	O
 
 De	t	B-NE
-FinanciÎle	t	I-NE
+Financiële	t	I-NE
 Morgen	t	I-NE
 
 In	t	O
@@ -135412,7 +135412,7 @@ werden	f	O
 achteraf	f	O
 tijdens	f	O
 de	f	O
-N¸rnberg-processen	t	B-NE
+Nürnberg-processen	t	B-NE
 gebruikt	f	O
 als	f	O
 overtuigend	f	O
@@ -135576,9 +135576,9 @@ de	f	O
 Gestapo	t	B-NE
 haar	f	O
 teennagels	f	O
-ÈÈn	t	O
+één	f	O
 voor	f	O
-ÈÈn	t	O
+één	f	O
 begon	f	O
 uit	f	O
 te	f	O
@@ -135597,7 +135597,7 @@ gelukkig	f	O
 '	f	O
 maar	f	O
 '	f	O
-ÈÈn	t	O
+één	f	O
 op	f	O
 de	f	O
 vier	f	O
@@ -135737,7 +135737,7 @@ van	f	O
 een	f	O
 tante	f	O
 had	f	O
-geÎrfd	f	O
+geërfd	f	O
 .	f	O
 
 1908	f	O
@@ -135890,7 +135890,7 @@ van	f	O
 de	f	O
 buitenwereld	f	O
 was	f	O
-geÔsoleerd	f	O
+geïsoleerd	f	O
 .	f	O
 
 Ondanks	t	O
@@ -136305,7 +136305,7 @@ waard	f	O
 .	f	O
 "	f	O
 
-PotentiÎle	t	O
+Potentiële	t	O
 spionnen	f	O
 werden	f	O
 gerekruteerd	f	O
@@ -136363,7 +136363,7 @@ zijn	f	O
 tevreden	f	O
 met	f	O
 de	f	O
-financiÎle	f	O
+financiële	f	O
 inspanningen	f	O
 die	f	O
 Vlaanderen	t	B-NE
@@ -136399,7 +136399,7 @@ zorgen	f	O
 dat	f	O
 er	f	O
 nog	f	O
-mÈÈr	f	O
+méér	f	O
 toeristen	f	O
 naar	f	O
 Brugge	t	B-NE
@@ -136465,7 +136465,7 @@ over	f	O
 enkele	f	O
 maanden	f	O
 in	f	O
-AustraliÎ	t	B-NE
+Australië	t	B-NE
 genomen	f	O
 .	f	O
 
@@ -136492,7 +136492,7 @@ zeker	f	O
 dat	f	O
 Brugge	t	B-NE
 ,	f	O
-mÈt	f	O
+mét	f	O
 de	f	O
 toeristen	f	O
 ,	f	O
@@ -136514,7 +136514,7 @@ en	f	O
 het	f	O
 Zand	t	B-NE
 ,	f	O
-zÈÈr	f	O
+zéér	f	O
 leefbaar	f	O
 is	f	O
 gebleven	f	O
@@ -136779,7 +136779,7 @@ Brugge	t	B-NE
 heeft	f	O
 indertijd	f	O
 de	f	O
-industriÎle	f	O
+industriële	f	O
 revolutie	f	O
 gemist	f	O
 en	f	O
@@ -136903,7 +136903,7 @@ Concertgebouw	t	B-NE
 Dat	t	O
 er	f	O
 nog	f	O
-mÈÈr	f	O
+méér	f	O
 toeristen	f	O
 zouden	f	O
 komen	f	O
@@ -137175,7 +137175,7 @@ Wereldoorlog	t	I-NE
 het	f	O
 besluit	f	O
 in	f	O
-ItaliÎ	t	B-NE
+Italië	t	B-NE
 als	f	O
 vrijwilliger	f	O
 voor	f	O
@@ -137337,7 +137337,7 @@ dan	f	O
 niet	f	O
 naar	f	O
 de	f	O
-privÈ	f	O
+privé	f	O
 ?	f	O
 
 De	t	O
@@ -137393,7 +137393,7 @@ leerkrachten	f	O
 werd	f	O
 en	f	O
 wordt	f	O
-geÎist	f	O
+geëist	f	O
 ,	f	O
 en	f	O
 niet	f	O
@@ -137701,7 +137701,7 @@ de	f	O
 beweging	f	O
 Synodale	t	B-NE
 Katholieken	t	I-NE
-BelgiÎ	t	I-NE
+België	t	I-NE
 .	f	O
 
 Redenen	t	O
@@ -137755,7 +137755,7 @@ respect	f	O
 en	f	O
 medemenselijk	f	O
 heid	f	O
-geÔnspireerden	f	O
+geïnspireerden	f	O
 ,	f	O
 van	f	O
 vroeger	f	O
@@ -137916,7 +137916,7 @@ maken	f	O
 met	f	O
 '	f	O
 de	f	O
-privÈ	f	O
+privé	f	O
 '	f	O
 .	f	O
 
@@ -138071,7 +138071,7 @@ dat	f	O
 er	f	O
 nogal	f	O
 wat	f	O
-naÔeve	f	O
+naïeve	f	O
 ,	f	O
 wereldvreemde	f	O
 idealisten	f	O
@@ -138926,7 +138926,7 @@ nog	f	O
 niet	f	O
 zeggen	f	O
 dat	f	O
-·lle	f	O
+álle	f	O
 discriminaties	f	O
 nu	f	O
 uit	f	O
@@ -138942,7 +138942,7 @@ de	f	O
 vergadering	f	O
 van	f	O
 het	f	O
-overlegcomitÈ	f	O
+overlegcomité	f	O
 tussen	f	O
 de	f	O
 vakbonden	f	O
@@ -139043,7 +139043,7 @@ heb	f	O
 in	f	O
 mijn	f	O
 hele	f	O
-carriËre	f	O
+carrière	f	O
 als	f	O
 vakbondsman	f	O
 nog	f	O
@@ -139245,7 +139245,7 @@ moeder	f	O
 '	f	O
 
 De	t	O
-poÎzieworkshop	f	O
+poëzieworkshop	f	O
 had	f	O
 moeten	f	O
 uitmonden	f	O
@@ -139625,7 +139625,7 @@ beltijd	f	O
 Erik	t	B-NE
 Vlaminck	t	I-NE
 
-appËl	f	O
+appèl	f	O
 ,	f	O
 wandeling	f	O
 
@@ -139640,7 +139640,7 @@ idee	f	O
 van	f	O
 wat	f	O
 een	f	O
-poÎzieworkshop	f	O
+poëzieworkshop	f	O
 dan	f	O
 wel	f	O
 mocht	f	O
@@ -139762,7 +139762,7 @@ Of	t	O
 ik	f	O
 een	f	O
 '	f	O
-poÎzieworkshop	f	O
+poëzieworkshop	f	O
 '	f	O
 wou	f	O
 begeleiden	f	O
@@ -139919,7 +139919,7 @@ balie	f	O
 van	f	O
 Gent	t	B-NE
 in	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 ,	f	O
 opgedragen	f	O
 om	f	O
@@ -140312,7 +140312,7 @@ En	t	O
 hij	f	O
 zal	f	O
 dat	f	O
-blÌjven	f	O
+blíjven	f	O
 doen	f	O
 :	f	O
 om	f	O
@@ -140394,7 +140394,7 @@ zeggen	f	O
 wat	f	O
 is	f	O
 me	f	O
-d·t	f	O
+dát	f	O
 voor	f	O
 iets	f	O
 ?	f	O
@@ -140435,7 +140435,7 @@ Tour-journaal	t	B-NE
 met	f	O
 de	f	O
 gebruikelijke	f	O
-ingrediÎnten	f	O
+ingrediënten	f	O
 en	f	O
 de	f	O
 rubriek	f	O
@@ -140455,7 +140455,7 @@ Hij	t	O
 wordt	f	O
 bijgestaan	f	O
 door	f	O
-JosÈ	t	B-NE
+José	t	B-NE
 De	t	I-NE
 Cauwer	t	I-NE
 tijdens	f	O
@@ -140537,7 +140537,7 @@ TV	t	B-NE
 Maar	t	O
 ook	f	O
 de	f	O
-commerciÎle	f	O
+commerciële	f	O
 zender	f	O
 VTM	t	B-NE
 laat	f	O
@@ -140573,7 +140573,7 @@ Cosemans	t	I-NE
 keert	f	O
 terug	f	O
 met	f	O
-Champs-ElysÈes	t	B-NE
+Champs-Elysées	t	B-NE
 ,	f	O
 Guido	t	B-NE
 Thiry	t	I-NE
@@ -140681,7 +140681,7 @@ jaar	f	O
 pakt	f	O
 de	f	O
 sportredactie	f	O
-vÛÛr	f	O
+vóór	f	O
 VTM-Laat	t	B-NE
 uit	f	O
 met	f	O
@@ -140796,7 +140796,7 @@ rijkdom	f	O
 in	f	O
 de	f	O
 wereld	f	O
-Èn	t	O
+én	f	O
 als	f	O
 middel	f	O
 tot	f	O
@@ -140971,7 +140971,7 @@ aan	f	O
 mensen	f	O
 met	f	O
 briljante	f	O
-ideeÎn	f	O
+ideeën	f	O
 .	f	O
 
 sectie	f	O
@@ -140998,7 +140998,7 @@ die	f	O
 sprookjes	f	O
 zagen	f	O
 in	f	O
-AziÎ	t	B-NE
+Azië	t	B-NE
 .	f	O
 
 Veel	t	O
@@ -141030,7 +141030,7 @@ Grauwe	t	I-NE
 :	f	O
 "	f	O
 Onze	t	O
-ideeÎn	f	O
+ideeën	f	O
 liggen	f	O
 niet	f	O
 zover	f	O
@@ -141066,7 +141066,7 @@ liggen	f	O
 .	f	O
 
 De	t	B-NE
-FinanciÎle	t	I-NE
+Financiële	t	I-NE
 Morgen	t	I-NE
 
 De	t	O
@@ -141185,7 +141185,7 @@ rijke	f	O
 mensen	f	O
 .	f	O
 
-AziÎ	t	B-NE
+Azië	t	B-NE
 is	f	O
 geen	f	O
 probleem	f	O
@@ -141244,7 +141244,7 @@ iets	f	O
 kan	f	O
 doen	f	O
 tegen	f	O
-financiÎle	f	O
+financiële	f	O
 instabiliteit	f	O
 .	f	O
 
@@ -141400,14 +141400,14 @@ een	f	O
 wereld	f	O
 die	f	O
 volledig	f	O
-geÔntegreerd	f	O
+geïntegreerd	f	O
 is	f	O
 ,	f	O
 zullen	f	O
 mensen	f	O
 met	f	O
 goede	f	O
-ideeÎn	f	O
+ideeën	f	O
 ,	f	O
 unieke	f	O
 sportmensen	f	O
@@ -141469,7 +141469,7 @@ de	f	O
 praktijk	f	O
 zijn	f	O
 de	f	O
-reÎle	f	O
+reële	f	O
 afbetalingen	f	O
 zo	f	O
 enorm	f	O
@@ -141679,7 +141679,7 @@ kwam	f	O
 zijn	f	O
 de	f	O
 vele	f	O
-financiÎle	f	O
+financiële	f	O
 crises	f	O
 .	f	O
 
@@ -142223,7 +142223,7 @@ dat	f	O
 mensen	f	O
 met	f	O
 goede	f	O
-ideeÎn	f	O
+ideeën	f	O
 veel	f	O
 meer	f	O
 kunnen	f	O
@@ -142302,7 +142302,7 @@ dat	f	O
 het	f	O
 mensen	f	O
 met	f	O
-ideeÎn	f	O
+ideeën	f	O
 een	f	O
 enorme	f	O
 vergoeding	f	O
@@ -142511,7 +142511,7 @@ dat	f	O
 utopisch	f	O
 maar	f	O
 het	f	O
-ideeÎngoed	f	O
+ideeëngoed	f	O
 is	f	O
 interessant	f	O
 .	f	O
@@ -142557,7 +142557,7 @@ Grauwe	t	I-NE
 :	f	O
 "	f	O
 In	t	O
-AziÎ	t	B-NE
+Azië	t	B-NE
 is	f	O
 heel	f	O
 wat	f	O
@@ -143313,7 +143313,7 @@ met	f	O
 die	f	O
 heffing	f	O
 de	f	O
-financiÎle	f	O
+financiële	f	O
 instabiliteit	f	O
 uit	f	O
 de	f	O
@@ -143415,7 +143415,7 @@ paar	f	O
 mouwen	f	O
 :	f	O
 het	f	O
-reÎle	f	O
+reële	f	O
 inkomen	f	O
 per	f	O
 hoofd	f	O
@@ -143655,7 +143655,7 @@ komen	f	O
 .	f	O
 "	f	O
 
-FinanciÎle	t	O
+Financiële	t	O
 instellingen	f	O
 als	f	O
 het	f	O
@@ -143667,7 +143667,7 @@ instantie	f	O
 bekommerd	f	O
 zijn	f	O
 om	f	O
-financiÎle	f	O
+financiële	f	O
 stabiliteit	f	O
 .	f	O
 
@@ -143718,7 +143718,7 @@ iets	f	O
 te	f	O
 veel	f	O
 ,	f	O
-okÈ	f	O
+oké	f	O
 .	f	O
 
 Zonder	t	O
@@ -143854,7 +143854,7 @@ geladenheid	f	O
 .	f	O
 
 In	t	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 kunnen	f	O
 of	f	O
 willen	f	O
@@ -144562,7 +144562,7 @@ vinden	f	O
 .	f	O
 
 De	t	O
-technoscËne	f	O
+technoscène	f	O
 wordt	f	O
 vaak	f	O
 --	f	O
@@ -144902,7 +144902,7 @@ Een	t	O
 bevrijding	f	O
 van	f	O
 alle	f	O
-materiÎle	f	O
+materiële	f	O
 en	f	O
 passionele	f	O
 noden	f	O
@@ -145014,7 +145014,7 @@ tot	f	O
 vorig	f	O
 jaar	f	O
 in	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 woonde	f	O
 ,	f	O
 maar	f	O
@@ -145313,7 +145313,7 @@ seks	f	O
 Van	t	O
 XTC	t	B-NE
 tot	f	O
-cocaÔne	f	O
+cocaïne	f	O
 en	f	O
 allerlei	f	O
 nieuwe	f	O
@@ -145609,7 +145609,7 @@ muziek	f	O
 ,	f	O
 kunt	f	O
 leren	f	O
-appreciÎren	f	O
+appreciëren	f	O
 als	f	O
 je	f	O
 er	f	O
@@ -146698,7 +146698,7 @@ van	f	O
 een	f	O
 video	f	O
 van	f	O
-JoÎlle	t	B-NE
+Joëlle	t	B-NE
 Tuerlinckx	t	I-NE
 ,	f	O
 of	f	O
@@ -146715,8 +146715,8 @@ video	f	O
 van	f	O
 de	f	O
 Zwitserse	t	B-NE
-Marie-JosÈ	t	B-NE
-B¸rki	t	I-NE
+Marie-José	t	B-NE
+Bürki	t	I-NE
 '	f	O
 piept	f	O
 '	f	O
@@ -146915,7 +146915,7 @@ waarop	f	O
 de-collagist	f	O
 '	f	O
 Jacques	t	B-NE
-VilleglÈ	t	I-NE
+Villeglé	t	I-NE
 de	f	O
 posters	f	O
 in	f	O
@@ -147088,7 +147088,7 @@ veMENTS	f	I-NE
 -	f	O
 Kunstenaarsbewegingen	t	O
 in	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 1900	f	O
 -	f	O
 2000	f	O
@@ -147108,7 +147108,7 @@ Nederlander	t	B-NE
 Willem	t	B-NE
 Oorebeek	t	I-NE
 (	f	O
-∞1953	f	O
+°1953	f	O
 )	f	O
 .	f	O
 
@@ -147138,7 +147138,7 @@ een	f	O
 zinspeling	f	O
 op	f	O
 het	f	O
-commerciÎle	f	O
+commerciële	f	O
 ,	f	O
 publieke	f	O
 (	f	O
@@ -147296,10 +147296,10 @@ uitvinder	f	O
 ,	f	O
 professor	f	O
 en	f	O
-poÎet	f	O
+poëet	f	O
 .	f	O
 
-CafÈ	t	B-NE
+Café	t	B-NE
 des	f	I-NE
 Arts	t	I-NE
 
@@ -147506,7 +147506,7 @@ Johanson	t	I-NE
 De	t	O
 liedjesmaker	f	O
 rekent	f	O
-FranÁoise	t	B-NE
+Françoise	t	B-NE
 Hardy	t	I-NE
 ,	f	O
 Chet	t	B-NE
@@ -148071,7 +148071,7 @@ modetrends	f	O
 lonken	f	O
 .	f	O
 
-CafÈ	t	B-NE
+Café	t	B-NE
 des	f	I-NE
 Arts	t	I-NE
 
@@ -148166,7 +148166,7 @@ indrukken	f	O
 over	f	O
 politiek	f	O
 ,	f	O
-poÎzie	f	O
+poëzie	f	O
 en	f	O
 --	f	O
 vanzelfsprekend	f	O
@@ -148342,7 +148342,7 @@ is	f	O
 geen	f	O
 wondercursus	f	O
 ,	f	O
-hË	f	O
+hè	f	O
 .	f	O
 
 "	f	O
@@ -148532,7 +148532,7 @@ vluchtsimulator	f	O
 
 En	t	O
 als	f	O
-d·t	f	O
+dát	f	O
 allemaal	f	O
 niet	f	O
 helpt	f	O
@@ -148601,7 +148601,7 @@ vliegangst	f	O
 De	t	O
 oorlog	f	O
 in	f	O
-JoegoslaviÎ	t	B-NE
+Joegoslavië	t	B-NE
 en	f	O
 het	f	O
 besef	f	O
@@ -148676,7 +148676,7 @@ de	f	O
 onverbiddelijke	f	O
 woorden	f	O
 '	f	O
-d·t-is-een-na-deel	f	O
+dát-is-een-na-deel	f	O
 '	f	O
 uitsprak	f	O
 .	f	O
@@ -148781,7 +148781,7 @@ hebben	f	O
 staan	f	O
 .	f	O
 
-D·t	t	O
+Dát	t	O
 ook	f	O
 nog	f	O
 ,	f	O
@@ -148852,7 +148852,7 @@ te	f	O
 treffen	f	O
 die	f	O
 nog	f	O
-nÛÛit	f	O
+nóóit	f	O
 hadden	f	O
 gevlogen	f	O
 .	f	O
@@ -148943,7 +148943,7 @@ in	f	O
 Europa	t	B-NE
 is	f	O
 er	f	O
-ÛÛk	t	O
+óók	f	O
 nog	f	O
 zoveel	f	O
 verrukkelijks	f	O
@@ -149161,7 +149161,7 @@ Opperste	t	B-NE
 Gelukzaligheid	t	I-NE
 :	f	O
 een	f	O
-Èchte	t	O
+échte	f	O
 vlucht	f	O
 ,	f	O
 in	f	O
@@ -149301,7 +149301,7 @@ kilometer	f	O
 moeten	f	O
 vliegen	f	O
 voordat	f	O
-ÈÈn	t	O
+één	f	O
 van	f	O
 hen	f	O
 omkomt	f	O
@@ -149410,7 +149410,7 @@ frank	f	O
 .	f	O
 
 Ik	t	O
-wÈÈt	f	O
+wéét	f	O
 het	f	O
 allemaal	f	O
 wel	f	O
@@ -149505,7 +149505,7 @@ Ook	t	O
 een	f	O
 controle-freakje	f	O
 ,	f	O
-hÈ	f	O
+hé	f	O
 ?	f	O
 "	f	O
 grijnst	f	O
@@ -149744,7 +149744,7 @@ vakantie	f	O
 wordt	f	O
 de	f	O
 sluimerende	f	O
-gÍne	f	O
+gêne	f	O
 opeens	f	O
 weer	f	O
 acuut	f	O
@@ -149803,7 +149803,7 @@ is	f	O
 geen	f	O
 wondercursus	f	O
 ,	f	O
-hË	f	O
+hè	f	O
 .	f	O
 
 Het	t	O
@@ -149895,7 +149895,7 @@ de	f	O
 klip	f	O
 van	f	O
 de	f	O
-theatersubsidiÎring	f	O
+theatersubsidiëring	f	O
 heeft	f	O
 omzeild	f	O
 ,	f	O
@@ -150309,7 +150309,7 @@ eerst	f	O
 tot	f	O
 een	f	O
 nauwgezette	f	O
-projectdefiniÎring	f	O
+projectdefiniëring	f	O
 verplicht	f	O
 .	f	O
 
@@ -150416,7 +150416,7 @@ niet	f	O
 doorgehakt	f	O
 .	f	O
 
-CafÈ	t	B-NE
+Café	t	B-NE
 des	f	I-NE
 Arts	t	I-NE
 
@@ -150567,7 +150567,7 @@ keper	f	O
 beschouwd	f	O
 betekent	f	O
 dat	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 op	f	O
 de	f	O
 '	f	O
@@ -150627,7 +150627,7 @@ missen	f	O
 En	t	O
 dan	f	O
 het	f	O
-substantiÎlere	f	O
+substantiëlere	f	O
 werk	f	O
 :	f	O
 Thiebou	t	B-NE
@@ -150697,7 +150697,7 @@ gelijkmakende	f	O
 bal	f	O
 er	f	O
 zelf	f	O
-wÈl	f	O
+wél	f	O
 in	f	O
 hadden	f	O
 gekregen	f	O
@@ -150711,7 +150711,7 @@ kwaliteit	f	O
 der	f	O
 spelers	f	O
 )	f	O
-ruziÎnde	f	O
+ruziënde	f	O
 en	f	O
 kettingrokende	f	O
 moeders	f	O
@@ -150917,7 +150917,7 @@ straat	f	O
 
 Niet	t	O
 meteen	f	O
-helem··l	f	O
+helemáál	f	O
 Senegal	t	B-NE
 ,	f	O
 niet	f	O
@@ -151012,9 +151012,9 @@ op	f	O
 een	f	O
 debiliserend	f	O
 programma	f	O
-Èn	t	O
+én	f	O
 het	f	O
-cliÎnteel	f	O
+cliënteel	f	O
 meteen	f	O
 na	f	O
 de	f	O
@@ -151103,7 +151103,7 @@ op	f	O
 wereldmuziekfestivals	f	O
 zoals	f	O
 Couleur	t	B-NE
-CafÈ	t	I-NE
+Café	t	I-NE
 of	f	O
 Cactus	t	B-NE
 in	f	O
@@ -151165,7 +151165,7 @@ Maar	t	O
 waar	f	O
 vinden	f	O
 we	f	O
-mÈÈr	f	O
+méér	f	O
 India	t	B-NE
 dan	f	O
 de	f	O
@@ -151175,7 +151175,7 @@ de	f	O
 nachtelijke	f	O
 Bengali	t	B-NE
 ,	f	O
-mÈÈr	f	O
+méér	f	O
 Noord-Afrika	t	B-NE
 dan	f	O
 het	f	O
@@ -151200,7 +151200,7 @@ verslaggeefster	f	O
 ging	f	O
 voor	f	O
 aflevering	f	O
-ÈÈn	t	O
+één	f	O
 op	f	O
 zoek	f	O
 naar	f	O
@@ -151340,7 +151340,7 @@ bij	f	O
 voorkeur	f	O
 met	f	O
 hun	f	O
-maÓtresses	f	O
+maîtresses	f	O
 heen	f	O
 .	f	O
 
@@ -151422,7 +151422,7 @@ niet	f	O
 eens	f	O
 dat	f	O
 het	f	O
-kÛn	f	O
+kón	f	O
 ,	f	O
 dat	f	O
 er	f	O
@@ -151561,7 +151561,7 @@ pagina	f	O
 Zo	t	O
 kun	f	O
 je	f	O
-atiÈkÈ	f	O
+atiéké	f	O
 --	f	O
 gegrilde	f	O
 ,	f	O
@@ -151632,7 +151632,7 @@ van	f	O
 nasi	f	O
 goreng	f	O
 maar	f	O
-vÈÈl	f	O
+véél	f	O
 calorierijker	f	O
 en	f	O
 dus	f	O
@@ -151749,7 +151749,7 @@ op	f	O
 Copacabana	t	B-NE
 ?	f	O
 
-BelgiÎ	t	B-NE
+België	t	B-NE
 ,	f	O
 het	f	O
 onbekende	f	O
@@ -152432,7 +152432,7 @@ zaak	f	O
 iedereen	f	O
 denkt	f	O
 :	f	O
-hË	f	O
+hè	f	O
 ,	f	O
 vrijheid	f	O
 blijheid	f	O
@@ -152699,7 +152699,7 @@ ingewikkelde	f	O
 geschiedenis	f	O
 .	f	O
 
-CafÈ	t	B-NE
+Café	t	B-NE
 des	f	I-NE
 Arts	t	I-NE
 
@@ -152943,7 +152943,7 @@ bioloog	f	O
 ,	f	O
 filosoof	f	O
 en	f	O
-oriÎntalist	f	O
+oriëntalist	f	O
 .	f	O
 
 En	t	O
@@ -152976,7 +152976,7 @@ construeren	f	O
 "	f	O
 aldus	f	O
 nog	f	O
-K¸ngs	t	B-NE
+Küngs	t	B-NE
 omschrijving	f	O
 van	f	O
 de	f	O
@@ -153047,7 +153047,7 @@ voorstelt	f	O
 ,	f	O
 "	f	O
 schrijft	f	O
-K¸ng	t	B-NE
+Küng	t	B-NE
 .	f	O
 
 In	t	O
@@ -153089,7 +153089,7 @@ dan	f	O
 de	f	O
 Brusselse	t	B-NE
 kunstenares	f	O
-JoÎlle	t	B-NE
+Joëlle	t	B-NE
 Tuerlinckx	t	I-NE
 .	f	O
 
@@ -153118,7 +153118,7 @@ bijzonder	f	O
 gefascineerd	f	O
 door	f	O
 de	f	O
-scarabeeÎn	f	O
+scarabeeën	f	O
 ,	f	O
 ook	f	O
 wel	f	O
@@ -153343,7 +153343,7 @@ verdienste	f	O
 van	f	O
 tentoonstellingsmaker	f	O
 Moritz	t	B-NE
-K¸ng	t	I-NE
+Küng	t	I-NE
 dat	f	O
 hij	f	O
 in	f	O
@@ -153424,7 +153424,7 @@ van	f	O
 het	f	O
 werk	f	O
 van	f	O
-JoÎlle	t	B-NE
+Joëlle	t	B-NE
 Tuerlinckx	t	I-NE
 zijn	f	O
 het	f	O
@@ -153608,7 +153608,7 @@ de	f	O
 versleten	f	O
 term	f	O
 '	f	O
-poÎtische	f	O
+poëtische	f	O
 interventie	f	O
 '	f	O
 weer	f	O
@@ -153639,7 +153639,7 @@ Cellarius	t	B-NE
 onder	f	O
 andere	f	O
 het	f	O
-PtolemeÔsche	t	B-NE
+Ptolemeïsche	t	B-NE
 en	f	O
 het	f	O
 Copernicaanse	t	B-NE
@@ -153823,7 +153823,7 @@ Antwerpen	t	B-NE
 
 De	t	O
 subtiele	f	O
-poÎziezomer	f	O
+poëziezomer	f	O
 
 Werelden	t	O
 van	f	O
@@ -153895,7 +153895,7 @@ cartografen	f	O
 glijden	f	O
 .	f	O
 
-CafÈ	t	B-NE
+Café	t	B-NE
 des	f	I-NE
 Arts	t	I-NE
 
@@ -153945,7 +153945,7 @@ knap	f	O
 werk	f	O
 in	f	O
 situ	f	O
-creÎerde	f	O
+creëerde	f	O
 .	f	O
 
 Door	t	O
@@ -154057,7 +154057,7 @@ juli	f	O
 
 Curator	t	O
 Moritz	t	B-NE
-K¸ng	t	I-NE
+Küng	t	I-NE
 merkt	f	O
 op	f	O
 ,	f	O
@@ -154107,14 +154107,14 @@ Politique	t	O
 vervangen	f	O
 door	f	O
 een	f	O
-È	t	O
+é	f	O
 en	f	O
 er	f	O
 dus	f	O
 Carte	t	O
 du	f	O
 Monde	t	O
-PoÈtique	t	O
+Poétique	t	O
 van	f	O
 gemaakt	f	O
 .	f	O
@@ -154134,7 +154134,7 @@ de	f	O
 minuscule	f	O
 uitgave	f	O
 La	t	B-NE
-ConquÍte	t	I-NE
+Conquête	t	I-NE
 de	f	I-NE
 l'Espace	f	I-NE
 ,	f	O
@@ -154202,7 +154202,7 @@ Opvallend	t	O
 is	f	O
 wel	f	O
 dat	f	O
-K¸ng	t	B-NE
+Küng	t	B-NE
 bij	f	O
 de	f	O
 samenstelling	f	O
@@ -154393,7 +154393,7 @@ de	f	O
 auteurs	f	O
 van	f	O
 de	f	O
-geÎtaleerde	f	O
+geëtaleerde	f	O
 werken	f	O
 is	f	O
 ,	f	O
@@ -154682,18 +154682,18 @@ omgevormd	f	O
 tot	f	O
 een	f	O
 groot	f	O
-poÎtisch	f	O
+poëtisch	f	O
 universum	f	O
 zonder	f	O
 grenzen	f	O
 .	f	O
 
-K¸ng	t	B-NE
+Küng	t	B-NE
 heeft	f	O
 echter	f	O
 een	f	O
 context	f	O
-gecreÎerd	f	O
+gecreëerd	f	O
 die	f	O
 de	f	O
 nieuwsgierigheid	f	O
@@ -154865,7 +154865,7 @@ beschouwt	f	O
 .	f	O
 
 Moritz	t	B-NE
-K¸ng	t	I-NE
+Küng	t	I-NE
 maakt	f	O
 met	f	O
 Orbis	t	B-NE
@@ -154896,7 +154896,7 @@ als	f	O
 een	f	O
 gelijkmatig	f	O
 wegtikkend	f	O
-continu¸m	f	O
+continuüm	f	O
 wordt	f	O
 verstoord	f	O
 .	f	O
@@ -155109,7 +155109,7 @@ in	f	O
 Belgie	t	B-NE
 .	f	O
 
-IngrediÎnten	t	O
+Ingrediënten	t	O
 :	f	O
 
 Dit	t	O
@@ -155217,7 +155217,7 @@ personen	f	O
 )	f	O
 250	f	O
 gr	f	O
-d¸g¸r	f	O
+dügür	f	O
 (	f	O
 gemalen	f	O
 tarwe	f	O
@@ -155351,14 +155351,14 @@ gesprek	f	O
 met	f	O
 een	f	O
 in	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 woonachtige	f	O
 buitenlander	f	O
 die	f	O
 goed	f	O
 kan	f	O
 koken	f	O
-Èn	t	O
+én	f	O
 smakelijk	f	O
 vertellen	f	O
 over	f	O
@@ -155830,7 +155830,7 @@ waagt	f	O
 
 pagina	f	O
 
-CafÈ	t	B-NE
+Café	t	B-NE
 des	f	I-NE
 Arts	t	I-NE
 
@@ -155845,7 +155845,7 @@ even	f	O
 zwaar	f	O
 gepromoot	f	O
 als	f	O
-dÈ	f	O
+dé	f	O
 contratenor	f	O
 van	f	O
 het	f	O
@@ -156048,7 +156048,7 @@ poesta	f	O
 in	f	O
 Dvorak	t	B-NE
 en	f	O
-Kod·ly	t	B-NE
+Kodály	t	B-NE
 )	f	O
 ,	f	O
 als	f	O
@@ -156072,7 +156072,7 @@ tovert	f	O
 zij	f	O
 het	f	O
 toeristische	f	O
-VenetiÎ	t	B-NE
+Venetië	t	B-NE
 van	f	O
 vroeger	f	O
 voor	f	O
@@ -156269,7 +156269,7 @@ wordt	f	O
 zwaar	f	O
 gepromoot	f	O
 als	f	O
-dÈ	f	O
+dé	f	O
 contratenor	f	O
 van	f	O
 het	f	O
@@ -156331,7 +156331,7 @@ en	f	O
 Reynaldo	t	B-NE
 Hahn	t	I-NE
 ,	f	O
-Kod·ly	t	B-NE
+Kodály	t	B-NE
 en	f	O
 Britten	t	B-NE
 )	f	O
@@ -156495,7 +156495,7 @@ alsof	f	O
 de	f	O
 woorden	f	O
 in	f	O
-ÈÈn	t	O
+één	f	O
 keer	f	O
 goed	f	O
 op	f	O
@@ -157125,7 +157125,7 @@ is	f	O
 het	f	O
 onder	f	O
 meer	f	O
-d·t	f	O
+dát	f	O
 wat	f	O
 me	f	O
 in	f	O
@@ -157481,7 +157481,7 @@ Evens	t	I-NE
 waarmee	f	O
 hij	f	O
 in	f	O
-VenetiÎ	t	B-NE
+Venetië	t	B-NE
 de	f	O
 Zilveren	t	B-NE
 Leeuw	t	I-NE
@@ -157571,8 +157571,8 @@ werk	f	O
 van	f	O
 Faulkner	t	B-NE
 en	f	O
-GarcÌa	t	B-NE
-M·rquez	t	I-NE
+García	t	B-NE
+Márquez	t	I-NE
 is	f	O
 dat	f	O
 zij	f	O
@@ -157691,7 +157691,7 @@ regisseur	f	O
 Bakhtiar	t	B-NE
 Khudojnazarov	t	I-NE
 (	f	O
-∞1965	f	O
+°1965	f	O
 )	f	O
 ,	f	O
 die	f	O
@@ -157885,7 +157885,7 @@ Mamlakat	t	B-NE
 droomt	f	O
 van	f	O
 een	f	O
-carriËre	f	O
+carrière	f	O
 als	f	O
 actrice	f	O
 .	f	O
@@ -157896,7 +157896,7 @@ in	f	O
 ieder	f	O
 geval	f	O
 niet	f	O
-beÔnvloed	f	O
+beïnvloed	f	O
 door	f	O
 de	f	O
 films	f	O
@@ -157951,7 +157951,7 @@ met	f	O
 wat	f	O
 wij	f	O
 in	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 '	f	O
 magisch	f	O
 realisme	f	O
@@ -158053,7 +158053,7 @@ Ik	t	O
 ben	f	O
 veel	f	O
 meer	f	O
-beÔnvloed	f	O
+beïnvloed	f	O
 door	f	O
 literatuur	f	O
 ,	f	O
@@ -158065,8 +158065,8 @@ William	t	B-NE
 Faulkner	t	I-NE
 en	f	O
 Gabriel	t	B-NE
-GarcÌa	t	I-NE
-M·rquez	t	I-NE
+García	t	I-NE
+Márquez	t	I-NE
 .	f	O
 
 Elke	t	O
@@ -158104,7 +158104,7 @@ toekijkt	f	O
 bijvoorbeeld	f	O
 bij	f	O
 de	f	O
-scËne	f	O
+scène	f	O
 waarin	f	O
 een	f	O
 dubbeldekker	f	O
@@ -158202,8 +158202,8 @@ een	f	O
 erg	f	O
 vreemde	f	O
 en	f	O
-poÎtische	f	O
-vrijscËne	f	O
+poëtische	f	O
+vrijscène	f	O
 op	f	O
 .	f	O
 
@@ -158353,7 +158353,7 @@ drielandenpunt	f	O
 tussen	f	O
 Oezbezikstan	t	B-NE
 ,	f	O
-KirgiziÎ	t	B-NE
+Kirgizië	t	B-NE
 en	f	O
 Tadzjikistan	t	B-NE
 .	f	O
@@ -158557,7 +158557,7 @@ tragikomedie	f	O
 
 Nee	t	O
 ,	f	O
-nÌÈt	f	O
+níét	f	O
 in	f	O
 Tadzjikistan	t	B-NE
 .	f	O
@@ -158626,7 +158626,7 @@ ik	f	O
 wilde	f	O
 met	f	O
 die	f	O
-scËne	f	O
+scène	f	O
 wel	f	O
 een	f	O
 bepaalde	f	O
@@ -158690,7 +158690,7 @@ hoogtij	f	O
 vieren	f	O
 .	f	O
 
-CafÈ	t	B-NE
+Café	t	B-NE
 des	f	I-NE
 Arts	t	I-NE
 
@@ -158953,7 +158953,7 @@ over	f	O
 het	f	O
 bouwen	f	O
 van	f	O
-barriËres	f	O
+barrières	f	O
 gaat	f	O
 ,	f	O
 over	f	O
@@ -158998,7 +158998,7 @@ je	f	O
 kon	f	O
 dus	f	O
 werkelijk	f	O
-·lles	f	O
+álles	f	O
 doen	f	O
 .	f	O
 
@@ -159121,7 +159121,7 @@ de	f	O
 huidige	f	O
 situatie	f	O
 in	f	O
-Centraal-AziÎ	t	B-NE
+Centraal-Azië	t	B-NE
 ,	f	O
 waar	f	O
 traditie	f	O
@@ -159169,7 +159169,7 @@ Tadzjikistan	t	B-NE
 niet	f	O
 .	f	O
 
-M·rquez	t	B-NE
+Márquez	t	B-NE
 heeft	f	O
 het	f	O
 bijvoorbeeld	f	O
@@ -159341,7 +159341,7 @@ je	f	O
 bijvoorbeeld	f	O
 de	f	O
 weersomstandigheden	f	O
-wÈl	f	O
+wél	f	O
 kunt	f	O
 controleren	f	O
 ,	f	O
@@ -159410,7 +159410,7 @@ stadje	f	O
 '	f	O
 ergens	f	O
 in	f	O
-Centraal-AziÎ	t	B-NE
+Centraal-Azië	t	B-NE
 '	f	O
 .	f	O
 
@@ -159452,7 +159452,7 @@ noteren	f	O
 
 Ergens	t	O
 in	f	O
-Centraal-AziÎ	t	B-NE
+Centraal-Azië	t	B-NE
 werd	f	O
 een	f	O
 grote	f	O
@@ -159582,7 +159582,7 @@ ik	f	O
 een	f	O
 zeer	f	O
 ,	f	O
-zÈÈr	f	O
+zéér	f	O
 grote	f	O
 fan	f	O
 van	f	O
@@ -159706,7 +159706,7 @@ auteur	f	O
 
 Gedistribueerd	t	O
 door	f	O
-CinÈlibre	t	B-NE
+Cinélibre	t	B-NE
 .	f	O
 
 MUZIEK	t	O
@@ -159778,7 +159778,7 @@ worden	f	O
 Mamlakat	t	B-NE
 blijft	f	O
 zwanger	f	O
-Èn	t	O
+én	f	O
 alleen	f	O
 achter	f	O
 .	f	O
@@ -160044,7 +160044,7 @@ plaat	f	O
 De	t	B-NE
 Morgen	t	I-NE
 
-CafÈ	t	B-NE
+Café	t	B-NE
 des	f	I-NE
 Arts	t	I-NE
 
@@ -160537,7 +160537,7 @@ luisterde	f	O
 alleen	f	O
 maar	f	O
 ,	f	O
-vrÈselijk	f	O
+vréselijk	f	O
 .	f	O
 
 Van	t	O
@@ -160636,7 +160636,7 @@ hun	f	O
 mond	f	O
 naast	f	O
 de	f	O
-b¸hne	f	O
+bühne	f	O
 niet	f	O
 open	f	O
 durven	f	O
@@ -160900,7 +160900,7 @@ maar	f	O
 ik	f	O
 kan	f	O
 me	f	O
-ÈÈn	t	O
+één	f	O
 collega	f	O
 herinneren	f	O
 met	f	O
@@ -161148,7 +161148,7 @@ aanknopen.	f	O
 lk	f	O
 was	f	O
 een	f	O
-einzelg‰nger	f	O
+einzelgänger	f	O
 en	f	O
 trok	f	O
 veelvuldig	f	O
@@ -161625,7 +161625,7 @@ bereiken	f	O
 .	f	O
 
 De	t	O
-commerciÎle	f	O
+commerciële	f	O
 zenders	f	O
 zullen	f	O
 volgens	f	O
@@ -161774,7 +161774,7 @@ print	f	O
 een	f	O
 nieuw	f	O
 medium	f	O
-creÎren	f	O
+creëren	f	O
 met	f	O
 de	f	O
 interactiviteit	f	O
@@ -161801,7 +161801,7 @@ wakker	f	O
 van	f	O
 .	f	O
 
-CommerciÎle	t	O
+Commerciële	t	O
 stations	f	O
 die	f	O
 binnenkort	f	O
@@ -161860,7 +161860,7 @@ om	f	O
 het	f	O
 even	f	O
 welke	f	O
-commerciÎle	f	O
+commerciële	f	O
 radiozender	f	O
 .	f	O
 
@@ -162021,7 +162021,7 @@ dan	f	O
 die	f	O
 van	f	O
 de	f	O
-commerciÎle	f	O
+commerciële	f	O
 stations	f	O
 .	f	O
 
@@ -162084,7 +162084,7 @@ de	f	O
 wetgever	f	O
 als	f	O
 de	f	O
-commerciÎle	f	O
+commerciële	f	O
 stations	f	O
 .	f	O
 
@@ -162230,7 +162230,7 @@ dat	f	O
 we	f	O
 met	f	O
 Donna	t	B-NE
-creÎren	f	O
+creëren	f	O
 is	f	O
 daarbij	f	O
 uiterst	f	O
@@ -162239,7 +162239,7 @@ belangrijk	f	O
 "	f	O
 
 Kunnen	t	O
-commerciÎle	f	O
+commerciële	f	O
 zenders	f	O
 dat	f	O
 dan	f	O
@@ -162410,7 +162410,7 @@ de	f	O
 omroep	f	O
 van	f	O
 de	f	O
-hÈle	f	O
+héle	f	O
 Vlaamse	t	B-NE
 Gemeenschap	t	I-NE
 en	f	O
@@ -162703,7 +162703,7 @@ wordt	f	O
 .	f	O
 
 "	f	O
-CommerciÎle	t	O
+Commerciële	t	O
 radio's	f	O
 moeten	f	O
 nog	f	O
@@ -162767,7 +162767,7 @@ half	f	O
 jaar	f	O
 voordat	f	O
 de	f	O
-commerciÎle	f	O
+commerciële	f	O
 radioconcurrenten	f	O
 er	f	O
 aankomen	f	O
@@ -162794,7 +162794,7 @@ mogelijkheden	f	O
 van	f	O
 de	f	O
 nieuwe	f	O
-technologieÎn	f	O
+technologieën	f	O
 zodat	f	O
 we	f	O
 datzelfde	f	O
@@ -162856,7 +162856,7 @@ km	f	O
 8	f	O
 %	f	O
 
-CÙte	t	B-NE
+Côte	t	B-NE
 de	f	I-NE
 Canjuers	t	I-NE
 840	f	O
@@ -162914,7 +162914,7 @@ km	f	O
 
 sectie	f	O
 
-CÙte	t	B-NE
+Côte	t	B-NE
 de	f	I-NE
 Javon	t	I-NE
 730	f	O
@@ -162929,7 +162929,7 @@ Algemeen	t	O
 Col	t	B-NE
 de	f	I-NE
 la	f	I-NE
-ColombiËre	t	I-NE
+Colombière	t	I-NE
 1.613	f	O
 m	f	O
 11,8	f	O
@@ -163102,7 +163102,7 @@ Brankart	t	I-NE
 .	f	O
 
 Bernard	t	B-NE
-ThÈvenet	t	I-NE
+Thévenet	t	I-NE
 (	f	O
 Fra	t	B-NE
 )	f	O
@@ -163493,7 +163493,7 @@ Lux	t	B-NE
 1	f	O
 .	f	O
 
-LÈon	t	B-NE
+Léon	t	B-NE
 Scieur	t	I-NE
 --	f	O
 2	f	O
@@ -163589,7 +163589,7 @@ Ier	t	B-NE
 2	f	O
 .	f	O
 
-SylvËre	t	B-NE
+Sylvère	t	B-NE
 Maes	t	I-NE
 --	f	O
 2	f	O
@@ -163730,7 +163730,7 @@ Ned	t	B-NE
 3	f	O
 .	f	O
 
-SylvËre	t	B-NE
+Sylvère	t	B-NE
 Maes	t	I-NE
 --	f	O
 2	f	O
@@ -163739,7 +163739,7 @@ Maes	t	I-NE
 Felix	t	B-NE
 Sellier	t	I-NE
 
-FranÁois	t	B-NE
+François	t	B-NE
 Faber	t	I-NE
 (	f	O
 Lux	t	B-NE
@@ -163855,8 +163855,8 @@ Ita	t	B-NE
 1	f	O
 .	f	O
 
-HonorÈ	t	B-NE
-BarthÈlemy	t	I-NE
+Honoré	t	B-NE
+Barthélemy	t	I-NE
 
 Andre	t	B-NE
 Leducq	t	I-NE
@@ -163903,7 +163903,7 @@ Fra	t	B-NE
 .	f	O
 
 Alex	t	B-NE
-Z¸lle	t	I-NE
+Zülle	t	I-NE
 (	f	O
 Zwi	t	B-NE
 )	f	O
@@ -164073,7 +164073,7 @@ Spa	t	B-NE
 .	f	O
 
 Alex	t	B-NE
-Z¸lle	t	I-NE
+Zülle	t	I-NE
 (	f	O
 Zwi	t	B-NE
 )	f	O
@@ -164104,7 +164104,7 @@ Fra	t	B-NE
 3	f	O
 .	f	O
 
-FranÁois	t	B-NE
+François	t	B-NE
 Faber	t	I-NE
 (	f	O
 Lux	t	B-NE
@@ -164161,7 +164161,7 @@ Merckx	t	I-NE
 .	f	O
 
 Ferdi	t	B-NE
-K¸bler	t	I-NE
+Kübler	t	I-NE
 (	f	O
 Zwi	t	B-NE
 )	f	O
@@ -164525,7 +164525,7 @@ Spa	t	B-NE
 1	f	O
 .	f	O
 
-Jean-FranÁois	t	B-NE
+Jean-François	t	B-NE
 Bernard	t	I-NE
 (	f	O
 Fra	t	B-NE
@@ -164574,7 +164574,7 @@ Fra	t	B-NE
 .	f	O
 
 Henri	t	B-NE
-PÈlissier	t	I-NE
+Pélissier	t	I-NE
 (	f	O
 Fra	t	B-NE
 )	f	O
@@ -164603,7 +164603,7 @@ Fra	t	B-NE
 3	f	O
 .	f	O
 
-AndrÈ	t	B-NE
+André	t	B-NE
 Leducq	t	I-NE
 (	f	O
 Fra	t	B-NE
@@ -164728,7 +164728,7 @@ Garrigou	t	I-NE
 Fra	t	B-NE
 )	f	O
 
-RenÈ	t	B-NE
+René	t	B-NE
 Pottier	t	I-NE
 (	f	O
 Fra	t	B-NE
@@ -164773,7 +164773,7 @@ Ned	t	B-NE
 .	f	O
 
 Henri	t	B-NE
-PÈlissier	t	I-NE
+Pélissier	t	I-NE
 (	f	O
 Fra	t	B-NE
 )	f	O
@@ -164808,7 +164808,7 @@ Georget	t	I-NE
 Fra	t	B-NE
 )	f	O
 
-FranÁois	t	B-NE
+François	t	B-NE
 Faber	t	I-NE
 (	f	O
 Lux	t	B-NE
@@ -165077,7 +165077,7 @@ Ned	t	B-NE
 .	f	O
 
 Ferdi	t	B-NE
-K¸bler	t	I-NE
+Kübler	t	I-NE
 (	f	O
 Zwi	t	B-NE
 )	f	O
@@ -165365,7 +165365,7 @@ Breukink	t	I-NE
 Ned	t	B-NE
 )	f	O
 
-AndrÈ	t	B-NE
+André	t	B-NE
 Leducq	t	I-NE
 (	f	O
 Fra	t	B-NE
@@ -165519,7 +165519,7 @@ natuurlijk	f	O
 om	f	O
 steeds	f	O
 opnieuw	f	O
-geÔntrigeerd	f	O
+geïntrigeerd	f	O
 te	f	O
 worden	f	O
 .	f	O
@@ -166584,7 +166584,7 @@ met	f	O
 pnt	f	O
 
 De	t	O
-reÎle	f	O
+reële	f	O
 tijden	f	O
 worden	f	O
 aangerekend	f	O
@@ -167924,7 +167924,7 @@ pagina	f	O
 
 '	f	O
 Ik	t	O
-dÈnk	f	O
+dénk	f	O
 er	f	O
 niet	f	O
 aan	f	O
@@ -168034,7 +168034,7 @@ doelman	f	O
 Toldo	t	B-NE
 ,	f	O
 nadat	f	O
-ItaliÎ	t	B-NE
+Italië	t	B-NE
 het	f	O
 via	f	O
 strafschoppen	f	O
@@ -168053,7 +168053,7 @@ Euro	t	B-NE
 .	f	O
 
 '	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 zal	f	O
 Kongo	t	B-NE
 nooit	f	O
@@ -168237,7 +168237,7 @@ een	f	O
 tiental	f	O
 verdeelpunten	f	O
 in	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 en	f	O
 zo'n	f	O
 170	f	O
@@ -168326,7 +168326,7 @@ van	f	O
 haar	f	O
 exposities	f	O
 en	f	O
-choreografieÎn	f	O
+choreografieën	f	O
 geven	f	O
 duidelijk	f	O
 aan	f	O
@@ -168366,7 +168366,7 @@ bewegen	f	O
 ,	f	O
 '	f	O
 Peau	t	O
-d'‚ne	f	O
+d'âne	f	O
 '	f	O
 (	f	O
 met	f	O
@@ -168427,7 +168427,7 @@ ongewone	f	O
 morfologie	f	O
 van	f	O
 de	f	O
-mongoloÔde	f	O
+mongoloïde	f	O
 acteurs	f	O
 eerder	f	O
 zal	f	O
@@ -168642,7 +168642,7 @@ geen	f	O
 onbekende	f	O
 meer	f	O
 in	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 .	f	O
 
 Blijkbaar	t	O
@@ -168677,7 +168677,7 @@ regenjassen	f	O
 uit	f	O
 de	f	O
 collectie	f	O
-PrËt-‡-partir	t	B-NE
+Prèt-à-partir	t	B-NE
 '	f	O
 .	f	O
 
@@ -168704,7 +168704,7 @@ er	f	O
 door	f	O
 een	f	O
 ingewikkeld	f	O
-procÈdÈ	f	O
+procédé	f	O
 van	f	O
 stijven	f	O
 ,	f	O
@@ -168860,7 +168860,7 @@ die	f	O
 erkenning	f	O
 er	f	O
 duidelijk	f	O
-wÈl	f	O
+wél	f	O
 ,	f	O
 getuige	f	O
 de	f	O
@@ -169089,7 +169089,7 @@ met	f	O
 de	f	O
 mogelijkheden	f	O
 van	f	O
-industriÎle	f	O
+industriële	f	O
 textielen	f	O
 .	f	O
 
@@ -169149,7 +169149,7 @@ de	f	O
 technologische	f	O
 aspecten	f	O
 van	f	O
-industriÎle	f	O
+industriële	f	O
 non-woven	f	O
 stoffen	f	O
 zoals	f	O
@@ -169181,7 +169181,7 @@ vanaf	f	O
 1997	f	O
 in	f	O
 '	f	O
-Pret-‡-partir	t	B-NE
+Pret-à-partir	t	B-NE
 '	f	O
 ,	f	O
 een	f	O
@@ -169198,7 +169198,7 @@ commercie	f	O
 
 Of	t	O
 ze	f	O
-creÎert	f	O
+creëert	f	O
 pakjes	f	O
 van	f	O
 velcro	f	O
@@ -169219,7 +169219,7 @@ interpreteren	f	O
 Anita	t	B-NE
 Evenepoel	t	I-NE
 (	f	O
-∞1945	f	O
+°1945	f	O
 )	f	O
 is	f	O
 een	f	O
@@ -169331,7 +169331,7 @@ RV	t	B-NE
 Het	t	O
 is	f	O
 een	f	O
-commerciÎle	f	O
+commerciële	f	O
 lijn	f	O
 ,	f	O
 dus	f	O
@@ -169393,7 +169393,7 @@ het	f	O
 toenmalige	f	O
 aanbod	f	O
 in	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 ,	f	O
 experimenteert	f	O
 ze	f	O
@@ -169487,7 +169487,7 @@ afgebeld	f	O
 .	f	O
 
 Belkis	t	B-NE
-Sˆg¸tl¸	t	I-NE
+Sögütlü	t	I-NE
 zit	f	O
 paf	f	O
 .	f	O
@@ -169656,7 +169656,7 @@ doen	f	O
 "	f	O
 glimlacht	f	O
 Belkis	t	B-NE
-Sˆg¸tl¸	t	I-NE
+Sögütlü	t	I-NE
 .	f	O
 
 "	f	O
@@ -169833,7 +169833,7 @@ ik	f	O
 kies	f	O
 dan	f	O
 voor	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 .	f	O
 "	f	O
 
@@ -169865,7 +169865,7 @@ zesde	f	O
 van	f	O
 Turkije	t	B-NE
 naar	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 gehaald	f	O
 ,	f	O
 op	f	O
@@ -169953,7 +169953,7 @@ trouwt	f	O
 ze	f	O
 met	f	O
 een	f	O
-TunesiÎr	t	B-NE
+Tunesiër	t	B-NE
 ,	f	O
 die	f	O
 haar	f	O
@@ -170018,7 +170018,7 @@ zo	f	O
 De	t	O
 Turkse	t	B-NE
 Belkis	t	B-NE
-Sˆg¸tl¸	t	I-NE
+Sögütlü	t	I-NE
 werd	f	O
 drie	f	O
 maanden	f	O
@@ -170335,7 +170335,7 @@ Vlaams	t	B-NE
 .	f	O
 
 Belkis	t	B-NE
-Sˆg¸tl¸	t	I-NE
+Sögütlü	t	I-NE
 (	f	O
 31	f	O
 )	f	O
@@ -170398,7 +170398,7 @@ vurig	f	O
 .	f	O
 
 Belkis	t	B-NE
-Sˆg¸tl¸	t	I-NE
+Sögütlü	t	I-NE
 opent	f	O
 het	f	O
 luikje	f	O
@@ -170513,12 +170513,12 @@ ik	f	O
 de	f	O
 Vlamingen	t	B-NE
 ,	f	O
-hÈ	f	O
+hé	f	O
 .	f	O
 "	f	O
 
 Belkis	t	B-NE
-Sˆg¸tl¸	t	I-NE
+Sögütlü	t	I-NE
 heeft	f	O
 sinds	f	O
 vorig	f	O
@@ -170828,7 +170828,7 @@ Midden-Oosten	t	B-NE
 oorlog	f	O
 is	f	O
 tussen	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 ,	f	O
 Turkije	t	B-NE
 of	f	O
@@ -170840,7 +170840,7 @@ blik	f	O
 .	f	O
 
 Belkis	t	B-NE
-Sˆg¸tl¸	t	I-NE
+Sögütlü	t	I-NE
 woont	f	O
 nu	f	O
 in	f	O
@@ -170991,7 +170991,7 @@ eigen	f	O
 volk	f	O
 eerst	f	O
 ,	f	O
-hÈ	f	O
+hé	f	O
 .	f	O
 "	f	O
 
@@ -171053,7 +171053,7 @@ steeds	f	O
 getrouwd	f	O
 met	f	O
 de	f	O
-TunesiÎr	t	B-NE
+Tunesiër	t	B-NE
 ,	f	O
 van	f	O
 wie	f	O
@@ -171164,7 +171164,7 @@ Turkse	t	B-NE
 Vlaams	t	B-NE
 Blokster	t	I-NE
 Belkis	t	B-NE
-Sˆg¸tl¸	t	I-NE
+Sögütlü	t	I-NE
 over	f	O
 haar	f	O
 Vlaming	t	B-NE
@@ -171617,7 +171617,7 @@ tel.	f	O
 /	f	O
 231.56.53	f	O
 
-FeeÎrieke	t	B-NE
+Feeërieke	t	B-NE
 Avondwandeling	t	I-NE
 in	f	O
 het	f	O
@@ -172495,7 +172495,7 @@ sjaals	f	O
 en	f	O
 kleding	f	O
 van	f	O
-J¸rgen	t	B-NE
+Jürgen	t	B-NE
 Lehl	t	I-NE
 ,	f	O
 tot	f	O
@@ -172623,7 +172623,7 @@ van	f	O
 de	f	O
 laatste	f	O
 decennia	f	O
-‡nders	f	O
+ànders	f	O
 bekeken	f	O
 ,	f	O
 op	f	O
@@ -172647,7 +172647,7 @@ jaren	f	O
 ,	f	O
 de	f	O
 nieuwe	f	O
-technologieÎn	f	O
+technologieën	f	O
 ,	f	O
 hedendaagse	f	O
 kijk	f	O
@@ -172660,10 +172660,10 @@ tot	f	O
 /	f	O
 7	f	O
 ,	f	O
-MusÈe	t	B-NE
+Musée	t	B-NE
 Galliera	t	I-NE
 ,	f	O
-MusÈe	t	B-NE
+Musée	t	B-NE
 de	f	I-NE
 la	f	I-NE
 Mode	t	I-NE
@@ -173288,7 +173288,7 @@ overigens	f	O
 
 Zakelijk	t	O
 en	f	O
-privÈ	f	O
+privé	f	O
 :	f	O
 "	f	O
 Ik	t	O
@@ -173358,7 +173358,7 @@ over	f	O
 de	f	O
 vloer	f	O
 ,	f	O
-habituÈs	f	O
+habitués	f	O
 zeg	f	O
 maar	f	O
 .	f	O
@@ -173583,8 +173583,8 @@ krijgen	f	O
 ,	f	O
 wordt	f	O
 de	f	O
-prÈparÈ	f	O
-‡	f	O
+préparé	f	O
+à	f	O
 la	f	O
 minute	f	O
 gemaakt	f	O
@@ -173879,7 +173879,7 @@ land	f	O
 
 Zakelijk	t	O
 en	f	O
-privÈ	f	O
+privé	f	O
 :	f	O
 "	f	O
 Ik	t	O
@@ -173981,7 +173981,7 @@ wijnen	f	O
 uit	f	O
 California	t	B-NE
 en	f	O
-AustraliÎ	t	B-NE
+Australië	t	B-NE
 .	f	O
 
 En	t	O
@@ -174095,7 +174095,7 @@ door	f	O
 gelijkaardige	f	O
 dochtermusea	f	O
 in	f	O
-ItaliÎ	t	B-NE
+Italië	t	B-NE
 ,	f	O
 Frankrijk	t	B-NE
 ,	f	O
@@ -174175,7 +174175,7 @@ met	f	O
 de	f	O
 energieleverancier	f	O
 Berliner	t	B-NE
-Elektrizit‰tswerken	t	I-NE
+Elektrizitätswerken	t	I-NE
 .	f	O
 
 In	t	O
@@ -174286,7 +174286,7 @@ bewoner	f	O
 er	f	O
 zijn	f	O
 eigen	f	O
-privÈ-landgoedje	f	O
+privé-landgoedje	f	O
 had	f	O
 .	f	O
 
@@ -174310,7 +174310,7 @@ interieurinrichting	f	O
 .	f	O
 
 Een	t	O
-Barrag·n-raam	t	B-NE
+Barragán-raam	t	B-NE
 omkadert	f	O
 een	f	O
 stuk	f	O
@@ -174318,7 +174318,7 @@ mooie	f	O
 natuur	f	O
 ,	f	O
 een	f	O
-Barrag·n-huis	t	B-NE
+Barragán-huis	t	B-NE
 past	f	O
 enkel	f	O
 in	f	O
@@ -174336,7 +174336,7 @@ professionele	f	O
 bestaan	f	O
 heeft	f	O
 Luis	t	B-NE
-Barrag·n	t	I-NE
+Barragán	t	I-NE
 het	f	O
 begoede	f	O
 kringetje	f	O
@@ -174344,7 +174344,7 @@ nooit	f	O
 verlaten	f	O
 .	f	O
 
-Barrag·n	t	B-NE
+Barragán	t	B-NE
 ging	f	O
 op	f	O
 dat	f	O
@@ -174516,7 +174516,7 @@ de	f	O
 grote	f	O
 oppervlakte	f	O
 die	f	O
-Barrag·n	t	B-NE
+Barragán	t	B-NE
 telkens	f	O
 kon	f	O
 bebouwen	f	O
@@ -174539,10 +174539,10 @@ spreken	f	O
 van	f	O
 een	f	O
 duidelijke	f	O
-Barrag·n-stijl	t	B-NE
+Barragán-stijl	t	B-NE
 .	f	O
 
-Barrag·n	t	B-NE
+Barragán	t	B-NE
 ontfermde	f	O
 zich	f	O
 ook	f	O
@@ -174597,7 +174597,7 @@ City	t	I-NE
 Wat	t	O
 we	f	O
 ondertussen	f	O
-wÈl	f	O
+wél	f	O
 al	f	O
 weten	f	O
 :	f	O
@@ -174631,7 +174631,7 @@ De	t	O
 vriendschappen	f	O
 die	f	O
 Luis	t	B-NE
-Barrag·n	t	I-NE
+Barragán	t	I-NE
 onderhield	f	O
 met	f	O
 verschillende	f	O
@@ -174669,7 +174669,7 @@ tentoonstelling	f	O
 
 '	f	O
 Luis	t	B-NE
-Barrag·n	t	I-NE
+Barragán	t	I-NE
 ,	f	O
 The	t	O
 Quiet	t	O
@@ -174740,7 +174740,7 @@ meer	f	O
 
 Luis	t	B-NE
 Ramiro	t	I-NE
-Barrag·n	t	I-NE
+Barragán	t	I-NE
 Morfin	t	I-NE
 werd	f	O
 geboren	f	O
@@ -174789,7 +174789,7 @@ en	f	O
 ook	f	O
 hij	f	O
 doordrenkte	f	O
-Barrag·n	t	B-NE
+Barragán	t	B-NE
 van	f	O
 het	f	O
 belang	f	O
@@ -174827,7 +174827,7 @@ de	f	O
 Mexicaanse	t	B-NE
 architect	f	O
 Luis	t	B-NE
-Barrag·n	t	I-NE
+Barragán	t	I-NE
 ,	f	O
 en	f	O
 kijk	f	O
@@ -174851,7 +174851,7 @@ jaren	f	O
 veertig	f	O
 ,	f	O
 toen	f	O
-Barrag·n	t	B-NE
+Barragán	t	B-NE
 volop	f	O
 zijn	f	O
 eigen	f	O
@@ -174940,7 +174940,7 @@ tentoonstelling	f	O
 in	f	O
 Europa	t	B-NE
 over	f	O
-Barrag·ns	t	B-NE
+Barragáns	t	B-NE
 werk	f	O
 ,	f	O
 in	f	O
@@ -175070,7 +175070,7 @@ hij	f	O
 ook	f	O
 de	f	O
 typische	f	O
-Barrag·n-tics	t	B-NE
+Barragán-tics	t	B-NE
 :	f	O
 de	f	O
 groepjes	f	O
@@ -175095,7 +175095,7 @@ cementen	f	O
 vlakken	f	O
 en	f	O
 het	f	O
-Barrag·n-kleurenpalet	t	B-NE
+Barragán-kleurenpalet	t	B-NE
 :	f	O
 rood	f	O
 ,	f	O
@@ -175127,9 +175127,9 @@ elkaar	f	O
 en	f	O
 Bac	t	B-NE
 zou	f	O
-Barrag·n	t	B-NE
+Barragán	t	B-NE
 dan	f	O
-geÔnspireerd	f	O
+geïnspireerd	f	O
 en	f	O
 aangezet	f	O
 hebben	f	O
@@ -175162,7 +175162,7 @@ bij	f	O
 Wat	t	O
 de	f	O
 Mexicaan	t	B-NE
-Barrag·n	t	B-NE
+Barragán	t	B-NE
 aantrekkelijk	f	O
 maakt	f	O
 voor	f	O
@@ -175246,7 +175246,7 @@ Alvaro	t	B-NE
 Siza	t	I-NE
 is	f	O
 Luis	t	B-NE
-Barrag·n	t	I-NE
+Barragán	t	I-NE
 er	f	O
 ook	f	O
 in	f	O
@@ -175255,7 +175255,7 @@ om	f	O
 een	f	O
 mengvorm	f	O
 te	f	O
-creÎren	f	O
+creëren	f	O
 :	f	O
 Mexicaanse	t	B-NE
 traditie	f	O
@@ -175327,11 +175327,11 @@ zelden	f	O
 de	f	O
 grootte	f	O
 van	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 !	f	O
 
 Wat	t	O
-Barrag·n	t	B-NE
+Barragán	t	B-NE
 aantrekkelijk	f	O
 maakt	f	O
 voor	f	O
@@ -175453,7 +175453,7 @@ jaren	f	O
 veertig	f	O
 leerde	f	O
 Luis	t	B-NE
-Barrag·n	t	I-NE
+Barragán	t	I-NE
 door	f	O
 die	f	O
 vriendschappen	f	O
@@ -175472,7 +175472,7 @@ huis	f	O
 voor	f	O
 de	f	O
 familie	f	O
-Engestrˆm	t	B-NE
+Engeström	t	B-NE
 :	f	O
 op	f	O
 dit	f	O
@@ -175484,7 +175484,7 @@ woonhuis	f	O
 in	f	O
 schoonheid	f	O
 en	f	O
-poÎtische	f	O
+poëtische	f	O
 kracht	f	O
 overtroffen	f	O
 door	f	O
@@ -175498,7 +175498,7 @@ de	f	O
 paarden	f	O
 .	f	O
 
-Barrag·n	t	B-NE
+Barragán	t	B-NE
 kon	f	O
 zich	f	O
 onbezorgd	f	O
@@ -175512,10 +175512,10 @@ getint	f	O
 bestaan	f	O
 vol	f	O
 vormelijke	f	O
-poÎzie	f	O
+poëzie	f	O
 .	f	O
 
-Barrag·n	t	B-NE
+Barragán	t	B-NE
 hield	f	O
 aan	f	O
 zijn	f	O
@@ -175554,7 +175554,7 @@ gewaagd	f	O
 ,	f	O
 maar	f	O
 op	f	O
-ÈÈn	t	O
+één	f	O
 enkele	f	O
 wandeling	f	O
 door	f	O
@@ -175608,7 +175608,7 @@ zopas	f	O
 een	f	O
 '	f	O
 Luis	t	B-NE
-Barrag·n	t	I-NE
+Barragán	t	I-NE
 Foundation	t	I-NE
 '	f	O
 .	f	O
@@ -175620,7 +175620,7 @@ bestaan	f	O
 ,	f	O
 heeft	f	O
 Luis	t	B-NE
-Barrag·n	t	I-NE
+Barragán	t	I-NE
 ook	f	O
 een	f	O
 zeker	f	O
@@ -175696,7 +175696,7 @@ kan	f	O
 gooien	f	O
 .	f	O
 
-Barrag·n	t	B-NE
+Barragán	t	B-NE
 wilde	f	O
 er	f	O
 een	f	O
@@ -175751,7 +175751,7 @@ Ook	t	O
 dat	f	O
 heeft	f	O
 van	f	O
-Barrag·n	t	B-NE
+Barragán	t	B-NE
 de	f	O
 aparte	f	O
 architect	f	O
@@ -175807,7 +175807,7 @@ Rechtsboven	t	O
 het	f	O
 Cuadra	t	B-NE
 San	t	I-NE
-CristÛbal	t	I-NE
+Cristóbal	t	I-NE
 in	f	O
 Los	t	B-NE
 Clubes	t	I-NE
@@ -175842,7 +175842,7 @@ in	f	O
 het	f	O
 woonhuis	f	O
 van	f	O
-Barrag·n	t	B-NE
+Barragán	t	B-NE
 in	f	O
 de	f	O
 Calle	t	B-NE
@@ -175957,7 +175957,7 @@ and	f	O
 outs	f	O
 van	f	O
 zijn	f	O
-privÈ-leven	f	O
+privé-leven	f	O
 .	f	O
 
 Chucho	t	B-NE
@@ -175973,11 +175973,11 @@ invloed	f	O
 gehad	f	O
 heeft	f	O
 op	f	O
-Barrag·n	t	B-NE
+Barragán	t	B-NE
 .	f	O
 
 Foto's	t	O
-Barrag·n	t	B-NE
+Barragán	t	B-NE
 Foundation	t	I-NE
 /	f	O
 RV	t	B-NE
@@ -176034,7 +176034,7 @@ dokter	f	O
 
 Net	t	O
 als	f	O
-Barrag·n	t	B-NE
+Barragán	t	B-NE
 waren	f	O
 ook	f	O
 zij	f	O
@@ -176116,7 +176116,7 @@ muur	f	O
 en	f	O
 ervoor	f	O
 had	f	O
-Barrag·n	t	B-NE
+Barragán	t	B-NE
 een	f	O
 lange	f	O
 waterbak	f	O
@@ -176134,7 +176134,7 @@ drinken	f	O
 .	f	O
 
 Luis	t	B-NE
-Barrag·n	t	I-NE
+Barragán	t	I-NE
 is	f	O
 nooit	f	O
 erg	f	O
@@ -176142,7 +176142,7 @@ productief	f	O
 geweest	f	O
 .	f	O
 
-Barrag·n	t	B-NE
+Barragán	t	B-NE
 bleef	f	O
 in	f	O
 zijn	f	O
@@ -176162,7 +176162,7 @@ houten	f	O
 balken	f	O
 .	f	O
 
-Barrag·n	t	B-NE
+Barragán	t	B-NE
 mediatiseerde	f	O
 zijn	f	O
 leven	f	O
@@ -176465,7 +176465,7 @@ noorden	f	O
 is	f	O
 de	f	O
 oude	f	O
-ZÈpherine	t	B-NE
+Zépherine	t	B-NE
 Drouhin	t	I-NE
 .	f	O
 
@@ -176480,7 +176480,7 @@ enigszins	f	O
 vorstgevoelige	f	O
 )	f	O
 '	f	O
-AimÈ	t	B-NE
+Aimé	t	B-NE
 Vibert	t	I-NE
 '	f	O
 ,	f	O
@@ -176490,14 +176490,14 @@ Noisette	t	I-NE
 '	f	O
 ,	f	O
 '	f	O
-RÍve	t	B-NE
+Rêve	t	B-NE
 d'Or	f	I-NE
 '	f	O
 of	f	O
 '	f	O
 Madame	t	B-NE
 Alfred	t	I-NE
-CarriËre	t	I-NE
+Carrière	t	I-NE
 '	f	O
 ,	f	O
 eerder	f	O
@@ -176805,7 +176805,7 @@ Spry	t	I-NE
 of	f	O
 '	f	O
 Pink	t	B-NE
-PerpÈtuÈ	t	I-NE
+Perpétué	t	I-NE
 '	f	O
 .	f	O
 
@@ -177034,7 +177034,7 @@ enorme	f	O
 groeikracht	f	O
 --	f	O
 sommige	f	O
-variÎteiten	f	O
+variëteiten	f	O
 groeien	f	O
 meer	f	O
 dan	f	O
@@ -177567,14 +177567,14 @@ stijvere	f	O
 '	f	O
 Madame	t	B-NE
 Alfred	t	I-NE
-CarriËre	t	I-NE
+Carrière	t	I-NE
 '	f	O
 ,	f	O
 die	f	O
 in	f	O
 1879	f	O
 werd	f	O
-geÔntroduceerd	f	O
+geïntroduceerd	f	O
 door	f	O
 de	f	O
 Franse	t	B-NE
@@ -177901,7 +177901,7 @@ Wichurianahybriden	t	B-NE
 ,	f	O
 zoals	f	O
 '	f	O
-AlbÈric	t	B-NE
+Albéric	t	B-NE
 Barbier	t	I-NE
 '	f	O
 en	f	O
@@ -178138,12 +178138,12 @@ zoals	f	O
 '	f	O
 Madame	t	B-NE
 Alfred	t	I-NE
-CarriËre	t	I-NE
+Carrière	t	I-NE
 '	f	O
 ,	f	O
 '	f	O
 Desprez	t	B-NE
-‡	f	I-NE
+à	f	I-NE
 Fleurs	t	I-NE
 Jaunes	t	I-NE
 '	f	O
@@ -178194,7 +178194,7 @@ kleine	f	O
 bloemen	f	O
 die	f	O
 slechts	f	O
-ÈÈn	t	O
+één	f	O
 keer	f	O
 bloeien	f	O
 .	f	O
@@ -178613,7 +178613,7 @@ van	f	O
 de	f	O
 zomer	f	O
 in	f	O
-ÈÈn	t	O
+één	f	O
 bloeiende	f	O
 roos	f	O
 .	f	O
@@ -178655,7 +178655,7 @@ Op	t	O
 juli	f	O
 geeft	f	O
 Gilles	t	B-NE
-ClÈment	t	I-NE
+Clément	t	I-NE
 een	f	O
 voordracht	f	O
 over	f	O
@@ -178877,7 +178877,7 @@ Aardbeienstraat	t	B-NE
 Roeselare	t	B-NE
 .	f	O
 
-AndrÈ	t	B-NE
+André	t	B-NE
 Houthoofd	t	I-NE
 ,	f	O
 
@@ -178903,7 +178903,7 @@ een	f	O
 deel	f	O
 van	f	O
 hun	f	O
-privÈ-collecties	f	O
+privé-collecties	f	O
 ten	f	O
 toon	f	O
 in	f	O
@@ -178986,7 +178986,7 @@ bekende	f	O
 Franse	t	B-NE
 tuinarchitect	f	O
 Gilles	t	B-NE
-ClÈment	t	I-NE
+Clément	t	I-NE
 hebben	f	O
 die	f	O
 jongeren	f	O
@@ -179185,7 +179185,7 @@ homo-milieu	f	O
 in	f	O
 al	f	O
 zijn	f	O
-variÎteit	f	O
+variëteit	f	O
 .	f	O
 
 Het	t	B-NE
@@ -179273,7 +179273,7 @@ stad	f	O
 .	f	O
 
 Honderden	t	O
-ge¸niformeerde	f	O
+geüniformeerde	f	O
 New	t	B-NE
 Yorkse	t	I-NE
 politiemensen	f	O
@@ -180107,7 +180107,7 @@ zijn	f	O
 Een	t	O
 van	f	O
 die	f	O
-feeÎn	f	O
+feeën	f	O
 is	f	O
 een	f	O
 rolschaatser	f	O
@@ -180201,7 +180201,7 @@ We	t	O
 hebben	f	O
 maar	f	O
 van	f	O
-ÈÈn	t	O
+één	f	O
 ding	f	O
 spijt	f	O
 --	f	O
@@ -180746,7 +180746,7 @@ kom	f	O
 je	f	O
 aan	f	O
 de	f	O
-BoquerÌa	t	B-NE
+Boquería	t	B-NE
 ,	f	O
 de	f	O
 buik	f	O
@@ -180806,7 +180806,7 @@ Het	t	O
 loopt	f	O
 al	f	O
 over	f	O
-tweeÎn	f	O
+tweeën	f	O
 ,	f	O
 en	f	O
 het	f	O
@@ -180943,7 +180943,7 @@ gedrenkt	f	O
 publicatiedatum	f	O
 
 La	t	O
-BoquerÌa	t	B-NE
+Boquería	t	B-NE
 ,	f	O
 Pinokkio	t	B-NE
 ,	f	O
@@ -181234,7 +181234,7 @@ waar	f	O
 het	f	O
 meestal	f	O
 met	f	O
-maÔsmeel	f	O
+maïsmeel	f	O
 gemaakt	f	O
 wordt	f	O
 en	f	O
@@ -181591,7 +181591,7 @@ Fieto	t	B-NE
 (	f	O
 It.	t	B-NE
 )	f	O
-P·mpano	t	B-NE
+Pámpano	t	B-NE
 (	f	O
 Sp	t	B-NE
 )	f	O
@@ -181639,7 +181639,7 @@ de	f	O
 filets	f	O
 vooral	f	O
 in	f	O
-CaliforniÎ	t	B-NE
+Californië	t	B-NE
 als	f	O
 butterfish	f	O
 verkocht	f	O
@@ -182233,7 +182233,7 @@ de	f	O
 Selenotoca	t	B-NE
 multifasciata	f	I-NE
 (	f	O
-AustraliÎ	t	B-NE
+Australië	t	B-NE
 )	f	O
 en	f	O
 de	f	O
@@ -182514,7 +182514,7 @@ kwaliteit	f	O
 heeft	f	O
 ,	f	O
 voor	f	O
-ceremoniÎle	f	O
+ceremoniële	f	O
 etentjes	f	O
 zeer	f	O
 gezocht	f	O
@@ -182843,7 +182843,7 @@ van	f	O
 '	f	O
 Le	t	B-NE
 Grand	t	I-NE
-DÈpart	t	I-NE
+Départ	t	I-NE
 '	f	O
 .	f	O
 
@@ -182925,10 +182925,10 @@ categorie	f	O
 VDQS	t	B-NE
 -	f	O
 vins	f	B-NE
-dÈlimitÈs	f	I-NE
+délimités	f	I-NE
 de	f	I-NE
-qualitÈ	f	I-NE
-supÈrieure	f	I-NE
+qualité	f	I-NE
+supérieure	f	I-NE
 )	f	O
 .	f	O
 
@@ -183070,7 +183070,7 @@ van	f	O
 het	f	O
 project	f	O
 is	f	O
-RenÈ	t	B-NE
+René	t	B-NE
 Monory	t	I-NE
 ,	f	O
 voorzitter	f	O
@@ -183086,7 +183086,7 @@ Dat	t	O
 is	f	O
 nog	f	O
 altijd	f	O
-ThÈophraste	t	B-NE
+Théophraste	t	B-NE
 Renaudot	t	I-NE
 ,	f	O
 de	f	O
@@ -183265,7 +183265,7 @@ Loudon	t	B-NE
 ,	f	O
 thuisbasis	f	O
 van	f	O
-RenÈ	t	B-NE
+René	t	B-NE
 Monory	t	I-NE
 ,	f	O
 de	f	O
@@ -183441,7 +183441,7 @@ De	t	O
 wekelijkse	f	O
 stadswandelingen	f	O
 langs	f	O
-moskeeÎn	f	O
+moskeeën	f	O
 ,	f	O
 Turkse	t	B-NE
 bazaars	f	O
@@ -183739,7 +183739,7 @@ kanttekening	f	O
 bij	f	O
 de	f	O
 vaak	f	O
-geÎvoceerde	f	O
+geëvoceerde	f	O
 tegenstelling	f	O
 tussen	f	O
 onvoorwaardelijke	f	O
@@ -183931,7 +183931,7 @@ de	f	O
 frustraties	f	O
 van	f	O
 enkele	f	O
-geÔsoleerde	f	O
+geïsoleerde	f	O
 heethoofden	f	O
 .	f	O
 
@@ -184350,7 +184350,7 @@ Marokkanen	t	B-NE
 gingen	f	O
 in	f	O
 een	f	O
-cafÈ	f	O
+café	f	O
 met	f	O
 elkaar	f	O
 op	f	O
@@ -184736,12 +184736,12 @@ zich	f	O
 acht	f	O
 integratiecentra	f	O
 ,	f	O
-ÈÈn	t	O
+één	f	O
 voor	f	O
 iedere	f	O
 provincie	f	O
 en	f	O
-ÈÈn	t	O
+één	f	O
 voor	f	O
 de	f	O
 grootsteden	f	O
@@ -185081,7 +185081,7 @@ ze	f	O
 meer	f	O
 aan	f	O
 hun	f	O
-carriËre	f	O
+carrière	f	O
 dan	f	O
 aan	f	O
 de	f	O
@@ -185296,7 +185296,7 @@ afgeschilderd	f	O
 .	f	O
 
 "	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 is	f	O
 het	f	O
 land	f	O
@@ -186160,7 +186160,7 @@ het	f	O
 personeelsbeleid	f	O
 is	f	O
 fel	f	O
-geÎvolueerd	f	O
+geëvolueerd	f	O
 .	f	O
 
 Het	t	O
@@ -186182,7 +186182,7 @@ zich	f	O
 nu	f	O
 toeleggen	f	O
 op	f	O
-beleidsbeÔnvloeding	f	O
+beleidsbeïnvloeding	f	O
 .	f	O
 
 Neem	t	O
@@ -186209,7 +186209,7 @@ aan	f	O
 met	f	O
 allochtone	f	O
 politici	f	O
-‡	f	O
+à	f	O
 la	f	O
 Fauzaya	t	B-NE
 Talhaoui	t	I-NE
@@ -186709,7 +186709,7 @@ Eeuwig	t	B-NE
 Andere	t	I-NE
 Burger	t	I-NE
 ,	f	O
-geÔntroduceerd	f	O
+geïntroduceerd	f	O
 .	f	O
 
 Islamitische	t	B-NE
@@ -187088,7 +187088,7 @@ Bijsluiter	t	I-NE
 Marc	t	B-NE
 Dockx	t	I-NE
 ,	f	O
-coˆrdinator	f	O
+coördinator	f	O
 van	f	O
 integratiecentrum	f	O
 Pricma	t	B-NE
@@ -187235,7 +187235,7 @@ gewezen	f	O
 .	f	O
 
 Het	t	O
-clichÈ	f	O
+cliché	f	O
 is	f	O
 immers	f	O
 wijd	f	O
@@ -187284,7 +187284,7 @@ zelforganisaties	f	O
 .	f	O
 
 Algemeen	t	O
-coˆrdinator	f	O
+coördinator	f	O
 Marc	t	B-NE
 Dockx	t	I-NE
 ,	f	O
@@ -187371,7 +187371,7 @@ islamiet	f	O
 ,	f	O
 katholiek	f	O
 of	f	O
-atheÔst	f	O
+atheïst	f	O
 .	f	O
 
 Maar	t	O
@@ -187421,14 +187421,14 @@ gooien	f	O
 ons	f	O
 allemaal	f	O
 op	f	O
-ÈÈn	t	O
+één	f	O
 hoop	f	O
 .	f	O
 
 Hoe	t	O
 benaderen	f	O
 we	f	O
-officiÎle	f	O
+officiële	f	O
 instanties	f	O
 ?	f	O
 
@@ -187475,7 +187475,7 @@ in	f	O
 de	f	O
 krant	f	O
 dat	f	O
-ÈÈn	t	O
+één	f	O
 Marokkaan	t	B-NE
 een	f	O
 diefstal	f	O
@@ -187625,7 +187625,7 @@ lijkt	f	O
 alsof	f	O
 ze	f	O
 in	f	O
-ÈÈn	t	O
+één	f	O
 klap	f	O
 de	f	O
 achterstand	f	O
@@ -188723,7 +188723,7 @@ hem	f	O
 hiervoor	f	O
 op	f	O
 de	f	O
-knieÎn	f	O
+knieën	f	O
 .	f	O
 
 Tenzij	t	O
@@ -189194,7 +189194,7 @@ enorm	f	O
 tempelcomplex	f	O
 dat	f	O
 duidelijk	f	O
-geÔnspireerd	f	O
+geïnspireerd	f	O
 is	f	O
 op	f	O
 de	f	O
@@ -189354,7 +189354,7 @@ toe	f	O
 Er	t	O
 zat	f	O
 maar	f	O
-ÈÈn	t	O
+één	f	O
 ding	f	O
 op	f	O
 :	f	O
@@ -189588,7 +189588,7 @@ pater	f	O
 Bruns	t	B-NE
 niet	f	O
 de	f	O
-officiÎle	f	O
+officiële	f	O
 doodsoorzaak	f	O
 vermeld	f	O
 staat	f	O
@@ -189685,7 +189685,7 @@ kentering	f	O
 Er	t	O
 zat	f	O
 maar	f	O
-ÈÈn	t	O
+één	f	O
 ding	f	O
 op	f	O
 :	f	O
@@ -190137,7 +190137,7 @@ platteland	f	O
 
 Want	t	O
 over	f	O
-ÈÈn	t	O
+één	f	O
 ding	f	O
 wil	f	O
 meneer	f	O
@@ -190496,7 +190496,7 @@ stadje	f	O
 Xianfeng	t	B-NE
 .	f	O
 
-EÈn	t	O
+Eén	t	O
 van	f	O
 de	f	O
 westerse	f	O
@@ -191485,7 +191485,7 @@ schopte	f	O
 Poborsky	t	B-NE
 het	f	O
 met	f	O
-TsjechiÎ	t	B-NE
+Tsjechië	t	B-NE
 tot	f	O
 in	f	O
 de	f	O
@@ -191524,7 +191524,7 @@ juli	f	O
 
 auteur	f	O
 
-TsjechiÎ	t	B-NE
+Tsjechië	t	B-NE
 lukte	f	O
 pas	f	O
 in	f	O
@@ -191538,7 +191538,7 @@ Rusland	t	B-NE
 en	f	O
 Duitsland	t	B-NE
 hield	f	O
-ItaliÎ	t	B-NE
+Italië	t	B-NE
 in	f	O
 bedwang	f	O
 .	f	O
@@ -191589,7 +191589,7 @@ wat	f	O
 geluk	f	O
 .	f	O
 
-TsjechiÎ	t	B-NE
+Tsjechië	t	B-NE
 stond	f	O
 in	f	O
 de	f	O
@@ -191638,7 +191638,7 @@ Karel	t	B-NE
 Poborsky	t	I-NE
 .	f	O
 
-TsjechiÎ	t	B-NE
+Tsjechië	t	B-NE
 in	f	O
 de	f	O
 finale	f	O
@@ -191747,7 +191747,7 @@ tegen	f	O
 Portugal	t	B-NE
 .	f	O
 
-TsjechiÎ	t	B-NE
+Tsjechië	t	B-NE
 was	f	O
 de	f	O
 revelatie	f	O
@@ -191780,7 +191780,7 @@ al	f	O
 de	f	O
 volksheld	f	O
 van	f	O
-TsjechiÎ	t	B-NE
+Tsjechië	t	B-NE
 ,	f	O
 deed	f	O
 nog	f	O
@@ -191812,7 +191812,7 @@ sectie	f	O
 
 Poborsky	t	B-NE
 en	f	O
-TsjechiÎ	t	B-NE
+Tsjechië	t	B-NE
 verbazen	f	O
 Europa	t	B-NE
 
@@ -191830,7 +191830,7 @@ in	f	O
 een	f	O
 kwalificatiegroep	f	O
 met	f	O
-ItaliÎ	t	B-NE
+Italië	t	B-NE
 en	f	O
 Duitsland	t	B-NE
 .	f	O
@@ -192119,7 +192119,7 @@ de	f	O
 finale	f	O
 tegenover	f	O
 revelatie	f	O
-TsjechiÎ	t	B-NE
+Tsjechië	t	B-NE
 .	f	O
 
 Bierhoff	t	B-NE
@@ -192175,7 +192175,7 @@ boeman	f	O
 blijven	f	O
 .	f	O
 
-ItaliÎ	t	B-NE
+Italië	t	B-NE
 mocht	f	O
 zich	f	O
 eveneens	f	O
@@ -192186,7 +192186,7 @@ rekenen	f	O
 .	f	O
 
 Verrassend	t	O
-TsjechiÎ	t	B-NE
+Tsjechië	t	B-NE
 haalt	f	O
 de	f	O
 finale	f	O
@@ -192316,7 +192316,7 @@ moest	f	O
 in	f	O
 de	f	O
 Duitse	t	B-NE
-Gr¸ndlichkeit	t	O
+Gründlichkeit	t	O
 eens	f	O
 te	f	O
 meer	f	O
@@ -192413,7 +192413,7 @@ op	f	O
 tegen	f	O
 het	f	O
 verrassende	f	O
-TsjechiÎ	t	B-NE
+Tsjechië	t	B-NE
 .	f	O
 
 Engeland	t	B-NE
@@ -192577,7 +192577,7 @@ verlies	f	O
 besliste	f	O
 .	f	O
 
-MikaÎl	t	B-NE
+Mikaël	t	B-NE
 Soinne	t	I-NE
 
 Die	t	O
@@ -192786,7 +192786,7 @@ Uefa	t	B-NE
 besliste	f	O
 toen	f	O
 dat	f	O
-MacedoniÎ	t	B-NE
+Macedonië	t	B-NE
 zijn	f	O
 drie	f	O
 eerstvolgende	f	O
@@ -192824,11 +192824,11 @@ het	f	O
 scorebord	f	O
 .	f	O
 
-MacedoniÎ	t	B-NE
+Macedonië	t	B-NE
 ,	f	O
 Cyprus	t	B-NE
 en	f	O
-ArmeniÎ	t	B-NE
+Armenië	t	B-NE
 vormden	f	O
 geen	f	O
 probleem	f	O
@@ -192853,7 +192853,7 @@ zes	f	O
 landen	f	O
 .	f	O
 
-BelgiÎ	t	B-NE
+België	t	B-NE
 was	f	O
 niet	f	O
 op	f	O
@@ -192880,7 +192880,7 @@ gelijkspel	f	O
 tegen	f	O
 het	f	O
 nietige	f	O
-MacedoniÎ	t	B-NE
+Macedonië	t	B-NE
 en	f	O
 een	f	O
 verliesbeurt	f	O
@@ -192899,7 +192899,7 @@ het	f	O
 verhitte	f	O
 duel	f	O
 tussen	f	O
-MacedoniÎ	t	B-NE
+Macedonië	t	B-NE
 en	f	O
 Cyprus	t	B-NE
 eerder	f	O
@@ -192981,7 +192981,7 @@ naar	f	O
 Anderlecht	t	B-NE
 --	f	O
 versloegen	f	O
-ArmeniÎ	t	B-NE
+Armenië	t	B-NE
 met	f	O
 duidelijke	f	O
 2-0-cijfers	f	O
@@ -193023,7 +193023,7 @@ verrassing	f	O
 
 Winst	t	O
 tegen	f	O
-ArmeniÎ	t	B-NE
+Armenië	t	B-NE
 en	f	O
 een	f	O
 gelijkspel	f	O
@@ -193122,7 +193122,7 @@ september	f	O
 vond	f	O
 de	f	O
 eerste	f	O
-officiÎle	f	O
+officiële	f	O
 wedstrijd	f	O
 met	f	O
 inzet	f	O
@@ -193233,7 +193233,7 @@ in	f	O
 de	f	O
 netten	f	O
 ,	f	O
-MacedoniÎ	t	B-NE
+Macedonië	t	B-NE
 slikte	f	O
 nog	f	O
 eens	f	O
@@ -193300,7 +193300,7 @@ Een	t	O
 maand	f	O
 later	f	O
 tegen	f	O
-MacedoniÎ	t	B-NE
+Macedonië	t	B-NE
 ,	f	O
 in	f	O
 zijn	f	O
@@ -193444,7 +193444,7 @@ In	t	O
 het	f	O
 oosten	f	O
 van	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 is	f	O
 voor	f	O
 natuurliefhebbers	f	O
@@ -193648,7 +193648,7 @@ was	f	O
 het	f	O
 op	f	O
 de	f	O
-PÈriphÈrique	t	B-NE
+Périphérique	t	B-NE
 alleen	f	O
 maar	f	O
 erg	f	O
@@ -193656,7 +193656,7 @@ druk	f	O
 tussen	f	O
 de	f	O
 Porte	t	B-NE
-d'OrlÈans	f	I-NE
+d'Orléans	f	I-NE
 en	f	O
 de	f	O
 Porte	t	B-NE
@@ -194075,9 +194075,9 @@ De	t	B-NE
 Morgen	t	I-NE
 
 Ongewoon	t	O
-ItaliÎ	t	B-NE
+Italië	t	B-NE
 
-ItaliÎ	t	B-NE
+Italië	t	B-NE
 heeft	f	O
 een	f	O
 paar	f	O
@@ -194412,7 +194412,7 @@ bespeuren	f	O
 .	f	O
 
 De	t	O
-financiÎle	f	O
+financiële	f	O
 slagkracht	f	O
 van	f	O
 het	f	O
@@ -194543,7 +194543,7 @@ gaat	f	O
 ,	f	O
 samengeperst	f	O
 in	f	O
-ÈÈn	t	O
+één	f	O
 ontwerp	f	O
 .	f	O
 
@@ -194595,7 +194595,7 @@ Church	t	I-NE
 een	f	O
 grote	f	O
 receptieruimte	f	O
-geÔnspireerd	f	O
+geïnspireerd	f	O
 op	f	O
 Hendrix	t	B-NE
 '	f	O
@@ -195167,7 +195167,7 @@ die	f	O
 de	f	O
 psychedelisch	f	O
 getransformeerde	f	O
-genitaliÎn	f	O
+genitaliën	f	O
 van	f	O
 een	f	O
 vrouw	f	O
@@ -195523,7 +195523,7 @@ felgekleurde	f	O
 ,	f	O
 half	f	O
 ingezakte	f	O
-soufflÈ	f	O
+soufflé	f	O
 .	f	O
 
 Architect	t	O
@@ -195551,7 +195551,7 @@ zeggen	f	O
 wat	f	O
 is	f	O
 me	f	O
-d·t	f	O
+dát	f	O
 voor	f	O
 iets	f	O
 ?	f	O
@@ -195661,7 +195661,7 @@ van	f	O
 vierkante	f	O
 meter	f	O
 te	f	O
-creÎren	f	O
+creëren	f	O
 ,	f	O
 groeide	f	O
 uit	f	O
@@ -195981,7 +195981,7 @@ bon	f	O
 
 Toen	t	O
 Agneta	t	B-NE
-F‰ltskog	t	I-NE
+Fältskog	t	I-NE
 (	f	O
 50	f	O
 )	f	O
@@ -196030,7 +196030,7 @@ wie	f	O
 gewezen	f	O
 Abba-zangeres	t	B-NE
 Agnetha	t	B-NE
-F‰ltskog	t	I-NE
+Fältskog	t	I-NE
 in	f	O
 april	f	O
 van	f	O
@@ -196184,7 +196184,7 @@ in	f	O
 het	f	O
 achterzaaltje	f	O
 van	f	O
-cafÈ	f	O
+café	f	O
 't	f	B-NE
 Kapiteintje	t	I-NE
 in	f	O
@@ -196306,7 +196306,7 @@ wie	f	O
 gewezen	f	O
 Abba-zangeres	t	B-NE
 Agnetha	t	B-NE
-F‰ltskog	t	I-NE
+Fältskog	t	I-NE
 in	f	O
 april	f	O
 van	f	O
@@ -196510,7 +196510,7 @@ te	f	O
 tekenen	f	O
 .	f	O
 
-F‰ltskog	t	B-NE
+Fältskog	t	B-NE
 ,	f	O
 die	f	O
 al	f	O
@@ -196541,7 +196541,7 @@ van	f	O
 haar	f	O
 .	f	O
 
-EÈn	t	O
+Eén	t	O
 vanwege	f	O
 de	f	O
 overtreding	f	O
@@ -196610,7 +196610,7 @@ een	f	O
 overgetelijke	f	O
 indruk	f	O
 over	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 achter	f	O
 te	f	O
 laten	f	O
@@ -196733,7 +196733,7 @@ meteen	f	O
 ook	f	O
 een	f	O
 "	f	O
-defilÈ	f	O
+defilé	f	O
 in	f	O
 gewichtloosheid	f	O
 "	f	O
@@ -196781,7 +196781,7 @@ Per	t	O
 huwelijksjaar	f	O
 .	f	O
 
-EÈn	t	O
+Eén	t	O
 dag	f	O
 nadat	f	O
 het	f	O
@@ -196795,7 +196795,7 @@ de	f	I-NE
 Mens	t	I-NE
 in	f	O
 Straatsburg	t	B-NE
-BelgiÎ	t	B-NE
+België	t	B-NE
 veroordeelde	f	O
 vanwege	f	O
 het	f	O
@@ -196930,7 +196930,7 @@ in	f	O
 .	f	O
 
 De	t	B-NE
-FinanciÎle	t	I-NE
+Financiële	t	I-NE
 Morgen	t	I-NE
 
 John	t	B-NE
@@ -197010,7 +197010,7 @@ is	f	O
 juist	f	O
 bij	f	O
 die	f	O
-financiÎle	f	O
+financiële	f	O
 markten	f	O
 --	f	O
 en	f	O
@@ -197410,7 +197410,7 @@ worden	f	O
 
 In	t	O
 een	f	O
-hyperconcurrentiÎle	f	O
+hyperconcurrentiële	f	O
 markt	f	O
 als	f	O
 uitzendarbeid	f	O
@@ -197525,7 +197525,7 @@ Belgen	t	B-NE
 Euro	t	B-NE
 2000	f	I-NE
 was	f	O
-mÈÈr	f	O
+méér	f	O
 dan	f	O
 voetbal	f	O
 alleen	f	O
@@ -197564,7 +197564,7 @@ nog	f	O
 andere	f	O
 motieven	f	O
 om	f	O
-officiÎle	f	O
+officiële	f	O
 partner	f	O
 te	f	O
 zijn	f	O
@@ -197592,7 +197592,7 @@ om	f	O
 onze	f	O
 gehechtheid	f	O
 aan	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 te	f	O
 illustreren	f	O
 .	f	O
@@ -197705,7 +197705,7 @@ iets	f	O
 belangrijks	f	O
 gebeurt	f	O
 in	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 ,	f	O
 doen	f	O
 we	f	O
@@ -197799,7 +197799,7 @@ zetten	f	O
 .	f	O
 
 Het	t	O
-officiÎle	f	O
+officiële	f	O
 Vlaamse	t	B-NE
 exportorgaan	f	O
 van	f	O
@@ -198017,7 +198017,7 @@ uit	f	O
 de	f	O
 States	t	B-NE
 ,	f	O
-Groot-BrittanniÎ	t	B-NE
+Groot-Brittannië	t	B-NE
 ,	f	O
 Frankrijk	t	B-NE
 ,	f	O
@@ -198027,7 +198027,7 @@ Nederland	t	B-NE
 ,	f	O
 Spanje	t	B-NE
 en	f	O
-ItaliÎ	t	B-NE
+Italië	t	B-NE
 geselecteerd	f	O
 "	f	O
 ,	f	O
@@ -198182,7 +198182,7 @@ meubelimporteurs	f	O
 kwamen	f	O
 bijvoorbeeld	f	O
 naar	f	O
-Noorwegen-JoegoslaviÎ	t	B-NE
+Noorwegen-Joegoslavië	t	B-NE
 kijken	f	O
 en	f	O
 werden	f	O
@@ -198277,7 +198277,7 @@ verbleef	f	O
 twee	f	O
 jaar	f	O
 in	f	O
-VenetiÎ	t	B-NE
+Venetië	t	B-NE
 en	f	O
 zijn	f	O
 werk	f	O
@@ -198495,7 +198495,7 @@ zestiende	f	O
 eeuw	f	O
 ontstond	f	O
 ,	f	O
-mÈt	f	O
+mét	f	O
 de	f	O
 kunstgeschiedenis	f	O
 ,	f	O
@@ -198520,7 +198520,7 @@ and	f	I-NE
 the	f	I-NE
 North	t	I-NE
 (	f	O
-VenetiÎ	t	B-NE
+Venetië	t	B-NE
 ,	f	O
 1999	f	O
 )	f	O
@@ -198568,7 +198568,7 @@ voor	f	O
 zijn	f	O
 zaken	f	O
 van	f	O
-SiciliÎ	t	B-NE
+Sicilië	t	B-NE
 naar	f	O
 Napels	t	B-NE
 en	f	O
@@ -198641,7 +198641,7 @@ Schilderboek	t	B-NE
 publiceerde	f	O
 .	f	O
 
-CafÈ	t	B-NE
+Café	t	B-NE
 des	f	I-NE
 Arts	t	I-NE
 
@@ -198832,7 +198832,7 @@ kunstwerken	f	O
 in	f	O
 het	f	O
 Ancien	t	B-NE
-RÈgime	t	I-NE
+Régime	t	I-NE
 ?	f	O
 
 Leen	t	B-NE
@@ -198909,7 +198909,7 @@ evenzeer	f	O
 Lang	t	O
 voor	f	O
 je	f	O
-ÈÈn	t	O
+één	f	O
 steen	f	O
 gezien	f	O
 hebt	f	O
@@ -198990,7 +198990,7 @@ Dan	t	O
 moet	f	O
 je	f	O
 naar	f	O
-ItaliÎ	t	B-NE
+Italië	t	B-NE
 .	f	O
 
 Natuurlijk	t	O
@@ -199035,7 +199035,7 @@ Bohemen	t	B-NE
 .	f	O
 
 In	t	O
-VenetiÎ	t	B-NE
+Venetië	t	B-NE
 genoot	f	O
 Jan	t	B-NE
 van	f	I-NE
@@ -199048,7 +199048,7 @@ van	f	O
 zijn	f	O
 meester	f	O
 Titiaan	t	B-NE
-geÎvenaard	f	O
+geëvenaard	f	O
 te	f	O
 hebben	f	O
 --	f	O
@@ -199121,11 +199121,11 @@ noord	f	O
 en	f	O
 zuid	f	O
 
-D¸rer	t	B-NE
+Dürer	t	B-NE
 verbleef	f	O
 zelf	f	O
 in	f	O
-VenetiÎ	t	B-NE
+Venetië	t	B-NE
 in	f	O
 1505	f	O
 -	f	O
@@ -199204,7 +199204,7 @@ deze	f	O
 techniek	f	O
 terug	f	O
 naar	f	O
-ItaliÎ	t	B-NE
+Italië	t	B-NE
 .	f	O
 
 Veel	t	O
@@ -199250,7 +199250,7 @@ publicatie	f	O
 
 sectie	f	O
 
-VenetiÎ	t	B-NE
+Venetië	t	B-NE
 werd	f	O
 in	f	O
 kunsthistorisch	f	O
@@ -199265,7 +199265,7 @@ zuid	f	O
 .	f	O
 
 Uit	t	O
-VenetiÎ	t	B-NE
+Venetië	t	B-NE
 kwam	f	O
 Jacopo	t	B-NE
 de	f	I-NE
@@ -199285,7 +199285,7 @@ van	f	O
 Oostenrijk	t	B-NE
 --	f	O
 Albrecht	t	B-NE
-D¸rer	t	I-NE
+Dürer	t	I-NE
 probeerde	f	O
 in	f	O
 1521	f	O
@@ -199444,7 +199444,7 @@ opvangen	f	O
 Moet	t	O
 er	f	O
 dringend	f	O
-geÔnvesteerd	f	O
+geïnvesteerd	f	O
 worden	f	O
 in	f	O
 de	f	O
@@ -199673,7 +199673,7 @@ hier	f	O
 televisie	f	O
 ?	f	O
 
-PÈrigueux	t	B-NE
+Périgueux	t	B-NE
 ,	f	O
 Bergerac	t	B-NE
 ...	f	O
@@ -199714,7 +199714,7 @@ Gefeliciteerd	t	O
 u	f	O
 hebt	f	O
 al	f	O
-ÈÈn	t	O
+één	f	O
 gastronomisch	f	O
 weekend	f	O
 in	f	O
@@ -200301,7 +200301,7 @@ Toneelhuis	t	I-NE
 was	f	O
 ook	f	O
 nauwelijks	f	O
-geÔnteresseerd	f	O
+geïnteresseerd	f	O
 in	f	O
 een	f	O
 voorstelling	f	O
@@ -200480,12 +200480,12 @@ en	f	O
 slecht	f	O
 toneel	f	O
 te	f	O
-spÈlen	f	O
+spélen	f	O
 ,	f	O
 maar	f	O
 het	f	O
 resultaat	f	O
-Ìs	t	O
+ís	f	O
 slecht	f	O
 toneel	f	O
 .	f	O
@@ -200742,7 +200742,7 @@ die	f	O
 met	f	O
 een	f	O
 aantal	f	O
-scËnes	f	O
+scènes	f	O
 niet	f	O
 adequaat	f	O
 weet	f	O
@@ -200875,7 +200875,7 @@ opgaan	f	O
 dan	f	O
 ga	f	O
 ik	f	O
-Ècht	t	O
+écht	f	O
 als	f	O
 een	f	O
 kluizenaar	f	O
@@ -201074,7 +201074,7 @@ is	f	O
 er	f	O
 voorlopig	f	O
 maar	f	O
-ÈÈn	t	O
+één	f	O
 badkamer	f	O
 met	f	O
 douche	f	O
@@ -201121,7 +201121,7 @@ er	f	O
 een	f	O
 herkansing	f	O
 ,	f	O
-okÈ	f	O
+oké	f	O
 ?	f	O
 
 Je	t	O
@@ -201132,7 +201132,7 @@ goed	f	O
 genoeg	f	O
 :	f	O
 in	f	O
-ÈÈn	t	O
+één	f	O
 theaterseizoen	f	O
 zie	f	O
 je	f	O
@@ -201305,7 +201305,7 @@ keren	f	O
 we	f	O
 even	f	O
 naar	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 terug	f	O
 .	f	O
 
@@ -201364,10 +201364,10 @@ het	f	O
 op	f	O
 termijn	f	O
 wel	f	O
-officiÎler	f	O
+officiëler	f	O
 maken	f	O
 ,	f	O
-mÈt	f	O
+mét	f	O
 bordjes	f	O
 ,	f	O
 maar	f	O
@@ -201587,7 +201587,7 @@ nog	f	O
 wel	f	O
 met	f	O
 zijn	f	O
-drieÎn	f	O
+drieën	f	O
 aan	f	O
 hebben	f	O
 zitten	f	O
@@ -201847,7 +201847,7 @@ ik	f	O
 zo	f	O
 weinig	f	O
 nieuwe	f	O
-ideeÎn	f	O
+ideeën	f	O
 ontstaan	f	O
 om	f	O
 met	f	O
@@ -202027,7 +202027,7 @@ citaat	f	O
 Er	t	O
 wordt	f	O
 al	f	O
-geÔnvesteerd	f	O
+geïnvesteerd	f	O
 in	f	O
 de	f	O
 jeugd	f	O
@@ -202171,7 +202171,7 @@ zetten	f	O
 met	f	O
 '	f	O
 chambre	f	O
-d'hÙte	f	O
+d'hôte	f	O
 '	f	O
 --	f	O
 we	f	O
@@ -202342,7 +202342,7 @@ einde	f	O
 Ik	t	O
 heb	f	O
 vaak	f	O
-LibÈration	t	B-NE
+Libération	t	B-NE
 en	f	O
 Le	t	B-NE
 Monde	t	I-NE
@@ -202388,7 +202388,7 @@ daar	f	O
 toch	f	O
 al	f	O
 snel	f	O
-tweeÎneenhalf	f	O
+tweeëneenhalf	f	O
 uur	f	O
 over	f	O
 .	f	O
@@ -202547,7 +202547,7 @@ we	f	O
 komen	f	O
 meteen	f	O
 naar	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 terug	f	O
 ,	f	O
 want	f	O
@@ -202598,7 +202598,7 @@ A	t	B-NE
 la	f	O
 gare	f	O
 comme	f	O
-‡	f	O
+à	f	O
 la	f	O
 gare	f	O
 '	f	O
@@ -202709,7 +202709,7 @@ tafeltje	f	O
 zittend	f	O
 en	f	O
 kettingrokend	f	O
-Ìs	t	O
+ís	f	O
 hij	f	O
 die	f	O
 tekst	f	O
@@ -202732,7 +202732,7 @@ uitspreekt	f	O
 ,	f	O
 als	f	O
 een	f	O
-geÎngageerd	f	O
+geëngageerd	f	O
 verteller	f	O
 .	f	O
 
@@ -202858,7 +202858,7 @@ werd	f	O
 Ik	t	O
 ben	f	O
 er	f	O
-ÈÈn	t	O
+één	f	O
 keer	f	O
 geweest	f	O
 voor	f	O
@@ -202945,7 +202945,7 @@ voor	f	I-NE
 de	f	I-NE
 bossen	f	I-NE
 van	f	O
-KoltËs	t	B-NE
+Koltès	t	B-NE
 .	f	O
 
 We	t	O
@@ -203055,7 +203055,7 @@ gaan	f	O
 Ik	t	O
 ben	f	O
 daar	f	O
-hÈÈl	f	O
+héél	f	O
 zeker	f	O
 van	f	O
 .	f	O
@@ -203100,7 +203100,7 @@ dat	f	O
 ze	f	O
 alles	f	O
 in	f	O
-ÈÈn	t	O
+één	f	O
 keer	f	O
 kwamen	f	O
 halen	f	O
@@ -203217,7 +203217,7 @@ Was	t	O
 het	f	O
 een	f	O
 geslaagd	f	O
-fin-de-carriËre	f	O
+fin-de-carrière	f	O
 ?	f	O
 
 Natuurlijk	t	O
@@ -203382,7 +203382,7 @@ vooralsnog	f	O
 onbeantwoord	f	O
 .	f	O
 
-NÌÈmand	t	O
+Níémand	t	O
 ziet	f	O
 die	f	O
 vernieuwing	f	O
@@ -203932,7 +203932,7 @@ de	f	O
 kust	f	O
 .	f	O
 
-TweeÎnhalf	t	O
+Tweeënhalf	t	O
 uur	f	O
 doen	f	O
 we	f	O
@@ -203958,7 +203958,7 @@ Wat	t	O
 een	f	O
 contrast	f	O
 met	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 !	f	O
 
 Met	t	O
@@ -204143,7 +204143,7 @@ aan	f	O
 huisruil	f	O
 .	f	O
 
-BelgiÎ	t	B-NE
+België	t	B-NE
 heeft	f	O
 wel	f	O
 degelijk	f	O
@@ -204552,7 +204552,7 @@ dan	f	O
 zou	f	O
 het	f	O
 bij	f	O
-ÈÈn	t	O
+één	f	O
 enkele	f	O
 ervaring	f	O
 blijven	f	O
@@ -205452,7 +205452,7 @@ ligt	f	O
 Eastbourne	t	B-NE
 ,	f	O
 aan	f	O
-ÈÈn	t	O
+één	f	O
 kant	f	O
 omzoomd	f	O
 door	f	O
@@ -205572,7 +205572,7 @@ thuis	f	O
 .	f	O
 
 In	t	O
-M¸nster	t	B-NE
+Münster	t	B-NE
 ,	f	O
 Duitsland	t	B-NE
 ,	f	O
@@ -205712,7 +205712,7 @@ zien	f	O
 werd	f	O
 er	f	O
 in	f	O
-ItaliÎ	t	B-NE
+Italië	t	B-NE
 hard	f	O
 gesleuteld	f	O
 om	f	O
@@ -206367,7 +206367,7 @@ zeggen	f	O
 dat	f	O
 ze	f	O
 hem	f	O
-Ècht	t	O
+écht	f	O
 kent	f	O
 .	f	O
 
@@ -206521,7 +206521,7 @@ er	f	O
 komt	f	O
 een	f	O
 betaalbare	f	O
-prÍt-‡-porter-lijn	f	O
+prêt-à-porter-lijn	f	O
 :	f	O
 Valentino	t	B-NE
 Roma	t	I-NE
@@ -206934,10 +206934,10 @@ die	f	O
 altijd	f	O
 een	f	O
 tikkeltje	f	O
-tÈ	f	O
+té	f	O
 bruin	f	O
 en	f	O
-tÈ	f	O
+té	f	O
 vriendelijk	f	O
 is	f	O
 ,	f	O
@@ -207044,7 +207044,7 @@ door	f	O
 diverse	f	O
 Amerikaanse	t	B-NE
 media	f	O
-geÔnterviewd	f	O
+geïnterviewd	f	O
 .	f	O
 
 publicatie	f	O
@@ -207234,7 +207234,7 @@ deed	f	O
 wonderen	f	O
 voor	f	O
 mijn	f	O
-carriËre	f	O
+carrière	f	O
 .	f	O
 
 "	f	O
@@ -207370,7 +207370,7 @@ najaar	f	O
 zou	f	O
 een	f	O
 nieuwe	f	O
-prÍt-‡-porter	f	O
+prêt-à-porter	f	O
 lijn	f	O
 worden	f	O
 gelanceerd	f	O
@@ -207817,10 +207817,10 @@ die	f	O
 het	f	O
 afkeuren	f	O
 van	f	O
-vrouwencarriËres	f	O
+vrouwencarrières	f	O
 tot	f	O
 hun	f	O
-carriËre	f	O
+carrière	f	O
 hebben	f	O
 gemaakt	f	O
 en	f	O
@@ -207828,7 +207828,7 @@ daarvoor	f	O
 worden	f	O
 beloond	f	O
 met	f	O
-mÈÈr	f	O
+méér	f	O
 zendtijd	f	O
 dan	f	O
 hun	f	O
@@ -208260,7 +208260,7 @@ eenmalig	f	O
 ,	f	O
 dat	f	O
 blijkt	f	O
-d·n	f	O
+dán	f	O
 wel	f	O
 .	f	O
 
@@ -208591,7 +208591,7 @@ wel	f	O
 Amerikanen	t	B-NE
 vindt	f	O
 die	f	O
-mÈÈkankeren	f	O
+méékankeren	f	O
 )	f	O
 .	f	O
 
@@ -208660,7 +208660,7 @@ Cosmopolitan	t	B-NE
 ,	f	O
 waarin	f	O
 een	f	O
-drieÎntwintigjarige	f	O
+drieëntwintigjarige	f	O
 --	f	O
 nu	f	O
 al	f	O
@@ -208916,7 +208916,7 @@ opengaat	f	O
 
 Toon	t	O
 mij	f	O
-ÈÈn	t	O
+één	f	O
 columniste	f	O
 die	f	O
 zich	f	O
@@ -209221,13 +209221,13 @@ vrouwen	f	O
 die	f	O
 zo	f	O
 nodig	f	O
-carriËres	f	O
+carrières	f	O
 achternahollen	f	O
 .	f	O
 
 (	f	O
 Condition	t	O
-fÈminine	f	O
+féminine	f	O
 bourgeoise	f	O
 ,	f	O
 haast	f	O
@@ -209241,7 +209241,7 @@ want	f	O
 het	f	O
 blijft	f	O
 allemaal	f	O
-wÈl	f	O
+wél	f	O
 zeer	f	O
 achteloos	f	O
 binnen	f	O
@@ -209275,10 +209275,10 @@ in	f	O
 dit	f	O
 discours	f	O
 ,	f	O
-m·ken	f	O
+máken	f	O
 altijd	f	O
 gewoon	f	O
-carriËre	f	O
+carrière	f	O
 .	f	O
 
 En	t	O
@@ -209355,7 +209355,7 @@ op	f	O
 de	f	O
 contemporaine	f	O
 condition	f	O
-fÈminine	f	O
+féminine	f	O
 ?	f	O
 
 Zo	t	O
@@ -209486,7 +209486,7 @@ dan	f	O
 voor	f	O
 rechttoe-rechtane	f	O
 biefstukkenfeministes	f	O
-‡	f	O
+à	f	O
 la	f	O
 Susan	t	B-NE
 Faludi	t	I-NE
@@ -209519,7 +209519,7 @@ stand	f	O
 die	f	O
 ze	f	O
 nimmer	f	O
-helem··l	f	O
+helemáál	f	O
 aan	f	O
 zich	f	O
 wist	f	O
@@ -209647,7 +209647,7 @@ badschuim	f	O
 
 Jaargangen	t	O
 Bonne	t	B-NE
-SoirÈe	t	I-NE
+Soirée	t	I-NE
 .	f	O
 
 Sex	t	B-NE
@@ -209678,7 +209678,7 @@ rond	f	O
 de	f	O
 35	f	O
 graviterende	f	O
-carriËrevrouwen	f	O
+carrièrevrouwen	f	O
 .	f	O
 
 Sophie	t	B-NE
@@ -209731,7 +209731,7 @@ pijnlijke	f	O
 situaties	f	O
 ,	f	O
 en	f	O
-creÎert	f	O
+creëert	f	O
 zo	f	O
 een	f	O
 sterk	f	O
@@ -210130,7 +210130,7 @@ het	f	O
 In	t	O
 het	f	O
 Braziliaanse	t	B-NE
-CafÈ	t	B-NE
+Café	t	B-NE
 do	f	I-NE
 Brasil	t	I-NE
 ,	f	O
@@ -210623,7 +210623,7 @@ Met	t	O
 oog	f	O
 voor	f	O
 de	f	O
-vegetariÎr	f	O
+vegetariër	f	O
 :	f	O
 op	f	O
 de	f	O
@@ -210736,7 +210736,7 @@ happy'-mentaliteit	f	O
 .	f	O
 
 In	t	O
-CafÈ	t	B-NE
+Café	t	B-NE
 do	f	I-NE
 Brasil	t	I-NE
 swingt	f	O
@@ -211759,7 +211759,7 @@ en	f	O
 jaarlijks	f	O
 gaat	f	O
 er	f	O
-ÈÈn	t	O
+één	f	O
 fles	f	O
 open	f	O
 .	f	O
@@ -211784,7 +211784,7 @@ van	f	O
 Cantillon	t	B-NE
 .	f	O
 
-EÈn	t	O
+Eén	t	O
 fles	f	O
 gaat	f	O
 meteen	f	O
@@ -212101,7 +212101,7 @@ opzet	f	O
 .	f	O
 
 La	t	B-NE
-BeautÈ	t	I-NE
+Beauté	t	I-NE
 in	f	I-NE
 Fabula	t	I-NE
 ,	f	O
@@ -212182,7 +212182,7 @@ Koons	t	I-NE
 Split	t	B-NE
 Rocker	t	I-NE
 ,	f	O
-geÔnspireerd	f	O
+geïnspireerd	f	O
 door	f	O
 speelgoed	f	O
 uit	f	O
@@ -212321,7 +212321,7 @@ eeuw	f	O
 )	f	O
 en	f	O
 twee	f	O
-geÔllumineerde	f	O
+geïllumineerde	f	O
 handschriften	f	O
 met	f	O
 teksten	f	O
@@ -212496,7 +212496,7 @@ jacht	f	O
 op	f	O
 schoonheid	f	O
 
-CafÈ	t	B-NE
+Café	t	B-NE
 des	f	I-NE
 Arts	t	I-NE
 
@@ -212527,7 +212527,7 @@ esthetisch	f	O
 gevoel	f	O
 en	f	O
 de	f	O
-poÎtische	f	O
+poëtische	f	O
 kracht	f	O
 van	f	O
 Fabro	t	B-NE
@@ -212542,7 +212542,7 @@ kennen	f	O
 .	f	O
 
 La	t	B-NE
-BeautÈ	t	I-NE
+Beauté	t	I-NE
 in	f	I-NE
 Fabula	t	I-NE
 ,	f	O
@@ -212714,7 +212714,7 @@ foto's	f	O
 onder	f	O
 meer	f	O
 van	f	O
-Bjˆrk	t	B-NE
+Björk	t	B-NE
 ,	f	O
 die	f	O
 gemaakt	f	O
@@ -213045,7 +213045,7 @@ vreemd	f	O
 .	f	O
 
 La	t	B-NE
-BeautÈ	t	I-NE
+Beauté	t	I-NE
 in	f	I-NE
 Fabula	t	I-NE
 is	f	O
@@ -213438,7 +213438,7 @@ best	f	O
 zo	f	O
 met	f	O
 z'n	f	O
-drieÎn	f	O
+drieën	f	O
 .	f	O
 
 pagina	f	O
@@ -213466,7 +213466,7 @@ fataal	f	O
 De	t	O
 pedofiel	f	O
 ontvluchtte	f	O
-BelgiÎ	t	B-NE
+België	t	B-NE
 .	f	O
 
 Toen	t	O
@@ -213632,7 +213632,7 @@ opgegaan	f	O
 Maar	t	O
 zelfs	f	O
 in	f	O
-h˙n	f	O
+hún	f	O
 midden	f	O
 was	f	O
 Guillaume	t	B-NE
@@ -214030,10 +214030,10 @@ sommige	f	O
 mensen	f	O
 hoop	f	O
 je	f	O
-Ècht	t	O
+écht	f	O
 dat	f	O
 hemelse	f	O
-familiere¸nies	f	O
+familiereünies	f	O
 bestaan	f	O
 .	f	O
 
@@ -214626,7 +214626,7 @@ en	f	O
 architecten	f	O
 weinig	f	O
 au	f	O
-sÈrieux	f	O
+sérieux	f	O
 genomen	f	O
 .	f	O
 
@@ -214659,7 +214659,7 @@ in	f	O
 
 Het	t	O
 was	f	O
-dÈ	f	O
+dé	f	O
 attractie	f	O
 van	f	O
 Montreal	t	B-NE
@@ -214725,7 +214725,7 @@ tientallen	f	O
 patenten	f	O
 en	f	O
 zijn	f	O
-ideeÎngoed	f	O
+ideeëngoed	f	O
 kreeg	f	O
 vooral	f	O
 via	f	O
@@ -214862,7 +214862,7 @@ en	f	O
 betekende	f	O
 dynamiek	f	O
 plus	f	O
-efficiÎntie	f	O
+efficiëntie	f	O
 .	f	O
 
 Fuller	t	B-NE
@@ -214885,7 +214885,7 @@ Overspanning	t	O
 en	f	O
 gevel	f	O
 werden	f	O
-ÈÈn	t	O
+één	f	O
 geheel	f	O
 .	f	O
 
@@ -214988,7 +214988,7 @@ staat	f	O
 New	t	B-NE
 York	t	I-NE
 de	f	O
-officiÎle	f	O
+officiële	f	O
 titel	f	O
 van	f	O
 architect	f	O
@@ -215089,7 +215089,7 @@ de	f	O
 status	f	O
 gaf	f	O
 van	f	O
-dÈ	f	O
+dé	f	O
 inspirator	f	O
 van	f	O
 de	f	O
@@ -215197,7 +215197,7 @@ zoals	f	O
 die	f	O
 voor	f	O
 de	f	O
-TriÎnnale	t	B-NE
+Triënnale	t	B-NE
 di	f	I-NE
 Milano	t	I-NE
 in	f	O
@@ -215364,7 +215364,7 @@ uitvinder	f	O
 professor	f	O
 als	f	O
 een	f	O
-poÎet	f	O
+poëet	f	O
 met	f	O
 een	f	O
 verrassende	f	O
@@ -215377,7 +215377,7 @@ zaterdag	f	O
 juli	f	O
 2000	f	O
 
-CafÈ	t	B-NE
+Café	t	B-NE
 des	f	I-NE
 Arts	t	I-NE
 
@@ -215415,7 +215415,7 @@ douche	f	O
 vervat	f	O
 zijn	f	O
 in	f	O
-ÈÈn	t	O
+één	f	O
 volume	f	O
 van	f	O
 gebogen	f	O
@@ -215597,7 +215597,7 @@ Wetenschap	t	O
 niet	f	O
 als	f	O
 een	f	O
-geÔsoleerde	f	O
+geïsoleerde	f	O
 discipline	f	O
 maar	f	O
 als	f	O
@@ -215638,7 +215638,7 @@ om	f	O
 de	f	O
 krachten	f	O
 zo	f	O
-efficiÎnt	f	O
+efficiënt	f	O
 mogelijk	f	O
 over	f	O
 te	f	O
@@ -215674,7 +215674,7 @@ Centre	t	B-NE
 Pompidou	t	I-NE
 in	f	O
 Parijs	t	B-NE
-beÔnvloed	f	O
+beïnvloed	f	O
 .	f	O
 
 Vanaf	t	O
@@ -215887,7 +215887,7 @@ spectaculaire	f	O
 woning	f	O
 bestaande	f	O
 uit	f	O
-ÈÈn	t	O
+één	f	O
 domestructuur	f	O
 .	f	O
 
@@ -215933,7 +215933,7 @@ het	f	O
 beeldenpark	f	O
 van	f	O
 het	f	O
-Krˆller-M¸ller	t	B-NE
+Kröller-Müller	t	B-NE
 Museum	t	I-NE
 in	f	O
 Otterlo	t	B-NE
@@ -216011,14 +216011,14 @@ koos	f	O
 Fuller	t	B-NE
 voor	f	O
 een	f	O
-aÎrodynamische	f	O
+aërodynamische	f	O
 vormgeving	f	O
 .	f	O
 
 auteur	f	O
 
 Een	t	O
-efficiÎnte	f	O
+efficiënte	f	O
 constructieve	f	O
 benadering	f	O
 kreeg	f	O
@@ -216212,7 +216212,7 @@ een	f	O
 vlieg	f	O
 te	f	O
 vangen	f	O
-geÎindigd	f	O
+geëindigd	f	O
 met	f	O
 een	f	O
 val	f	O
@@ -216742,7 +216742,7 @@ miljoen	f	O
 koppels	f	O
 tot	f	O
 een	f	O
-coÔtus	f	O
+coïtus	f	O
 .	f	O
 
 Hij	t	O
@@ -217020,7 +217020,7 @@ fr.	f	O
 
 Als	t	O
 er	f	O
-ÈÈn	t	O
+één	f	O
 concept	f	O
 is	f	O
 dat	f	O
@@ -217086,7 +217086,7 @@ evergreens	f	O
 (	f	O
 Frankrijk	t	B-NE
 ,	f	O
-ItaliÎ	t	B-NE
+Italië	t	B-NE
 ,	f	O
 Spanje	t	B-NE
 )	f	O
@@ -217197,7 +217197,7 @@ te	f	O
 counteren	f	O
 .	f	O
 
-ItaliÎ	t	B-NE
+Italië	t	B-NE
 
 Supervlezig	t	O
 en	f	O
@@ -217231,7 +217231,7 @@ veel	f	O
 limoen	f	O
 .	f	O
 
-ArgentiniÎ	t	B-NE
+Argentinië	t	B-NE
 
 Veel	t	O
 kruidig	f	O
@@ -217272,7 +217272,7 @@ dertien	f	O
 (	f	O
 Franse	t	B-NE
 )	f	O
-druivenvariÎteiten	f	O
+druivenvariëteiten	f	O
 aangeplant	f	O
 .	f	O
 
@@ -217297,7 +217297,7 @@ uitbundige	f	O
 fles	f	O
 .	f	O
 
-K¸nstler	t	B-NE
+Künstler	t	B-NE
 Riesling	t	I-NE
 Trocken	t	I-NE
 '	f	O
@@ -217476,7 +217476,7 @@ en	f	O
 vertrekkensklaar	f	O
 ?	f	O
 
-ItaliÎ	t	B-NE
+Italië	t	B-NE
 
 Indrukwekkend	t	O
 in	f	O
@@ -217638,7 +217638,7 @@ bessen	f	O
 .	f	O
 
 Franz	t	B-NE
-K¸nstler	t	I-NE
+Künstler	t	I-NE
 is	f	O
 een	f	O
 van	f	O
@@ -217658,7 +217658,7 @@ gedoseerde	f	O
 riesling	f	O
 .	f	O
 
-EÈn	t	O
+Eén	t	O
 vraag	f	O
 slechts	f	O
 :	f	O
@@ -217736,13 +217736,13 @@ detailhandelaars	f	O
 .	f	O
 
 Les	t	B-NE
-BretËches	t	I-NE
+Bretèches	t	I-NE
 du	f	I-NE
-Ch‚teau	t	I-NE
+Château	t	I-NE
 Kefraya	t	I-NE
 ,	f	O
-XXIiËme	t	B-NE
-SiËcle	t	I-NE
+XXIième	t	B-NE
+Siècle	t	I-NE
 ,	f	O
 Bekaa	t	B-NE
 Valley	t	I-NE
@@ -217771,7 +217771,7 @@ want	f	O
 hoewel	f	O
 deze	f	O
 fles	f	O
-vÈÈl	f	O
+véél	f	O
 sterker	f	O
 is	f	O
 dan	f	O
@@ -217820,7 +217820,7 @@ vrij	f	O
 mollige	f	O
 fles	f	O
 verpakte	f	O
-CaliforniÎr	t	B-NE
+Californiër	t	B-NE
 --	f	O
 dus	f	O
 een	f	O
@@ -217841,11 +217841,11 @@ glanzend	f	O
 Hun	t	O
 jaartalloze	f	O
 speciale	f	O
-cuvÈe	f	O
+cuvée	f	O
 steunt	f	O
 op	f	O
 een	f	O
-mÈlange	f	O
+mélange	f	O
 van	f	O
 60	f	O
 procent	f	O
@@ -217857,7 +217857,7 @@ grenache	f	O
 ,	f	O
 10	f	O
 procent	f	O
-mourvËdre	f	O
+mourvèdre	f	O
 ,	f	O
 10	f	O
 procent	f	O
@@ -218015,7 +218015,7 @@ zwiepen	f	O
 
 Libanon	t	B-NE
 
-AustraliÎ	t	B-NE
+Australië	t	B-NE
 
 Apart	t	O
 boeket	f	O
@@ -218218,7 +218218,7 @@ mediterraan	f	O
 boeket	f	O
 ,	f	O
 lichtjes	f	O
-fumÈ	f	O
+fumé	f	O
 in	f	O
 de	f	O
 aanzet	f	O
@@ -218233,7 +218233,7 @@ vruchten	f	O
 
 Een	t	O
 competente	f	O
-rosÈ	f	O
+rosé	f	O
 .	f	O
 
 Tussen	t	O
@@ -218306,7 +218306,7 @@ hand	f	O
 Santa	t	B-NE
 Julia	t	I-NE
 Syrah	t	I-NE
-RosÈ	t	I-NE
+Rosé	t	I-NE
 1999	f	O
 ,	f	O
 Mendoza	t	B-NE
@@ -218398,7 +218398,7 @@ even	f	O
 een	f	O
 tussenstop	f	O
 in	f	O
-rosÈ-land	f	O
+rosé-land	f	O
 :	f	O
 
 Wine-trotters	t	O
