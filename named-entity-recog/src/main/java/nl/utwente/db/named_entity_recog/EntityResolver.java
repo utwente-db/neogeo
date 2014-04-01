@@ -45,25 +45,34 @@ import edu.stanford.nlp.util.CoreMap;
 public class EntityResolver
 {
 
-	/* 
-	 * For Mena:
-	 * - I Changed the GeoEntity selection for names.length > 2
-	 * I added a hashtag tokenizer to tokenize strings like #enschede
-	 */
-	
+    /*
+     * For Mena: - I Changed the GeoEntity selection for names.length > 2 I
+     * added a hashtag tokenizer to tokenize strings like #enschede
+     */
     public static boolean verbose = false;
     public static boolean isTrained = false;
     private static final String CONFIG_FILENAME = "database.properties";
     // private static final String TRAINING_DIRECTORY = "/home/flokstra/crf/train/";
-    private static final String TRAINING_DIRECTORY = "/Users/flokstra/crf/train/";
-    // private static final String TRAINING_DIRECTORY = "F:/Projects/neogeo/named-entity-recog/";
-
+    //private static final String TRAINING_DIRECTORY = "/Users/flokstra/crf/train/";
+    private static final String TRAINING_DIRECTORY = "F:/Projects/neogeo/named-entity-recog/";
+    
+    private String lang;
+    private List<Token> TokenList = null;
+    private Vector<Sentence> CRFsentences = null;
+    // creates a StanfordCoreNLP object, with POS tagging, lemmatization, NER, parsing, and coreference resolution 
+    private Properties props = null;
+    private StanfordCoreNLP pipeline = null;
+    private Corpus train_corpus = null;
+    private CRModel_sp1 model = null;
     Connection c; // geonames db connection
-    
-    public EntityResolver(Connection c) {	
-    	this.c = c;
+
+    public EntityResolver(Connection c, String lang)
+    {
+        this.c = c;
+        this.lang = lang;
+        Initialize();
     }
-    
+
     public static Connection getGeonamesConnection()
     {
         String hostname = null;
@@ -75,8 +84,7 @@ public class EntityResolver
         Properties prop = new Properties();
         try
         {
-            InputStream is =
-                    (new EntityResolver(null)).getClass().getClassLoader().getResourceAsStream(CONFIG_FILENAME);
+            InputStream is =(new EntityResolver(null,"nl")).getClass().getClassLoader().getResourceAsStream(CONFIG_FILENAME);
             prop.load(is);
             hostname = prop.getProperty("hostname");
             port = prop.getProperty("port");
@@ -121,7 +129,7 @@ public class EntityResolver
         {
             if (verbose)
             {
-                System.out.println("Connected to jdbc:postgresql://" + hostname + ":" + port + "/" + database + " as \"" + username +"\"");
+                System.out.println("Connected to jdbc:postgresql://" + hostname + ":" + port + "/" + database + " as \"" + username + "\"");
 
             }
         }
@@ -134,7 +142,7 @@ public class EntityResolver
     // connection should also be visible in other packages
     public static Connection geonames_conn = getGeonamesConnection();
 
-    public static void refreshConnection() throws SQLException
+    public void refreshConnection() throws SQLException
     {
         geonames_conn = getGeonamesConnection();
     }
@@ -156,10 +164,11 @@ public class EntityResolver
         {
             // resolveEntity(TweetStr_en, "en");
             //resolveEntity(TweetStr_nl, "nl");
-        	EntityResolver er = new EntityResolver(getGeonamesConnection());
-        	for(int i=0; i<10; i++) {
-        		er.resolveEntityFastTimed(TweetStr_nl, "nl");
-        	}
+            EntityResolver er = new EntityResolver(getGeonamesConnection(),"nl");
+            for (int i = 0; i < 10; i++)
+            {
+                er.resolveEntityFastTimed(TweetStr_nl);
+            }
         }
         catch (SQLException e)
         {
@@ -168,143 +177,41 @@ public class EntityResolver
         }
     }
 
-    public static Vector<NamedEntity> resolveEntity(String TweetStr, String lang) throws SQLException
+    public Vector<NamedEntity> resolveEntityFastTimed(String TweetStr) throws SQLException
     {
-    	if ( verbose ) {
-    	System.out.println("resolveEntity: tweet="+TweetStr);
-    	System.out.println("resolveEntity: lang="+lang);
-    	}
-    	if ( !"nl".equals(lang) )
-    		lang  = "en";
+        long startTime = System.nanoTime();
+        Vector<NamedEntity> res = resolveEntity(TweetStr);
+        long endTime = System.nanoTime();
+
+        long duration = endTime - startTime;
+        System.out.println("time[" + duration / 1000000 + "msec]: " + TweetStr);
+
+        return res;
+    }
+
+    public Vector<NamedEntity> resolveEntity(String TweetStr) throws SQLException
+    {
+        if (verbose)
+        {
+            System.out.println("resolveEntity: tweet=" + TweetStr);
+            System.out.println("resolveEntity: lang=" + lang);
+        }
+        if (!"nl".equals(lang))
+        {
+            lang = "en";
+        }
         if (verbose)
         {
             System.out.println("#!EntityResolver.resolveEntity() called.");
         }
+
+        TokenList.clear();
+        CRFsentences.clear();
         
-        // TODO: make this work both for "nl" end "en" language
-        if (!isTrained)
-        {
-            PrepareTrainingFile("nl");
-            PrepareTrainingFile("en");
-            isTrained = true;
-        }
+        PrepareTestFile_StanfordTokenizer(TweetStr, TokenList, CRFsentences);
+       
+        Corpus test_corpus = new Corpus(CRFsentences);
         
-        List<Token> TokenList = PrepareTestFile_StanfordTokenizer(TweetStr);
-        // PrepareTestFile_JavaTokenizer(TweetStr);
-        
-        Corpus train_corpus = new Corpus(TRAINING_DIRECTORY, "crfTrain_"+lang.toLowerCase()+".txt",true);
-        // System.out.println("#Training Sentences: " +
-        // train_corpus.getNumSentences());
-
-        Corpus test_corpus = new Corpus(TRAINING_DIRECTORY, "crfTest.txt",false);
-        // System.out.println("#Test Sentences: " +
-        // test_corpus.getNumSentences());
-
-        CRModel_sp1 model = new CRModel_sp1(train_corpus, "CRF.model", false);
-
-        List<NamedEntity> NEs = new Decoder(train_corpus, test_corpus, model).decode(TokenList, TweetStr);
-
-        if (true ) {
-        	int from = TweetStr.indexOf('#', 0);
-        	while ( from != -1 ) {
-        		int p = from + 1;
-        		
-        		while (p<TweetStr.length() && Character.isLetter(TweetStr.charAt(p)))
-        			p++;
-        		String ht = TweetStr.substring(from,p);
-        		if ( ht.length() > GeoEntity.minLength  )
-        			NEs.add(new NamedEntity(ht,"HashTag",from,0.0));
-        		from = TweetStr.indexOf('#', from+1);
-        	}
-        }
-        
-        Vector<NamedEntity> res = new Vector<NamedEntity>();
-        for (int i = 0; i < NEs.size(); i++)
-        {
-            NamedEntity entity = NEs.get(i);
-
-			if (entity.getName().length() >= GeoEntity.minLength) { // lots of false places with 2 letters in tweets
-				PreparedStatement ps = geonames_conn
-						.prepareStatement("select name,latitude,longitude,country,alternatenames,population,elevation,fclass from geoname where lower(name) = ?;");
-				String candidate = entity.getMention().toLowerCase();
-				if ( candidate.startsWith("#") )
-					candidate = candidate.substring(1);
-				ps.setString(1, candidate);
-				ResultSet rs = ps.executeQuery();
-				while (rs.next()) {
-					GeoEntity ge = new GeoEntity(entity,
-							rs.getDouble("latitude"),
-							rs.getDouble("longitude"), rs.getString("country"),
-							rs.getString("alternatenames"),
-							rs.getInt("population"), rs.getInt("elevation"),
-							rs.getString("fclass"));
-					if (verbose) {
-						System.out.println("RESOLVED[" + ge + "]");
-					}
-				}
-			}
-
-            if (entity.isResolved())
-            {
-                res.add(entity);
-            }
-            else
-            {
-                if (verbose)
-                {
-                    System.out.println("UNRESOLVED[" + entity + "]");
-                }
-            }
-        }
-        return res;
-    }
-    
-    public  Vector<NamedEntity> resolveEntityFastTimed(String TweetStr, String lang) throws SQLException {
-    	long startTime = System.nanoTime();
-    	Vector<NamedEntity>	res = resolveEntityFast(TweetStr,lang);
-    	long endTime = System.nanoTime();
-
-    	long duration = endTime - startTime;
-    	System.out.println("time["+duration/1000000+"msec]: "+TweetStr);
-    
-    	return res;
-	}
-
-    public Vector<NamedEntity> resolveEntityFast(String TweetStr, String lang) throws SQLException
-    {
-        if ( verbose ) {
-        	System.out.println("resolveEntity: tweet="+TweetStr);
-        	System.out.println("resolveEntity: lang="+lang);
-    	}
-    	if ( !"nl".equals(lang) )
-    		lang  = "en";
-        if (verbose) {
-            System.out.println("#!EntityResolver.resolveEntity() called.");
-        }
-        
-        // TODO: make this work both for "nl" end "en" language
-        if (!isTrained)
-        {
-            PrepareTrainingFile("nl");
-            PrepareTrainingFile("en");
-            isTrained = true;
-        }
-
-        List<Token> TokenList = new ArrayList<Token>();
-        Vector<Sentence> CRFsentences=new Vector<Sentence>();        
-
-        Corpus train_corpus = new Corpus(TRAINING_DIRECTORY,"crfTrain_" + lang.toLowerCase() + ".txt",true);
-        CRModel_sp1 model = new CRModel_sp1(train_corpus, "CRF.model", false);
-        // System.out.println("#Training Sentences: " +
-        // train_corpus.getNumSentences());
-
-        //To be called with every new tweet
-        PrepareTestFile_StanfordTokenizerFast(TweetStr,TokenList,CRFsentences);
-        Corpus test_corpus = new Corpus(CRFsentences); 
-        // System.out.println("#Test Sentences: " +
-        // test_corpus.getNumSentences());      
-        
-
         List<NamedEntity> NEs = new Decoder(train_corpus, test_corpus, model).decode(TokenList, TweetStr);
 
         Vector<NamedEntity> res = new Vector<NamedEntity>();
@@ -323,7 +230,8 @@ public class EntityResolver
                         rs.getString("alternatenames"),
                         rs.getInt("population"), rs.getInt("elevation"),
                         rs.getString("fclass"));
-                if (verbose) {
+                if (verbose)
+                {
                     System.out.println("RESOLVED[" + ge + "]");
                 }
             }
@@ -342,52 +250,60 @@ public class EntityResolver
         }
         return res;
     }
-
     private final static String traindir = TRAINING_DIRECTORY;
-    
-    private static void PrepareTrainingFile(String lang)
+
+    private void PrepareTrainingFile(String lang)
     {
         try
         {
             String PathSource = "";
-            int tagIndex=0;
+            int tagIndex = 0;
             if ("nl".equalsIgnoreCase(lang))
             {
                 PathSource = "ned.train";
-                tagIndex=2;
+                tagIndex = 2;
             }
             else
             {
                 PathSource = "eng.train";
-                tagIndex=3;
+                tagIndex = 3;
             }
-            String PathTarget = TRAINING_DIRECTORY + "crfTrain_"+lang.toLowerCase()+".txt";
+            String PathTarget = TRAINING_DIRECTORY + "crfTrain_" + lang.toLowerCase() + ".txt";
 
             InputStream is = null;
             String trainfile = null;
-            try {
-            	trainfile = traindir + PathSource;
-            	is = new FileInputStream(trainfile);
-            	if ( verbose )
-            		System.out.println("#!opened training file: "+trainfile);
-            } catch (IOException ignore_e) {
-            	if ( verbose )
-            		System.out.println("#!fail open training file "+trainfile+", try get it from resources");
-            	String str = FileUtils.getFileAsString(PathSource);
-            	is = new ByteArrayInputStream(str.getBytes());
-            	if ( verbose )
-            		System.out.println("#!opened training file from resources: "+PathSource);
+            try
+            {
+                trainfile = traindir + PathSource;
+                is = new FileInputStream(trainfile);
+                if (verbose)
+                {
+                    System.out.println("#!opened training file: " + trainfile);
+                }
             }
-        	BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is));
+            catch (IOException ignore_e)
+            {
+                if (verbose)
+                {
+                    System.out.println("#!fail open training file " + trainfile + ", try get it from resources");
+                }
+                String str = FileUtils.getFileAsString(PathSource);
+                is = new ByteArrayInputStream(str.getBytes());
+                if (verbose)
+                {
+                    System.out.println("#!opened training file from resources: " + PathSource);
+                }
+            }
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is));
 
             FileOutputStream fos = new FileOutputStream(PathTarget);
             OutputStreamWriter out = new OutputStreamWriter(fos, "UTF-8");
-            
+
             int count = 0;
             String line = "";
             while ((line = bufferedReader.readLine()) != null)
             {
-            	count++;
+                count++;
                 // System.out.println(line);
 
                 if (!line.startsWith("-DOCSTART-"))
@@ -424,14 +340,16 @@ public class EntityResolver
                 }
                 else
                 {
-                    if(!lang.equalsIgnoreCase("nl"))
+                    if (!lang.equalsIgnoreCase("nl"))
                     {
                         line = bufferedReader.readLine();
                     }
                 }
             }
-            if ( verbose )
-            	System.out.println("#!PrepareTrainingFile: convert "+count+" lines from "+PathSource+" into "+PathTarget+".");
+            if (verbose)
+            {
+                System.out.println("#!PrepareTrainingFile: convert " + count + " lines from " + PathSource + " into " + PathTarget + ".");
+            }
             out.close();
             fos.close();
             // isr.close();
@@ -445,123 +363,12 @@ public class EntityResolver
 
     }
 
-    private static void PrepareTestFile_JavaTokenizer(String TweetStr)
-    {
-        try
-        {
-            String PathTarget = "crfTest.txt";
-            
-            FileOutputStream fos = new FileOutputStream("/tmp/"+PathTarget);
-            OutputStreamWriter out = new OutputStreamWriter(fos, "UTF-8");
-
-            StringTokenizer ST = new StringTokenizer(TweetStr);
-            while (ST.hasMoreTokens())
-            {
-                String Token = ST.nextToken();
-                String feature = "";
-                //feature = ??;
-                if (Character.isUpperCase(Token.charAt(0)))
-                {
-                    feature = "t";
-                }
-                else
-                {
-                    feature = "f";
-                }
-                out.write(Token + "\t" + feature + "\t" + "O");
-                if (ST.hasMoreTokens())
-                {
-                    out.write("\n");
-                }
-            }
-            out.close();
-            fos.close();
-        }
-        catch (Exception ex)
-        {
-            Logger.getLogger(TEC4SE_Ver1.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    private static List<Token> PrepareTestFile_StanfordTokenizer(String TweetStr)
-    {
-        List<Token> TokensList = new ArrayList<Token>();
-        try
-        {
-            String PathTarget = "crfTest.txt";
-
-            FileOutputStream fos = new FileOutputStream("/tmp/"+PathTarget);
-            OutputStreamWriter out = new OutputStreamWriter(fos, "UTF-8");
-
-            // creates a StanfordCoreNLP object, with POS tagging, lemmatization, NER, parsing, and coreference resolution 
-            Properties props = new Properties();
-            props.put("annotators", "tokenize, ssplit");
-            StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
-
-            // create an empty Annotation just with the given text
-            Annotation document = new Annotation(TweetStr);
-
-            // run all Annotators on this text
-            pipeline.annotate(document);
-
-            // these are all the sentences in this document
-            // a CoreMap is essentially a Map that uses class objects as keys and has values with custom types
-            List<CoreMap> sentences = document.get(SentencesAnnotation.class);
-            int sentenceSize = sentences.size();
-            int sentenceCnt = 0;
-            for (CoreMap sentence : sentences)
-            {
-                // traversing the words in the current sentence
-                // a CoreLabel is a CoreMap with additional token-specific methods
-                sentenceCnt++;
-                List<CoreLabel> Tokens = sentence.get(TokensAnnotation.class);
-                int tokenSize = Tokens.size();
-                int tokenCnt = 0;
-                for (CoreLabel token : Tokens)
-                {
-                    tokenCnt++;
-                    String word = token.get(TextAnnotation.class);
-                    int offset = token.beginPosition();
-                    TokensList.add(new Token(word, offset));
-                    String feature = "";
-                    if (Character.isUpperCase(word.charAt(0)))
-                    {
-                        feature = "t";
-                    }
-                    else
-                    {
-                        feature = "f";
-                    }
-                    out.write(word + "\t" + feature + "\t" + "O");
-                    if (!(sentenceCnt == sentenceSize && tokenCnt == tokenSize))
-                    {
-                        out.write("\n");
-                    }
-                }
-            }
-
-            out.close();
-            fos.close();
-
-        }
-        catch (Exception ex)
-        {
-            Logger.getLogger(EntityResolver.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return TokensList;
-    }
-    
-    private static void PrepareTestFile_StanfordTokenizerFast(String TweetStr,List<Token> TokensList,Vector<Sentence> CRFsentences)
+    private void PrepareTestFile_StanfordTokenizer(String TweetStr, List<Token> TokensList, Vector<Sentence> CRFsentences)
     {
         TokensList.clear();
-        StringBuffer SB=new StringBuffer();
+        StringBuffer SB = new StringBuffer();
         try
         {
-            // creates a StanfordCoreNLP object, with POS tagging, lemmatization, NER, parsing, and coreference resolution 
-            Properties props = new Properties();
-            props.put("annotators", "tokenize, ssplit");
-            StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
-
             // create an empty Annotation just with the given text
             Annotation document = new Annotation(TweetStr);
 
@@ -603,7 +410,7 @@ public class EntityResolver
                     }
                 }
             }
-            Sentence CRFsentence=new Sentence(SB.toString());
+            Sentence CRFsentence = new Sentence(SB.toString());
             CRFsentences.add(CRFsentence);
 
         }
@@ -611,5 +418,25 @@ public class EntityResolver
         {
             Logger.getLogger(EntityResolver.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private void Initialize()
+    {
+        if (!isTrained)
+        {
+            PrepareTrainingFile("nl");
+            PrepareTrainingFile("en");
+            isTrained = true;
+        }
+
+        TokenList = new ArrayList<Token>();
+        CRFsentences = new Vector<Sentence>();
+
+        train_corpus = new Corpus(TRAINING_DIRECTORY, "crfTrain_" + lang.toLowerCase() + ".txt", true);
+        model = new CRModel_sp1(train_corpus, "CRF.model", false);    
+
+        props = new Properties();
+        props.put("annotators", "tokenize, ssplit");
+        pipeline = new StanfordCoreNLP(props);
     }
 }
