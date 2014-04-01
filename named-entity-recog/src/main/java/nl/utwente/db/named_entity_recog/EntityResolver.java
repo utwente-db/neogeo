@@ -58,6 +58,12 @@ public class EntityResolver
     private static final String TRAINING_DIRECTORY = "/Users/flokstra/crf/train/";
     // private static final String TRAINING_DIRECTORY = "F:/Projects/neogeo/named-entity-recog/";
 
+    Connection c; // geonames db connection
+    
+    public EntityResolver(Connection c) {	
+    	this.c = c;
+    }
+    
     public static Connection getGeonamesConnection()
     {
         String hostname = null;
@@ -70,7 +76,7 @@ public class EntityResolver
         try
         {
             InputStream is =
-                    (new EntityResolver()).getClass().getClassLoader().getResourceAsStream(CONFIG_FILENAME);
+                    (new EntityResolver(null)).getClass().getClassLoader().getResourceAsStream(CONFIG_FILENAME);
             prop.load(is);
             hostname = prop.getProperty("hostname");
             port = prop.getProperty("port");
@@ -150,8 +156,9 @@ public class EntityResolver
         {
             // resolveEntity(TweetStr_en, "en");
             //resolveEntity(TweetStr_nl, "nl");
+        	EntityResolver er = new EntityResolver(getGeonamesConnection());
         	for(int i=0; i<10; i++) {
-        		resolveEntityFastTimed(TweetStr_nl, "nl");
+        		er.resolveEntityFastTimed(TweetStr_nl, "nl");
         	}
         }
         catch (SQLException e)
@@ -252,7 +259,7 @@ public class EntityResolver
         return res;
     }
     
-    public static Vector<NamedEntity> resolveEntityFastTimed(String TweetStr, String lang) throws SQLException {
+    public  Vector<NamedEntity> resolveEntityFastTimed(String TweetStr, String lang) throws SQLException {
     	long startTime = System.nanoTime();
     	Vector<NamedEntity>	res = resolveEntityFast(TweetStr,lang);
     	long endTime = System.nanoTime();
@@ -263,7 +270,7 @@ public class EntityResolver
     	return res;
 	}
 
-    public static Vector<NamedEntity> resolveEntityFast(String TweetStr, String lang) throws SQLException
+    public Vector<NamedEntity> resolveEntityFast(String TweetStr, String lang) throws SQLException
     {
         if ( verbose ) {
         	System.out.println("resolveEntity: tweet="+TweetStr);
