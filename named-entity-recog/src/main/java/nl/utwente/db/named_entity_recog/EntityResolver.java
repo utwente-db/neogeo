@@ -26,6 +26,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import nl.utwente.db.ZehminCRF.corpus.Corpus;
+import nl.utwente.db.ZehminCRF.corpus.Sentence;
 import nl.utwente.db.ZehminCRF.main.Decoder;
 import nl.utwente.db.ZehminCRF.sp.CRModel_sp1;
 import nl.utwente.db.neogeo.utils.FileUtils;
@@ -36,7 +37,6 @@ import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.util.CoreMap;
-import nl.utwente.db.ZehminCRF.corpus.Sentence;
 
 /**
  *
@@ -54,6 +54,9 @@ public class EntityResolver
     public static boolean verbose = true;
     public static boolean isTrained = false;
     private static final String CONFIG_FILENAME = "database.properties";
+    // private static final String TRAINING_DIRECTORY = "/home/flokstra/crf/train/";
+    private static final String TRAINING_DIRECTORY = "/Users/flokstra/crf/train/";
+    // private static final String TRAINING_DIRECTORY = "F:/Projects/neogeo/named-entity-recog/";
 
     public static Connection getGeonamesConnection()
     {
@@ -179,11 +182,11 @@ public class EntityResolver
         List<Token> TokenList = PrepareTestFile_StanfordTokenizer(TweetStr);
         // PrepareTestFile_JavaTokenizer(TweetStr);
         
-        Corpus train_corpus = new Corpus("crfTrain_"+lang.toLowerCase()+".txt",true);
+        Corpus train_corpus = new Corpus(TRAINING_DIRECTORY, "crfTrain_"+lang.toLowerCase()+".txt",true);
         // System.out.println("#Training Sentences: " +
         // train_corpus.getNumSentences());
 
-        Corpus test_corpus = new Corpus("crfTest.txt",false);
+        Corpus test_corpus = new Corpus(TRAINING_DIRECTORY, "crfTest.txt",false);
         // System.out.println("#Test Sentences: " +
         // test_corpus.getNumSentences());
 
@@ -270,7 +273,7 @@ public class EntityResolver
         List<Token> TokenList = new ArrayList<Token>();
         Vector<Sentence> CRFsentences=new Vector<Sentence>();        
 
-        Corpus train_corpus = new Corpus("crfTrain_" + lang.toLowerCase() + ".txt",true);
+        Corpus train_corpus = new Corpus(TRAINING_DIRECTORY,"crfTrain_" + lang.toLowerCase() + ".txt",true);
         CRModel_sp1 model = new CRModel_sp1(train_corpus, "CRF.model", false);
         // System.out.println("#Training Sentences: " +
         // train_corpus.getNumSentences());
@@ -321,8 +324,7 @@ public class EntityResolver
         return res;
     }
 
-    //private final static String traindir = "/home/flokstra/crf/train/"; // first try
-    private final static String traindir = "F:/Projects/neogeo/named-entity-recog/target/classes/";
+    private final static String traindir = TRAINING_DIRECTORY;
     
     private static void PrepareTrainingFile(String lang)
     {
@@ -340,8 +342,7 @@ public class EntityResolver
                 PathSource = "eng.train";
                 tagIndex=3;
             }
-            //String PathTarget = "/tmp/" + "crfTrain_"+lang.toLowerCase()+".txt";
-            String PathTarget = "F:/Projects/neogeo/named-entity-recog/" + "crfTrain_"+lang.toLowerCase()+".txt";
+            String PathTarget = TRAINING_DIRECTORY + "crfTrain_"+lang.toLowerCase()+".txt";
 
             InputStream is = null;
             String trainfile = null;

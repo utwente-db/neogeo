@@ -17,7 +17,7 @@ public class Transform_Brown {
 	
 	public static void main(String[] strs){
 		transform(Global.g_BrownCorpusFolder, Global.g_BrwonCorpusFile);
-		Corpus corpus = new Corpus(Global.g_BrwonCorpusFile,false);
+		Corpus corpus = new Corpus(null,Global.g_BrwonCorpusFile,false);
 		corpus.printStatistics();
 		System.out.println("Transform Finished!");
 	}

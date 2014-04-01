@@ -23,7 +23,7 @@ public class Corpus
 
     private static final Hashtable<String,String[]> scache = new Hashtable<String,String[]>();
     
-	public Corpus(String filePath, boolean use_cache) {
+	public Corpus(String dirPath, String filePath, boolean use_cache) {
 		String[] sentences = scache.get(filePath);
 		
 		if (use_cache && sentences != null) {
@@ -31,8 +31,9 @@ public class Corpus
 		} else {
 			System.out.println("#!Cache-miss["+use_cache+"]: " + filePath);
 
-			//String buf = FileUtils.getFileAsString(new File("/tmp/" + filePath));
-                        String buf = FileUtils.getFileAsString(new File("F:/Projects/neogeo/named-entity-recog/" + filePath));
+			if  (dirPath == null )
+				dirPath = "";
+            String buf = FileUtils.getFileAsString(new File(dirPath + filePath));
 			sentences = buf.split("\n\n");
 			if ( use_cache )
 				scache.put(filePath, sentences);
