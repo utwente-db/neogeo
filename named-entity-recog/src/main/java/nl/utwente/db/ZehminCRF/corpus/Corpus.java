@@ -27,9 +27,9 @@ public class Corpus
 		String[] sentences = scache.get(filePath);
 		
 		if (use_cache && sentences != null) {
-			System.out.println("#!Cache-hit: " + filePath);
+			// System.out.println("#!Cache-hit: " + filePath);
 		} else {
-			System.out.println("#!Cache-miss["+use_cache+"]: " + filePath);
+			// System.out.println("#!Cache-miss["+use_cache+"]: " + filePath);
 
 			if  (dirPath == null )
 				dirPath = "";

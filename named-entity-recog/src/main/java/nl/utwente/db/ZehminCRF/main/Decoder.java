@@ -264,7 +264,7 @@ public class Decoder
                 {
                     if(TempNEStr.isEmpty())
                     {
-                        System.out.println("Strange to have "+ResultTag+" as a first tag!!");
+                        // INCOMPLETE System.out.println("Strange to have "+ResultTag+" as a first tag!!");
                         NEStartOffset=TokenStartOffset;
                     }
                     else

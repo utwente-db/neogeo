@@ -51,7 +51,7 @@ public class EntityResolver
 	 * I added a hashtag tokenizer to tokenize strings like #enschede
 	 */
 	
-    public static boolean verbose = true;
+    public static boolean verbose = false;
     public static boolean isTrained = false;
     private static final String CONFIG_FILENAME = "database.properties";
     // private static final String TRAINING_DIRECTORY = "/home/flokstra/crf/train/";
@@ -115,7 +115,8 @@ public class EntityResolver
         {
             if (verbose)
             {
-                System.out.println("You made it, take control your database now!");
+                System.out.println("Connected to jdbc:postgresql://" + hostname + ":" + port + "/" + database + " as \"" + username +"\"");
+
             }
         }
         else
@@ -149,7 +150,9 @@ public class EntityResolver
         {
             // resolveEntity(TweetStr_en, "en");
             //resolveEntity(TweetStr_nl, "nl");
-            resolveEntityFast(TweetStr_nl, "nl");
+        	for(int i=0; i<10; i++) {
+        		resolveEntityFastTimed(TweetStr_nl, "nl");
+        	}
         }
         catch (SQLException e)
         {
@@ -249,16 +252,26 @@ public class EntityResolver
         return res;
     }
     
+    public static Vector<NamedEntity> resolveEntityFastTimed(String TweetStr, String lang) throws SQLException {
+    	long startTime = System.nanoTime();
+    	Vector<NamedEntity>	res = resolveEntityFast(TweetStr,lang);
+    	long endTime = System.nanoTime();
+
+    	long duration = endTime - startTime;
+    	System.out.println("time["+duration/1000000+"msec]: "+TweetStr);
+    
+    	return res;
+	}
+
     public static Vector<NamedEntity> resolveEntityFast(String TweetStr, String lang) throws SQLException
     {
         if ( verbose ) {
-    	System.out.println("resolveEntity: tweet="+TweetStr);
-    	System.out.println("resolveEntity: lang="+lang);
+        	System.out.println("resolveEntity: tweet="+TweetStr);
+        	System.out.println("resolveEntity: lang="+lang);
     	}
     	if ( !"nl".equals(lang) )
     		lang  = "en";
-        if (verbose)
-        {
+        if (verbose) {
             System.out.println("#!EntityResolver.resolveEntity() called.");
         }
         
@@ -303,8 +316,7 @@ public class EntityResolver
                         rs.getString("alternatenames"),
                         rs.getInt("population"), rs.getInt("elevation"),
                         rs.getString("fclass"));
-                if (verbose)
-                {
+                if (verbose) {
                     System.out.println("RESOLVED[" + ge + "]");
                 }
             }
