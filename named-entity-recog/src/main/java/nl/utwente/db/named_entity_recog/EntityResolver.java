@@ -13,14 +13,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,12 +47,12 @@ public class EntityResolver
      * For Mena: - I Changed the GeoEntity selection for names.length > 2 I
      * added a hashtag tokenizer to tokenize strings like #enschede
      */
-    public static boolean verbose = false;
+    public static boolean verbose = true;
     public static boolean isTrained = false;
-    private static final String CONFIG_FILENAME = "database.properties";
-    // private static final String TRAINING_DIRECTORY = "/home/flokstra/crf/train/";
-    //private static final String TRAINING_DIRECTORY = "/Users/flokstra/crf/train/";
-    private static final String TRAINING_DIRECTORY = "F:/Projects/neogeo/named-entity-recog/";
+
+    //private static final String TRAINING_DIRECTORY = "/home/flokstra/crf/train/";
+    private static final String TRAINING_DIRECTORY = "/Users/flokstra/crf/train/";
+    //private static final String TRAINING_DIRECTORY = "F:/Projects/neogeo/named-entity-recog/";
     
     private String lang;
     private List<Token> TokenList = null;
@@ -73,84 +71,15 @@ public class EntityResolver
         Initialize();
     }
 
-    public static Connection getGeonamesConnection()
-    {
-        String hostname = null;
-        String port = null;
-        String username = null;
-        String password = null;
-        String database = null;
-
-        Properties prop = new Properties();
-        try
-        {
-            InputStream is =(new EntityResolver(null,"nl")).getClass().getClassLoader().getResourceAsStream(CONFIG_FILENAME);
-            prop.load(is);
-            hostname = prop.getProperty("hostname");
-            port = prop.getProperty("port");
-            username = prop.getProperty("username");
-            password = prop.getProperty("password");
-            database = prop.getProperty("database");
-        }
-        catch (IOException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        try
-        {
-            Class.forName("org.postgresql.Driver");
-        }
-        catch (ClassNotFoundException e)
-        {
-            System.out.println("Where is your PostgreSQL JDBC Driver? "
-                    + "Include in your library path!");
-            e.printStackTrace();
-            return null;
-        }
-        if (verbose)
-        {
-            System.out.println("PostgreSQL JDBC Driver Registered!");
-        }
-        Connection connection = null;
-        try
-        {
-            connection = DriverManager.getConnection(
-                    "jdbc:postgresql://" + hostname + ":" + port + "/" + database, username, password);
-        }
-        catch (SQLException e)
-        {
-            System.out.println("Connection Failed! Check output console");
-            e.printStackTrace();
-            return null;
-
-        }
-        if (connection != null)
-        {
-            if (verbose)
-            {
-                System.out.println("Connected to jdbc:postgresql://" + hostname + ":" + port + "/" + database + " as \"" + username + "\"");
-
-            }
-        }
-        else
-        {
-            throw new RuntimeException("Failed to make connection!");
-        }
-        return connection;
-    }
-    // connection should also be visible in other packages
-    public static Connection geonames_conn = getGeonamesConnection();
-
-    public void refreshConnection() throws SQLException
-    {
-        geonames_conn = getGeonamesConnection();
-    }
-
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args)
+    public static void main(String[] args) {
+    	resolveSingle();
+    	// resolveFromDB();
+    }
+    
+    public static void resolveSingle()
     {
         // String TweetStr_nl = "Onderweg naar Enschede voor hopelijk een mooi feestje vanavond. #batavieren";
         //String TweetStr_nl = "Ik zit op de fiets van Enschede naar Almelo dwars door Hengelo denkend aan #Nepal.";
@@ -164,8 +93,8 @@ public class EntityResolver
         {
             // resolveEntity(TweetStr_en, "en");
             //resolveEntity(TweetStr_nl, "nl");
-            EntityResolver er = new EntityResolver(getGeonamesConnection(),"nl");
-            for (int i = 0; i < 10; i++)
+            EntityResolver er = new EntityResolver(GeoNamesDB.getConnection(),"nl");
+            for (int i = 0; i < 1; i++)
             {
                 er.resolveEntityFastTimed(TweetStr_nl);
             }
@@ -175,6 +104,27 @@ public class EntityResolver
             System.out.println("#!CAUGHT: " + e);
             e.printStackTrace();
         }
+    }
+    
+    public static void resolveFromDB()
+    {
+		try {
+			TestTweetTable ttt = new TestTweetTable( GeoNamesDB.getConnection() );
+			
+			if ( true ) {
+				ResultSet rs = ttt.startTestTweets(TestTweetTable.tttTable);
+				
+				while( rs.next() ) {
+					String tweet = rs.getString(2);
+					
+					System.out.println(tweet);
+				}
+				ttt.stopTestTweets(rs);
+			}
+		} catch (Exception e) {
+			System.out.println("#CAUGHT: "+e);
+			e.printStackTrace();
+		}
     }
 
     public Vector<NamedEntity> resolveEntityFastTimed(String TweetStr) throws SQLException
@@ -218,8 +168,8 @@ public class EntityResolver
         for (int i = 0; i < NEs.size(); i++)
         {
             NamedEntity entity = NEs.get(i);
-
-            PreparedStatement ps = geonames_conn.prepareStatement("select name,latitude,longitude,country,alternatenames,population,elevation,fclass from geoname where lower(name) = ?;");
+            
+            PreparedStatement ps = c.prepareStatement("select name,latitude,longitude,country,alternatenames,population,elevation,fclass from geoname where lower(name) = ?;");
             String candidate = entity.getMention().toLowerCase();
             ps.setString(1, candidate);
             ResultSet rs = ps.executeQuery();

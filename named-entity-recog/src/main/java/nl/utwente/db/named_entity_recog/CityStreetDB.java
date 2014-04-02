@@ -133,7 +133,7 @@ public class CityStreetDB
     {
 		try {
 		// System.out.println("CityStreetDB()");
-		CityStreetDB builder = new CityStreetDB( EntityResolver.getGeonamesConnection() );
+		CityStreetDB builder = new CityStreetDB( GeoNamesDB.getConnection() );
 		builder.buildFromFile("/Users/flokstra/Downloads/Goodies/postcodes_nl.txt");
 		} catch (Exception e) {
 			System.out.println("#CAUGHT: "+e);

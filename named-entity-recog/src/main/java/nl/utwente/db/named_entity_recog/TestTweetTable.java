@@ -54,26 +54,47 @@ public class TestTweetTable
 		");");
 	}
 	
-	public void generate() throws SQLException {
+	public void generate(String tsname, String like, int limit) throws SQLException {
 		TestTweetTable builder = new TestTweetTable( c );
 		c.setAutoCommit(false);
 		Statement st = c.createStatement();
 		st.setFetchSize(10);
-		ResultSet rs = st.executeQuery("select id,json_tweet from enai_tweet LIMIT 10000;");
+		String select = "select id,json_tweet from enai_tweet ";
+		String where = "";
+		if ( like != null && like.length() > 0 ) {
+			where = " WHERE json_tweet LIKE \'"+like+"\'";
+		}
+		ResultSet rs = st.executeQuery(select + where + " LIMIT "+limit+";");
 		builder.buildFromResultSet(rs);
 		c.setAutoCommit(true);
 	}
 	
-	public ResultSet getTweets() throws SQLException {
+	public ResultSet startTestTweets(String tsname) throws SQLException {
+		// c.setAutoCommit(false);
 		Statement st = c.createStatement();
 		st.setFetchSize(10);
-		return st.executeQuery("select tweet from tweets;");
+		return st.executeQuery("select id,tweet from "+tsname+";");
 	}
+	
+	public void stopTestTweets(ResultSet rs) throws SQLException {
+		// c.setAutoCommit(true);
+	}
+	
 	
 	public static void main(String[] args)
     {
 		try {
-			new TestTweetTable( EntityResolver.getGeonamesConnection() ).generate();
+			TestTweetTable ttt = new TestTweetTable( GeoNamesDB.getConnection() );
+			ttt.generate(tttTable,"%straat%",100);
+			
+			if ( true ) {
+				ResultSet rs = ttt.startTestTweets(tttTable);
+				
+				while( rs.next() ) {
+					System.out.println(rs.getString(2));
+				}
+				ttt.stopTestTweets(rs);
+			}
 		} catch (Exception e) {
 			System.out.println("#CAUGHT: "+e);
 			e.printStackTrace();
