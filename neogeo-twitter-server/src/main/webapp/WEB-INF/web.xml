@@ -35,7 +35,7 @@ only if the new code is made subject to such option by the copyright
 holder.
 -->
 <web-app xmlns:javaee="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
-  <javaee:display-name>UTwente DB Kick In Quest Server</javaee:display-name>
+  <javaee:display-name>UTwente DB Twitter Enrichment service</javaee:display-name>
   <javaee:description>
       UTwente DB Twitter Server
     </javaee:description>
@@ -46,6 +46,14 @@ holder.
   <servlet-mapping>
     <servlet-name>AddTweet</servlet-name>
     <url-pattern>/AddTweet</url-pattern>
+  </servlet-mapping> 
+  <servlet>
+    <servlet-name>GeoEntityFinder</servlet-name>
+    <servlet-class>nl.utwente.db.twitter.server.GeoEntityFinder</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>GeoEntityFinder</servlet-name>
+    <url-pattern>/GeoEntityFinder</url-pattern>
   </servlet-mapping>
   <session-config>
     <session-timeout>30</session-timeout>

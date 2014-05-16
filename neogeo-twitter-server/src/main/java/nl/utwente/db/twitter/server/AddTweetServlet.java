@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import nl.utwente.db.named_entity_recog.EntityResolver;
+import nl.utwente.db.named_entity_recog.GeoNamesDB;
 import nl.utwente.db.neogeo.twitter.Tweet;
 
 @MultipartConfig
@@ -23,22 +23,19 @@ public class AddTweetServlet extends HttpServlet {
 	private static final boolean respond2enai = true;
 	
     private static final long serialVersionUID = 1L;
-
-    private static Connection cached_connection = null;
     
-    private static Connection getGeonamesConnection() {	
-    	if (cached_connection == null ) {
-    		try {
-    			cached_connection = EntityResolver.geonames_conn;
-    			check_enai_tweet_table(cached_connection);
-    		} catch (SQLException e) {
-    			// WOW, troubles, cannot get to geonames db so nothing will work
-    			System.out.println("ERROR: NO DB: "+e);
-    			return null;
-    		}
-
-    	}
-    	return cached_connection;
+    private static TweetHandler tweet_handler_nl = null;
+    
+    private static TweetHandler getTweetHandler() throws SQLException {
+    	if ( tweet_handler_nl == null )
+    		tweet_handler_nl = new TweetHandler(GeoNamesDB.geoNameDBConnection(),"nl");
+    	return tweet_handler_nl;
+    }
+    
+    private static void discardTweetHandler() {
+    	GeoNamesDB.discardConnection();
+    	tweet_handler_nl = null;
+    	
     }
     
     @Override
@@ -60,10 +57,11 @@ public class AddTweetServlet extends HttpServlet {
         Tweet tweet = null;
         
         try {
+        	TweetHandler tweet_handler = getTweetHandler();
         	// TODO: check if tweeyt is valid
         	tweet = new Tweet(jsonbuff.toString());
         	
-        	Connection c = getGeonamesConnection();
+        	Connection c = GeoNamesDB.geoNameDBConnection();
         	if ( c == null ) {
         		response.sendError(500, "Unable to connect to geonames database");
             	return;
@@ -71,7 +69,7 @@ public class AddTweetServlet extends HttpServlet {
         	String enriched = null;
         	try {
         		register_enai_tweet(c,tweet.id_str(), tweet.getJson());
-        		enriched = TweetHandler.enrichTweet(c, tweet);
+        		enriched = tweet_handler.enrichTweet(tweet);
         	} catch (SQLException e) {
         		System.out.println("#!CAUGHT: "+e);
         		response.sendError(500, "Error during enrichment phase");
@@ -91,6 +89,7 @@ public class AddTweetServlet extends HttpServlet {
         } catch (Exception e) {
         	System.out.println("EXCEPTION HANDLING TWEET: "+e +",tweet="+jsonbuff);
         	response.sendError(400, "TWEET PARSE ERROR: "+e);
+        	discardTweetHandler(); // something wrong ?
         	return;
         }
         // System.out.println("TWEET: id="+tweet.id_str()+", tweet="+tweet.tweet());

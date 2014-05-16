@@ -7,13 +7,13 @@ package nl.utwente.db.named_entity_recog;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -50,8 +50,8 @@ public class EntityResolver
     public static boolean verbose = true;
     public static boolean isTrained = false;
 
-    //private static final String TRAINING_DIRECTORY = "/home/flokstra/crf/train/";
-    private static final String TRAINING_DIRECTORY = "/Users/flokstra/crf/train/";
+    private static final String TRAINING_DIRECTORY_TOMCAT = "/home/flokstra/crf/train/";
+    private static final String TRAINING_DIRECTORY_LOCAL = "/Users/flokstra/crf/train/";
     //private static final String TRAINING_DIRECTORY = "F:/Projects/neogeo/named-entity-recog/";
     
     private String lang;
@@ -83,7 +83,7 @@ public class EntityResolver
     {
         // String TweetStr_nl = "Onderweg naar Enschede voor hopelijk een mooi feestje vanavond. #batavieren";
         //String TweetStr_nl = "Ik zit op de fiets van Enschede naar Almelo dwars door Hengelo denkend aan #Nepal.";
-        String TweetStr_nl = "Ik zit op de fiets van Den Haag naar Den Bosch, door Bad Bentheim denkend aan Nepal.";
+        String TweetStr_nl = "Ik zit op de fiets van Den Haag naar Den Bosch, door Reelaan denkend aan Nepal.";
         //String TweetStr = "Campuspop:Alle Batavieren kunnen morgen voor 16 Euro kaarten kopen voor Campuspop met Anouk, Candy Dulfer, Ben Saundersenz.#batavierenrace";
         //String TweetStr = "Niks te doen dit weekend? Festival GOGBOT in Enschede (Sciencefiction, technologie, #robots) http://www.fantasymedia.nl/content/festival-gogbot-2013-enschede-sciencefiction-technologie-robots?utm_source=twitterfeed&utm_medium=twitter … http://2013.gogbot.nl";
         String TweetStr_en = "Some pictures of our show in Enschede by Paul Bergers";
@@ -93,10 +93,10 @@ public class EntityResolver
         {
             // resolveEntity(TweetStr_en, "en");
             //resolveEntity(TweetStr_nl, "nl");
-            EntityResolver er = new EntityResolver(GeoNamesDB.getConnection(),"nl");
+            EntityResolver er = new EntityResolver(GeoNamesDB.geoNameDBConnection(),"nl");
             for (int i = 0; i < 1; i++)
             {
-                er.resolveEntityFastTimed(TweetStr_nl);
+                er.resolveEntityFastTimed(TweetStr_nl, "nl");
             }
         }
         catch (SQLException e)
@@ -109,7 +109,8 @@ public class EntityResolver
     public static void resolveFromDB()
     {
 		try {
-			TestTweetTable ttt = new TestTweetTable( GeoNamesDB.getConnection() );
+			EntityResolver er = new EntityResolver(GeoNamesDB.geoNameDBConnection(),"nl");
+			TestTweetTable ttt = new TestTweetTable( GeoNamesDB.geoNameDBConnection() );
 			
 			if ( true ) {
 				ResultSet rs = ttt.startTestTweets(TestTweetTable.tttTable);
@@ -117,7 +118,7 @@ public class EntityResolver
 				while( rs.next() ) {
 					String tweet = rs.getString(2);
 					
-					System.out.println(tweet);
+					er.resolveEntityFastTimed(tweet, "nl");
 				}
 				ttt.stopTestTweets(rs);
 			}
@@ -127,10 +128,10 @@ public class EntityResolver
 		}
     }
 
-    public Vector<NamedEntity> resolveEntityFastTimed(String TweetStr) throws SQLException
+    public Vector<NamedEntity> resolveEntityFastTimed(String TweetStr, String lang) throws SQLException
     {
         long startTime = System.nanoTime();
-        Vector<NamedEntity> res = resolveEntity(TweetStr);
+        Vector<NamedEntity> res = resolveEntity(TweetStr, lang);
         long endTime = System.nanoTime();
 
         long duration = endTime - startTime;
@@ -139,8 +140,9 @@ public class EntityResolver
         return res;
     }
 
-    public Vector<NamedEntity> resolveEntity(String TweetStr) throws SQLException
+    public Vector<NamedEntity> resolveEntity(String TweetStr, String lang) throws SQLException
     {
+    	// incomplete, lang ignored
         if (verbose)
         {
             System.out.println("resolveEntity: tweet=" + TweetStr);
@@ -164,28 +166,18 @@ public class EntityResolver
         
         List<NamedEntity> NEs = new Decoder(train_corpus, test_corpus, model).decode(TokenList, TweetStr);
 
+        GeoEntityResolver ger = new GeoEntityResolver(c);
+        
+        ger.set_fclass_filter(GeoEntityResolver.filter_p);
+        ger.set_country_filter(GeoEntityResolver.filter_nl_be_de);
+        
         Vector<NamedEntity> res = new Vector<NamedEntity>();
         for (int i = 0; i < NEs.size(); i++)
         {
             NamedEntity entity = NEs.get(i);
-            
-            PreparedStatement ps = c.prepareStatement("select name,latitude,longitude,country,alternatenames,population,elevation,fclass from geoname where lower(name) = ?;");
-            String candidate = entity.getMention().toLowerCase();
-            ps.setString(1, candidate);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next())
-            {
-                GeoEntity ge = new GeoEntity(entity, rs.getDouble("latitude"),
-                        rs.getDouble("longitude"), rs.getString("country"),
-                        rs.getString("alternatenames"),
-                        rs.getInt("population"), rs.getInt("elevation"),
-                        rs.getString("fclass"));
-                if (verbose)
-                {
-                    System.out.println("RESOLVED[" + ge + "]");
-                }
-            }
 
+            ger.resolve(entity);
+            
             if (entity.isResolved())
             {
                 res.add(entity);
@@ -200,8 +192,7 @@ public class EntityResolver
         }
         return res;
     }
-    private final static String traindir = TRAINING_DIRECTORY;
-
+    
     private void PrepareTrainingFile(String lang)
     {
         try
@@ -218,13 +209,13 @@ public class EntityResolver
                 PathSource = "eng.train";
                 tagIndex = 3;
             }
-            String PathTarget = TRAINING_DIRECTORY + "crfTrain_" + lang.toLowerCase() + ".txt";
+            String PathTarget = getTrainingDirectory() + "crfTrain_" + lang.toLowerCase() + ".txt";
 
             InputStream is = null;
             String trainfile = null;
             try
             {
-                trainfile = traindir + PathSource;
+                trainfile = getTrainingDirectory() + PathSource;
                 is = new FileInputStream(trainfile);
                 if (verbose)
                 {
@@ -370,6 +361,16 @@ public class EntityResolver
         }
     }
 
+    private static String getTrainingDirectory() {
+    	FileInputStream fis;
+    	
+    	try {
+			fis = new FileInputStream(TRAINING_DIRECTORY_TOMCAT+"ned.train");
+			return TRAINING_DIRECTORY_TOMCAT;
+		} catch (FileNotFoundException e) {
+			return TRAINING_DIRECTORY_LOCAL;
+		}
+    }
     private void Initialize()
     {
         if (!isTrained)
@@ -382,7 +383,7 @@ public class EntityResolver
         TokenList = new ArrayList<Token>();
         CRFsentences = new Vector<Sentence>();
 
-        train_corpus = new Corpus(TRAINING_DIRECTORY, "crfTrain_" + lang.toLowerCase() + ".txt", true);
+        train_corpus = new Corpus(getTrainingDirectory(), "crfTrain_" + lang.toLowerCase() + ".txt", true);
         model = new CRModel_sp1(train_corpus, "CRF.model", false);    
 
         props = new Properties();

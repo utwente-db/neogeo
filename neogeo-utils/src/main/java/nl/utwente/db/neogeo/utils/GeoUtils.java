@@ -10,7 +10,7 @@ public class GeoUtils {
 
 	// Locale.getISOCountries two letter code for all countries
 	
-	static final boolean verbose = true;
+	static final boolean verbose = false;
 	
 	public static double[] geocode(String country, String address) {
 		if (country != null && country.length()==2) {
@@ -217,10 +217,63 @@ public class GeoUtils {
 			System.out.println("geo_nrg: NO RESULT");
 		return null;
 	}
+	
+	public static String[] get_street_nrg(String city, String street) {
+		if (verbose)
+			System.out.println("get_street_nrg: city=" + city +", street="+street);		
+		StringBuilder nrg_url = new StringBuilder("http://geodata.nationaalgeoregister.nl/geocoder/Geocoder?zoekterm=");
+		if ( city != null ) {
+			nrg_url.append(city);
+			nrg_url.append('+');
+		}
+		try {
+			nrg_url.append(java.net.URLEncoder.encode(street, "UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// nrg_url.append("&strict=true");
+		
+		if (verbose)
+			System.out.println("geo_nrg: nrg_url=" + nrg_url);
+		String doc = WebUtils.getContent(nrg_url.toString());
+		if (true && verbose)
+			System.out.println("geo_nrg: doc=\n" + doc);
+		if (doc == null || doc.length() == 0) {
+			if (verbose)
+				System.out.println("get_street_nrg: ERROR NO XML RESULT");
+			return null;
+		}
+		String[] street_point = XPathUtils.xpathOnString(
+				"//GeocodedAddress/Point/pos/text()", doc);
+		String[] street_mun_sd = XPathUtils.xpathOnString(
+				"//Place[@type='MunicipalitySubdivision']/text()", doc);
+		String[] street_mun = XPathUtils.xpathOnString(
+				"//Place[@type='Municipality']/text()", doc);
+		String[] street_prov = XPathUtils.xpathOnString(
+				"//Place[@type='CountrySubdivision']/text()", doc);
+		if ( (street_point.length != street_mun.length) || (street_point.length != street_mun_sd.length) || (street_point.length != street_prov.length))
+			System.err.println("#!get_street_nrg: UNEXPECTED RESULT!\n"+doc);
+		String res[] = new String[street_point.length];
+		try {
+			for(int xi=0; xi<street_point.length; xi++) {
+				res[xi] =	street_mun_sd[xi] + "@" +
+						street_mun[xi] + "@" +
+						street_prov[xi] + "@" +
+						street_point[xi];
+				// System.out.println("res["+xi+"]="+res[xi]);
+			}
+		} catch ( java.lang.ArrayIndexOutOfBoundsException e) {
+			return null;
+		}
+		return res;
+	}
 
 	public static void main(String[] argv) {
 		System.out.println("WebUtils main:");
-		String addr = encodeAddress_nrg("Enschede", "Colosseum", "101", null, "7521PP");
+		GeoUtils.get_street_nrg(null,"Kampingerhof");
+		String addr = encodeAddress_nrg("Enschede", "Lasondersingel", null, null, null);
+		// String addr = encodeAddress_nrg("Enschede", "Colosseum", "101", null, "7521PP");
 		// double geocode[] = GeoUtils.geocode("nl",addr);
 		double geocode[] = GeoUtils.get_geocode_nrg(addr,null);
 

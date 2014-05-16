@@ -84,8 +84,8 @@ public class TestTweetTable
 	public static void main(String[] args)
     {
 		try {
-			TestTweetTable ttt = new TestTweetTable( GeoNamesDB.getConnection() );
-			ttt.generate(tttTable,"%straat%",100);
+			TestTweetTable ttt = new TestTweetTable( GeoNamesDB.geoNameDBConnection() );
+			ttt.generate(tttTable,"%straat%",25);
 			
 			if ( true ) {
 				ResultSet rs = ttt.startTestTweets(tttTable);

@@ -2,6 +2,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	
+	<parent>
+		<artifactId>neogeo-parent</artifactId>
+		<groupId>nl.utwente.db</groupId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	
 	<groupId>nl.utwente.db</groupId>
 	<artifactId>neogeo-twitter-server</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
@@ -9,9 +15,9 @@
 	<name>NeoGeo Twitter Server :: Server</name>
 	<packaging>war</packaging>
 	
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
+<!-- 	<properties> -->
+<!-- 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> -->
+<!-- 	</properties> -->
 	
 	<repositories>
 	  <repository>

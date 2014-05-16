@@ -13,11 +13,11 @@ import java.util.Properties;
  */
 public class GeoNamesDB
 {
-	public static final boolean verbose = true;
+	public static final boolean verbose = false;
 	
 	private static final String CONFIG_FILENAME = "database.properties";
 	
-	public static Connection getConnection()
+	private static Connection createConnection() throws SQLException 
     {
         String hostname = null;
         String port = null;
@@ -40,6 +40,7 @@ public class GeoNamesDB
         {
             // TODO Auto-generated catch block
             e.printStackTrace();
+            throw new SQLException(""+e);
         }
         try
         {
@@ -47,28 +48,19 @@ public class GeoNamesDB
         }
         catch (ClassNotFoundException e)
         {
-            System.out.println("Where is your PostgreSQL JDBC Driver? "
+        	e.printStackTrace();
+            throw new SQLException("Where is your PostgreSQL JDBC Driver? "
                     + "Include in your library path!");
-            e.printStackTrace();
-            return null;
         }
         if (verbose)
         {
             System.out.println("PostgreSQL JDBC Driver Registered!");
         }
         Connection connection = null;
-        try
-        {
-            connection = DriverManager.getConnection(
+        
+        connection = DriverManager.getConnection(
                     "jdbc:postgresql://" + hostname + ":" + port + "/" + database, username, password);
-        }
-        catch (SQLException e)
-        {
-            System.out.println("Connection Failed! Check output console");
-            e.printStackTrace();
-            return null;
-
-        }
+      
         if (connection != null)
         {
             if (verbose)
@@ -79,16 +71,22 @@ public class GeoNamesDB
         }
         else
         {
-            throw new RuntimeException("Failed to make connection!");
+            throw new SQLException("Failed to make connection!");
         }
         return connection;
     }
-    // connection should also be visible in other packages
-    public static Connection geonames_conn = getConnection();
+	
+    private static Connection geonames_conn = null;
 
-    public void refreshConnection() throws SQLException
+    public static void discardConnection()
     {
-        geonames_conn = getConnection();
+        geonames_conn = null;
+    }
+    
+    public static Connection geoNameDBConnection() throws SQLException {
+    	if ( geonames_conn == null )
+    		geonames_conn = createConnection();
+    	return geonames_conn;
     }
 
 }

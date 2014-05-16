@@ -11,6 +11,7 @@ package nl.utwente.db.named_entity_recog;
 public abstract class ResolvedEntity
 {
     public static final char GEO_ENTITY = 'g';
+    public static final char STREET_ENTITY = 's';
     public static final char UNKNOWN_ENTITY = 'u';
 
     private NamedEntity entity;
@@ -19,7 +20,7 @@ public abstract class ResolvedEntity
     protected ResolvedEntity(NamedEntity entity, char kind)
     {
         this.entity = entity;
-	this.kind = kind;
+        this.kind = kind;
     }
 
     public char getKind()
