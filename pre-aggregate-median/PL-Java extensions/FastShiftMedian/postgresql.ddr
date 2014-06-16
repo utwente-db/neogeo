@@ -1,0 +1,31 @@
+SQLActions[] = {
+  "BEGIN INSTALL
+	CREATE FUNCTION PEGEL_MEDIAN_FASTSHIFT(varchar, bigint, bigint, int)
+	RETURNS SETOF MedianGroup_Shift
+	AS 'nl.pallett.fastshiftmedian.PegelMedian.pegel_median'
+	LANGUAGE java IMMUTABLE;
+
+	CREATE FUNCTION PEGEL_MEDIAN_FASTSHIFT(varchar, int)
+	RETURNS SETOF MedianGroup_Shift
+	AS 'nl.pallett.fastshiftmedian.PegelMedian.pegel_median'
+	LANGUAGE java IMMUTABLE;
+
+        CREATE FUNCTION KNMI_MEDIAN_FASTSHIFT(varchar, varchar, int)
+	RETURNS SETOF MedianGroup_Shift
+	AS 'nl.pallett.fastshiftmedian.KnmiMedian.knmi_median'
+	LANGUAGE java IMMUTABLE;
+
+        CREATE FUNCTION KNMI_MEDIAN_FASTSHIFT(varchar, varchar, int, int, int, int, int)
+	RETURNS SETOF MedianGroup_Shift
+	AS 'nl.pallett.fastshiftmedian.KnmiMedian.knmi_median'
+	LANGUAGE java IMMUTABLE;
+   END INSTALL",
+
+  "BEGIN REMOVE
+	DROP FUNCTION PEGEL_MEDIAN_FASTSHIFT(varchar, bigint, bigint, int);
+	DROP FUNCTION PEGEL_MEDIAN_FASTSHIFT(varchar, int);
+
+        DROP FUNCTION KNMI_MEDIAN_FASTSHIFT(varchar, varchar, int);
+        DROP FUNCTION KNMI_MEDIAN_FASTSHIFT(varchar, varchar, int, int, int, int, int);
+   END REMOVE"
+}

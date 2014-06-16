@@ -1,0 +1,44 @@
+SQLActions[] = {
+  "BEGIN INSTALL
+	CREATE FUNCTION PEGEL_MEDIAN(varchar, bigint, bigint, int)
+	RETURNS SETOF MedianGroup
+	AS 'nl.pallett.basicmedian.PegelMedian.pegel_median'
+	LANGUAGE java IMMUTABLE;
+
+	CREATE FUNCTION PEGEL_MEDIAN(varchar, int)
+	RETURNS SETOF MedianGroup
+	AS 'nl.pallett.basicmedian.PegelMedian.pegel_median'
+	LANGUAGE java IMMUTABLE;
+
+        CREATE FUNCTION KNMI_MEDIAN(varchar, varchar, int)
+	RETURNS SETOF MedianGroup
+	AS 'nl.pallett.basicmedian.KnmiMedian.knmi_median'
+	LANGUAGE java IMMUTABLE;
+
+        CREATE FUNCTION KNMI_MEDIAN(varchar, varchar, int, int, int, int, int)
+	RETURNS SETOF MedianGroup
+	AS 'nl.pallett.basicmedian.KnmiMedian.knmi_median'
+	LANGUAGE java IMMUTABLE;   
+
+        CREATE FUNCTION TWITTER_MEDIAN(varchar, varchar, int)
+	RETURNS SETOF MedianGroup
+	AS 'nl.pallett.basicmedian.TwitterMedian.twitter_median'
+	LANGUAGE java IMMUTABLE;
+
+        CREATE FUNCTION TWITTER_MEDIAN(varchar, varchar, int, int, double precision, double precision, double precision, double precision, int)
+	RETURNS SETOF MedianGroup
+	AS 'nl.pallett.basicmedian.TwitterMedian.twitter_median'
+	LANGUAGE java IMMUTABLE;    
+   END INSTALL",
+
+  "BEGIN REMOVE
+	DROP FUNCTION PEGEL_MEDIAN(varchar, bigint, bigint, int);
+	DROP FUNCTION PEGEL_MEDIAN(varchar, int);
+
+        DROP FUNCTION KNMI_MEDIAN(varchar, varchar, int);
+        DROP FUNCTION KNMI_MEDIAN(varchar, varchar, int, int, int, int, int);
+        
+        DROP FUNCTION TWITTER_MEDIAN(varchar, varchar, int);
+        DROP FUNCTION TWITTER_MEDIAN(varchar, varchar, int, int, double precision, double precision, double precision, double precision, int);
+   END REMOVE"
+}

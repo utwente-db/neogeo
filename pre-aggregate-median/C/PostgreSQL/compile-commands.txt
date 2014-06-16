@@ -1,0 +1,17 @@
+gcc -O2 -Wall -Wmissing-prototypes -Wpointer-arith -Wdeclaration-after-statement -Wendif-labels -Wformat-security -fno-strict-aliasing -fwrapv -fpic -I. -I. -I/local/home/pallet/postgresql-9.1.13/include/server -I/local/home/pallet/postgresql-9.1.13/include/internal -D_GNU_SOURCE -c -o MedianExtension.o MedianExtension_Linux.c
+
+
+gcc -O2 -Wall -Wmissing-prototypes -Wpointer-arith -Wdeclaration-after-statement -Wendif-labels -Wformat-security -fno-strict-aliasing -fwrapv -fpic -L/usr/lib64 -Wl,--as-needed -Wl,-rpath,'/usr/lib64',--enable-new-dtags  -shared -o MedianExtension.so MedianExtension.o
+
+
+
+
+Can be useful:
+
+Makefile:
+MODULES = MedianExtension
+PGXS := $(shell pg_config --pgxs)
+include $(PGXS)
+
+
+cmd -> make

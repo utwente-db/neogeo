@@ -1,0 +1,49 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>nl.pallett.fastfullwithcountmedian</groupId>
+	<artifactId>fastfullwithcountmedian</artifactId>
+	<packaging>jar</packaging>
+	<version>0.1</version>
+	<name>fastfullwithcountmedian</name>
+	<url>http://maven.apache.org</url>
+        
+
+	<dependencies>
+		<dependency>
+		  <groupId>org.postgresql</groupId>
+		  <artifactId>pljava</artifactId>
+		  <version>1.4.3</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>.</directory>
+				<includes>
+		          <include>postgresql.ddr</include>
+				</includes>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+			   <groupId>org.apache.maven.plugins</groupId>
+			   <artifactId>maven-jar-plugin</artifactId>
+			   <version>2.3.1</version>
+			   <configuration>
+				  <archive>
+					 <manifestSections>
+						<manifestSection>
+						   <name>postgresql.ddr</name> <!-- filename -->
+						   <manifestEntries>
+							  <SQLJDeploymentDescriptor>TRUE</SQLJDeploymentDescriptor>
+						   </manifestEntries>
+						</manifestSection>
+					 </manifestSections>
+				  </archive>
+			   </configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
