@@ -2,12 +2,14 @@ package nl.utwente.db.twitter.server;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import nl.utwente.db.named_entity_recog.GeoNamesDB;
 import nl.utwente.db.named_entity_recog.RequestHandler;
 
 @MultipartConfig
@@ -15,7 +17,15 @@ public class GeoEntityFinder extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
     
-    RequestHandler handler = new RequestHandler();
+    RequestHandler handler = null;
+    
+    public GeoEntityFinder() {
+		try {
+			handler = new RequestHandler(GeoNamesDB.geoNameDBConnection());
+		} catch (SQLException e) {
+			System.out.println("UNABLE TO START REQUEST HANDLER: "+e);
+		}
+    }
     
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -41,6 +51,6 @@ public class GeoEntityFinder extends HttpServlet {
             throws IOException {
         doGet(request, response);
     }
-    
+   
 }
 

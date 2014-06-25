@@ -240,87 +240,88 @@ public class NationaalRegisterStreetDB {
 		JsonGenerator jg;
 	}
 	
-	private final String area_cache_raw = "areac_raw_";
-	private final String area_cache_gb = "areac_gb_";
-	
-	public void handleCacheStart(String label, int option, double sw_lat, double sw_lon, double ne_lat, double ne_lon) throws SQLException {
-		String cache_rawname = area_cache_raw+label;
-		String cache_gbname = area_cache_gb+label;
-		
-		if ( SqlUtils.existsTable(c, csSchema, cache_rawname))
-			SqlUtils.dropTable(c, csSchema, cache_rawname);
-		if ( SqlUtils.existsTable(c, csSchema, cache_gbname))
-			SqlUtils.dropTable(c, csSchema, cache_gbname);
-		String hdr = 
-			"SELECT city,street AS name,1000 AS category, st_x(coordinates) AS lon,st_y(coordinates) AS lat,count_nl INTO " + csSchema + "." + cache_rawname+" " +
-			"FROM "+ csSchema + "." + "nrg_street " +
-			"WHERE ST_Contains(";
-		String ftr =
-			", coordinates" +
-			");";
-		PreparedStatement ps = null;
-		// INCOMPLETE: if bbox
-		ps = c.prepareStatement(
-					hdr +
-					"ST_SetSRID(" +
-						"ST_MakeBox2D(" +
-							"ST_Point(?,?), ST_Point(?,?)" +
-						"), " +
-						"4326" +
-					")" +
-					ftr
-		    );
-		ps.setDouble(1, sw_lat);
-		ps.setDouble(2, sw_lon);
-		ps.setDouble(3, ne_lat);
-		ps.setDouble(4, ne_lon);
-		
-		ps.execute();
-		
-		ps = c.prepareStatement(
-				"CREATE INDEX "+cache_rawname+"_nidx" + " ON " +  csSchema + "." + cache_rawname + " USING hash(name);"
-			);
-		ps.execute();
-		
-		//
-		//
-		//
-		
-		ps = c.prepareStatement(
-				"SELECT name,count(name) AS count_area INTO " + csSchema + "." + cache_gbname +
-				" FROM "+csSchema + "." + cache_rawname+" GROUP BY name;"
-			 );
-		ps.execute();
-		
-		ps = c.prepareStatement(
-				"CREATE INDEX "+cache_gbname+"_nidx" + " ON " +  csSchema + "." + cache_gbname + " USING hash(name);"
-			);
-		ps.execute();
-	}
-	
-	public void handleCacheEnd(String label, int option) throws SQLException {
-		// SqlUtils.dropTable(c, csSchema, area_cache_raw+label);
-		// SqlUtils.dropTable(c, csSchema, area_cache_gb+label);
-	}
-	
-	public ResultSet streetBoxCount(String label, int option, double sw_lat, double sw_lon, double ne_lat, double ne_lon) throws SQLException {
-		long startTime = System.currentTimeMillis();
-		handleCacheStart(label,option,sw_lat,sw_lon,ne_lat,ne_lon);
-		
-		PreparedStatement ps = c.prepareStatement(
-				"SELECT all_ent.name AS name,city,category,lon,lat,count_nl,count_area " +
-				"FROM " + csSchema + "." + (area_cache_raw+label) + " AS all_ent , " + csSchema + "." + (area_cache_gb+label) + " AS gb_ent " +
-				"WHERE all_ent.name = gb_ent.name;"
-		    );
-		// System.out.println("xx: "+ps);
-		
-		handleCacheEnd(label,option);
-		long elapsedTime = System.currentTimeMillis() - startTime;
-		if ( false ) 
-			System.out.println("Elapsed time: "+elapsedTime + "ms.");
-		
-		return ps.executeQuery();
-	}
+//	private final String area_cache_raw = "areac_raw_";
+//	private final String area_cache_gb = "areac_gb_";
+//	
+//	public void handleCacheStart(String label, int option, double sw_lat, double sw_lon, double ne_lat, double ne_lon) throws SQLException {
+//		String cache_rawname = area_cache_raw+label;
+//		String cache_gbname = area_cache_gb+label;
+//		
+//		if ( SqlUtils.existsTable(c, csSchema, cache_rawname))
+//			SqlUtils.dropTable(c, csSchema, cache_rawname);
+//		if ( SqlUtils.existsTable(c, csSchema, cache_gbname))
+//			SqlUtils.dropTable(c, csSchema, cache_gbname);
+//		String hdr = 
+//			"SELECT city,street AS name,1000 AS category, st_x(coordinates) AS lon,st_y(coordinates) AS lat,count_nl INTO " + csSchema + "." + cache_rawname+" " +
+//			"FROM "+ csSchema + "." + "nrg_street " +
+//			"WHERE ST_Contains(";
+//		String ftr =
+//			", coordinates" +
+//			");";
+//		PreparedStatement ps = null;
+//		// INCOMPLETE: if bbox
+//		ps = c.prepareStatement(
+//					hdr +
+//					"ST_SetSRID(" +
+//						"ST_MakeBox2D(" +
+//							"ST_Point(?,?), ST_Point(?,?)" +
+//						"), " +
+//						"4326" +
+//					")" +
+//					ftr
+//		    );
+//		System.out.println(ps.toString());
+//		ps.setDouble(1, sw_lat);
+//		ps.setDouble(2, sw_lon);
+//		ps.setDouble(3, ne_lat);
+//		ps.setDouble(4, ne_lon);
+//		
+//		ps.execute();
+//		
+//		ps = c.prepareStatement(
+//				"CREATE INDEX "+cache_rawname+"_nidx" + " ON " +  csSchema + "." + cache_rawname + " USING hash(name);"
+//			);
+//		ps.execute();
+//		
+//		//
+//		//
+//		//
+//		
+//		ps = c.prepareStatement(
+//				"SELECT name,count(name) AS count_area INTO " + csSchema + "." + cache_gbname +
+//				" FROM "+csSchema + "." + cache_rawname+" GROUP BY name;"
+//			 );
+//		ps.execute();
+//		
+//		ps = c.prepareStatement(
+//				"CREATE INDEX "+cache_gbname+"_nidx" + " ON " +  csSchema + "." + cache_gbname + " USING hash(name);"
+//			);
+//		ps.execute();
+//	}
+//	
+//	public void handleCacheEnd(String label, int option) throws SQLException {
+//		// SqlUtils.dropTable(c, csSchema, area_cache_raw+label);
+//		// SqlUtils.dropTable(c, csSchema, area_cache_gb+label);
+//	}
+//	
+//	public ResultSet streetBoxCount(String label, int option, double sw_lat, double sw_lon, double ne_lat, double ne_lon) throws SQLException {
+//		long startTime = System.currentTimeMillis();
+//		handleCacheStart(label,option,sw_lat,sw_lon,ne_lat,ne_lon);
+//		
+//		PreparedStatement ps = c.prepareStatement(
+//				"SELECT all_ent.name AS name,city,category,lon,lat,count_nl,count_area " +
+//				"FROM " + csSchema + "." + (area_cache_raw+label) + " AS all_ent , " + csSchema + "." + (area_cache_gb+label) + " AS gb_ent " +
+//				"WHERE all_ent.name = gb_ent.name;"
+//		    );
+//		System.out.println("xx: "+ps);
+//		
+//		handleCacheEnd(label,option);
+//		long elapsedTime = System.currentTimeMillis() - startTime;
+//		if ( false ) 
+//			System.out.println("Elapsed time: "+elapsedTime + "ms.");
+//		
+//		return ps.executeQuery();
+//	}
 	
 	public void bboxQuery(double sw_lon, double sw_lat, double ne_lon, double ne_lat) throws SQLException {
 		PreparedStatement ps = c.prepareStatement(
@@ -351,15 +352,15 @@ public class NationaalRegisterStreetDB {
 //				dropNrgTable(GeoNamesDB.getConnection(), csSchema,csTable);
 //				System.exit(0);
 //			}
-			NationaalRegisterStreetDB nrgStreetDB = new NationaalRegisterStreetDB( GeoNamesDB.geoNameDBConnection() );
+			// NationaalRegisterStreetDB nrgStreetDB = new NationaalRegisterStreetDB( GeoNamesDB.geoNameDBConnection() );
 			// nrgStreetDB.getStreets("");
 			// Den Helder 52.9333¡ N, 4.7500¡ E
 			// Maastricht: 50.8500¡ N, 5.6833¡ E
 			// nrgStreetDB.streetBoxCount("xxx",0,8, 47,3,54); // totalNL
 			
-			nrgStreetDB.streetBoxCount("xxx",0,6.9, 52.2167, 6.95, 52.22);
+			// nrgStreetDB.streetBoxCount("xxx",0,6.9, 52.2167, 6.95, 52.22);
 			
-		}	catch (SQLException e) {
+		}	catch (Exception e) {
 			System.out.println("CAUGHT: "+e);
 			e.printStackTrace();
 		}

@@ -7,14 +7,13 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 
+import nl.utwente.db.named_entity_recog.RequestHandler;
 import nl.utwente.db.neogeo.twitter.Tweet;
 
 public class HttpUtils {
  
 	private static final String USER_AGENT = "Mozilla/5.0";
 	
-	private static String json_req = "{ \"area\": { \"srid\": \"4326\", \"label\": \"enschede_c\", \"cache\": \"create\", \"kind\" : \"bbox\", \"bbox\": { \"sw_lon\": \"6.9\", \"sw_lat\": \"52.2167\", \"ne_lon\": \"6.95\", \"ne_lat\": \"52.22\" } }, \"entity_kind\": [ \"Street\" ], \"result_kind\": \"list\", \"format\": \"json\", \"limit\": 100 }";			
-
 	public static void main(String[] args) throws Exception {
 		String host = "farm15.ewi.utwente.nl";
 		
@@ -22,7 +21,7 @@ public class HttpUtils {
 			// postTweet("http://"+host+":8080/neogeo-twitter-server/AddTweet",
 					// exampleTweet2, "UTF-8");
 			postTweet("http://"+host+":8080/neogeo-twitter-server/GeoEntityFinder",
-					json_req, "UTF-8");
+					RequestHandler.debugRequest(), "UTF-8");
 		} else {
 			Tweet tweet = new Tweet(Tweet.exampleTweet);			
 		}
