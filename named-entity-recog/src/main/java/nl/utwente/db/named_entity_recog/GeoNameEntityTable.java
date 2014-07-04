@@ -251,11 +251,12 @@ public class GeoNameEntityTable {
 	private static void dropTable(Connection c, String schema, String table) throws SQLException {
 		try {
 			SqlUtils.execute(c,
-				"SELECT DropGeometryColumn('"+schema+"','"+table+"','coordinates');"); 
+				"SELECT DropGeometryTable('"+schema+"','"+table+"');"); 
 			} catch (SQLException e) {
 				System.out.println("IGNORE: "+e);
 			}
-		SqlUtils.dropTable(c,schema,table);
+		// SqlUtils.dropTable(c,schema,table);
+		// SELECT DropGeometryTable ('my_schema','my_spatial_table');
 	}
 	
 //	/*
