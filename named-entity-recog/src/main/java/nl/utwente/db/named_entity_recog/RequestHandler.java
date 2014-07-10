@@ -214,10 +214,20 @@ public class RequestHandler {
 	//
 	//
 	
+	private static final String create_lat_lon_json(double sw_lat, double sw_lon, double ne_lat, double ne_lon) {
+		return "\"bbox\": { \"sw_lon\": \""+sw_lon+"\", \"sw_lat\": \""+sw_lat+"\", \"ne_lon\": \""+ne_lon+"\", \"ne_lat\": \""+ne_lat+"\"";
+	}
+	
 	public static String debugRequest() {
-		// String categories = "\"All\"";
-		String categories = "\"Streets\",\"Accountants\",\"8481\"";
-		return "{ \"area\": { \"srid\": \"4326\", \"label\": \"enschede_c\", \"cache\": \"create\", \"kind\" : \"bbox\", \"bbox\": { \"sw_lon\": \"6.9\", \"sw_lat\": \"52.2167\", \"ne_lon\": \"6.95\", \"ne_lat\": \"52.22\" } }, \"entity_kind\": [ "+categories+" ], \"result_kind\": \"list\", \"format\": \"json\", \"limit\": 100 }";	
+		
+		String categories = "\"All\"";
+		// String categories = "\"Streets\",\"Accountants\",\"8481\"";
+		String bbox = create_lat_lon_json(52.2167,6.9,52.22,6.95); // Enschede center
+		double lat = 53.2;
+		double lon = 6.5;
+		double delta = 0.01;
+		bbox = create_lat_lon_json((lat-delta),(lon-delta),(lat+delta),(lon+delta)); // Groningen center
+		return "{ \"area\": { \"srid\": \"4326\", \"label\": \"enschede_c\", \"cache\": \"create\", \"kind\" : \"bbox\", "+bbox+"} }, \"entity_kind\": [ "+categories+" ], \"result_kind\": \"list\", \"format\": \"json\", \"limit\": 100 }";	
 	}
 	
 	public static void main(String[] args) {

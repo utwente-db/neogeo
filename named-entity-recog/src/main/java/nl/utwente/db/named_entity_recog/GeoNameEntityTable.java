@@ -399,4 +399,8 @@ public class GeoNameEntityTable {
 		System.out.println("xx: "+ps);
 	}
 	
+	private void update_count_nl() {
+		// UPDATE geoentity SET count_nl = gb_count FROM (select name AS gb_name, count(name) AS gb_count from geoentity group by name) AS gbtab WHERE geoentity.name = gbtab.gb_name;
+	}
+	
 }
