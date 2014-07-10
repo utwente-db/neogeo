@@ -41,7 +41,7 @@ public class BagAddrPolygon extends DefaultHandler {
 		insert_count = adres_count = 0;
 	}
 	
-	private static String convertToFileURL(String filename) {
+	private static String xconvertToFileURL(String filename) {
         String path = new File(filename).getAbsolutePath();
         if (File.separatorChar != '/') {
             path = path.replace(File.separatorChar, '/');
@@ -59,7 +59,7 @@ public class BagAddrPolygon extends DefaultHandler {
 		int d0_lb, d0_ub, d1_lb, d1_ub;
 
 		if ( false ) {
-			delta	= 500;
+			delta	= 1000;
 			d0_lb	= 250000;
 			d0_ub	= 251000;
 			d1_lb	= 475000;
@@ -255,7 +255,11 @@ public class BagAddrPolygon extends DefaultHandler {
 			if ( currentTag.equals("gid") ) {
 				gid = currentValue;
 			} else if ( currentTag.equals("identificatie") ) {
-				identificatie = currentValue;
+				if ( identificatie == null )
+					identificatie = currentValue;
+				else {
+					identificatie += currentValue;
+				}
 			} else if ( currentTag.equals("oppervlakte") ) {
 				oppervlakte = currentValue;
 			} else if ( currentTag.equals("status") ) {
@@ -263,20 +267,40 @@ public class BagAddrPolygon extends DefaultHandler {
 			} else if ( currentTag.equals("gebruiksdoel") ) {
 				status = currentValue;
 			} else if ( currentTag.equals("openbare_ruimte") ) {
-				openbare_ruimte = currentValue;
+				if ( openbare_ruimte == null )
+					openbare_ruimte = currentValue;
+				else {
+					openbare_ruimte += currentValue;
+				}
 			} else if ( currentTag.equals("huisnummer") ) {
-				huisnummer = currentValue;
+				if ( huisnummer == null )
+					huisnummer = currentValue;
+				else {
+					huisnummer += currentValue;
+				}
 			} else if ( currentTag.equals("huisletter") ) {
 				huisletter = currentValue;
 			} else if ( currentTag.equals("woonplaats") ) {
-				woonplaats = currentValue;
+				if ( woonplaats == null )
+					woonplaats = currentValue;
+				else {
+					woonplaats += currentValue;
+				}
 			} else if ( currentTag.equals("postcode") ) {
-				postcode = currentValue;
+				if ( postcode == null )
+					postcode = currentValue;
+				else {
+					postcode += currentValue;
+				}
 			} else if ( currentTag.equals("actualiteitsdatum") ) {
 				actualiteitsdatum = currentValue;
 			} else if ( currentTag.equals("pos") ) {
 				if ( in_geometrie ) {
-					geometrie = currentValue;
+					if ( geometrie == null )
+						geometrie = currentValue;
+					else {
+						geometrie += currentValue;
+					}
 					if ( sax_verbose )  LOG.println("#######GEOMETRIE="+geometrie);
 				} else 
 					throw new RuntimeException("UNEXPECTED: "+currentTag+"="+currentValue);
@@ -449,7 +473,7 @@ public class BagAddrPolygon extends DefaultHandler {
 	
 	public static void main(String[] args) {
 		try {
-			LOG = new PrintStream(new File ("/Users/flokstra/LOG.HENGELO"));
+			// LOG = new PrintStream(new File ("/Users/flokstra/LOG.HENGELO"));
 			scrape_bag_parcels();
 		}	catch (Exception e) {
 			LOG.println("CAUGHT: "+e);

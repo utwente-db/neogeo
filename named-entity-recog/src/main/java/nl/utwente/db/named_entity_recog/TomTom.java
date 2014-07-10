@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -20,16 +22,54 @@ public class TomTom {
 	
 	private GeoNameEntityTable entityDB  = null;
 	
+	private static final boolean storeInDB = false; // set to true when running real scraper
+	
 	public TomTom(Connection c) throws SQLException {
 		this.entityDB = new GeoNameEntityTable( GeoNamesDB.geoNameDBConnection() );
 	}
 	
-	public  void test() throws IOException, SQLException {
-		readRestJson("/Users/flokstra/tomtom/Restaurants50/vrt-rest-0000_0050.json");
+	public  void runTEST() throws IOException, SQLException {
+		if ( true ) {
+			// read small chunk of VRT Twente restaurants from file
+			handleReadPlacesRequest( new BufferedReader(new FileReader("/Users/flokstra/tomtom/Restaurants50/vrt-rest-0000_0050.json")) );
+		} 
+		if ( false ) {
+			// read all CRT Twente places 
+			readAllPlaces("&sw=52.0,6.2&ne=52.5,7.2","&what=Restaurants"); // VRT rest
+		}
+		if ( false ) {				
+			// read the Groningen area, places
+			double lat = 53.2;
+			double lon = 6.5;
+			double delta = 0.4;
+			readAllPlaces("&sw="+(lat-delta)+","+(lon-delta)+"&ne="+(lat+delta)+","+(lon+delta),"");
+		}
 	}
 	
-	public  void readRestJson(String fileName) throws IOException, SQLException {
-		BufferedReader br = new BufferedReader(new FileReader(fileName));
+	public  void readAllPlaces(String bbox, String what) throws IOException, SQLException {	
+		int count = 0;
+		boolean cont = true;
+		while ( cont ) {
+			int nRead = readPlacesSlice(bbox,what,count,50);
+			if ( nRead == 0 )
+				cont = false;
+			else
+				count += nRead;
+			// cont = false;
+		}
+	}
+	
+	public  int readPlacesSlice(String bbox, String what, int places2start, int places2read) throws IOException, SQLException {
+		String url_str="http://api.tomtom.com/places/search/1/place?key=aadnffgkrxfkbrhbp4mgvguz"+bbox+what+"&results="+places2read+"&start="+places2start+"&format=json&searchId=249cfb70-f2ef-11e3-8ce6-ea75e91104fd";
+		URL url = new URL(url_str);
+		// System.out.println("URL="+url_str);
+		return handleReadPlacesRequest( new BufferedReader(new InputStreamReader(url.openStream())) );
+	}
+	
+//	
+
+	private  int handleReadPlacesRequest(BufferedReader br) throws IOException, SQLException {
+		int placesRead = 0;
 		JsonReader jsonReader = Json.createReader(br);
 		JsonObject jo = jsonReader.readObject(); // incomplete, check errors
         jsonReader.close();
@@ -39,11 +79,16 @@ public class TomTom {
         System.out.println("data="+data);
         JsonObject data_main = data.getJsonObject("main");
         System.out.println("Total #requests="+data_main.getInt("totalNumberOfResults"));
+        int results = data_main.getInt("numberOfResults");
+        System.out.println("Total #results="+results);
+
+        if ( results == 0 )
+        	return 0;
+        
         JsonArray places = data.getJsonObject("places").getJsonArray("place");
+                
         for (int i=0; i<places.size(); i++) {
-        	// incomplete: [name,street,city,   ,category,category_id,lat,lon]
         	JsonObject place = places.getJsonObject(i);
-        	System.out.println("place: "+place);
         	//
         	JsonObject name = place.getJsonObject("name");
         	String name_str = name.getString("$");
@@ -76,10 +121,11 @@ public class TomTom {
         	//
         	JsonObject city = place.getJsonObject("city");
         	String city_str = city.getString("$");
-        	System.out.println("City: "+city_str);
-        	// INCOMPLETE: province
-        	// INCOMPLETE: adres/postcode
-        	//
+        	// System.out.println("City: "+city_str);
+        	JsonObject province = place.getJsonObject("province");
+        	String province_str = province.getString("$");
+        	// System.out.println("Province: "+province_str);
+        	
         	String fmaddr_str = place.getString("formattedAddress");
         	// String fmaddr_str = city.getString("$");
         	System.out.println("Full Adres: "+fmaddr_str);
@@ -88,11 +134,14 @@ public class TomTom {
         	JsonNumber lon = place.getJsonNumber("longitude");
         	System.out.println("lat/lon="+lat+"/"+lon);
         	//
-        	if ( true ) {
-        		entityDB.insertEntity(name_str, new Integer(first_category_nr).intValue(), category_str, city_str, "Overijssel", fmaddr_str, 1/*count_nl*/, lon.doubleValue(), lat.doubleValue());
+        	if ( storeInDB ) {
+        		entityDB.insertEntity(name_str, new Integer(first_category_nr).intValue(), category_str, city_str, province_str, fmaddr_str, 1/*count_nl*/, lon.doubleValue(), lat.doubleValue());
         	}
+        	placesRead++;
         }
-		
+        if ( true )
+        	System.out.println("#! read "+placesRead + " Places!");
+		return placesRead;
 	}
 	
 	private static int step = 50;
@@ -130,23 +179,6 @@ public class TomTom {
 		}
 	}
 	
-	public  void test3() throws IOException, SQLException  {	
-		int count = 0;
-		while ( count < limit ) {
-			readRestJson(restFileName(baseDir,"vrt","rest",count,step));
-			count += step;
-		}
-	}
-	
-	public  void test4() throws IOException, SQLException {	
-		int count = 0;
-		
-		while ( count < 58350 ) {
-		// while ( count < 50 ) {
-			readRestJson(restFileName(allplaceDir,"vrt","all",count,step));
-			count += step;
-		}
-	}
 	public static void url2file(String url, String fileName) throws IOException {
 		String doc = WebUtils.getContent(url);
 		if ( doc == null )
@@ -161,7 +193,7 @@ public class TomTom {
 	public static void main(String[] args) {
 		try {
 			TomTom tomtom = new TomTom( GeoNamesDB.geoNameDBConnection() );
-			tomtom.test4();
+			tomtom.runTEST();
 		}	catch (Exception e) {
 			System.out.println("CAUGHT: "+e);
 			e.printStackTrace();
