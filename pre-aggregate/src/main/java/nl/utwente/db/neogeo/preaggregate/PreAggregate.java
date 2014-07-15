@@ -12,11 +12,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
 import java.util.logging.Logger;
+import nl.utwente.db.neogeo.preaggregate.SqlUtils.DbType;
 
 public class PreAggregate {
 	private static final Logger LOGGER = Logger.getLogger("org.geotools.data.aggregation.PreAggregate");
 	
-	private final boolean gen_optimized = true;
+	private final boolean gen_optimized = false;
 
 	/*
 	 * Experiment setup variables
@@ -24,7 +25,7 @@ public class PreAggregate {
 	 */
 	public static final boolean showAxisAndKey		= true;
 	public static final boolean	doResultCorrection	= true;
-	public static final boolean	serversideStairwalk	= true;
+	public static final boolean	serversideStairwalk	= false;
 	public static final char	DEFAULT_KD			= AggrKeyDescriptor.KD_CROSSPRODUCT_LONG;
 
 	private	static final int	AGGR_BASE			= 0x01;
@@ -153,10 +154,17 @@ public class PreAggregate {
 		return indexPrefix + "d"+dim+"rf";
 	}
 
-	private String create_dimTable(String schema, int dim, int N, int levels, SqlScriptBuilder sql_build) throws SQLException {
+	private String create_dimTable(Connection c, String schema, int dim, int N, int levels, SqlScriptBuilder sql_build) throws SQLException {
 		String tableName = indexPrefix + "dim"+dim;
 
-		sql_build.add("DROP TABLE IF EXISTS " + schema + "." + tableName + ";\n");
+                if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                    if (SqlUtils.existsTable(c, schema, tableName)) {
+                        sql_build.add("DROP TABLE " + schema + "." + tableName + ";\n");
+                    }                    
+                } else {
+                    sql_build.add("DROP TABLE IF EXISTS " + schema + "." + tableName + ";\n");
+                }                
+		
 		sql_build.add("CREATE TABLE " + schema + "." + tableName + " (" + "level int," + "factor int" + ");\n");
 		int factor = 0;
 		for (int i=0; i<levels; i++) {
@@ -233,7 +241,7 @@ public class PreAggregate {
 			sql_build.addPost(SqlUtils.gen_DROP_FUNCTION(c, rangeFunName(i),axis[i].sqlType()));
 
 			// generate the dimension level/factor value table
-			dimTable[i] = create_dimTable(schema,i,axis[i].N(),axis[i].maxLevels(), sql_build);
+			dimTable[i] = create_dimTable(c, schema,i,axis[i].N(),axis[i].maxLevels(), sql_build);
 			sql_build.newLine();
 		}
 
@@ -245,13 +253,25 @@ public class PreAggregate {
 		/*
 		 * Generate the table which contains the final index
 		 */
-		String table_pa ; 
-		if ( override_name == null )
+		String table_pa; 
+                String table_pa_idx;
+		if ( override_name == null ) {
 			table_pa = schema + "." + table + PA_EXTENSION;
-		else 
+                        table_pa_idx = table + PA_EXTENSION + "_idx";
+                } else {
 			table_pa = schema + "." + override_name;
+                        table_pa_idx = override_name + "_idx";
+                }
 		sql_build.add("-- create the table containg the pre aggregate index\n");
-		sql_build.add("DROP TABLE IF EXISTS " + table_pa + ";\n");
+                
+                if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                    if (SqlUtils.existsTable(c, schema, table_pa)) {
+                        sql_build.add("DROP TABLE " + table_pa + ";\n");
+                    }
+                } else {                
+                    sql_build.add("DROP TABLE IF EXISTS " + table_pa + ";\n");
+                }
+                
 		sql_build.add(
 				"CREATE TABLE " + table_pa + " (\n" +
 				"\tckey bigint NOT NULL PRIMARY KEY,\n" + 
@@ -261,7 +281,12 @@ public class PreAggregate {
 				((aggregateMask&AGGR_MAX)!=0 ? "\tmaxAggr "+aggregateType+"\n" : "") +
 				");\n"
 		);
-		sql_build.add("CREATE INDEX ON "+table_pa+" USING HASH(ckey);\n");
+                
+                if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                    sql_build.add("CREATE INDEX " + table_pa_idx + " ON " + table_pa + " (ckey);\n");
+                } else {                
+                    sql_build.add("CREATE INDEX " + table_pa_idx + " ON " + table_pa + " USING HASH(ckey);\n");
+                }
 		sql_build.newLine();
 
 		String lfp_table = schema + "." + indexPrefix + "lfp";
@@ -296,22 +321,41 @@ public class PreAggregate {
 				sql_build.add("-- computing pa_index in one step\n");
 			}
 			String level0_table = schema + "." + indexPrefix + "level0";
-			sql_build.add("DROP TABLE IF EXISTS " + level0_table + ";\n");
+                        
+                        if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                            if (SqlUtils.existsTable(c, schema, indexPrefix + "level0")) {
+                                sql_build.add("DROP TABLE " + level0_table + ";\n");
+                            }
+                        } else {                        
+                            sql_build.add("DROP TABLE IF EXISTS " + level0_table + ";\n");
+                        }
+                        
 			//
 			sql_build.add(generate_level0(c, level0_table,
 					schema + "." + table, where, axis, aggregateColumn,
 					aggregateMask));
 			sql_build.newLine();
+                        
 			if ( i == 0 ) // drop this table only once
 				sql_build.addPost("DROP TABLE " + level0_table + ";\n");
+                        
 			String level0 = level0_table;
 
 			/*
 			 * Now generate the index levels 0 + n-1
 			 */
 			String level0_n_table = schema + "." + indexPrefix + "0_n";;
-			sql_build.add("DROP TABLE IF EXISTS " + level0_n_table + ";\n");
+                        
+                        if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                            if (SqlUtils.existsTable(c, schema, indexPrefix + "0_n")) {
+                                sql_build.add("DROP TABLE " + level0_n_table + ";\n");
+                            }
+                        } else {
+                            sql_build.add("DROP TABLE IF EXISTS " + level0_n_table + ";\n");
+                        }
+                        
 			sql_build.newLine();
+                        
 			if (i == -1) // drop this table only once
 				sql_build.addPost("DROP TABLE " + level0_n_table + ";\n");
 			if ( !gen_optimized ) {
@@ -542,9 +586,16 @@ public class PreAggregate {
 				select.append(",\n\t");
 				gb.append(',');
 			}
-			if ( gen_optimized )
+			if ( gen_optimized ) {
 				select.append("0 AS l"+i+",\n\t");
-			select.append(rangeFunName(i)+"("+axis[i].columnExpression()+") :: integer AS i"+i);
+                        }
+                        
+                        if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                            select.append("CAST(" + rangeFunName(i) + "("+axis[i].columnExpression()+") AS integer) AS i"+i);
+                        } else {                        
+                            select.append(rangeFunName(i)+"("+axis[i].columnExpression()+") :: integer AS i"+i);
+                        }
+                        
 			gb.append("i"+i);
 		}
 		//

@@ -308,10 +308,21 @@ public class DoubleAxisIndexer implements AxisIndexer {
 			return TYPE_EXPRESSION;
 		}
 		
-		public String sqlRangeFunction(Connection c, String fun) throws SQLException {
+		public String sqlRangeFunction(Connection c, String func) throws SQLException {
+                        String body = "";
+                        
+                        switch(SqlUtils.dbType(c)) {
+                            case MONETDB:
+                                body = "\tRETURN FLOOR((v - CAST(" + this.low + " AS double)) / CAST(" + this.BASEBLOCKSIZE + " AS double))" + ";\n";
+                                break;
+                            default:
+                                body = "\tRETURN FLOOR((v - " + this.low + "::double precision) / " + this.BASEBLOCKSIZE + "::double precision)" + ";\n";
+                                break;
+                        }
+
 			return SqlUtils.gen_Create_Or_Replace_Function(
-							c, fun, "v "+sqlType(), "integer",
-							"", "\tRETURN FLOOR((v - " + this.low + "::double precision) / " + this.BASEBLOCKSIZE + "::double precision)" + ";\n"
+							c, func, "v "+sqlType(), "integer",
+							"", body
 					);	
 		}
 

@@ -9,9 +9,10 @@ import java.sql.Timestamp;
 
 public class SqlUtils {
 
-	protected enum DbType {
+	public enum DbType {
 		POSTGRES, 
-		MYSQL
+		MYSQL,
+                MONETDB
 	}
 
 	protected static String databaseType(Connection c) throws SQLException {
@@ -23,21 +24,50 @@ public class SqlUtils {
 
 	protected synchronized static DbType dbType(Connection c)
 	throws SQLException {
-		if (false) return DbType.MYSQL;
 		if (c == cached_connection)
 			return cached_dbtype;
 		else {
 			String s = databaseType(c);
 
 			cached_connection = c;
-			if (s.equals("PostgreSQL"))
+			if (s.equals("PostgreSQL")) {
 				return cached_dbtype = DbType.POSTGRES;
-			else if (s.equals("MySQL"))
+                        } else if (s.equals("MySQL")) {
 				return cached_dbtype = DbType.MYSQL;
-			cached_connection = null;
-			throw new SQLException("Unknown database type: " + s);
+                        } else if (s.toLowerCase().equals("monetdb")) {
+                                return cached_dbtype = DbType.MONETDB;
+                        } else {
+                            cached_connection = null;
+                            throw new SQLException("Unknown database type: " + s);
+                        }
 		}
 	}
+        
+        public static boolean existsFunction (Connection c, String function)
+        throws SQLException {
+            boolean res;
+            
+            Statement st;
+            ResultSet rs;
+            
+            String sql = null;            
+            switch(dbType(c)) {
+                case MONETDB:
+                    sql = "SELECT COUNT(*) FROM sys.functions WHERE name = '" + function.toLowerCase() + "' LIMIT 1";                            
+                    break;
+                default:
+                    throw new UnsupportedOperationException("DbType " + dbType(c) + " not yet supported");
+            }
+            
+            st = c.createStatement();
+            rs = st.executeQuery(sql);
+            rs.next();
+            res = (rs.getInt(1) == 1);
+            rs.close();
+            st.close();
+            
+            return res;
+        }
 
 	public static boolean existsTable(Connection c, String schema, String table)
 	throws SQLException {
@@ -56,6 +86,18 @@ public class SqlUtils {
 			sql = "SELECT COUNT(*) from information_schema.Tables WHERE table_schema='"
 				+ schema + "\' AND table_name=\'" + table + "\';";
 			break;
+                case MONETDB:
+                        // schema may have been included within table name
+                        // so strip it
+                        int dot = table.indexOf(".");
+                        if (dot > -1) {
+                            table = table.substring(dot+1);
+                        }
+                    
+                        sql = "SELECT COUNT(*) FROM sys.tables AS t" +
+                              " INNER JOIN sys.schemas AS s ON t.schema_id = s.id" +
+                              " WHERE s.name = '" + schema + "' AND t.name = '" + table + "';";
+                        break;
 		}
 		st = c.createStatement();
 		rs = st.executeQuery(sql);
@@ -208,6 +250,7 @@ public class SqlUtils {
 		switch ( dbType(c) ) {
 		case POSTGRES:
 		case MYSQL:
+                case MONETDB:
 			return "CAST("+v+" as "+type+")";
 		}	
 		throw new SQLException("UNEXPECTED");
@@ -215,19 +258,22 @@ public class SqlUtils {
 	
 	public static String gen_DIV(Connection c, String l, String r) throws SQLException {
 		switch ( dbType(c) ) {
-		case POSTGRES:
+                    case POSTGRES:
 			return "DIV("+l+","+r+")";
-		case MYSQL:
+                    case MYSQL:
 			return "("+l+") div ("+r+")";
+                    case MONETDB:
+                        return l + " / " + r;
 		}	
 		throw new SQLException("UNEXPECTED");
 	}
 
 	public static String gen_MOD(Connection c, String l, String r) throws SQLException {
 		switch ( dbType(c) ) {
-		case POSTGRES:
+                    case POSTGRES:
+                    case MONETDB:
 			return "MOD("+l+","+r+")";
-		case MYSQL:
+                    case MYSQL:
 			return "("+l+") mod ("+r+")";
 		}	
 		throw new SQLException("UNEXPECTED");
@@ -235,24 +281,26 @@ public class SqlUtils {
 	
 	public static String sql_assign(Connection c, String name, String value) throws SQLException {
 		switch ( dbType(c) ) {
-		case POSTGRES:
+                    case POSTGRES:
 			return name + " := " + value;
-		case MYSQL:
+                    case MYSQL:
 			return "SET " + name + " := " + value;
+                    case MONETDB:
+                        return "SET " + name + " = " + value;
 		}
 		throw new SQLException("Unknonwn Database type");
 	}
 
 	public static String gen_Create_Or_Replace_Function(Connection c, String name, String par, String restype, String declare, String body) throws SQLException {
 		switch ( dbType(c) ) {
-		case POSTGRES:
+                    case POSTGRES:
 			return "CREATE OR REPLACE FUNCTION " + name +  "(" + par + ") RETURNS " + restype + " AS $$\n"+
 			declare +
 			"BEGIN\n"+
 			body +
 			"END\n"+
 			"$$ LANGUAGE plpgsql;\n";
-		case MYSQL:
+                    case MYSQL:
 			return	
 			"DROP FUNCTION IF EXISTS " + name + ";\n" +
 			"DELIMITER //\n" +
@@ -262,19 +310,41 @@ public class SqlUtils {
 			body +
 			"END //\n"+
 			"DELIMITER ;\n";
+                    case MONETDB:
+                        String drop = "";
+                        if (SqlUtils.existsFunction(c, name)) {
+                            drop = "DROP FUNCTION " + name + ";\n";
+                        }
+                        
+                        return
+                        drop +
+                        "CREATE FUNCTION " + name + " (" + par + ")\n" +
+                        "RETURNS " + restype + "\n" +
+                        "BEGIN\n" + 
+                        declare + 
+                        body + 
+                        "END;";
+                    default:
+                        throw new UnsupportedOperationException("Database of type " + dbType(c) + " not yet supported!");
 		}	
-		throw new SQLException("UNEXPECTED");
 	}
 
 	public static String gen_Select_INTO(Connection c, String table, String select_head, String select_tail, boolean dropfirst) throws SQLException {
+                String dropstat = "";
+                
 		switch ( dbType(c) ) {
 		case POSTGRES:
-			String dropstat = "";
 			if ( dropfirst )
 				dropstat = "DROP TABLE IF EXISTS " + table + ";\n";
 			return  dropstat + select_head +"\n"+
 			"INTO "+ table +"\n" +
 			select_tail + ";\n";
+                case MONETDB:
+                        if (dropfirst) {
+                            dropstat = "DROP TABLE " + table + ";\n";
+                        }
+                    
+                        return dropstat + "CREATE TABLE " + table + " AS " + select_head + " " + select_tail + " WITH DATA;";
 		case MYSQL:
 			return	"CREATE TABLE "+table+"\n"+
 			select_head + "\n"+
@@ -300,9 +370,10 @@ public class SqlUtils {
 	
 	public static String gen_DROP_FUNCTION(Connection c, String fun, String par_type) throws SQLException {
 		switch ( dbType(c) ) {
-		case POSTGRES:
+                    case POSTGRES:
+                    case MONETDB:
 			return  "DROP FUNCTION "+fun+"("+par_type+");\n";
-		case MYSQL:
+                    case MYSQL:
 			return  "DROP FUNCTION IF EXISTS "+fun+";\n";
 		}	
 		throw new SQLException("UNEXPECTED");

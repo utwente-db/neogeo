@@ -12,15 +12,20 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
-public class Test {
+public class Test {    
 	private static final String CONFIG_FILENAME = "database.properties";
 	private String hostname;
 	private String port;
 	private String username;
 	private String password;
 	private String database;
-
-	private void readProperties() {
+        private String schema = "public";
+        private String driverClass = "org.postgresql.Driver";
+        private String urlPrefix = "jdbc:postgresql";
+        
+        
+        
+ 	private void readProperties() {
 		Properties prop = new Properties();
 		try {
 			InputStream is =
@@ -31,32 +36,52 @@ public class Test {
 			username = prop.getProperty("username");
 			password = prop.getProperty("password");
 			database = prop.getProperty("database");
+                        
+                        if (prop.containsKey("schema")) {
+                            schema = prop.getProperty("schema");
+                        }
+                        
+                        if (prop.containsKey("driver")) {
+                            driverClass = prop.getProperty("driver");
+                        }
+                        
+                        if (prop.containsKey("url_prefix")) {
+                            urlPrefix = prop.getProperty("url_prefix");
+                        }                      
+                        
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-
-	public Connection getConnection(){
+        
+        public String getSchema () {
+            return this.schema;
+        }
+        
+	public Connection getConnection(){            
 		try {
-			Class.forName("org.postgresql.Driver");
+			Class.forName(driverClass);
 		} catch (ClassNotFoundException e) {
-			System.out.println("Where is your PostgreSQL JDBC Driver? "
+			System.out.println("Where is your JDBC Driver (" + driverClass + ")? "
 					+ "Include in your library path!");
 			e.printStackTrace();
 			return null;
 		}
-		System.out.println("PostgreSQL JDBC Driver Registered!");
+		System.out.println("JDBC Driver (" + driverClass + ") Registered!");
+                
+                // build up connection string
+                String connUrl = urlPrefix + "://" + hostname + ":" + port + "/" + database;
+                
 		Connection connection = null;
 		try {
-			connection = DriverManager.getConnection(
-					"jdbc:postgresql://"+hostname+":"+port+"/"+database, username, password);
+			connection = DriverManager.getConnection(connUrl, username, password);
 		} catch (SQLException e) {
 			System.out.println("Connection Failed! Check output console");
 			e.printStackTrace();
 			return null;
-
 		}
+                
 		if (connection != null) {
 			System.out.println("You made it, take control your database now!");
 		} else {
@@ -70,9 +95,19 @@ public class Test {
 		Test t = new Test();
 		t.readProperties();
 		Connection connection = t.getConnection();
+                
+                if (connection == null) {
+                    System.err.println("Unable to create connection object!");
+                    System.exit(1);
+                }
+                
 		// runTest_nominal( connection );
 		// setup_silo3( connection );
-		runTest_time(connection);
+		//runTest_time(connection);
+                
+                runTest2(connection, t.getSchema());
+                
+                connection.close();
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -247,19 +282,20 @@ public class Test {
 		System.out.println("#!finished");
 	}
 
-	public static void runTest2(Connection c) throws Exception {
+	public static void runTest2(Connection c, String schema) throws Exception {
 		try {
 			// new TweetConverter(c,"public","london_hav_raw",c,"public","london_hav");
 			// new TweetConverter("/Users/flokstra/twitter_sm.db",c,"public","london_hav");
 			// new TweetConverter("/Users/flokstra/uk_raw.sql",c,"public","uk");
 			//
 
-			// GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "london_hav_neogeo", null, "myAggregate", "coordinates",0 /* axis 2 split*/,200000,null);
-			GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "nl_all", null, "myAggregate", "coordinates",1 /* axis 2 split*/,200000,null);
+			GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", null, "myAggregate", "coordinates",0 /* axis 2 split*/,200000,null);
+			
+                        //GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "nl_all", null, "myAggregate", "coordinates",1 /* axis 2 split*/,200000,null);
 
 			// GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "london_hav_neogeo", "myAggregate");
 			//
-			// pa.boxQuery("count",0.18471,51.60626,0.23073,51.55534); // in the middle of havering map *correction anomaly
+			 pa.boxQuery("count",0.18471,51.60626,0.23073,51.55534); // in the middle of havering map *correction anomaly
 			// pa.boxQuery("count",-0.058,51.59,0.095,51.483); // left of havering, few tweets
 			// pa.boxQuery("count",-0.058,51.58961,0.095,51.48287); // left of havering, few tweets
 			
@@ -269,8 +305,9 @@ public class Test {
 			// pa.boxQuery3d("count",-0.058,51.58961,0.095,51.48287,new Timestamp(1319000000000L), new Timestamp(1319900000000L)); // left of havering, few tweets
 			// pa.boxQuery3d("count",0.18471,51.60626,0.23073,51.55534,new Timestamp(1319000000000L), new Timestamp(1319900000000L)); // in the middle of havering map *correction anomaly
 
-			// pa.boxQuery("count",-0.058,51.59,0.095,51.483); // left of havering, few tweets
-			pa.boxQuery("count",4.3, 51.8,4.6,52.1); // ergens bij rotterdam
+			//pa.boxQuery("count",-0.058,51.59,0.095,51.483); // left of havering, few tweets
+			//pa.boxQuery("count",4.3, 51.8,4.6,52.1); // ergens bij rotterdam
+                        
 			System.exit(0);
 			
 			double vertcells = 70;
