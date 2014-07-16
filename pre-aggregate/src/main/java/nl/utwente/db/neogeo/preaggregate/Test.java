@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
+import nl.utwente.db.neogeo.preaggregate.SqlUtils.DbType;
 
 public class Test {    
 	private static final String CONFIG_FILENAME = "database.properties";
@@ -139,14 +140,14 @@ public class Test {
 		System.out.println("#!finished");
 	}
 	
-	public static void runTest(Connection c) throws Exception {
+	public static void runTest(Connection c, String schema) throws Exception {
 		try {
 			// new TweetConverter(c,"public","london_hav_raw",c,"public","london_hav");
 			// new TweetConverter("/Users/flokstra/twitter_sm.db",c,"public","london_hav");
 			// new TweetConverter("/Users/flokstra/uk_raw.sql",c,"public","uk");
 			//
 			//GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "london_hav_neogeo", "myAggregate", "coordinates",0,200000,null);
-			GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "london_hav_neogeo", "myAggregate"); 
+			GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", "myAggregate"); 
 			Object[][] obj_range = pa.getRangeValues(c);
 			//			ResultSet rs = pa.SQLquery(PreAggregate.AGGR_COUNT, obj_range);
 			int[] range = new int[3];
@@ -290,12 +291,13 @@ public class Test {
 			//
 
 			GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", null, "myAggregate", "coordinates",0 /* axis 2 split*/,200000,null);
+                        //GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", "myAggregate"); 
 			
                         //GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "nl_all", null, "myAggregate", "coordinates",1 /* axis 2 split*/,200000,null);
 
 			// GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "london_hav_neogeo", "myAggregate");
 			//
-			 pa.boxQuery("count",0.18471,51.60626,0.23073,51.55534); // in the middle of havering map *correction anomaly
+			 //pa.boxQuery("count",0.18471,51.60626,0.23073,51.55534); // in the middle of havering map *correction anomaly
 			// pa.boxQuery("count",-0.058,51.59,0.095,51.483); // left of havering, few tweets
 			// pa.boxQuery("count",-0.058,51.58961,0.095,51.48287); // left of havering, few tweets
 			
@@ -305,7 +307,7 @@ public class Test {
 			// pa.boxQuery3d("count",-0.058,51.58961,0.095,51.48287,new Timestamp(1319000000000L), new Timestamp(1319900000000L)); // left of havering, few tweets
 			// pa.boxQuery3d("count",0.18471,51.60626,0.23073,51.55534,new Timestamp(1319000000000L), new Timestamp(1319900000000L)); // in the middle of havering map *correction anomaly
 
-			//pa.boxQuery("count",-0.058,51.59,0.095,51.483); // left of havering, few tweets
+			pa.boxQuery("count",-0.058,51.59,0.095,51.483); // left of havering, few tweets
 			//pa.boxQuery("count",4.3, 51.8,4.6,52.1); // ergens bij rotterdam
                         
 			System.exit(0);
@@ -343,17 +345,28 @@ public class Test {
 		System.out.println("#!finished");
 	}
 
-	public static void runTest3(Connection c) throws Exception {
+	public static void runTest3(Connection c, String schema) throws Exception {
 		double	DFLT_BASEBOXSIZE = 0.001;
 		short	DFLT_N = 4;
 		//GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "uk_neogeo", "myAggregate", "coordinates",-1,200000,null);
-		AggregateAxis axis[] = {
-				new MetricAxis("ST_X(coordinates)","double",""+DFLT_BASEBOXSIZE,DFLT_N),
-				// new AggregateAxis("ST_X("+point_column+")","double","-0.119","0.448",""+DFLT_BASEBOXSIZE,DFLT_N),
-				new MetricAxis("ST_Y(coordinates)","double",""+DFLT_BASEBOXSIZE,DFLT_N),
-			    new MetricAxis("time","timestamp with time zone","360000" /*=10 min*/,(short)16)
-			};
-		PreAggregate pa = new PreAggregate(c,"public", "uk_neogeo", null /*override_name*/, "myAggregate",axis,"char_length(tweet)","bigint",PreAggregate.AGGR_ALL,2,200000,null);
+                
+                AggregateAxis axis[] = null;
+                if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                    axis = new AggregateAxis[]{
+                            new MetricAxis("coordinates_x", "double", "" + DFLT_BASEBOXSIZE,DFLT_N),
+                            new MetricAxis("coordinates_y", "double", "" + DFLT_BASEBOXSIZE,DFLT_N),
+                            new MetricAxis("\"time\"", "timestamp with time zone", "360000" /*=10 min*/, (short)16)
+                    };
+                } else {                
+                    axis = new AggregateAxis[]{
+                            new MetricAxis("ST_X(coordinates)", "double", "" + DFLT_BASEBOXSIZE,DFLT_N),
+                            new MetricAxis("ST_Y(coordinates)", "double", "" + DFLT_BASEBOXSIZE,DFLT_N),
+                            new MetricAxis("time", "timestamp with time zone", "360000" /*=10 min*/, (short)16)
+                    };
+                }
+                
+		//PreAggregate pa = new PreAggregate(c,"public", "uk_neogeo", null /*override_name*/, "myAggregate",axis,"char_length(tweet)","bigint",PreAggregate.AGGR_ALL,2,200000,null);
+                PreAggregate pa = new PreAggregate(c, schema, "london_hav_neogeo", null /*override_name*/, "myAggregate", axis, "len" , "bigint", PreAggregate.AGGR_ALL, 2, 200000, null);
 
 	}
 	

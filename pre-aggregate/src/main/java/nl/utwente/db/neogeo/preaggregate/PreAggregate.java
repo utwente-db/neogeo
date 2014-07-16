@@ -17,7 +17,7 @@ import nl.utwente.db.neogeo.preaggregate.SqlUtils.DbType;
 public class PreAggregate {
 	private static final Logger LOGGER = Logger.getLogger("org.geotools.data.aggregation.PreAggregate");
 	
-	private final boolean gen_optimized = false;
+	private final boolean gen_optimized = true;
 
 	/*
 	 * Experiment setup variables
@@ -45,7 +45,7 @@ public class PreAggregate {
 
 	private static final boolean useDirect = true; // do direct texting in postgis without aggregate
 
-	public static final boolean do_assert		= true;
+	public static final boolean do_assert		= false;
 	public static final long    indexMask		= 0x00FFFFFFFFFFFFFFL; // warning, should match with levStart
 	public static final int		levStart 		= 56; // the first 8 bits
 
@@ -181,9 +181,14 @@ public class PreAggregate {
 			int i_axisToSplit, long chunkSize, Object[][] DELnewRange) throws SQLException {
 		int i;
 		String dimTable[]	 = new String[axis.length];
+                
+                // Ensure that MonetDB has the necessary additional functions
+                if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                    SqlUtils.compatMonetDb(c);
+                }
 
 		long create_time_ms = new Date().getTime();
-
+                
 		/*
 		 * First initialize and compute the aggregation axis
 		 */
@@ -232,7 +237,7 @@ public class PreAggregate {
 		 * in post_script.
 		 */
 		SqlScriptBuilder sql_build = new SqlScriptBuilder(c);
-
+                                
 		for(i=0; i<axis.length; i++) {
 			// generate the range conversion function for the dimension
 			sql_build.add(axis[i].sqlRangeFunction(c, rangeFunName(i)));
@@ -292,7 +297,15 @@ public class PreAggregate {
 		String lfp_table = schema + "." + indexPrefix + "lfp";
 		if ( gen_optimized ) {
 			sql_build.add("-- generate table with all level/factor possibilities\n");
-			sql_build.add("DROP TABLE IF EXISTS " + lfp_table + ";\n");
+                        
+                        if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                            if (SqlUtils.existsTable(c, schema, lfp_table)) {
+                                sql_build.add("DROP TABLE " + lfp_table + ";\n");
+                            }
+                        } else {                        
+                            sql_build.add("DROP TABLE IF EXISTS " + lfp_table + ";\n");
+                        }
+                        
 			gen_lfp_table(c,sql_build, lfp_table,axis,dimTable);
 			sql_build.addPost("DROP TABLE " + lfp_table + ";\n");
 		}
@@ -459,17 +472,39 @@ public class PreAggregate {
 		StringBuilder with = new StringBuilder();
 		StringBuilder select = new StringBuilder();
 		
-		with.append("WITH RECURSIVE\n");
-		for(i=0; i<axis.length; i++) {
-			if ( i > 0 )
-				with.append(",\n");
-			with.append("\t t"+i+"(level,factor) AS (\n");
-			with.append("\t\tVALUES(0,1)\n");
-			with.append("\tUNION ALL\n");
-			with.append("\t\tSELECT level+1, factor*"+axis[i].N() + " FROM t"+i+" WHERE level < "+axis[i].maxLevels()+"\n");
-			with.append("\t)");
-		}
-		with.append("\n");
+                if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                    // MonetDB does not support WITH recursive
+                    // therefore we need to create the temporary level/factor tables manually
+                    for(i=0; i<axis.length; i++) {
+                        if (SqlUtils.existsTable(c, schema, "t" + i)) {
+                            sql_build.add("DROP TABLE t" + i + ";");
+                            sql_build.newLine();
+                        }
+                        
+                        sql_build.add("CREATE TABLE t" + i + " (level int, factor int);");
+                        sql_build.newLine();
+                        
+                        for(int level=0; level <= axis[i].maxLevels(); level++) {
+                            int factor = 1 * (int)Math.pow(axis[i].N(), level);
+                            sql_build.add("INSERT INTO t" + i + " VALUES (" + level + ", " + factor + ");");
+                            sql_build.newLine();
+                        }      
+                        
+                        sql_build.newLine();
+                    }
+                } else {
+                    with.append("WITH RECURSIVE\n");
+                    for(i=0; i<axis.length; i++) {
+                            if ( i > 0 )
+                                    with.append(",\n");
+                            with.append("\t t"+i+"(level,factor) AS (\n");
+                            with.append("\t\tVALUES(0,1)\n");
+                            with.append("\tUNION ALL\n");
+                            with.append("\t\tSELECT level+1, factor*"+axis[i].N() + " FROM t"+i+" WHERE level < "+axis[i].maxLevels()+"\n");
+                            with.append("\t)");
+                    }
+                    with.append("\n");
+                }
 		
 		StringBuilder greatest = new StringBuilder();
 		greatest.append("greatest(");
@@ -523,15 +558,31 @@ public class PreAggregate {
 		for(i=0; i<axis.length; i++) {
 			where.append("\tand "+"sd"+i+".level = least(t"+i+".level, "+greatest+"-1)\n");
 		}
-		// sql_build.add("DROP TABLE IF EXISTS " + lfp_table_tmp + ";\n");
+                
+                if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                    if (SqlUtils.existsTable(c, schema, lfp_table_tmp)) {
+                        sql_build.add("DROP TABLE " + lfp_table_tmp + ";\n");
+                    }
+                } else {                
+                    sql_build.add("DROP TABLE IF EXISTS " + lfp_table_tmp + ";\n");
+                }
+                
 		String lfp_tmp = SqlUtils.gen_Select_INTO(c, 
 				lfp_table_tmp,
 				"SELECT" + select,
 				from.toString() + 
 				where,
 				false);
-		sql_build.add("DROP TABLE IF EXISTS " + lfp_table_tmp + ";\n");
-		sql_build.add(with.toString()+lfp_tmp+"\n");
+                
+                if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                    if (SqlUtils.existsTable(c, schema, lfp_table_tmp)) {
+                        sql_build.add("DROP TABLE " + lfp_table_tmp + ";\n");
+                    }
+                } else {                
+                    sql_build.add("DROP TABLE IF EXISTS " + lfp_table_tmp + ";\n");
+                }
+                
+		sql_build.add(with.toString() + lfp_tmp + "\n");
 		
 		select = new StringBuilder();
 		select.append("SELECT\t");
@@ -567,10 +618,22 @@ public class PreAggregate {
 		String lfp = SqlUtils.gen_Select_INTO(c, 
 				lfp_table,
 				select.toString(),
-				"FROM "+lfp_table_tmp,
+				"FROM " + lfp_table_tmp,
 				false);
 		sql_build.add(lfp);
-		sql_build.add("DROP TABLE IF EXISTS " + lfp_table_tmp + ";\n\n");
+                
+                sql_build.newLine();
+                
+		sql_build.add("DROP TABLE " + lfp_table_tmp + ";\n");
+                
+                if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                    for(i=0; i<axis.length; i++) {
+                        sql_build.add("DROP TABLE t" + i + ";");
+                        sql_build.newLine();
+                    }
+                }
+                
+                sql_build.newLine();
 	}
 	
 	public String generate_level0(Connection c, String level0_table, String from, String where, AggregateAxis axis[], String aggregateColumn, int aggregateMask) 
@@ -591,7 +654,7 @@ public class PreAggregate {
                         }
                         
                         if (SqlUtils.dbType(c) == DbType.MONETDB) {
-                            select.append("CAST(" + rangeFunName(i) + "("+axis[i].columnExpression()+") AS integer) AS i"+i);
+                            select.append("CAST(" + rangeFunName(i) + "(" + axis[i].columnExpression() + ") AS integer) AS i"+i);
                         } else {                        
                             select.append(rangeFunName(i)+"("+axis[i].columnExpression()+") :: integer AS i"+i);
                         }
@@ -796,7 +859,7 @@ public class PreAggregate {
 			if (axis[i].isMetric()) {
 				MetricAxis ax = (MetricAxis) axis[i];
 
-				if (true) {
+				if (false) {
 					if (!ax.exactIndex(iv_first_obj[i][RMIN]))
 						throw new SQLException(
 								"SQLquery_grid: start of first interval in dim "

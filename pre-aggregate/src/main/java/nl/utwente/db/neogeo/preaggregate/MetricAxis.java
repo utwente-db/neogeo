@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.logging.Logger;
+import nl.utwente.db.neogeo.preaggregate.SqlUtils.DbType;
 
 public class MetricAxis extends AggregateAxis {
 	
@@ -458,11 +459,20 @@ public class  TimestampAxisIndexer implements AxisIndexer {
 		public String sqlRangeFunction(Connection c, String fun) throws SQLException {
 			double base = this.low / 1000; // epoch is in seconds, not milliseconds
 			double bbs  = this.BASEBLOCKSIZE / 1000; // epoch is in seconds not milliseconds
-			return SqlUtils.gen_Create_Or_Replace_Function(
+                        
+                        if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                            return SqlUtils.gen_Create_Or_Replace_Function(
+							c, fun, "v "+sqlType(), "integer",
+							"", "\tRETURN FLOOR((UNIX_TIMESTAMP(v) - " + base + ") / " + bbs + ")" + ";\n"
+
+					);
+                        } else {
+                            return SqlUtils.gen_Create_Or_Replace_Function(
 							c, fun, "v "+sqlType(), "integer",
 							"", "\tRETURN FLOOR((EXTRACT(EPOCH FROM v) - " + base + ") / " + bbs + ")" + ";\n"
 
 					);	
+                        }
 		}
 
 		public AxisSplitDimension splitAxis(Object low, Object high, int cnt) throws RuntimeException {

@@ -62,7 +62,7 @@ public class SqlUtils {
             st = c.createStatement();
             rs = st.executeQuery(sql);
             rs.next();
-            res = (rs.getInt(1) == 1);
+            res = (rs.getInt(1) >= 1);
             rs.close();
             st.close();
             
@@ -251,19 +251,30 @@ public class SqlUtils {
 		case POSTGRES:
 		case MYSQL:
                 case MONETDB:
-			return "CAST("+v+" as "+type+")";
+			return "CAST(" + v + " AS " + type + ")";
 		}	
 		throw new SQLException("UNEXPECTED");
 	}
+        
+        public static String quoteIdentifier (Connection c, String ident) throws SQLException {
+            String res = ident;
+            
+            switch(dbType(c)) {
+                case MONETDB:
+                    res = "\"" + ident + "\"";
+                    break;
+            }
+            
+            return res;
+        }
 	
 	public static String gen_DIV(Connection c, String l, String r) throws SQLException {
 		switch ( dbType(c) ) {
                     case POSTGRES:
+                    case MONETDB:
 			return "DIV("+l+","+r+")";
                     case MYSQL:
 			return "("+l+") div ("+r+")";
-                    case MONETDB:
-                        return l + " / " + r;
 		}	
 		throw new SQLException("UNEXPECTED");
 	}
@@ -378,4 +389,76 @@ public class SqlUtils {
 		}	
 		throw new SQLException("UNEXPECTED");
 	}
+        
+        
+        /**
+         * This procedure is used to ensure MonetDB has some additional functions, which are needed and not natively implemented.
+         * 
+         * @param c
+         * @author Dennis Pallett (dennis@pallett.nl)
+         */
+        public static void compatMonetDb (Connection c) throws SQLException {
+            // only suitable for MonetDB connections
+            if (dbType(c) != DbType.MONETDB) return;
+            
+            Statement q = c.createStatement();
+            
+            // UNIX EPOCH function (used by range function of TimeStamp Axis)
+            if (existsFunction(c, "UNIX_TIMESTAMP") == false) {
+                q.execute(
+                    "CREATE FUNCTION UNIX_TIMESTAMP (conv_time timestamp)\n" +
+                    "RETURNS bigint\n" +
+                    "BEGIN\n" +
+                    "\t RETURN ((conv_time - CAST('1970-01-01 00:00:00' as timestamp)) / 1000);\n" +
+                    "END;"
+                );
+            }   
+            
+            // GREATEST function
+            if (existsFunction(c, "GREATEST") == false) {
+                q.execute(
+                    "CREATE FUNCTION GREATEST (num1 int, num2 int)\n" +
+                    "RETURNS int\n" +
+                    "BEGIN\n" +
+                    "\t	IF (num1 > num2)\n" +
+                    "\t THEN RETURN num1;\n" +
+                    "\t ELSE RETURN num2;\n" +
+                    "\t END IF;\n" +
+                    "END;"
+                );
+            }
+            
+            // LEAST function
+            if (existsFunction(c, "LEAST") == false) {
+                q.execute(
+                    "CREATE FUNCTION LEAST (num1 int, num2 int)\n" +
+                    "RETURNS int\n" +
+                    "BEGIN\n" +
+                    "\t	IF (num1 < num2)\n" +
+                    "\t THEN RETURN num1;\n" +
+                    "\t ELSE RETURN num2;\n" +
+                    "\t END IF;\n" +
+                    "END;"
+                );
+            }
+            
+            // DIV function
+            if (existsFunction(c, "DIV") == false) {
+                q.execute(
+                    "CREATE FUNCTION DIV (num1 numeric, num2 numeric)\n" +
+                    "RETURNS numeric\n" +
+                    "BEGIN\n" +
+                    "\t RETURN num1 / num2;\n" +
+                    "END;"
+                );
+                
+                q.execute(
+                    "CREATE FUNCTION DIV (num1 bigint, num2 bigint)\n" +
+                    "RETURNS bigint\n" +
+                    "BEGIN\n" +
+                    "\t	RETURN num1 / num2;\n" +
+                    "END;"
+                );
+            }
+        }
 }
