@@ -426,6 +426,30 @@ public class SqlUtils {
                     "\t END IF;\n" +
                     "END;"
                 );
+                
+                q.execute(
+                    "CREATE FUNCTION GREATEST (num1 int, num2 int, num3 int)\n" +
+                    "RETURNS INT\n" +
+                    "BEGIN\n" +
+                    "\t RETURN GREATEST(num1, GREATEST(num2, num3));\n" +
+                    "END;"
+                );
+                
+                q.execute(
+                    "CREATE FUNCTION GREATEST (num1 int, num2 int, num3 int, num4 int)\n" +
+                    "RETURNS INT\n" +
+                    "BEGIN\n" +
+                    "\t RETURN GREATEST(num1, GREATEST(num2, num3, num4));\n" +
+                    "END;"
+                );
+                
+                q.execute(
+                    "CREATE FUNCTION GREATEST (num1 int, num2 int, num3 int, num4 int, num5 int)\n" +
+                    "RETURNS INT\n" +
+                    "BEGIN\n" +
+                    "\t  RETURN GREATEST(num1, GREATEST(num2, num3, num4, num5));\n" +
+                    "END;"
+                );
             }
             
             // LEAST function

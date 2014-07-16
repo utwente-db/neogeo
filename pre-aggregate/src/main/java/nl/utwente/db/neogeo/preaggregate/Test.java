@@ -106,7 +106,7 @@ public class Test {
 		// setup_silo3( connection );
 		//runTest_time(connection);
                 
-                runTest2(connection, t.getSchema());
+                runTest(connection, t.getSchema());
                 
                 connection.close();
 	}
@@ -140,6 +140,14 @@ public class Test {
 		System.out.println("#!finished");
 	}
 	
+        public static void printObjectArray(Object[][] obj) {
+           for(int i=0; i < obj.length; i++) {
+                for(int j=0; j < obj[i].length; j++) {
+                    System.out.println("obj[" + i + "][" + j + "] = " + obj[i][j]);
+                }
+            } 
+        }
+        
 	public static void runTest(Connection c, String schema) throws Exception {
 		try {
 			// new TweetConverter(c,"public","london_hav_raw",c,"public","london_hav");
@@ -150,6 +158,12 @@ public class Test {
 			GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", "myAggregate"); 
 			Object[][] obj_range = pa.getRangeValues(c);
 			//			ResultSet rs = pa.SQLquery(PreAggregate.AGGR_COUNT, obj_range);
+                        
+                        /*
+                        printObjectArray(obj_range);
+                        System.exit(0);
+                        */                                              
+                        
 			int[] range = new int[3];
 			range[0] = 3;
 			range[1] = 4;
@@ -161,17 +175,33 @@ public class Test {
 			iv_first_obj[1][1] = ((Double)iv_first_obj[1][0])+Math.ceil((((Double)obj_range[1][1]) - ((Double)obj_range[1][0]))/4/0.001)*0.001;
 			iv_first_obj[2][0] = new Timestamp(((Double)(Math.floor(((Timestamp)obj_range[2][0]).getTime()/3600000.0)*3600000)).longValue()); 
 			iv_first_obj[2][1] = new Timestamp(((Double)(Math.ceil(((Timestamp)obj_range[2][1]).getTime()/3600000.0)*3600000)).longValue());
-			ResultSet rs = pa.SQLquery_grid(PreAggregate.AGGR_COUNT, iv_first_obj, range);
+                        
+                        /*
+                        printObjectArray(iv_first_object);
+                        System.exit(0);
+                        */
+                        
+                        ResultSet rs = null;
+                        
+                        /*
+			rs = pa.SQLquery_grid(PreAggregate.AGGR_COUNT, iv_first_obj, range);
 			while(rs.next()){
 				System.out.println(rs.getInt(1)+"|"+rs.getLong(2));
 			}
 			rs.close();
+                        
+                        System.exit(0);
+                        */ 
+                        
 			System.out.println("\n\n standard query!");
 			rs = pa.SQLquery_grid_standard(PreAggregate.AGGR_COUNT, iv_first_obj, range);
 			while(rs.next()){
 				System.out.println(rs.getInt(1)+"|"+rs.getLong(2));
 			}
 			rs.close();
+                        
+                        System.exit(0);
+                        
 			System.out.println("\n\n with splitting!");
 			int i=0;
 			for(AggregateAxis a_base : pa.getAxis()){

@@ -106,6 +106,7 @@ public class PreAggregate {
 
 	public PreAggregate(Connection c, String schema, String table, String override_name, String label, AggregateAxis axis[], String aggregateColumn, String aggregateType, int aggregateMask, int axisToSplit, long chunkSize, Object[][] newRange) 
 	throws SQLException {
+                _init(c, schema, table, label);
 		createPreAggregate(c,schema,table,override_name, label,axis,aggregateColumn,aggregateType,aggregateMask,axisToSplit,chunkSize,newRange);
 	}
 
@@ -415,6 +416,24 @@ public class PreAggregate {
 						+ " AS pa_table WHERE pa_delta.ckey = pa_table.ckey));\n");
 				sql_build.newLine();
 			}
+                        
+                        // MonetDB requires that the PA table is sorted on the primary key (ckey)
+                        // to achieve high-performance (see: https://www.monetdb.org/pipermail/users-list/2014-July/007400.html)
+                        if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                            String table_pa_temp = table_pa + "_temp";
+                            
+                            sql_build.newLine();
+                            
+                            sql_build.add("CREATE TABLE " + table_pa_temp + " AS SELECT * FROM " + table_pa + " ORDER BY ckey ASC WITH DATA;");
+                            sql_build.newLine();
+                            sql_build.add("DROP TABLE " + table_pa + ";");
+                            sql_build.newLine();
+                            sql_build.add("CREATE TABLE " + table_pa + " AS SELECT * FROM " + table_pa_temp + " WITH DATA;");
+                            sql_build.newLine();
+                            sql_build.add("DROP TABLE " + table_pa_temp + ";");
+                            sql_build.newLine();
+                        }
+                        
 			if ( false ) {
 				if ( gen_optimized )
 					sql_build.add(SqlUtils.gen_Select_INTO(c, 
@@ -477,16 +496,16 @@ public class PreAggregate {
                     // therefore we need to create the temporary level/factor tables manually
                     for(i=0; i<axis.length; i++) {
                         if (SqlUtils.existsTable(c, schema, "t" + i)) {
-                            sql_build.add("DROP TABLE t" + i + ";");
+                            sql_build.add("DROP TABLE " + schema + ".t" + i + ";");
                             sql_build.newLine();
                         }
                         
-                        sql_build.add("CREATE TABLE t" + i + " (level int, factor int);");
+                        sql_build.add("CREATE TABLE " + schema + ".t" + i + " (level int, factor int);");
                         sql_build.newLine();
                         
                         for(int level=0; level <= axis[i].maxLevels(); level++) {
                             int factor = 1 * (int)Math.pow(axis[i].N(), level);
-                            sql_build.add("INSERT INTO t" + i + " VALUES (" + level + ", " + factor + ");");
+                            sql_build.add("INSERT INTO " + schema + ".t" + i + " VALUES (" + level + ", " + factor + ");");
                             sql_build.newLine();
                         }      
                         
@@ -558,15 +577,7 @@ public class PreAggregate {
 		for(i=0; i<axis.length; i++) {
 			where.append("\tand "+"sd"+i+".level = least(t"+i+".level, "+greatest+"-1)\n");
 		}
-                
-                if (SqlUtils.dbType(c) == DbType.MONETDB) {
-                    if (SqlUtils.existsTable(c, schema, lfp_table_tmp)) {
-                        sql_build.add("DROP TABLE " + lfp_table_tmp + ";\n");
-                    }
-                } else {                
-                    sql_build.add("DROP TABLE IF EXISTS " + lfp_table_tmp + ";\n");
-                }
-                
+                                
 		String lfp_tmp = SqlUtils.gen_Select_INTO(c, 
 				lfp_table_tmp,
 				"SELECT" + select,
@@ -628,7 +639,7 @@ public class PreAggregate {
                 
                 if (SqlUtils.dbType(c) == DbType.MONETDB) {
                     for(i=0; i<axis.length; i++) {
-                        sql_build.add("DROP TABLE t" + i + ";");
+                        sql_build.add("DROP TABLE " + schema + ".t" + i + ";");
                         sql_build.newLine();
                     }
                 }
@@ -1053,33 +1064,69 @@ public class PreAggregate {
 		if ((queryAggregateMask & aggregateMask & AGGR_MAX) != 0)
 			sqlaggr.append(",max("+aggregateColumn+") AS maxAggr");
 
+                StringBuilder cols = new StringBuilder();
 		StringBuilder sqlgkey = new StringBuilder();
 		StringBuilder sqlwhere = new StringBuilder();
 		StringBuilder sqlgroupby = new StringBuilder();
 		int factor = 1;
 		for(i=axis.length-1; i>=0; i--) {
+                        String colKey = "key" + i;
+                        
 			if(i<2){
-				// coordinates				
-				sqlgkey.append("floor("+axis[i].columnExpression()+"/"+(((Double)iv_first_obj[i][1])-((Double)iv_first_obj[i][0]))+")*"+factor+"+");
-				sqlwhere.append( " and "+axis[i].columnExpression()+">="+iv_first_obj[i][0]);
+				// coordinates			
+                            
+                                // MonetDB doesn't support expressions in the GROUP BY clause
+                                // therefore these must first be separately included as additional columns
+                                if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                                    cols.append(", floor("+axis[i].columnExpression()+"/"+(((Double)iv_first_obj[i][1])-((Double)iv_first_obj[i][0]))+") AS " + colKey);
+                                    sqlgkey.append(colKey + "*" + factor + "+");
+                                    sqlgroupby.append(colKey + ",");
+                                } else {
+                                    sqlgkey.append("floor("+axis[i].columnExpression()+"/"+(((Double)iv_first_obj[i][1])-((Double)iv_first_obj[i][0]))+")*"+factor+"+");
+                                    sqlgroupby.append("floor("+axis[i].columnExpression()+"/"+(((Double)iv_first_obj[i][1])-((Double)iv_first_obj[i][0]))+"),");
+                                }
+                                
+                                sqlwhere.append( " and "+axis[i].columnExpression()+">="+iv_first_obj[i][0]);
 				sqlwhere.append( " and "+ axis[i].columnExpression()+"<="+
 					(((Double)iv_first_obj[i][0])+iv_count[i]*(((Double)iv_first_obj[i][1])-((Double)iv_first_obj[i][0]))));
-				sqlgroupby.append("floor("+axis[i].columnExpression()+"/"+(((Double)iv_first_obj[i][1])-((Double)iv_first_obj[i][0]))+"),");
 			} else {
 				// time dimension - if existent
-				sqlwhere.append( " and "+axis[i].columnExpression()+">= '"+((Timestamp)iv_first_obj[i][0])+"'::timestamp with time zone");
-				sqlwhere.append( " and "+axis[i].columnExpression()+"<= '"+
-						(((Timestamp)iv_first_obj[i][0])+"'::timestamp with time zone + ("+iv_count[i]+"*('"+((Timestamp)iv_first_obj[i][1])+"'::timestamp with time zone - '"+((Timestamp)iv_first_obj[i][0])+"'::timestamp with time zone))"));
-				if(iv_count[i]>1){
+                                sqlwhere.append( " AND " + axis[i].columnExpression() + " >= CAST('" + ((Timestamp)iv_first_obj[i][0]) + "' AS timestamp with time zone)");
+                                
+                                sqlwhere.append( " AND " + axis[i].columnExpression() + " <= CAST('" + ((Timestamp)iv_first_obj[i][0]) + "' AS timestamp with time zone) + ");
+                                
+                                if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                                    sqlwhere.append("interval '1' second * (");
+                                    sqlwhere.append(iv_count[i] + " * 0.001 * (CAST('");
+                                    sqlwhere.append(((Timestamp)iv_first_obj[i][1]));
+                                    sqlwhere.append("' AS timestamp with time zone) - CAST('");
+                                    sqlwhere.append(((Timestamp)iv_first_obj[i][0]));
+                                    sqlwhere.append("' AS timestamp with time zone)))");
+                                } else {                               
+                                    sqlwhere.append("(" + iv_count[i] + " * (CAST('" + ((Timestamp)iv_first_obj[i][1]) + "' AS timestamp with time zone) - CAST('" + 
+                                                ((Timestamp)iv_first_obj[i][0]) + "' AS timestamp with time zone)))");
+                                }                                
+				
+                                if(iv_count[i]>1){
+                                        // TODO: implement this for MonetDB as well!!
+                                        if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                                            throw new UnsupportedOperationException("Time intervals not yet supported for MonetDB");
+                                        }
+                                        
 					sqlgkey.append("floor(extract('epoch' from "+axis[i].columnExpression()+")/(extract('epoch' from '"+(((Timestamp)iv_first_obj[i][1])+"'::timestamp with time zone) - extract('epoch' from '"+((Timestamp)iv_first_obj[i][0]))+"'::timestamp with time zone)))*"+factor+"+");				
 					sqlgroupby.append("floor(extract('epoch' from "+axis[i].columnExpression()+")/(extract('epoch' from '"+(((Timestamp)iv_first_obj[i][1])+"'::timestamp with time zone) - extract('epoch' from '"+((Timestamp)iv_first_obj[i][0]))+"'::timestamp with time zone))),");
 				}
 			}
 			factor = factor*iv_count[i];
 		}
-		String sql = "SELECT "+sqlgkey.toString()+"0 as gkey"+sqlaggr+" FROM "+schema+"."+table+" WHERE true "+sqlwhere.toString()+
-						" GROUP BY "+sqlgroupby.toString();
+                
+                
+		String sql = "SELECT " + sqlgkey.toString() + "0 as gkey" + sqlaggr + cols.toString() + 
+                             " FROM " + schema + "." + table + 
+                             " WHERE true " + sqlwhere.toString()+
+                             " GROUP BY "+sqlgroupby.toString();
 		sql = sql.substring(0, sql.length()-1);
+                System.out.println(sql);
 		result = SqlUtils.execute(c, sql);
 		//
 		return result;

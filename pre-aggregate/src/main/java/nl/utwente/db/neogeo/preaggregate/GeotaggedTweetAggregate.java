@@ -23,6 +23,8 @@ public class GeotaggedTweetAggregate extends PreAggregate {
 	/*  constructor which (re)creates the aggregate */
 	public GeotaggedTweetAggregate(Connection c, String schema, String table, String override_name, String label, String point_column, int axisToSplit, long chunkSize, Object[][] newRange)
             throws SQLException {
+                super(c, schema, table, label);
+            
                 AggregateAxis x_axis = null;
                 AggregateAxis y_axis = null;
                 
