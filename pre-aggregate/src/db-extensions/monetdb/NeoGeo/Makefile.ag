@@ -1,0 +1,44 @@
+# Created by: Dennis Pallett (dennis@pallett.nl)
+
+INCLUDES = .. \
+	 ../../../include \
+	../../../common \
+	../../../storage \
+	../../../server \
+	../../../../monetdb5/modules/atoms \
+	../../../../monetdb5/modules/kernel \
+	../../../../monetdb5/mal \
+	../../../../monetdb5/modules/mal \
+	../../../../monetdb5/optimizer \
+	../../../../clients/mapilib \
+	../../../../common/options \
+	../../../../common/stream \
+	../../../../gdk
+
+lib__neogeo = {
+	MODULE
+	DIR = libdir/monetdb5
+	SOURCES = neogeo.c neogeo.h
+	LIBS = ../../../../monetdb5/tools/libmonetdb5 \
+		   ../../../../gdk/libbat
+}
+
+headers_mal = {
+	HEADERS = mal
+	DIR = libdir/monetdb5
+	SOURCES = neogeo.mal
+}
+
+headers_sql = {
+	HEADERS = sql
+	DIR = libdir/monetdb5/createdb
+	SOURCES = 81_neogeo.sql
+}
+
+headers_autoload = {
+	HEADERS = mal
+	DIR = libdir/monetdb5/autoload
+	SOURCES = 81_neogeo.mal
+}
+
+#EXTRA_DIST_DIR = Tests

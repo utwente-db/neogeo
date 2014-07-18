@@ -1,0 +1,17 @@
+# Created by Dennis Pallett (dennis@pallett.nl)
+# July, 2014
+
+module neogeo;
+
+pattern pa_grid(query:str)(
+	gkey:bat[:oid,:lng],
+	pakey:bat[:oid,:lng])
+address compute_pa_grid
+comment "Computes a complete Pre-Aggregate grid";
+
+pattern pa_grid_cell(query:str)(
+	pakey:bat[:oid,:lng])
+address compute_pa_grid_cell
+comment "Computes a single Pre-Aggregate grid cell";
+
+

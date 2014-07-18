@@ -25,7 +25,7 @@ public class PreAggregate {
 	 */
 	public static final boolean showAxisAndKey		= true;
 	public static final boolean	doResultCorrection	= true;
-	public static final boolean	serversideStairwalk	= false;
+	public static final boolean	serversideStairwalk	= true;
 	public static final char	DEFAULT_KD			= AggrKeyDescriptor.KD_CROSSPRODUCT_LONG;
 
 	private	static final int	AGGR_BASE			= 0x01;
