@@ -22,13 +22,13 @@ public class GeotaggedTweetAggregate extends PreAggregate {
 	
 	/*  constructor which (re)creates the aggregate */
 	public GeotaggedTweetAggregate(Connection c, String schema, String table, String override_name, String label, String point_column, int axisToSplit, long chunkSize, Object[][] newRange)
-            throws SQLException {
-                super(c, schema, table, label);
-            
+            throws SQLException {            
                 AggregateAxis x_axis = null;
                 AggregateAxis y_axis = null;
                 
                 DbType type = SqlUtils.dbType(c);
+                
+                // TODO: ensure coordinates column is in geometry_columns table
                 
                 if (type == DbType.MONETDB) {            
                     x_axis = new MetricAxis(point_column + "_x", "double" , "" + DFLT_BASEBOXSIZE, DFLT_N);

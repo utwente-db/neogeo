@@ -22,7 +22,7 @@ public class SqlUtils {
 	protected static Connection cached_connection = null;
 	protected static DbType	 cached_dbtype = DbType.POSTGRES;
 
-	protected synchronized static DbType dbType(Connection c)
+	public synchronized static DbType dbType(Connection c)
 	throws SQLException {
 		if (c == cached_connection)
 			return cached_dbtype;
@@ -374,6 +374,7 @@ public class SqlUtils {
 			} else
 				return o.toString();
 		case MYSQL:
+                case MONETDB:
 			return o.toString();
 		}	
 		throw new SQLException("UNEXPECTED");

@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 
 import nl.utwente.db.neogeo.preaggregate.SqlUtils;
+import nl.utwente.db.neogeo.preaggregate.SqlUtils.DbType;
 
 import org.geoserver.ows.Request;
 import org.geotools.data.Query;
@@ -27,12 +28,12 @@ import org.opengis.feature.type.Name;
 
 public class AggregationDataStore extends ContentDataStore {
 	private static final Logger LOGGER = Logger.getLogger("org.geotools.data.aggregation.AggregationDataStore");
-	public static final String LOG_QUERY = "CREATE TABLE public.pre_aggregate_logging ( id serial, "+
+	public static final String LOG_QUERY = "CREATE TABLE pre_aggregate_logging ( id serial, "+
 			"tablename text,"+
 			"label text,"+
 			"request text,"+
 			"ip text,"+ 
-			"aggregate integer,"+ 
+			"\"aggregate\" integer,"+ 
 			"low_x double precision,"+ 
 			"high_x double precision,"+ 
 			"low_y double precision,"+ 
@@ -44,15 +45,15 @@ public class AggregationDataStore extends ContentDataStore {
 			"resolution_y integer,"+
 			"resolution_time integer,"+
 			"response_time double precision,"+
-			"\"time\" timestamp with time zone,"+ 
-			"PRIMARY KEY (id)) ";
-	public static final String LOG_INSERT_QUERY = "insert into public.pre_aggregatea_logging "+
+			"\"time\" timestamp with time zone) ";
+	public static final String LOG_INSERT_QUERY = "insert into pre_aggregate_logging "+
 			"(tablename,label,request,ip,"+
 			" aggregate,low_x,high_x,low_y,high_y,"+
 			" start_time,end_time, type,"+
 			" resolution_x, resulution_y, resolution_time,"+
 			"response_time,\"time\") values ";
 
+        private DbType dbType;
 	private String hostname;
 	private int port;
 	private String username;
@@ -66,7 +67,8 @@ public class AggregationDataStore extends ContentDataStore {
 	private int mask;
 
 
-	public AggregationDataStore(String hostname, int port, String schema, String database, String username, String password, int xSize, int ySize, int timeSize, int mask){
+	public AggregationDataStore(DbType dbType, String hostname, int port, String schema, String database, String username, String password, int xSize, int ySize, int timeSize, int mask){
+                this.dbType = dbType;
 		this.hostname = hostname; 
 		this.port = port;
 		this.username = username;
@@ -77,11 +79,13 @@ public class AggregationDataStore extends ContentDataStore {
 		this.ySize = ySize;
 		this.timeSize = timeSize;
 		this.mask = mask;
-		Connection con = getConnection();
+                
+		con = getConnection();
+                
 		Statement stmt;
 		try {
 			LOGGER.severe(LOG_QUERY);
-			if(!SqlUtils.existsTable(con, "public", "pre_aggregate_logging")){
+			if(!SqlUtils.existsTable(con, schema, "pre_aggregate_logging")){
 				stmt = con.createStatement();
 				stmt.execute(LOG_QUERY);
 				stmt.close();
@@ -104,25 +108,40 @@ public class AggregationDataStore extends ContentDataStore {
 	}
 
 	private Connection _getConnection(){
+                String className = "";
+                if (dbType == DbType.POSTGRES) {
+                    className = "org.postgresql.Driver";
+                } else if (dbType == DbType.MONETDB) {
+                    className = "nl.cwi.monetdb.jdbc.MonetDriver";
+                }
+            
 		try{
-			Class.forName("org.postgresql.Driver");
+			Class.forName(className);
 		} catch(ClassNotFoundException e)
 		{
-			LOGGER.severe("Where is your PostgreSQL JDBC Driver? Include in your library path!");
+			LOGGER.severe("Where is your JDBC Driver (" + className + ")? Include in your library path!");
 			e.printStackTrace();
 			return null;
 		}
-		LOGGER.fine("PostgreSQL JDBC Driver Registered!");
+		LOGGER.fine("JDBC Driver Registered!");
 		Connection connection = null;
-		try
-		{
-			connection = DriverManager.getConnection((new StringBuilder()).append("jdbc:postgresql://").append(hostname).append(":").append(port).append("/").append(database).toString(), username, password);
+		try {
+                    StringBuilder connUrl = new StringBuilder();
+                    if (dbType == DbType.POSTGRES) {
+                        connUrl.append("jdbc:postgresql://");
+                    } else if (dbType == DbType.MONETDB) {
+                        connUrl.append("jdbc:monetdb://");
+                    }
+
+                    connUrl.append(hostname).append(":").append(port).append("/").append(database); 
+                    
+                    connection = DriverManager.getConnection(connUrl.toString(), username, password);
 		}
 		catch(SQLException e)
 		{
-			LOGGER.severe("Connection Failed! Check output console");
-			e.printStackTrace();
-			return null;
+                    LOGGER.severe("Connection Failed! Check output console");
+                    e.printStackTrace();
+                    return null;
 		}
 		if(connection == null)
 			LOGGER.severe("Failed to make connection!");
@@ -182,6 +201,10 @@ public class AggregationDataStore extends ContentDataStore {
 	public boolean hasOutputMax(int mask2){
 		return (mask & mask2 & PreAggregate.AGGR_MAX)==PreAggregate.AGGR_MAX;
 	}
+        
+        public DbType getDbType () {
+            return this.dbType;
+        }
 
 	public int getTotalCount() {
 		return xSize*ySize;
@@ -209,7 +232,7 @@ public class AggregationDataStore extends ContentDataStore {
 		String label = PreAggregate.getLabelFromTypeName(typename);
 		Connection c = getConnection();
 		// System.out.println("JF:succes connection: "+c);
-		return new PreAggregate(c,schema,tablename,label);
+		return new PreAggregate(dbType, c,schema,tablename,label);
 	}
 
 	public void logQuery(Request req, PreAggregate agg, int mask, Area a, Timestamp start_time, Timestamp end_time, int[] range, String type, double response_time) {

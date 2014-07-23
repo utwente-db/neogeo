@@ -106,8 +106,7 @@ public class PreAggregate {
 
 	public PreAggregate(Connection c, String schema, String table, String override_name, String label, AggregateAxis axis[], String aggregateColumn, String aggregateType, int aggregateMask, int axisToSplit, long chunkSize, Object[][] newRange) 
 	throws SQLException {
-                _init(c, schema, table, label);
-		createPreAggregate(c,schema,table,override_name, label,axis,aggregateColumn,aggregateType,aggregateMask,axisToSplit,chunkSize,newRange);
+        	createPreAggregate(c,schema,table,override_name, label,axis,aggregateColumn,aggregateType,aggregateMask,axisToSplit,chunkSize,newRange);
 	}
 
 	private void _init(Connection c, String schema, String table, String label)
@@ -182,6 +181,9 @@ public class PreAggregate {
 			int i_axisToSplit, long chunkSize, Object[][] DELnewRange) throws SQLException {
 		int i;
 		String dimTable[]	 = new String[axis.length];
+                
+                this.c = c;
+                this.schema = schema;
                 
                 // Ensure that MonetDB has the necessary additional functions
                 if (SqlUtils.dbType(c) == DbType.MONETDB) {
@@ -323,6 +325,19 @@ public class PreAggregate {
 			nChunks = (int) (nTuples / chunkSize) +1;
 			ro = axisToSplit.split(nChunks);
 		}
+                
+                String level0_n_table = schema + "." + indexPrefix + "0_n";
+                
+                // ensure level 0_n table namespace is available
+                if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                    if (SqlUtils.existsTable(c, schema, indexPrefix + "0_n")) {
+                        sql_build.add("DROP TABLE " + level0_n_table + ";\n");
+                    }
+                } else {
+                    sql_build.add("DROP TABLE IF EXISTS " + level0_n_table + ";\n");
+                }
+                sql_build.newLine();
+                
 		for (i = 0; i < nChunks; i++) {
 			/*
 			 * Generate the level 0 table
@@ -357,21 +372,10 @@ public class PreAggregate {
 
 			/*
 			 * Now generate the index levels 0 + n-1
-			 */
-			String level0_n_table = schema + "." + indexPrefix + "0_n";;
-                        
-                        if (SqlUtils.dbType(c) == DbType.MONETDB) {
-                            if (SqlUtils.existsTable(c, schema, indexPrefix + "0_n")) {
-                                sql_build.add("DROP TABLE " + level0_n_table + ";\n");
-                            }
-                        } else {
-                            sql_build.add("DROP TABLE IF EXISTS " + level0_n_table + ";\n");
-                        }
-                        
-			sql_build.newLine();
-                        
+			 */                                                
 			if (i == -1) // drop this table only once
 				sql_build.addPost("DROP TABLE " + level0_n_table + ";\n");
+                        
 			if ( !gen_optimized ) {
 				level0_n_table = schema + "." + indexPrefix + "0_n";
 				String level0_n = generate_level0_n(c, level0_n_table, level0,
@@ -382,6 +386,7 @@ public class PreAggregate {
 				// use the optimized strategy
 				generate_optimized(c, sql_build, level0_n_table, level0, lfp_table, axis, genKey, aggregateMask);
 			}
+                        
 			if ( nChunks == 1 ) {
 				sql_build.add("INSERT INTO " + table_pa
 						+ " (\n\tSELECT * FROM " + level0_n_table + "\n);");
@@ -397,14 +402,62 @@ public class PreAggregate {
 					add_aggr.append(",minAggr = LEAST(pa_table.minAggr,pa_delta.minAggr)");
 				if ((aggregateMask & AGGR_MAX) != 0)
 					add_aggr.append(",maxAggr = GREATEST(pa_table.maxAggr,pa_delta.maxAggr)");
-				sql_build
-				.add("UPDATE "
+                                
+                                if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                                    // unfortunately, MonetDB does not support view-based updates
+                                    // so a less efficient approach is needed
+                                    StringBuilder select = new StringBuilder("SELECT pa_table.ckey");
+                                    StringBuilder insert = new StringBuilder("INSERT INTO " + table_pa + " (SELECT ckey");
+                                    
+                                    if ((aggregateMask & AGGR_COUNT) != 0) {
+                                            select.append(", pa_table.countAggr + pa_delta.countAggr AS countAggr");
+                                            insert.append(", countAggr");
+                                    }
+                                    if ((aggregateMask & AGGR_SUM) != 0) {
+                                            select.append(", pa_table.sumAggr + pa_delta.sumAggr AS sumAggr");
+                                            insert.append(", sumAggr");
+                                    }
+                                    if ((aggregateMask & AGGR_MIN) != 0) {
+                                            select.append(", LEAST(pa_table.minAggr,pa_delta.minAggr) AS minAggr");
+                                            insert.append(", minAggr");
+                                    }
+                                    if ((aggregateMask & AGGR_MAX) != 0) {
+                                            select.append(", GREATEST(pa_table.maxAggr,pa_delta.maxAggr) AS maxAggr");
+                                            insert.append(", maxAggr");
+                                    }
+                                    
+                                    select.append(" FROM " + table_pa + " AS pa_table, ");
+                                    select.append(level0_n_table + " AS pa_delta ");
+                                    select.append(" WHERE pa_delta.ckey = pa_table.ckey");
+                                    
+                                    // insert updated-rows into temp PA table
+                                    String tmp_table = table_pa + "_tmp";
+                                    sql_build.add(SqlUtils.gen_Select_INTO(c, tmp_table, select.toString(), "", false));
+                                    sql_build.newLine();
+                                    sql_build.newLine();
+                                    
+                                    // delete rows-to-be-updated from PA table
+                                    sql_build.add("DELETE FROM " + table_pa + 
+                                                  " WHERE ckey IN (SELECT ckey FROM " + tmp_table + ");\n");
+                                    sql_build.newLine();
+                                    
+                                    // transfer updated-rows from temp table to real PA table
+                                    insert.append(" FROM " + tmp_table + ");");
+                                    
+                                    sql_build.add(insert.toString());
+                                    sql_build.newLine();
+                                    
+                                    sql_build.add("DROP TABLE " + tmp_table + ";\n");       
+                                    sql_build.newLine();
+                                } else {                                
+                                    sql_build.add("UPDATE "
 						+ table_pa
 						+ " AS pa_table \n\tSET "
 						+ add_aggr.substring(1) // remove leading ','
 						+ " \n\tFROM "
 						+ level0_n_table
 						+ " AS pa_delta WHERE pa_delta.ckey = pa_table.ckey;\n\n");
+                                }
 
 				sql_build
 				.add("INSERT INTO "
@@ -417,23 +470,8 @@ public class PreAggregate {
 				sql_build.newLine();
 			}
                         
-                        // MonetDB requires that the PA table is sorted on the primary key (ckey)
-                        // to achieve high-performance (see: https://www.monetdb.org/pipermail/users-list/2014-July/007400.html)
-                        if (SqlUtils.dbType(c) == DbType.MONETDB) {
-                            String table_pa_temp = table_pa + "_temp";
-                            
-                            sql_build.newLine();
-                            
-                            sql_build.add("CREATE TABLE " + table_pa_temp + " AS SELECT * FROM " + table_pa + " ORDER BY ckey ASC WITH DATA;");
-                            sql_build.newLine();
-                            sql_build.add("DROP TABLE " + table_pa + ";");
-                            sql_build.newLine();
-                            sql_build.add("CREATE TABLE " + table_pa + " AS SELECT * FROM " + table_pa_temp + " WITH DATA;");
-                            sql_build.newLine();
-                            sql_build.add("DROP TABLE " + table_pa_temp + ";");
-                            sql_build.newLine();
-                        }
-                        
+                        sql_build.add("DROP TABLE " + level0_n_table + ";\n");
+                                                
 			if ( false ) {
 				if ( gen_optimized )
 					sql_build.add(SqlUtils.gen_Select_INTO(c, 
@@ -443,6 +481,23 @@ public class PreAggregate {
 							"pa_org", "SELECT *", "FROM " + table_pa, false));
 			}
 		}
+                
+                // MonetDB requires that the PA table is sorted on the primary key (ckey)
+                // to achieve high-performance (see: https://www.monetdb.org/pipermail/users-list/2014-July/007400.html)
+                if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                    String table_pa_temp = table_pa + "_temp";
+
+                    sql_build.newLine();
+
+                    sql_build.add("CREATE TABLE " + table_pa_temp + " AS SELECT * FROM " + table_pa + " ORDER BY ckey ASC WITH DATA;");
+                    sql_build.newLine();
+                    sql_build.add("DROP TABLE " + table_pa + ";");
+                    sql_build.newLine();
+                    sql_build.add("CREATE TABLE " + table_pa + " AS SELECT * FROM " + table_pa_temp + " WITH DATA;");
+                    sql_build.newLine();
+                    sql_build.add("DROP TABLE " + table_pa_temp + ";");
+                    sql_build.newLine();
+                }
 
 		if ( true ) {
 			System.out.println("\n#! SCRIPT:\n"+sql_build.getScript());

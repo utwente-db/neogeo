@@ -22,6 +22,7 @@ import nl.utwente.db.neogeo.preaggregate.MetricAxis.TimestampAxisIndexer;
 import nl.utwente.db.neogeo.preaggregate.NominalAxis;
 import nl.utwente.db.neogeo.preaggregate.NominalGeoTaggedTweetAggregate;
 import nl.utwente.db.neogeo.preaggregate.SqlUtils;
+import nl.utwente.db.neogeo.preaggregate.SqlUtils.DbType;
 
 import org.geotools.data.store.ContentEntry;
 import org.geotools.referencing.CRS;
@@ -44,14 +45,15 @@ nl.utwente.db.neogeo.preaggregate.PreAggregate {
 	put(DoubleAxisIndexer.TYPE_EXPRESSION,Double.class.getCanonicalName());
 	put(TimestampAxisIndexer.TYPE_EXPRESSION, Timestamp.class.getCanonicalName());}};
 
-	private static final String NATIVE_SRS_QUERY = "SELECT ST_SRID(COLUMN) FROM TABLE limit 1";
 	// first ? is the string tablename+"_"+label
-	private static final String GEOMETRY_COLUMN_QUERY = "SELECT tablename, substr(columnexpression,6,length(columnexpression)-6) FROM pre_aggregate_axis where tablename || '___' ||label=? and substr(columnexpression,1,4)='ST_X'";
+	
 	//	private static final String BOUNDS_QUERY = "SELECT tablename, substr(columnexpression,1,4), low, high FROM pre_aggregate_axis where tablename || '___' ||label=? and substr(columnexpression,1,3)='ST_' order by columnexpression";
 
 	HashMap<String, AggregateAxis> map = new HashMap<String, AggregateAxis>();
 
 	private int crsNumber = -1;
+        
+        protected DbType dbType;
 
 
 	private static String detectNominal(String t) {
@@ -63,12 +65,15 @@ nl.utwente.db.neogeo.preaggregate.PreAggregate {
 		return t;
 	}
 	
-	public PreAggregate(Connection c, String schema, String table, String label) throws SQLException{
+	public PreAggregate(DbType dbType, Connection c, String schema, String table, String label) throws SQLException{
 		super(c,schema,detectNominal(table),label);
+                
+                this.dbType = dbType;
+                
 		for(AggregateAxis a : axis){
-			if(a.columnExpression().startsWith("ST_X")){
+			if(a.columnExpression().startsWith("ST_X") || a.columnExpression().endsWith(("_x"))){
 				map.put("x", a);
-			} else if(a.columnExpression().startsWith("ST_Y")){
+			} else if(a.columnExpression().startsWith("ST_Y") || a.columnExpression().endsWith("_y")){
 				map.put("y", a);
 			} else if(a.sqlType().equals(TimestampAxisIndexer.TYPE_EXPRESSION)){
 				map.put("time", a);	
@@ -86,13 +91,21 @@ nl.utwente.db.neogeo.preaggregate.PreAggregate {
 	public long[] getTimeBounds(){
 		long[] ret = new long[2];
 		MetricAxis a = getTimeAxis();
-		ret[0] = ((Timestamp) a.low()).getTime();
-		ret[1] = ((Timestamp) a.high()).getTime();
+                
+                if (a == null) {
+                    ret[0] = -1;
+                    ret[1] = -1;
+                } else {                
+                    ret[0] = ((Timestamp) a.low()).getTime();
+                    ret[1] = ((Timestamp) a.high()).getTime();
+                }
+                
 		return ret;
 	}
 
 	static public List<String> availablePreAggregates(Connection c, String schema) throws SQLException{
 		if (!SqlUtils.existsTable(c, schema, PreAggregate.aggregateRepositoryName)) return null;
+                
 		String query = "select tablename,label from "+aggregateRepositoryName+";";
 		ResultSet rs = SqlUtils.execute(c,query);
 		Vector<String> ret = new Vector<String>();
@@ -142,14 +155,32 @@ nl.utwente.db.neogeo.preaggregate.PreAggregate {
 
 	public int getCRSNumber(ContentEntry entry) {
 		int ret = 0;
+                               
+                String GEOMETRY_COLUMN_QUERY = ""; 
+                String NATIVE_SRS_QUERY = "";
+                if (dbType == DbType.POSTGRES) {
+                    GEOMETRY_COLUMN_QUERY = "SELECT tablename, substr(columnexpression,6,length(columnexpression)-6) " +
+                                            "FROM pre_aggregate_axis WHERE tablename || '___' ||label=? AND substr(columnexpression,1,4)='ST_X'";
+                    
+                    NATIVE_SRS_QUERY = "SELECT ST_SRID(COLUMN) FROM TABLE LIMIT 1";
+                } else if (dbType == DbType.MONETDB) {
+                    GEOMETRY_COLUMN_QUERY = "SELECT tablename, SUBSTRING(columnexpression, 0, LENGTH(columnexpression)-2) " +
+                                            "FROM pre_aggregate_axis " +
+                                            "WHERE tablename || '___' ||label=? AND SUBSTRING(columnexpression, LENGTH(columnexpression)-1) = '_x';";
+                    
+                    NATIVE_SRS_QUERY = "SELECT srid FROM geometry_columns WHERE table_name = ? AND geometry_column = ?";
+                } else {
+                    throw new UnsupportedOperationException("Database type " + dbType + " not yet supported");
+                }
+                                                
 		String typename = entry.getTypeName();
 		typename = typename.substring((NAME+"_").length());
 		PreparedStatement stmt1;
 		Connection con = ((AggregationDataStore)entry.getDataStore()).getConnection();
-		try {
+		try {                    
 			stmt1 = con.prepareStatement(GEOMETRY_COLUMN_QUERY);
 			stmt1.setString(1, typename);
-			LOGGER.finest("geometry column query:"+stmt1.toString());
+			LOGGER.finest("geometry column query:"+stmt1.toString());                        
 			stmt1.execute();
 			ResultSet rs1 = stmt1.getResultSet();
 			String tablename = "";		
@@ -159,13 +190,24 @@ nl.utwente.db.neogeo.preaggregate.PreAggregate {
 				locColumn = rs1.getString(2);
 			}
 			rs1.close();
-			Statement stmt2;
-			try {
-				String query = NATIVE_SRS_QUERY.replaceFirst("COLUMN", locColumn).
-				replaceFirst("TABLE", tablename);
-				stmt2 = con.createStatement();			
+                        
+			PreparedStatement stmt2;
+			try {   
+                                String query = NATIVE_SRS_QUERY;
+                                if (dbType == DbType.POSTGRES) {   
+                                    query = query.replaceFirst("COLUMN", locColumn).replaceFirst("TABLE", tablename);
+                                }                            
+                                                                   
+				stmt2 = con.prepareStatement(query);
+                                
+                                if (dbType == DbType.MONETDB) {
+                                    stmt2.setString(1, tablename);
+                                    stmt2.setString(2, locColumn);
+                                }
+                                
 				LOGGER.finest("NATIVE SRS query:"+stmt2.toString());
-				stmt2.execute(query);
+				stmt2.execute();
+                                
 				ResultSet rs2 = stmt2.getResultSet();
 				while(rs2.next()){
 					ret = rs2.getInt(1);

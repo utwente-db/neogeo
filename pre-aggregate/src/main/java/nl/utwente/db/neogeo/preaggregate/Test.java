@@ -156,7 +156,9 @@ public class Test {
 			//
 
                         //GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", null, "myAggregate", "coordinates",0 /* axis 2 split*/,200000,null);
-			GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", "myAggregate"); 
+			//GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", "myAggregate"); 
+                    
+                        GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "uk_neogeo", "myAggregate"); 
                         
 			Object[][] obj_range = pa.getRangeValues(c);
 			//			ResultSet rs = pa.SQLquery(PreAggregate.AGGR_COUNT, obj_range);
@@ -340,7 +342,11 @@ public class Test {
 			//
 
 			//GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", null, "myAggregate", "coordinates",0 /* axis 2 split*/,200000,null);
-                        GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", "myAggregate"); 
+                        //GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", "myAggregate"); 
+                        
+                        //GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "uk_neogeo", null, "myAggregate", "coordinates",0 /* axis 2 split*/,200000,null);
+                        GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "uk_neogeo", "myAggregate");
+                        
 			
                         //GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "nl_all", null, "myAggregate", "coordinates",1 /* axis 2 split*/,200000,null);
 
@@ -351,12 +357,12 @@ public class Test {
 			// pa.boxQuery("count",-0.058,51.58961,0.095,51.48287); // left of havering, few tweets
 			
 			// pa.boxQuery("count",-0.38326,51.62780,0.14554,51.39572); // a big london query
-			// pa.boxQuery("count",-8.4,60,1.9,49); // the entire UK query
+			pa.boxQuery("count",-8.4,60,1.9,49); // the entire UK query
 
 			// pa.boxQuery3d("count",-0.058,51.58961,0.095,51.48287,new Timestamp(1319000000000L), new Timestamp(1319900000000L)); // left of havering, few tweets
 			// pa.boxQuery3d("count",0.18471,51.60626,0.23073,51.55534,new Timestamp(1319000000000L), new Timestamp(1319900000000L)); // in the middle of havering map *correction anomaly
 
-			pa.boxQuery("count",-0.058,51.59,0.095,51.483); // left of havering, few tweets
+			//pa.boxQuery("count",-0.058,51.59,0.095,51.483); // left of havering, few tweets
 			//pa.boxQuery("count",4.3, 51.8,4.6,52.1); // ergens bij rotterdam
                         
 			System.exit(0);
