@@ -155,10 +155,10 @@ public class Test {
 			// new TweetConverter("/Users/flokstra/uk_raw.sql",c,"public","uk");
 			//
 
-                        //GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", null, "myAggregate", "coordinates",0 /* axis 2 split*/,200000,null);
+                        GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", null, "myAggregate", "coordinates",0 /* axis 2 split*/,200000,null);
 			//GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", "myAggregate"); 
                     
-                        GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "uk_neogeo", "myAggregate"); 
+                        //GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "uk_neogeo", "myAggregate"); 
                         
 			Object[][] obj_range = pa.getRangeValues(c);
 			//			ResultSet rs = pa.SQLquery(PreAggregate.AGGR_COUNT, obj_range);
