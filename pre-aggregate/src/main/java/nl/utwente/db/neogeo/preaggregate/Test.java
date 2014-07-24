@@ -106,7 +106,7 @@ public class Test {
 		// setup_silo3( connection );
 		//runTest_time(connection);
                 
-                runTest2(connection, t.getSchema());
+                runTest(connection, t.getSchema());
                 
                 connection.close();
 	}

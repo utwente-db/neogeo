@@ -327,6 +327,7 @@ public class PreAggregate {
 		}
                 
                 String level0_n_table = schema + "." + indexPrefix + "0_n";
+                String level0_table = schema + "." + indexPrefix + "level0";
                 
                 // ensure level 0_n table namespace is available
                 if (SqlUtils.dbType(c) == DbType.MONETDB) {
@@ -335,6 +336,16 @@ public class PreAggregate {
                     }
                 } else {
                     sql_build.add("DROP TABLE IF EXISTS " + level0_n_table + ";\n");
+                }
+                sql_build.newLine();
+                
+                // ensure level0 table namespace is available
+                if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                    if (SqlUtils.existsTable(c, schema, indexPrefix + "level0")) {
+                        sql_build.add("DROP TABLE " + level0_table + ";\n");
+                    }
+                } else {
+                    sql_build.add("DROP TABLE IF EXISTS " + level0_table + ";\n");
                 }
                 sql_build.newLine();
                 
@@ -349,24 +360,15 @@ public class PreAggregate {
 			} else {
 				sql_build.add("-- computing pa_index in one step\n");
 			}
-			String level0_table = schema + "." + indexPrefix + "level0";
-                        
-                        if (SqlUtils.dbType(c) == DbType.MONETDB) {
-                            if (SqlUtils.existsTable(c, schema, indexPrefix + "level0")) {
-                                sql_build.add("DROP TABLE " + level0_table + ";\n");
-                            }
-                        } else {                        
-                            sql_build.add("DROP TABLE IF EXISTS " + level0_table + ";\n");
-                        }
-                        
+			                        
 			//
 			sql_build.add(generate_level0(c, level0_table,
 					schema + "." + table, where, axis, aggregateColumn,
 					aggregateMask));
 			sql_build.newLine();
                         
-			if ( i == 0 ) // drop this table only once
-				sql_build.addPost("DROP TABLE " + level0_table + ";\n");
+			//if ( i == 0 ) // drop this table only once
+				//sql_build.addPost("DROP TABLE " + level0_table + ";\n");
                         
 			String level0 = level0_table;
 
@@ -470,6 +472,7 @@ public class PreAggregate {
 				sql_build.newLine();
 			}
                         
+                        sql_build.add("DROP TABLE " + level0_table + ";\n");
                         sql_build.add("DROP TABLE " + level0_n_table + ";\n");
                                                 
 			if ( false ) {
