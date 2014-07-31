@@ -102,7 +102,7 @@ public class SqlUtils {
 		st = c.createStatement();
 		rs = st.executeQuery(sql);
 		rs.next();
-		res = (rs.getInt(1) == 1);
+		res = (rs.getInt(1) >= 1);
 		rs.close();
 		st.close();
 		return res;

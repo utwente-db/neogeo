@@ -168,7 +168,7 @@ nl.utwente.db.neogeo.preaggregate.PreAggregate {
                                             "FROM pre_aggregate_axis " +
                                             "WHERE tablename || '___' ||label=? AND SUBSTRING(columnexpression, LENGTH(columnexpression)-1) = '_x';";
                     
-                    NATIVE_SRS_QUERY = "SELECT srid FROM geometry_columns WHERE table_name = ? AND geometry_column = ?";
+                    NATIVE_SRS_QUERY = "SELECT srid FROM geometry_columns WHERE f_table_name = ? AND f_geometry_column = ?";
                 } else {
                     throw new UnsupportedOperationException("Database type " + dbType + " not yet supported");
                 }
