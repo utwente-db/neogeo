@@ -48,11 +48,11 @@ public class AggregationDataStoreFactory implements DataStoreFactorySpi {
     }
 
     public String getDisplayName() {
-        return "aggregate";
+        return "NeoGeo Aggregate";
     }
 
     public String getDescription()    {
-        return "PostGIS aggregation index query";
+        return "NeoGeo aggregation index query";
     }
 
     public Param[] getParametersInfo()

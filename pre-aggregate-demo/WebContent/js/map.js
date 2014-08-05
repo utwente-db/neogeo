@@ -1,6 +1,10 @@
 var map;
 
-
+if (typeof String.prototype.endsWith !== 'function') {
+    String.prototype.endsWith = function(suffix) {
+        return this.indexOf(suffix, this.length - suffix.length) !== -1;
+    };
+}
 
 function init() {
 	format = 'image/png';
@@ -159,35 +163,67 @@ function init() {
 	zoom: 5
 	});
 
-	neogeo_uk = new OpenLayers.Layer.WMS(
-			"tweets UK", "http://silo3.ewi.utwente.nl:9090/geoserver/nurc/wms",
-			{
-				layers: 'nurc:uk_neogeo',
-				maxfeatures: 100,
-				format: 'image/gif',
-				transparent: 'true'
-					//time: '2002-09-01T00:00:00.0Z/2002-10-01T23:59:59.999Z',
-					//styleMap: new OpenLayers.StyleMap(style)
-			},{
-				opacity: 0.5
-			}
-	);
+	tweets_options = {opacity: 0.5};
+
 	
-//	var renderer = OpenLayers.Layer.Vector.prototype.renderers;
+
+
+	var neogeo_uk = null;
+
+	if (typeof(TWEETS_URL) != 'undefined' && TWEETS_URL != false) {
+		if (TWEETS_URL.toLowerCase().endsWith('wfs')) {
+			// setup tweets layer as WFS layer
+			var renderer = OpenLayers.Layer.Vector.prototype.renderers;
+
+			var split = TWEETS_LAYER.split(':');
+			var prefix = split[0];
+			var type = split[1];
     
-//	neogeo_uk = new OpenLayers.Layer.Vector("twitter_WFS", {
-//		strategies : [new OpenLayers.Strategy.BBOX()],
-//		protocol : new OpenLayers.Protocol.WFS({
-//			version : "1.1.0",
-//			url : "http://silo3.ewi.utwente.nl:9090/geoserver/wfs", 
-//			featurePrefix : "nurc:",
-//			featureType : "uk_neogeo",
-//			featureNS : "", 
-//			geometryName : "coordinates", //type: "Geometry"
-//			srsName : "EPSG:4326"
-//		}),
-//		renderers : renderer
-//	});
+			neogeo_uk = new OpenLayers.Layer.Vector(TWEETS_TITLE, {
+				strategies : [new OpenLayers.Strategy.BBOX()],
+				protocol : new OpenLayers.Protocol.WFS({
+					version : "1.1.0",
+					url : TWEETS_URL, 
+					featurePrefix : prefix,
+					featureType : type,
+					featureNS : "", 
+					geometryName : "coordinates", //type: "Geometry"
+					srsName : "EPSG:3857",
+					maxFeatures : 500
+				}),
+				styleMap: new OpenLayers.StyleMap({
+					graphicName: "square",
+					pointRadius: 2,
+					fillColor: "#FF5B29",
+					fillOpacity: 0.7,
+					strokeColor: "#FF5B29"			
+				}),
+				renderers : renderer,
+				minScale: TWEETS_MIN_SCALE
+			});
+		} else if (TWEETS_URL.toLowerCase().endsWith('wms')) {
+			// setup tweets layer as WMS layer
+			if (typeof(TWEETS_MIN_SCALE) != 'undefined' && TWEETS_MIN_SCALE != false) {
+				tweets_options.minScale = TWEETS_MIN_SCALE;
+			}
+
+			neogeo_uk = new OpenLayers.Layer.WMS(
+					TWEETS_TITLE, 
+					TWEETS_URL,
+					{
+						layers: TWEETS_LAYER,
+						maxfeatures: 100,
+						format: 'image/gif',
+						transparent: 'true'
+					},
+					tweets_options
+			);
+		} else {
+			console.error("URL of Tweets layer is invalid; must end in 'wfs' or 'wms'");
+		}
+	}
+		
+	
 	
 //	neogeo_uk = new OpenLayers.Layer.WFS("wfs testdata",
 //			"http://silo3.ewi.utwente.nl:9090/geoserver/wfs",
@@ -218,12 +254,14 @@ function init() {
 //			pointerEvents: "visiblePainted"
 //			}; 
 //	neogeo_uk.styleMap = new OpenLayers.StyleMap(new OpenLayers.Style(style_green)); 
+
 	neogeo_uk_agg = new OpenLayers.Layer.WMS(
-			"tweet aggregate UK", "http://silo3.ewi.utwente.nl:9090/geoserver/nurc/wms",
+			AGGREGATE_TITLE, 
+			AGGREGATE_URL,
 			{
-				layers: 'nurc:aggregate_uk_neogeo___myAggregate',
+				layers: AGGREGATE_LAYER,
 				format: 'image/gif',
-				transparent: 'true'
+				transparent: 'true',
 					//time: '2002-09-01T00:00:00.0Z/2002-10-01T23:59:59.999Z',
 					//styleMap: new OpenLayers.StyleMap(style)
 			}, {
@@ -232,16 +270,25 @@ function init() {
 				opacity: 0.5
 			}
 	);
-	map.addLayers([neogeo_uk_agg, neogeo_uk]);
-//	map.addLayers([neogeo_uk]);
-	//neogeo_uk.display(false);
+
+	var layers = [];
+	var panelLayers = [];
+
+	if (AGGREGATE_URL != false && AGGREGATE_LAYER != false) {
+		layers[layers.length] = neogeo_uk_agg;
+		panelLayers[panelLayers.length] = AGGREGATE_LAYER;
+	}
+
+	if (TWEETS_URL != false && TWEETS_LAYER != false) {
+		layers[layers.length] = neogeo_uk;
+		panelLayers[panelLayers.length] = TWEETS_LAYER;
+	}
+
+	map.addLayers(layers);
 
 	var panel = new OpenLayers.Control.CustomNavToolbar();
-	panel.setLayer([neogeo_uk_agg.params.LAYERS, neogeo_uk.params.LAYERS]);
+	panel.setLayer(panelLayers);
 	
-//	map.addControl(new OpenLayers.Control.PanZoomBar({
-//	position: new OpenLayers.Pixel(2, 15)
-//	}));
 	map.addControl(new OpenLayers.Control.Permalink());
 	map.addControl(new OpenLayers.Control.ScaleLine());
 	map.addControl(new OpenLayers.Control.Permalink('permalink'));
@@ -261,9 +308,9 @@ function init() {
 					BBOX: map.getExtent().toBBOX(),
 					SERVICE: "WMS",
 					INFO_FORMAT: 'text/html',
-					QUERY_LAYERS: neogeo_uk.params.LAYERS,
+					QUERY_LAYERS: TWEETS_LAYER,
 					FEATURE_COUNT: 50,
-					Layers: 'nurc:uk_neogeo',
+					Layers: TWEETS_LAYER,
 					WIDTH: map.size.w,
 					HEIGHT: map.size.h,
 					format: format,
@@ -280,11 +327,27 @@ function init() {
 			params.x = parseInt(e.xy.x);
 			params.y = parseInt(e.xy.y);
 //			}
+
+			var url = TWEETS_URL;
+			if (url.toLowerCase().endsWith('wfs')) {
+				url = url.substring(0, url.length - 3) + 'wms';
+			}
+
 			// merge filters
-			OpenLayers.loadURL("http://silo3.ewi.utwente.nl:9090/geoserver/nurc/wms", params, this, setHTML, setHTML);
+			OpenLayers.loadURL(url, params, this, setHTML, setHTML);
 			OpenLayers.Event.stop(e);
 		}
 	});
+
+
+	map.events.register('moveend', map, function (e) {
+		// only a WFS service needs to be manually refreshed
+		if (typeof(TWEETS_URL) != 'undefined' && TWEETS_URL != false && TWEETS_URL.toLowerCase().endsWith('wfs')) {
+			neogeo_uk.refresh({force: true}); 
+		}
+	});
+
+
 	//}
 
 //	sets the HTML provided into the nodelist element

@@ -60,7 +60,7 @@ public class GeotaggedTweetAggregate extends PreAggregate {
             }
             
             // check if point column is registered in geometry_columns table
-            PreparedStatement stmt = c.prepareStatement("SELECT * from geometry_columns WHERE LOWER(table_schema) = ? AND LOWER(table_name) = ? AND LOWER(geometry_column) = ?");
+            PreparedStatement stmt = c.prepareStatement("SELECT * from geometry_columns WHERE LOWER(f_table_schema) = ? AND LOWER(f_table_name) = ? AND LOWER(f_geometry_column) = ?");
             stmt.setString(1, schema.toLowerCase());
             stmt.setString(2, table.toLowerCase());
             stmt.setString(3, point_column.toLowerCase());
