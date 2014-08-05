@@ -24,6 +24,8 @@ public class AggregationDataStoreFactory implements DataStoreFactorySpi {
 //        "ext", "csv"
 //    }));
     
+    /** parameter for database type */
+    public static final Param DBTYPE = new Param("dbtype", String.class, "Type", true, "pre_agg");
    
     public static final Param DBTYPE_PARAM = new Param("Database type", String.class, "Type of database backend", true, DbType.POSTGRES.toString(), new KVP(new Object[] {
         "options", new ArrayList<String>() {{add(DbType.POSTGRES.toString()); add(DbType.MONETDB.toString());}}

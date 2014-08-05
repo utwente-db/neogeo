@@ -479,12 +479,24 @@ public class  TimestampAxisIndexer implements AxisIndexer {
 			if(cnt<=0) cnt=1;
 			int startl; //= this.low;
 			int endl;   //= this.high;
-			if(low==null || !(low instanceof Long) || (Long)low<this.low) {
-				low = this.low();
-			}
-			startl = getIndex(low, false);
-			if(high==null || !(high instanceof Long) || (Long)high<this.high) 
-				high = this.high();
+                        
+                        // ensure no nulls
+                        if (low == null) low = this.low();
+                        if (high == null) high = this.high();
+                        
+                        // convert possible long (i.e. epochs) into Timestamps
+                        if (low instanceof Long)low = new Timestamp((Long)low);                        
+                        if (high instanceof Long) high = new Timestamp((Long)high);
+                        
+                        // ensure valid Timestamp objects
+                        if (!(low instanceof Timestamp)) low = this.low();                        
+                        if (!(high instanceof Timestamp)) high = this.high();
+                        
+                        // ensure a valid low/high value
+			if (((Timestamp)low).getTime() < this.low) low = this.low();
+			if (((Timestamp)high).getTime() > this.high) high = this.high();
+                                                
+                        startl = getIndex(low, false);
 			endl = getIndex(high, false);
 			
 			if(endl<=startl) throw new RuntimeException("end value "+endl+" is less than start value "+startl);

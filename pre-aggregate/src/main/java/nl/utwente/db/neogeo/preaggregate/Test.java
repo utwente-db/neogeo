@@ -106,7 +106,7 @@ public class Test {
 		// setup_silo3( connection );
 		//runTest_time(connection);
                 
-                runTest(connection, t.getSchema());
+                runTest3(connection, t.getSchema());
                 
                 connection.close();
 	}
@@ -341,10 +341,10 @@ public class Test {
 			// new TweetConverter("/Users/flokstra/uk_raw.sql",c,"public","uk");
 			//
 
-			//GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", null, "myAggregate", "coordinates",0 /* axis 2 split*/,200000,null);
+			GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", null, "myAggregate", "coordinates",0 /* axis 2 split*/,200000,null);
                         //GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", "myAggregate"); 
                         
-                        GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "uk_neogeo", null, "myAggregate", "coordinates",0 /* axis 2 split*/,200000,null);
+                        //GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "uk_neogeo", null, "myAggregate", "coordinates",0 /* axis 2 split*/,200000,null);
                         //GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "uk_neogeo", "myAggregate");
                         
 			
