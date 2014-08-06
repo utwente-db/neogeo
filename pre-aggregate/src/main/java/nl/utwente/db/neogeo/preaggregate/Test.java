@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
+import static nl.utwente.db.neogeo.preaggregate.NominalGeoTaggedTweetAggregate.NOMINAL_POSTFIX;
 import nl.utwente.db.neogeo.preaggregate.SqlUtils.DbType;
 
 public class Test {    
@@ -106,7 +107,8 @@ public class Test {
 		// setup_silo3( connection );
 		//runTest_time(connection);
                 
-                runTest_small_nominal(connection, t.getSchema());
+                //runTest_small_nominal(connection, t.getSchema());
+                runTest_small_nominal_time(connection, t.getSchema());
                 
                 connection.close();
 	}
@@ -542,6 +544,54 @@ public class Test {
 			e.printStackTrace(System.out);
 		}
 		System.out.println("#!finished");
-	}	
+	}
+        
+        public static void runTest_small_nominal_time (Connection c, String schema) throws Exception {
+            try {
+			String wordlist = 
+				NominalAxis.ALL + "," +
+				"banker,"+
+				"car,"+
+				"people,"
+			;
+                        
+                        AggregateAxis x_axis = null;
+                        AggregateAxis y_axis = null;
+                        AggregateAxis time_axis = null;
+                        if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                            x_axis = new MetricAxis("coordinates_x", "double", "" + GeotaggedTweetAggregate.DFLT_BASEBOXSIZE, GeotaggedTweetAggregate.DFLT_N);
+                            y_axis = new MetricAxis("coordinates_y", "double", "" + GeotaggedTweetAggregate.DFLT_BASEBOXSIZE,GeotaggedTweetAggregate.DFLT_N);
+                            time_axis = new MetricAxis("\"time\"", "timestamp with time zone", "360000" /*=10 min*/, (short)16);
+                        } else {                
+                            x_axis = new MetricAxis("ST_X(coordinates)", "double", "" + GeotaggedTweetAggregate.DFLT_BASEBOXSIZE,GeotaggedTweetAggregate.DFLT_N);
+                            y_axis = new MetricAxis("ST_Y(coordinates)", "double", "" + GeotaggedTweetAggregate.DFLT_BASEBOXSIZE,GeotaggedTweetAggregate.DFLT_N);
+                            time_axis = new MetricAxis("time", "timestamp with time zone", "360000" /*=10 min*/, (short)16);
+                        }
+                        
+                        String table = "london_hav_neogeo";
+                        
+                        NominalAxis nominal_axis = new NominalAxis("tweet", "tweet_wid", wordlist);
+                        nominal_axis.tagWordIds2Table(c,schema,table,table+NOMINAL_POSTFIX);
+                        
+                        AggregateAxis axis[] = {
+                                x_axis, 
+                                y_axis,
+                                time_axis,
+                                nominal_axis
+                        };
+
+			PreAggregate pa = new PreAggregate(c, schema, table+NOMINAL_POSTFIX, null /*override_name*/, "myAggregate", axis, "len" , "bigint", PreAggregate.AGGR_ALL, 2, 200000, null);
+			//NominalGeoTaggedTweetAggregate pa = new NominalGeoTaggedTweetAggregate(c, wordlist, schema, "london_hav_neogeo", null, "myAggregate", "coordinates",-1,200000,null);
+                        
+                        //NominalGeoTaggedTweetAggregate pa = new NominalGeoTaggedTweetAggregate(c, schema, "london_hav_neogeo", "myAggregate");
+			//pa.boxQuery_word("count",0.18471,51.60626,0.23073,51.55534,"banker"); // left of havering, few tweets
+			//pa.boxQuery_word("count",-0.38326,51.62780,1.14554,51.39572,NominalAxis.ALL);
+			c.close();
+		} catch (SQLException e) {
+			System.out.println("Caught: " + e);
+			e.printStackTrace(System.out);
+		}
+		System.out.println("#!finished");
+        }
 	
 }

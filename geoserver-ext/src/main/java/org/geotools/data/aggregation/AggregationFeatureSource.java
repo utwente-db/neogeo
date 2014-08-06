@@ -396,6 +396,7 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 		int i=0;
 		//int[] range = new int[agg.getAxis().length];
 		Object[][] iv_obj = new Object[agg.getAxis().length][3];
+                boolean hasTime = false;
 		for(AggregateAxis a : agg.getAxis()){
 			AxisSplitDimension dim = null;
 			LOGGER.severe("axis :"+a.columnExpression());
@@ -420,15 +421,19 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 				LOGGER.severe("processing axis time:"+a.columnExpression());
 				dim = a.splitAxis(start, end, iv_count[2]);
 				i=2;
+                                hasTime = true;
 			} else if (a==nominal) {
 				String select_word = NominalAxis.ALL;
 				LOGGER.severe("processing axis nominal:");
 				if ( vword != null && vword.size() > 0 ) {
 					if ( vword.size() > 1 )
-						System.out.println("INCOMPLETE: cannot select on Multiple words");
+						LOGGER.severe("INCOMPLETE: cannot select on Multiple words");
 					select_word = vword.get(0);
 				} 
-				i = 2; // INCOMPLETE, could be different with time
+                                
+                                // work-around for index depending on availability of time axis or not
+				i = (hasTime) ? 3 : 2; 
+                                
 				iv_obj[i][0] = select_word;
 				iv_obj[i][1] = select_word;
 				iv_obj[i][2] = 1;
