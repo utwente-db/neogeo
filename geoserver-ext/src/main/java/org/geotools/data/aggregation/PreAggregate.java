@@ -66,7 +66,16 @@ nl.utwente.db.neogeo.preaggregate.PreAggregate {
 	}
 	
 	public PreAggregate(DbType dbType, Connection c, String schema, String table, String label) throws SQLException{
-		super(c,schema,detectNominal(table),label);
+                /**
+                 * Dennis Pallett, 6 Aug 2014:
+                 * 
+                 * Disabled detectNominal, what is this point of this????
+                 * It completely disables the use of nominal index, i.e. the nominal axis
+                 * won't even be detected when using the original (non 'word') table
+                 */            
+		//super(c,schema,detectNominal(table),label);
+            
+                super(c,schema, table,label);
                 
                 this.dbType = dbType;
                 
@@ -173,13 +182,14 @@ nl.utwente.db.neogeo.preaggregate.PreAggregate {
                     throw new UnsupportedOperationException("Database type " + dbType + " not yet supported");
                 }
                                                 
-		String typename = entry.getTypeName();
-		typename = typename.substring((NAME+"_").length());
+		String labelName = entry.getTypeName();
+		labelName = labelName.substring((NAME+"_").length());                
+                
 		PreparedStatement stmt1;
 		Connection con = ((AggregationDataStore)entry.getDataStore()).getConnection();
 		try {                    
 			stmt1 = con.prepareStatement(GEOMETRY_COLUMN_QUERY);
-			stmt1.setString(1, typename);
+			stmt1.setString(1, labelName);
 			LOGGER.finest("geometry column query:"+stmt1.toString());                        
 			stmt1.execute();
 			ResultSet rs1 = stmt1.getResultSet();
@@ -190,7 +200,7 @@ nl.utwente.db.neogeo.preaggregate.PreAggregate {
 				locColumn = rs1.getString(2);
 			}
 			rs1.close();
-                        
+                                                
 			PreparedStatement stmt2;
 			try {   
                                 String query = NATIVE_SRS_QUERY;

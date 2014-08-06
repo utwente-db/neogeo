@@ -150,13 +150,14 @@ public class AggregationDataStore extends ContentDataStore {
 
 	@Override
 	protected List<Name> createTypeNames() throws IOException	{
+                LOGGER.severe("=== RETRIEVING TYPE NAMES ===");
 		List<Name> ret = null;
 		getConnection();
 		try {
 			List<String> names = PreAggregate.availablePreAggregates(con,schema);
 			ret = new Vector<Name>();
 			for(String name : names){
-				ret.add(new NameImpl(name));
+				ret.add(new NameImpl(this.namespaceURI, name));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

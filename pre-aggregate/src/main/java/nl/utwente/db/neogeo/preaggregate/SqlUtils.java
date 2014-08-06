@@ -117,6 +117,11 @@ public class SqlUtils {
 		case MYSQL:
 			executeNORES(c,sql);
 			break;
+                case MONETDB:
+                        executeNORES(c, sql);
+                        break;
+                default:
+                        throw new UnsupportedOperationException("Database type '" + dbType(c) + "' not yet supported!");
 		}	
 	}
 

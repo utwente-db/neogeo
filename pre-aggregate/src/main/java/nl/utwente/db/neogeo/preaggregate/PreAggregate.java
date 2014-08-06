@@ -119,6 +119,41 @@ public class PreAggregate {
 			throw new SQLException("No PreAggregate " + label + " for table " + schema + "."
 					+ table);
 	}
+        
+        /**
+         * Checks if the geometry_columns table exists and if a table/column has been properly registered
+         * 
+         * @param c
+         * @param schema
+         * @param table
+         * @param point_column
+         * @throws SQLException 
+         */
+        protected void checkMonetDbGis(Connection c, String schema, String table, String point_column) throws SQLException {
+            // check if geometry_columns table exists
+            if (SqlUtils.existsTable(c, schema, "geometry_columns") == false) {
+                throw new SQLException("GeoSpatial table `geometry_columns` does not exist in database. Create if first by executing the create_geometry_columns_monetdb.sql file!");
+            }
+            
+            // check if point column is registered in geometry_columns table
+            PreparedStatement stmt = c.prepareStatement("SELECT * from geometry_columns WHERE LOWER(f_table_schema) = ? AND LOWER(f_table_name) = ? AND LOWER(f_geometry_column) = ?");
+            stmt.setString(1, schema.toLowerCase());
+            stmt.setString(2, table.toLowerCase());
+            stmt.setString(3, point_column.toLowerCase());
+            
+            ResultSet res = stmt.executeQuery();
+            
+            if (res.next() == false) {
+                res.close();
+                stmt.close();
+                
+                throw new SQLException("Point column `" + point_column + "` for table `" + schema + "." + table + "` is not "
+                        + "registered in geometry_columns table! Manually insert it into the geometry_columns table first.");
+            }
+            
+            res.close();
+            stmt.close();
+        }
 
 	public Object[][] getRangeValues(Connection c) throws SQLException {
 		return getRangeValues(c, schema, table, axis);

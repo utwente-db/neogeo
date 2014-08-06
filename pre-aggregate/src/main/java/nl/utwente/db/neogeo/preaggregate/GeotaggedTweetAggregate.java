@@ -52,33 +52,7 @@ public class GeotaggedTweetAggregate extends PreAggregate {
                 
 		createPreAggregate(c,schema,table,override_name, label,axis,"len","bigint",AGGR_ALL,axisToSplit,chunkSize,newRange);
 	}
-        
-        protected void checkMonetDbGis(Connection c, String schema, String table, String point_column) throws SQLException {
-            // check if geometry_columns table exists
-            if (SqlUtils.existsTable(c, schema, "geometry_columns") == false) {
-                throw new SQLException("GeoSpatial table `geometry_columns` does not exist in database. Create if first by executing the create_geometry_columns_monetdb.sql file!");
-            }
-            
-            // check if point column is registered in geometry_columns table
-            PreparedStatement stmt = c.prepareStatement("SELECT * from geometry_columns WHERE LOWER(f_table_schema) = ? AND LOWER(f_table_name) = ? AND LOWER(f_geometry_column) = ?");
-            stmt.setString(1, schema.toLowerCase());
-            stmt.setString(2, table.toLowerCase());
-            stmt.setString(3, point_column.toLowerCase());
-            
-            ResultSet res = stmt.executeQuery();
-            
-            if (res.next() == false) {
-                res.close();
-                stmt.close();
-                
-                throw new SQLException("Point column `" + point_column + "` for table `" + schema + "." + table + "` is not "
-                        + "registered in geometry_columns table! Manually insert it into the geometry_columns table first.");
-            }
-            
-            res.close();
-            stmt.close();
-        }
-        	
+                	
 	public long boxQuery(String aggr, double x1, double y1, double x2, double y2) throws SQLException {		
 		Object ranges[][] = new Object[2][2];
 		ranges[0][0] = new Double(Math.min(x1,x2));

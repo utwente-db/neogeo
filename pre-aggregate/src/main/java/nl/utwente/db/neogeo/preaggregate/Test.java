@@ -106,7 +106,7 @@ public class Test {
 		// setup_silo3( connection );
 		//runTest_time(connection);
                 
-                runTest3(connection, t.getSchema());
+                runTest_small_nominal(connection, t.getSchema());
                 
                 connection.close();
 	}
@@ -522,7 +522,7 @@ public class Test {
 		System.out.println("#!finished");
 	}
 	
-	public static void runTest_small_nominal(Connection c) throws Exception {
+	public static void runTest_small_nominal(Connection c, String schema) throws Exception {
 		try {
 			String wordlist = 
 				NominalAxis.ALL + "," +
@@ -532,9 +532,10 @@ public class Test {
 			;
 
 			
-			NominalGeoTaggedTweetAggregate pa = new NominalGeoTaggedTweetAggregate(c, wordlist, "public", "london_hav_neogeo", null, "myAggregate", "coordinates",-1,200000,null);
-			// pa.boxQuery_word("count",0.18471,51.60626,0.23073,51.55534,"banker"); // left of havering, few tweets
-			pa.boxQuery_word("count",-0.38326,51.62780,1.14554,51.39572,NominalAxis.ALL);
+			NominalGeoTaggedTweetAggregate pa = new NominalGeoTaggedTweetAggregate(c, wordlist, schema, "london_hav_neogeo", null, "myAggregate", "coordinates",-1,200000,null);
+                        //NominalGeoTaggedTweetAggregate pa = new NominalGeoTaggedTweetAggregate(c, schema, "london_hav_neogeo", "myAggregate");
+			pa.boxQuery_word("count",0.18471,51.60626,0.23073,51.55534,"banker"); // left of havering, few tweets
+			//pa.boxQuery_word("count",-0.38326,51.62780,1.14554,51.39572,NominalAxis.ALL);
 			c.close();
 		} catch (SQLException e) {
 			System.out.println("Caught: " + e);

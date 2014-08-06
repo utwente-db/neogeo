@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import nl.utwente.db.neogeo.preaggregate.PreAggregate;
@@ -12,6 +13,7 @@ import nl.utwente.db.neogeo.preaggregate.SqlUtils.DbType;
 
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFactorySpi;
+import static org.geotools.jdbc.JDBCDataStoreFactory.DBTYPE;
 import org.geotools.util.KVP;
 
 // Referenced classes of package org.geotools.data.aggregation:
@@ -24,8 +26,9 @@ public class AggregationDataStoreFactory implements DataStoreFactorySpi {
 //        "ext", "csv"
 //    }));
     
-    /** parameter for database type */
-    public static final Param DBTYPE = new Param("dbtype", String.class, "Type", true, "pre_agg");
+    /** parameter for datastore type */
+    public static final String TYPE = "neogeo_aggregate";
+    public static final Param TYPE_PARAM = new Param("dbtype", String.class, "Type", true, TYPE);
    
     public static final Param DBTYPE_PARAM = new Param("Database type", String.class, "Type of database backend", true, DbType.POSTGRES.toString(), new KVP(new Object[] {
         "options", new ArrayList<String>() {{add(DbType.POSTGRES.toString()); add(DbType.MONETDB.toString());}}
@@ -46,6 +49,9 @@ public class AggregationDataStoreFactory implements DataStoreFactorySpi {
     public static final Param MIN_AGG_PARAM = new Param("minimum", Boolean.class, "output min aggregate", true, false);
     public static final Param MAX_AGG_PARAM = new Param("maximum", Boolean.class, "output maxt aggregate", true, false);
     
+     /** parameter for namespace of the datastore */
+    public static final Param NAMESPACE_PARAM = new Param("namespace", String.class, "Namespace prefix", false);
+    
     public AggregationDataStoreFactory() {
     }
 
@@ -60,7 +66,7 @@ public class AggregationDataStoreFactory implements DataStoreFactorySpi {
     public Param[] getParametersInfo()
     {
         return (new Param[] {
-            DBTYPE_PARAM, HOSTNAME_PARAM, PORT_PARAM, SCHEMA_PARAM, DATABASE_PARAM, USERNAME_PARAM, PASSWORD_PARAM,
+            TYPE_PARAM, DBTYPE_PARAM, HOSTNAME_PARAM, PORT_PARAM, SCHEMA_PARAM, DATABASE_PARAM, USERNAME_PARAM, PASSWORD_PARAM, NAMESPACE_PARAM,
             X_SIZE_PARAM,Y_SIZE_PARAM,TIME_SIZE_PARAM,CNT_AGG_PARAM,SUM_AGG_PARAM,MIN_AGG_PARAM,MAX_AGG_PARAM
         });
     }
@@ -74,6 +80,16 @@ public class AggregationDataStoreFactory implements DataStoreFactorySpi {
         String username;
         String password;
         java.sql.Connection connection;
+        
+        // check if we are dealing with a AggregationDataStore
+        try {
+            String type = (String)TYPE_PARAM.lookUp(params);
+            if (type.equals(TYPE) == false) {
+                return false;
+            }
+        } catch (IOException ex) {
+            return false;
+        }
         
         try {
             dbType = lookUpDbType(params);            
@@ -150,7 +166,16 @@ public class AggregationDataStoreFactory implements DataStoreFactorySpi {
         mask += sum ? PreAggregate.AGGR_SUM:0;
         mask += min ? PreAggregate.AGGR_MIN:0;
         mask += max ? PreAggregate.AGGR_MAX:0;
-        return new AggregationDataStore(dbType, hostname, port, schema, database, username, password, xSize, ySize, timeSize, mask);
+        
+        AggregationDataStore dataStore = new AggregationDataStore(dbType, hostname, port, schema, database, username, password, xSize, ySize, timeSize, mask);
+        
+        String namespace = (String) NAMESPACE_PARAM.lookUp(params);
+        
+        if (namespace != null) {
+            dataStore.setNamespaceURI(namespace);
+        }
+        
+        return dataStore;
     }
 
     public DataStore createNewDataStore(Map params) throws IOException {
