@@ -537,9 +537,6 @@ public class  TimestampAxisIndexer implements AxisIndexer {
 				return new AxisSplitDimension(new Timestamp(this.low+_start*BASEBLOCKSIZE), new Timestamp(this.low+(_start+deltal)*BASEBLOCKSIZE),cnt);
 			throw new RuntimeException("remaining count value is less than or euqal to 0: "+cnt);
 		}
-
-		
-		
 	}
 
 	private AxisIndexer	indexer = null;
@@ -574,6 +571,10 @@ public class  TimestampAxisIndexer implements AxisIndexer {
 			String	type) {
 		this(columnExpression,type,null,(short)-1);
 	}
+        
+        public AxisIndexer getIndexer () {
+            return this.indexer;
+        }
 	
 	public boolean isMetric() {
 		return true;
@@ -606,7 +607,7 @@ public class  TimestampAxisIndexer implements AxisIndexer {
 		}
 		else
 			throw new RuntimeException("Unexpected");
-	}
+	}       
 	
 	public boolean hasRangeValues() {
 		return indexer != null;

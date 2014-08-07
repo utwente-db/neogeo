@@ -424,7 +424,7 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 			} else if(a==time) {
 				LOGGER.severe(start+"|"+ end+"|"+ iv_count[2]);
 				LOGGER.severe("processing axis time:"+a.columnExpression());
-				dim = a.splitAxis(start, end, iv_count[2]);
+				dim = a.splitAxis(start, end, iv_count[2]);                                
 				i=2;
                                 hasTime = true;
 			} else if (a==nominal) {

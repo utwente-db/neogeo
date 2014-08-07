@@ -110,7 +110,9 @@ public class Test {
                 //runTest_small_nominal(connection, t.getSchema());
                 //runTest_small_nominal_time(connection, t.getSchema());
                 
-                runTest2(connection, t.getSchema());
+                //runTest3(connection, t.getSchema());
+                
+                runTestStandardTime(connection, t.getSchema());
                 
                 connection.close();
 	}
@@ -150,6 +152,67 @@ public class Test {
                     System.out.println("obj[" + i + "][" + j + "] = " + obj[i][j]);
                 }
             } 
+        }
+        
+        public static void runTestStandardTime (Connection c, String schema) throws Exception {
+            // NOTE: this requires an existing pre-aggregate setup with 3 dimensions: x, y and time!
+            PreAggregate pa = new PreAggregate(c, schema, "london_hav_neogeo", "myAggregate");
+            AggregateAxis[] axis = pa.getAxis();
+            
+            Object[][] obj_range = pa.getRangeValues(c);
+            
+            /*
+            obj_range[2][0] = new Timestamp(1318424400000L); // 2011-10-12 15:00:00.0
+            obj_range[2][1] = new Timestamp(1318431600000L); // 2011-10-12 17:00:00.0
+            */
+                        
+            
+            //printObjectArray(obj_range);
+            //System.exit(0);
+            
+            int[] count = new int[3];
+            count[0] = 4;
+            count[1] = 4;
+            count[2] = 1;
+            
+            AxisSplitDimension dim = null;
+            
+            Object[][] iv_first_obj = new Object[3][2];
+            iv_first_obj[0][0] = Math.floor(((Double)obj_range[0][0])/0.001)*0.001;
+            iv_first_obj[0][1] = ((Double)iv_first_obj[0][0])+Math.ceil((((Double)obj_range[0][1]) - ((Double)obj_range[0][0]))/4/0.001)*0.001;
+            iv_first_obj[1][0] = Math.floor(((Double)obj_range[1][0])/0.001)*0.001;
+            iv_first_obj[1][1] = ((Double)iv_first_obj[1][0])+Math.ceil((((Double)obj_range[1][1]) - ((Double)obj_range[1][0]))/4/0.001)*0.001;
+            
+            // use time axis to split dimension
+            dim = axis[2].splitAxis(obj_range[2][0], obj_range[2][1], count[2]);
+            iv_first_obj[2][0] = dim.getStart();
+            iv_first_obj[2][1] = dim.getEnd();
+            
+            //printObjectArray(iv_first_obj);
+            //System.exit(0);
+            
+            ResultSet rs = null;
+            
+            /*
+            rs = pa.SQLquery_grid(PreAggregate.AGGR_COUNT, iv_first_obj, count);
+            while(rs.next()){
+                    System.out.println(rs.getInt(1)+"|"+rs.getLong(2) + "|" + rs.getLong(3));
+            }
+            rs.close();
+
+            System.exit(0);
+            */
+            
+            
+            System.out.println("\n\n standard query!");
+            rs = pa.SQLquery_grid_standard(PreAggregate.AGGR_COUNT, iv_first_obj, count);
+            while(rs.next()){
+                System.out.println(rs.getInt(1)+"|"+rs.getLong(2));
+            }
+            rs.close();
+
+            System.exit(0);
+            
         }
         
 	public static void runTest2(Connection c, String schema) throws Exception {

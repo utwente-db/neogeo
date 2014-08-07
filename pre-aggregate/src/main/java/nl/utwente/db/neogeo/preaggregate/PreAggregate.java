@@ -12,6 +12,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
 import java.util.logging.Logger;
+import nl.utwente.db.neogeo.preaggregate.MetricAxis.AxisIndexer;
+import nl.utwente.db.neogeo.preaggregate.MetricAxis.DoubleAxisIndexer;
+import nl.utwente.db.neogeo.preaggregate.MetricAxis.IntegerAxisIndexer;
+import nl.utwente.db.neogeo.preaggregate.MetricAxis.LongAxisIndexer;
+import nl.utwente.db.neogeo.preaggregate.MetricAxis.TimestampAxisIndexer;
 import nl.utwente.db.neogeo.preaggregate.SqlUtils.DbType;
 
 public class PreAggregate {
@@ -1161,92 +1166,102 @@ public class PreAggregate {
 		StringBuilder sqlgkey = new StringBuilder();
 		StringBuilder sqlwhere = new StringBuilder();
 		StringBuilder sqlgroupby = new StringBuilder();
+                
 		int factor = 1;
 		for(i=0; i < axis.length; i++) {
-                        String colKey = "d" + i;
-                                              
-                        // x and y axis
-			if(i == 0 ||i == 1) {
-                                if (!(axis[i] instanceof MetricAxis)) {
-                                    throw new SQLException("Expected axis " + i + " to be a MetricAxis!");
+                    String colKey = "d" + i;
+
+                    if (axis[i] instanceof MetricAxis) {
+                        MetricAxis metricAxis = (MetricAxis) axis[i];
+                        AxisIndexer indexer = metricAxis.getIndexer();
+
+                        // normal number-based axis?
+                        if (indexer instanceof DoubleAxisIndexer || indexer instanceof LongAxisIndexer || indexer instanceof IntegerAxisIndexer) {
+                            // coordinates	
+                            double start = (Double) iv_first_obj[i][0];
+                            double end = (((Double)iv_first_obj[i][0])+iv_count[i]*(((Double)iv_first_obj[i][1])-((Double)iv_first_obj[i][0])));
+
+                            // calculate range between start and end coordinate
+                            double range = (end - start);
+
+                            // extend range with BASEBLOCKSIZE
+                            // so that the end coordinates falls within range
+                            range = range + (Double)metricAxis.BASEBLOCKSIZE();
+
+                            // calculate factor to divide by
+                            double divideBy = range / iv_count[i];
+
+                            // calculate index of start coordinate
+                            // which is used to compensate calculation of indexes
+                            // so that the start index is *always* 0 (zero)
+                            double startIndex = start / divideBy;
+
+                            // MonetDB doesn't support expressions in the GROUP BY clause
+                            // therefore these must first be separately included as additional columns
+                            if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                                cols.append(", floor( ("+axis[i].columnExpression()+"/"+ divideBy +")");
+                                if (startIndex > 0) {
+                                    cols.append(" - ").append(startIndex);
+                                } else if (startIndex < 0) {
+                                    cols.append(" + ").append(Math.abs(startIndex));
                                 }
+                                cols.append(") AS " + colKey);
+                                sqlgkey.append(colKey + "*" + factor + "+");
+                                sqlgroupby.append(colKey + ",");
+                            } else {
+                                sqlgkey.append("floor( (").append(axis[i].columnExpression()).append("/").append(divideBy).append(")");
+                                if (startIndex > 0) {
+                                    sqlgkey.append(" - ").append(startIndex);
+                                } else if (startIndex < 0) {
+                                    sqlgkey.append(" + ").append(Math.abs(startIndex));
+                                }                                    
+                                sqlgkey.append(")*").append(factor).append("+");
+
+                                sqlgroupby.append("floor( (").append(axis[i].columnExpression()).append("/").append(divideBy).append(")");
+                                if (startIndex > 0) {
+                                    sqlgroupby.append(" - ").append(startIndex);
+                                } else if (startIndex < 0) {
+                                    sqlgroupby.append(" + ").append(Math.abs(startIndex));
+                                }    
+                                sqlgroupby.append("),");
+                            }
+
+                            sqlwhere.append( " and "+axis[i].columnExpression()+">="+ start);
+                            sqlwhere.append( " and "+ axis[i].columnExpression()+"<="+ end);
+
+                        // time-based axis?
+                        } else if (indexer instanceof TimestampAxisIndexer) {                            
+                            // time dimension filter
+                            sqlwhere.append( " AND " + axis[i].columnExpression() + " >= CAST('" + ((Timestamp)iv_first_obj[i][0]) + "' AS timestamp with time zone)");
+                            sqlwhere.append(" AND ").append(axis[i].columnExpression()).append(" <= CAST('")
+                                    .append(((Timestamp)iv_first_obj[i][1])).append("' AS timestamp with time zone)");
                             
-                                MetricAxis coord_axis = (MetricAxis) axis[i];
-                            
-				// coordinates	
-                                double start = (Double) iv_first_obj[i][0];
-                                double end = (((Double)iv_first_obj[i][0])+iv_count[i]*(((Double)iv_first_obj[i][1])-((Double)iv_first_obj[i][0])));
-                                
-                                double range = (end - start);
-                                
-                                // extend range with BASEBLOCKSIZE
-                                // so that the end coordinates falls within range
-                                range = range + (Double)coord_axis.BASEBLOCKSIZE();
-                                
-                                // calculate factor to divide by
-                                double divideBy = range / iv_count[i];
-                                
-                                // calculate index of start coordinate
-                                // which is used to compensate calculate indexes
-                                // so that the start index is *always* 0 (zero)
-                                double startIndex = start / divideBy;
-                                                            
-                                // MonetDB doesn't support expressions in the GROUP BY clause
-                                // therefore these must first be separately included as additional columns
-                                if (SqlUtils.dbType(c) == DbType.MONETDB) {
-                                    cols.append(", floor( ("+axis[i].columnExpression()+"/"+ divideBy +")");
-                                    if (startIndex > 0) {
-                                        cols.append(" - ").append(startIndex);
-                                    } else if (startIndex < 0) {
-                                        cols.append(" + ").append(Math.abs(startIndex));
-                                    }
-                                    cols.append(") AS " + colKey);
-                                    sqlgkey.append(colKey + "*" + factor + "+");
-                                    sqlgroupby.append(colKey + ",");
-                                } else {
-                                    // TODO: fix for Postgres as well! (use startIndex, etc)
-                                    sqlgkey.append("floor("+axis[i].columnExpression()+"/"+ divideBy +")*"+factor+"+");
-                                    sqlgroupby.append("floor("+axis[i].columnExpression()+"/"+ divideBy +"),");
-                                }
-                                
-                                sqlwhere.append( " and "+axis[i].columnExpression()+">="+ start);
-				sqlwhere.append( " and "+ axis[i].columnExpression()+"<="+ end);
-			} else {
-                                // Dennis Pallett: throw exception here because time dimension is likely still not working properly!!!
-                                throw new UnsupportedOperationException("Time dimension not yet properly supported");
-                                
-                                /*
-                            
-				// time dimension - if existent
-                                sqlwhere.append( " AND " + axis[i].columnExpression() + " >= CAST('" + ((Timestamp)iv_first_obj[i][0]) + "' AS timestamp with time zone)");
-                                
-                                sqlwhere.append( " AND " + axis[i].columnExpression() + " <= CAST('" + ((Timestamp)iv_first_obj[i][0]) + "' AS timestamp with time zone) + ");
-                                
-                                if (SqlUtils.dbType(c) == DbType.MONETDB) {
-                                    sqlwhere.append("interval '1' second * (");
-                                    sqlwhere.append(iv_count[i] + " * 0.001 * (CAST('");
-                                    sqlwhere.append(((Timestamp)iv_first_obj[i][1]));
-                                    sqlwhere.append("' AS timestamp with time zone) - CAST('");
-                                    sqlwhere.append(((Timestamp)iv_first_obj[i][0]));
-                                    sqlwhere.append("' AS timestamp with time zone)))");
-                                } else {                               
-                                    sqlwhere.append("(" + iv_count[i] + " * (CAST('" + ((Timestamp)iv_first_obj[i][1]) + "' AS timestamp with time zone) - CAST('" + 
-                                                ((Timestamp)iv_first_obj[i][0]) + "' AS timestamp with time zone)))");
-                                }                                
-				
-                                if(iv_count[i]>1){
-                                        // TODO: implement this for MonetDB as well!!
-                                        if (SqlUtils.dbType(c) == DbType.MONETDB) {
-                                            throw new UnsupportedOperationException("Time intervals not yet supported for MonetDB");
-                                        }
-                                        
-					sqlgkey.append("floor(extract('epoch' from "+axis[i].columnExpression()+")/(extract('epoch' from '"+(((Timestamp)iv_first_obj[i][1])+"'::timestamp with time zone) - extract('epoch' from '"+((Timestamp)iv_first_obj[i][0]))+"'::timestamp with time zone)))*"+factor+"+");				
-					sqlgroupby.append("floor(extract('epoch' from "+axis[i].columnExpression()+")/(extract('epoch' from '"+(((Timestamp)iv_first_obj[i][1])+"'::timestamp with time zone) - extract('epoch' from '"+((Timestamp)iv_first_obj[i][0]))+"'::timestamp with time zone))),");
-				}
-                                */
-			}
-                        
-			factor = factor*iv_count[i];
+
+                            // also need to group by time dimension (i.e. divide result into time buckets)?
+                            if(iv_count[i] > 1){
+                                    // Dennis Pallett:
+                                    // it's likely that the code below is not correct yet, so disable it for now
+                                    throw new UnsupportedOperationException("Time dimension does not support groups yet!");
+                                    
+                                    // TODO: implement grouping for time dimension
+                                    
+                                    /*
+                                    sqlgkey.append("floor(extract('epoch' from "+axis[i].columnExpression()+")/(extract('epoch' from '"+(((Timestamp)iv_first_obj[i][1])+"'::timestamp with time zone) - extract('epoch' from '"+((Timestamp)iv_first_obj[i][0]))+"'::timestamp with time zone)))*"+factor+"+");				
+                                    sqlgroupby.append("floor(extract('epoch' from "+axis[i].columnExpression()+")/(extract('epoch' from '"+(((Timestamp)iv_first_obj[i][1])+"'::timestamp with time zone) - extract('epoch' from '"+((Timestamp)iv_first_obj[i][0]))+"'::timestamp with time zone))),");
+                                    */
+                            } else {
+                                cols.append(", '0' AS " + colKey);
+                            }
+                        } else {
+                            throw new UnsupportedOperationException("MetricAxis with indexer of type " + indexer.getClass().getCanonicalName() + " not supported");
+                        }
+                    } else if (axis[i] instanceof NominalAxis) {
+                        throw new UnsupportedOperationException("NominalAxis not yet supported!");
+                    } else {
+                        throw new UnsupportedOperationException("Axis of type " + axis[i].getClass().getCanonicalName() + " not supported");
+                    }
+
+                    factor = factor * iv_count[i];
 		}
                 
                 
