@@ -74,7 +74,6 @@ nl.utwente.db.neogeo.preaggregate.PreAggregate {
                  * won't even be detected when using the original (non 'word') table
                  */            
 		//super(c,schema,detectNominal(table),label);
-            
                 super(c,schema, table,label);
                 
                 this.dbType = dbType;

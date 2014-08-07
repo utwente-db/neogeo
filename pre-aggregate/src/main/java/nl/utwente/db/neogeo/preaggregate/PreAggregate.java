@@ -1162,27 +1162,61 @@ public class PreAggregate {
 		StringBuilder sqlwhere = new StringBuilder();
 		StringBuilder sqlgroupby = new StringBuilder();
 		int factor = 1;
-		for(i=axis.length-1; i>=0; i--) {
-                        String colKey = "key" + i;
-                        
-			if(i<2){
-				// coordinates			
+		for(i=0; i < axis.length; i++) {
+                        String colKey = "d" + i;
+                                              
+                        // x and y axis
+			if(i == 0 ||i == 1) {
+                                if (!(axis[i] instanceof MetricAxis)) {
+                                    throw new SQLException("Expected axis " + i + " to be a MetricAxis!");
+                                }
                             
+                                MetricAxis coord_axis = (MetricAxis) axis[i];
+                            
+				// coordinates	
+                                double start = (Double) iv_first_obj[i][0];
+                                double end = (((Double)iv_first_obj[i][0])+iv_count[i]*(((Double)iv_first_obj[i][1])-((Double)iv_first_obj[i][0])));
+                                
+                                double range = (end - start);
+                                
+                                // extend range with BASEBLOCKSIZE
+                                // so that the end coordinates falls within range
+                                range = range + (Double)coord_axis.BASEBLOCKSIZE();
+                                
+                                // calculate factor to divide by
+                                double divideBy = range / iv_count[i];
+                                
+                                // calculate index of start coordinate
+                                // which is used to compensate calculate indexes
+                                // so that the start index is *always* 0 (zero)
+                                double startIndex = start / divideBy;
+                                                            
                                 // MonetDB doesn't support expressions in the GROUP BY clause
                                 // therefore these must first be separately included as additional columns
                                 if (SqlUtils.dbType(c) == DbType.MONETDB) {
-                                    cols.append(", floor("+axis[i].columnExpression()+"/"+(((Double)iv_first_obj[i][1])-((Double)iv_first_obj[i][0]))+") AS " + colKey);
+                                    cols.append(", floor( ("+axis[i].columnExpression()+"/"+ divideBy +")");
+                                    if (startIndex > 0) {
+                                        cols.append(" - ").append(startIndex);
+                                    } else if (startIndex < 0) {
+                                        cols.append(" + ").append(Math.abs(startIndex));
+                                    }
+                                    cols.append(") AS " + colKey);
                                     sqlgkey.append(colKey + "*" + factor + "+");
                                     sqlgroupby.append(colKey + ",");
                                 } else {
-                                    sqlgkey.append("floor("+axis[i].columnExpression()+"/"+(((Double)iv_first_obj[i][1])-((Double)iv_first_obj[i][0]))+")*"+factor+"+");
-                                    sqlgroupby.append("floor("+axis[i].columnExpression()+"/"+(((Double)iv_first_obj[i][1])-((Double)iv_first_obj[i][0]))+"),");
+                                    // TODO: fix for Postgres as well! (use startIndex, etc)
+                                    sqlgkey.append("floor("+axis[i].columnExpression()+"/"+ divideBy +")*"+factor+"+");
+                                    sqlgroupby.append("floor("+axis[i].columnExpression()+"/"+ divideBy +"),");
                                 }
                                 
-                                sqlwhere.append( " and "+axis[i].columnExpression()+">="+iv_first_obj[i][0]);
-				sqlwhere.append( " and "+ axis[i].columnExpression()+"<="+
-					(((Double)iv_first_obj[i][0])+iv_count[i]*(((Double)iv_first_obj[i][1])-((Double)iv_first_obj[i][0]))));
+                                sqlwhere.append( " and "+axis[i].columnExpression()+">="+ start);
+				sqlwhere.append( " and "+ axis[i].columnExpression()+"<="+ end);
 			} else {
+                                // Dennis Pallett: throw exception here because time dimension is likely still not working properly!!!
+                                throw new UnsupportedOperationException("Time dimension not yet properly supported");
+                                
+                                /*
+                            
 				// time dimension - if existent
                                 sqlwhere.append( " AND " + axis[i].columnExpression() + " >= CAST('" + ((Timestamp)iv_first_obj[i][0]) + "' AS timestamp with time zone)");
                                 
@@ -1209,7 +1243,9 @@ public class PreAggregate {
 					sqlgkey.append("floor(extract('epoch' from "+axis[i].columnExpression()+")/(extract('epoch' from '"+(((Timestamp)iv_first_obj[i][1])+"'::timestamp with time zone) - extract('epoch' from '"+((Timestamp)iv_first_obj[i][0]))+"'::timestamp with time zone)))*"+factor+"+");				
 					sqlgroupby.append("floor(extract('epoch' from "+axis[i].columnExpression()+")/(extract('epoch' from '"+(((Timestamp)iv_first_obj[i][1])+"'::timestamp with time zone) - extract('epoch' from '"+((Timestamp)iv_first_obj[i][0]))+"'::timestamp with time zone))),");
 				}
+                                */
 			}
+                        
 			factor = factor*iv_count[i];
 		}
                 

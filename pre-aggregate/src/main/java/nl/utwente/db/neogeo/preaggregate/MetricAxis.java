@@ -27,7 +27,7 @@ public class MetricAxis extends AggregateAxis {
 		public AxisSplitDimension splitAxis(Object low, Object high, int cnt);
 	}
 	
-public class IntegerAxisIndexer implements AxisIndexer {
+        public class IntegerAxisIndexer implements AxisIndexer {
 		private int low;
 		private int high;
 		private int axisSize;

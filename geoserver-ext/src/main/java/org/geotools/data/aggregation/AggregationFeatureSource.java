@@ -91,15 +91,19 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 		timeSize = data.getTimeSize();
 		cntAxis = agg.getAxis().length;
 		iv_count = new int[cntAxis];
+                boolean hasTime = false;
 		for(AggregateAxis a : agg.getAxis()){
 			if(a==x)
 				iv_count[0] = xSize;
 			else if(a==y)
 				iv_count[1] = ySize;
-			else if(a==time)
+			else if(a==time) {
 				iv_count[2] = timeSize; // INCOMPLETE
-			else if(a==nominal)
-				iv_count[2] = 1; // INCOMPLETE
+                                hasTime = true;
+                        } else if(a==nominal) {
+                                int key = (hasTime) ? 3 : 2;
+				iv_count[key] = 1; // INCOMPLETE
+                        }
 		}
 
 	}
@@ -301,6 +305,7 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 			} else{
 				LOGGER.severe("processing the query in standard SQL");
 				// TODO call the standard query processing
+                                rs = agg.SQLquery_grid_standard(this.getDataStore().getMask(), iv_first_obj, range);
 				end = System.currentTimeMillis()-start;
 				type = "standard";
 			}

@@ -108,7 +108,9 @@ public class Test {
 		//runTest_time(connection);
                 
                 //runTest_small_nominal(connection, t.getSchema());
-                runTest_small_nominal_time(connection, t.getSchema());
+                //runTest_small_nominal_time(connection, t.getSchema());
+                
+                runTest2(connection, t.getSchema());
                 
                 connection.close();
 	}
@@ -157,18 +159,20 @@ public class Test {
 			// new TweetConverter("/Users/flokstra/uk_raw.sql",c,"public","uk");
 			//
 
-                        GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", null, "myAggregate", "coordinates",0 /* axis 2 split*/,200000,null);
-			//GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", "myAggregate"); 
+                        //GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", null, "myAggregate", "coordinates",0 /* axis 2 split*/,200000,null);
+			GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", "myAggregate"); 
                     
                         //GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "uk_neogeo", "myAggregate"); 
+                        
+                        //System.exit(0);
                         
 			Object[][] obj_range = pa.getRangeValues(c);
 			//			ResultSet rs = pa.SQLquery(PreAggregate.AGGR_COUNT, obj_range);
                         
-                        /*
-                        printObjectArray(obj_range);
-                        System.exit(0);
-                        */
+                        
+                        //printObjectArray(obj_range);
+                        //System.exit(0);
+                        
                         
                                                                       
                         /*
@@ -190,9 +194,10 @@ public class Test {
 			range[1] = 4;
 			Object[][] iv_first_obj = new Object[2][2];
 			iv_first_obj[0][0] = Math.floor(((Double)obj_range[0][0])/0.001)*0.001;
-			iv_first_obj[0][1] = ((Double)iv_first_obj[0][0])+Math.ceil((((Double)obj_range[0][1]) - ((Double)obj_range[0][0]))/3/0.001)*0.001;
+			iv_first_obj[0][1] = ((Double)iv_first_obj[0][0])+Math.ceil((((Double)obj_range[0][1]) - ((Double)obj_range[0][0]))/4/0.001)*0.001;
 			iv_first_obj[1][0] = Math.floor(((Double)obj_range[1][0])/0.001)*0.001;
 			iv_first_obj[1][1] = ((Double)iv_first_obj[1][0])+Math.ceil((((Double)obj_range[1][1]) - ((Double)obj_range[1][0]))/4/0.001)*0.001;
+                        
                         
                         /*
                         printObjectArray(iv_first_obj);
@@ -200,9 +205,11 @@ public class Test {
                         */
                         
                         
+                        
+                        
                         ResultSet rs = null;
                         
-                        
+                        /*
 			rs = pa.SQLquery_grid(PreAggregate.AGGR_COUNT, iv_first_obj, range);
 			while(rs.next()){
 				System.out.println(rs.getInt(1)+"|"+rs.getLong(2) + "|" + rs.getLong(3));
@@ -210,11 +217,9 @@ public class Test {
 			rs.close();
                         
                         System.exit(0);
-                        
-                        
+                        */
+                                            
                          
-                        
-                        
 			System.out.println("\n\n standard query!");
 			rs = pa.SQLquery_grid_standard(PreAggregate.AGGR_COUNT, iv_first_obj, range);
 			while(rs.next()){
