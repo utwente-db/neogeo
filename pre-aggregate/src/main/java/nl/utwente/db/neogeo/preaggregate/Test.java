@@ -112,7 +112,9 @@ public class Test {
                 
                 //runTest3(connection, t.getSchema());
                 
-                runTestStandardTime(connection, t.getSchema());
+                //runTest_standard_time(connection, t.getSchema());
+                
+                runTest_standard_nominal(connection, t.getSchema());
                 
                 connection.close();
 	}
@@ -154,7 +156,7 @@ public class Test {
             } 
         }
         
-        public static void runTestStandardTime (Connection c, String schema) throws Exception {
+        public static void runTest_standard_time (Connection c, String schema) throws Exception {
             // NOTE: this requires an existing pre-aggregate setup with 3 dimensions: x, y and time!
             PreAggregate pa = new PreAggregate(c, schema, "london_hav_neogeo", "myAggregate");
             AggregateAxis[] axis = pa.getAxis();
@@ -492,8 +494,61 @@ public class Test {
                 
 		//PreAggregate pa = new PreAggregate(c,"public", "uk_neogeo", null /*override_name*/, "myAggregate",axis,"char_length(tweet)","bigint",PreAggregate.AGGR_ALL,2,200000,null);
                 PreAggregate pa = new PreAggregate(c, schema, "london_hav_neogeo", null /*override_name*/, "myAggregate", axis, "len" , "bigint", PreAggregate.AGGR_ALL, 2, 200000, null);
-
 	}
+        
+        public static void runTest_standard_nominal (Connection c, String schema) throws Exception {
+            // NOTE: this requires an existing pre-aggregate setup with 3 dimensions: x, y and word (nominal)!
+            PreAggregate pa = new PreAggregate(c, schema, "london_hav_neogeo" + NOMINAL_POSTFIX, "myAggregate");
+            
+            Object[][] obj_range = pa.getRangeValues(c);
+           
+            //printObjectArray(obj_range);
+            //System.exit(0);
+            
+            int[] count = new int[3];
+            count[0] = 4;
+            count[1] = 4;
+            count[2] = 1;
+                        
+            Object[][] iv_first_obj = new Object[3][2];
+            iv_first_obj[0][0] = Math.floor(((Double)obj_range[0][0])/0.001)*0.001;
+            iv_first_obj[0][1] = ((Double)iv_first_obj[0][0])+Math.ceil((((Double)obj_range[0][1]) - ((Double)obj_range[0][0]))/4/0.001)*0.001;
+            iv_first_obj[1][0] = Math.floor(((Double)obj_range[1][0])/0.001)*0.001;
+            iv_first_obj[1][1] = ((Double)iv_first_obj[1][0])+Math.ceil((((Double)obj_range[1][1]) - ((Double)obj_range[1][0]))/4/0.001)*0.001;
+            
+            //iv_first_obj[2][0] = NominalAxis.ALL;
+            //iv_first_obj[2][1] = NominalAxis.ALL;
+            iv_first_obj[2][0] = "car";
+            iv_first_obj[2][1] = "car";
+            
+            //printObjectArray(iv_first_obj);
+            //System.exit(0);
+            
+            ResultSet rs = null;
+            
+            /*
+            rs = pa.SQLquery_grid(PreAggregate.AGGR_COUNT, iv_first_obj, count);
+            while(rs.next()){
+                    System.out.println(rs.getInt(1)+"|"+rs.getLong(2) + "|" + rs.getLong(3));
+            }
+            rs.close();
+
+            System.exit(0);
+            */
+            
+            
+            
+            
+            System.out.println("\n\n standard query!");
+            rs = pa.SQLquery_grid_standard(PreAggregate.AGGR_COUNT, iv_first_obj, count);
+            while(rs.next()){
+                System.out.println(rs.getInt(1)+"|"+rs.getLong(2));
+            }
+            rs.close();
+
+            System.exit(0);
+            
+        }
 	
 	public static void runTest_nominal(Connection c) throws Exception {
 		try {

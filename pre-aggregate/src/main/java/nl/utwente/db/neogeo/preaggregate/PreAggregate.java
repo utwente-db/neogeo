@@ -1256,7 +1256,28 @@ public class PreAggregate {
                             throw new UnsupportedOperationException("MetricAxis with indexer of type " + indexer.getClass().getCanonicalName() + " not supported");
                         }
                     } else if (axis[i] instanceof NominalAxis) {
-                        throw new UnsupportedOperationException("NominalAxis not yet supported!");
+                        // nominal dimension filter
+                        if (!(iv_first_obj[i][0] instanceof String)) {
+                            throw new SQLException("NominalAxis only works with String objects as start/end");
+                        }
+                        
+                        NominalAxis nominalAxis = (NominalAxis) axis[i];
+                        
+                        // convert actual word to its index
+                        int wordIndex = nominalAxis.getWordIndex((String)iv_first_obj[i][0]);
+
+                        // add filter to query
+                        sqlwhere.append(" AND ").append(nominalAxis.columnExpression()).append(" = ").append(wordIndex);
+                        
+                        // also need to group by nominal dimension?
+                        // currently not supported and not a good idea on how to do this
+                        // probably need support for multi-keyword filters first
+                        if(iv_count[i] > 1){
+                            throw new UnsupportedOperationException("Nominal dimension does not support groups yet!");
+                        } else {
+                            cols.append(", '0' AS " + colKey);
+                        }
+                        
                     } else {
                         throw new UnsupportedOperationException("Axis of type " + axis[i].getClass().getCanonicalName() + " not supported");
                     }

@@ -261,6 +261,10 @@ public class SqlUtils {
 		throw new SQLException("UNEXPECTED");
 	}
         
+        public static String quoteValue (Connection c, String value) throws SQLException {
+            return quoteValue(dbType(c), value);
+        }
+        
         public static String quoteValue (DbType dbType, String value) {
             return "'" + value.replaceAll("\\\\", "\\\\\\\\").replaceAll("'", "\\\\'") + "'";
         }
