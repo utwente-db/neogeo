@@ -310,8 +310,8 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 				type = "standard";
 			}
 			LOGGER.severe("query response time [ms]: "+end);
-			// INCOMPLETE: commented out because the exception here could cause problems in grid query result
-			// this.getDataStore().logQuery(req, agg, this.getDataStore().getMask(),a, startTime,endTime, range,type,end);
+                        
+			this.getDataStore().logQuery(req, agg, this.getDataStore().getMask(),a, startTime,endTime, keywords, range,type,end);
 
 		} catch (Exception e1) {
 			LOGGER.severe("Caught Exception:"+e1+". There are no results");

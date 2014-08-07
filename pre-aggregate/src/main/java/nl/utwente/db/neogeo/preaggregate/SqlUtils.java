@@ -261,10 +261,18 @@ public class SqlUtils {
 		throw new SQLException("UNEXPECTED");
 	}
         
+        public static String quoteValue (DbType dbType, String value) {
+            return "'" + value.replaceAll("\\\\", "\\\\\\\\").replaceAll("'", "\\\\'") + "'";
+        }
+        
         public static String quoteIdentifier (Connection c, String ident) throws SQLException {
+            return quoteIdentifier(dbType(c), ident);
+        }
+        
+        public static String quoteIdentifier(DbType dbType, String ident) {
             String res = ident;
             
-            switch(dbType(c)) {
+            switch(dbType) {
                 case MONETDB:
                     res = "\"" + ident + "\"";
                     break;
