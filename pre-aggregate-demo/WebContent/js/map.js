@@ -117,55 +117,47 @@ function init() {
 		}
 	});
 
-	var options = {
-			controls: [],
-			projection: "EPSG:3857",
-			units: 'm',
-			center: new OpenLayers.LonLat(-0.1, 51)
-	// Google.v3 uses web mercator as projection, so we have to
-	// 	transform our coordinates
-	.transform('EPSG:4326', 'EPSG:3857'),
-	zoom: 5
+
+
+	var mapOptions = {
+		controls: [],
+		projection: "EPSG:3857",
+		layers: [
+			new OpenLayers.Layer.Google(
+				 "Google Physical",
+				 {type: google.maps.MapTypeId.TERRAIN}
+			),
+			new OpenLayers.Layer.Google(
+				 "Google Streets", // the default
+				 {numZoomLevels: 20}
+			),
+			new OpenLayers.Layer.Google(
+				 "Google Hybrid",
+				 {type: google.maps.MapTypeId.HYBRID, numZoomLevels: 20}
+			),
+			new OpenLayers.Layer.Google(
+				 "Google Satellite",
+				 {type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 22}
+			)
+		],
+		units: 'm'
 	};
+
+	if (typeof(MAP_ZOOM) != 'undefined') {
+		mapOptions.zoom = MAP_ZOOM;
+	} else {
+		mapOptions.zoom = 5;
+	}
+
+	if (typeof(MAP_CENTER) != 'undefined') {
+		mapOptions.center = MAP_CENTER;
+	} else {
+		mapOptions.center = new OpenLayers.LonLat(-0.1, 51).transform('EPSG:4326', 'EPSG:3857');
+	}
 
 
 	// definition of the map
-	map = new OpenLayers.Map('map', {
-		projection: 'EPSG:3857',
-		layers: [
-		         new OpenLayers.Layer.Google(
-		        		 "Google Physical",
-		        		 {type: google.maps.MapTypeId.TERRAIN}
-		         ),
-		         new OpenLayers.Layer.Google(
-		        		 "Google Streets", // the default
-		        		 {numZoomLevels: 20}
-		         ),
-		         new OpenLayers.Layer.Google(
-		        		 "Google Hybrid",
-		        		 {type: google.maps.MapTypeId.HYBRID, numZoomLevels: 20}
-		         ),
-		         new OpenLayers.Layer.Google(
-		        		 "Google Satellite",
-		        		 {type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 22}
-		         )
-		         ],
-		         //center: new OpenLayers.LonLat(-0.1, 51)
-		         // Google.v3 uses web mercator as projection, so we have to
-		         // transform our coordinates
-		         //    .transform('EPSG:4326', 'EPSG:3857'),
-		         //zoom: 5
-		         units: 'm',
-		         center: new OpenLayers.LonLat(-0.1, 51)
-	// Google.v3 uses web mercator as projection, so we have to
-	// 	transform our coordinates
-	.transform('EPSG:4326', 'EPSG:3857'),
-	zoom: 5
-	});
-
-	tweets_options = {opacity: 0.5};
-
-	
+	map = new OpenLayers.Map('map', mapOptions);
 
 
 	var neogeo_uk = null;
@@ -178,8 +170,8 @@ function init() {
 			var split = TWEETS_LAYER.split(':');
 			var prefix = split[0];
 			var type = split[1];
-    
-			neogeo_uk = new OpenLayers.Layer.Vector(TWEETS_TITLE, {
+
+			var layerOptions = {
 				strategies : [new OpenLayers.Strategy.BBOX()],
 				protocol : new OpenLayers.Protocol.WFS({
 					version : "1.1.0",
@@ -198,10 +190,17 @@ function init() {
 					fillOpacity: 0.7,
 					strokeColor: "#FF5B29"			
 				}),
-				renderers : renderer,
-				minScale: TWEETS_MIN_SCALE
-			});
+				renderers : renderer
+			};
+
+			if (typeof(TWEETS_MIN_SCALE) != 'undefined' && TWEETS_MIN_SCALE != false) {
+				layerOptions.minScale = TWEETS_MIN_SCALE;
+			}
+    
+			neogeo_uk = new OpenLayers.Layer.Vector(TWEETS_TITLE, layerOptions);
 		} else if (TWEETS_URL.toLowerCase().endsWith('wms')) {
+			tweets_options = {opacity: 0.5};
+
 			// setup tweets layer as WMS layer
 			if (typeof(TWEETS_MIN_SCALE) != 'undefined' && TWEETS_MIN_SCALE != false) {
 				tweets_options.minScale = TWEETS_MIN_SCALE;
@@ -367,20 +366,37 @@ function update_date() {
 	OpenLayers.Util.getElement('endday').value + "T" +
 	OpenLayers.Util.getElement('endhour').value + ":" +
 	OpenLayers.Util.getElement('endminute').value + ":00.0Z";
-	neogeo_uk_agg.mergeNewParams({'time':startstring+'/'+endstring});
-	neogeo_uk.mergeNewParams({'time':startstring+'/'+endstring});
+
+	if (typeof(neogeo_uk_agg) != 'undefined') {
+		neogeo_uk_agg.mergeNewParams({'time':startstring+'/'+endstring});
+	}
+
+	if (typeof(neogeo_uk) != 'undefined') {
+		neogeo_uk.mergeNewParams({'time':startstring+'/'+endstring});
+	}
 }
 
 function update_viewparams() {
-	var viewparams = "keyword1:"+OpenLayers.Util.getElement('keyword1').value + 
-	";keyword2:"+OpenLayers.Util.getElement('keyword2').value + 
-	";keyword3:"+OpenLayers.Util.getElement('keyword3').value + 
-	";keyword4:"+OpenLayers.Util.getElement('keyword4').value + 
-	";keyword5:"+OpenLayers.Util.getElement('keyword5').value;
+	var viewparams = "";
+
+	for(var i=1; i <= 5; i++) {
+		var field = OpenLayers.Util.getElement('keyword' + i);
+
+		if (field != null) {
+			viewparams += ";keyword" + i + ":" + field.value;
+		}
+	}
+
 	var query = OpenLayers.Util.getElement('query');
-	if(query.checked){
+	if(query != null && query.checked){
 		viewparams = viewparams+";query:standard";
 	}
-	neogeo_uk_agg.mergeNewParams({'viewparams':viewparams});
-	neogeo_uk.mergeNewParams({'viewparams':viewparams});
+
+	if (typeof(neogeo_uk_agg) != 'undefined') {
+		neogeo_uk_agg.mergeNewParams({'viewparams':viewparams});
+	}
+
+	if (typeof(neogeo_uk) != 'undefined') {
+		neogeo_uk.mergeNewParams({'viewparams':viewparams});
+	}
 }

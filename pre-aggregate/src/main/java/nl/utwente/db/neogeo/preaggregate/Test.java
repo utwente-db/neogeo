@@ -108,13 +108,13 @@ public class Test {
 		//runTest_time(connection);
                 
                 //runTest_small_nominal(connection, t.getSchema());
-                //runTest_small_nominal_time(connection, t.getSchema());
+                runTest_small_nominal_time(connection, t.getSchema());
                 
                 //runTest3(connection, t.getSchema());
                 
                 //runTest_standard_time(connection, t.getSchema());
                 
-                runTest_standard_nominal(connection, t.getSchema());
+                //runTest_standard_nominal(connection, t.getSchema());
                 
                 connection.close();
 	}
