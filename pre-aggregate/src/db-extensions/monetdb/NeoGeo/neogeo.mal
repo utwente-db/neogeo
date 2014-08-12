@@ -9,6 +9,44 @@ pattern pa_grid(query:str)(
 address compute_pa_grid
 comment "Computes a complete Pre-Aggregate grid";
 
+pattern pa_grid_enhanced(query:str, sch:str, tbl:str, key_col:str, aggr1_col:str)(
+	gkey:bat[:oid,:lng],
+	pakey:bat[:oid,:lng],
+	aggr1:bat[:oid,:lng]
+	)
+address compute_pa_grid_enhanced
+comment "Computes a complete Pre-Aggregate grid, enhanced version";
+
+pattern pa_grid_enhanced(query:str, sch:str, tbl:str, key_col:str, aggr1_col:str, aggr2_col:str)(
+	gkey:bat[:oid,:lng],
+	pakey:bat[:oid,:lng],
+	aggr1:bat[:oid,:lng],
+	aggr2:bat[:oid,:lng]
+	)
+address compute_pa_grid_enhanced
+comment "Computes a complete Pre-Aggregate grid, enhanced version";
+
+pattern pa_grid_enhanced(query:str, sch:str, tbl:str, key_col:str, aggr1_col:str, aggr2_col:str, aggr3_col:str)(
+	gkey:bat[:oid,:lng],
+	pakey:bat[:oid,:lng],
+	aggr1:bat[:oid,:lng],
+	aggr2:bat[:oid,:lng],
+	aggr3:bat[:oid,:lng]
+	)
+address compute_pa_grid_enhanced
+comment "Computes a complete Pre-Aggregate grid, enhanced version";
+
+pattern pa_grid_enhanced(query:str, sch:str, tbl:str, key_col:str, aggr1_col:str, aggr2_col:str, aggr3_col:str, aggr4_col:str)(
+	gkey:bat[:oid,:lng],
+	pakey:bat[:oid,:lng],
+	aggr1:bat[:oid,:lng],
+	aggr2:bat[:oid,:lng],
+	aggr3:bat[:oid,:lng],
+	aggr4:bat[:oid,:lng]
+	)
+address compute_pa_grid_enhanced
+comment "Computes a complete Pre-Aggregate grid, enhanced version";
+
 pattern pa_grid_cell(query:str)(
 	pakey:bat[:oid,:lng])
 address compute_pa_grid_cell

@@ -21,6 +21,7 @@
 /* export MAL wrapper functions */
 
 neogeo_export char * compute_pa_grid(Client cntxt, MalBlkPtr mb, MalStkPtr stk, InstrPtr pci);
+neogeo_export char * compute_pa_grid_enhanced(Client cntxt, MalBlkPtr mb, MalStkPtr stk, InstrPtr pci);
 neogeo_export char * compute_pa_grid_cell(Client cntxt, MalBlkPtr mb, MalStkPtr stk, InstrPtr pci);
 
 #endif /* _SQL_NEOGEO_H_ */

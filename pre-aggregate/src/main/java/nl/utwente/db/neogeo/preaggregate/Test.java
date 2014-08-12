@@ -103,12 +103,11 @@ public class Test {
                     System.exit(1);
                 }
                 
-		// runTest_nominal( connection );
-		// setup_silo3( connection );
-		//runTest_time(connection);
+		                
+                runTest(connection, t.getSchema());
                 
                 //runTest_small_nominal(connection, t.getSchema());
-                runTest_small_nominal_time(connection, t.getSchema());
+                //runTest_small_nominal_time(connection, t.getSchema());
                 
                 //runTest3(connection, t.getSchema());
                 
@@ -163,11 +162,9 @@ public class Test {
             
             Object[][] obj_range = pa.getRangeValues(c);
             
-            /*
-            obj_range[2][0] = new Timestamp(1318424400000L); // 2011-10-12 15:00:00.0
-            obj_range[2][1] = new Timestamp(1318431600000L); // 2011-10-12 17:00:00.0
-            */
-                        
+            
+            //obj_range[2][0] = new Timestamp(1318424400000L); // 2011-10-12 15:00:00.0
+            //obj_range[2][1] = new Timestamp(1318431600000L); // 2011-10-12 17:00:00.0
             
             //printObjectArray(obj_range);
             //System.exit(0);
@@ -190,6 +187,7 @@ public class Test {
             iv_first_obj[2][0] = dim.getStart();
             iv_first_obj[2][1] = dim.getEnd();
             
+            
             //printObjectArray(iv_first_obj);
             //System.exit(0);
             
@@ -204,6 +202,8 @@ public class Test {
 
             System.exit(0);
             */
+            
+            
             
             
             System.out.println("\n\n standard query!");
@@ -225,9 +225,9 @@ public class Test {
 			//
 
                         //GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", null, "myAggregate", "coordinates",0 /* axis 2 split*/,200000,null);
-			GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", "myAggregate"); 
+			//GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", "myAggregate"); 
                     
-                        //GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "uk_neogeo", "myAggregate"); 
+                        GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "uk_neogeo", "myAggregate"); 
                         
                         //System.exit(0);
                         
@@ -274,7 +274,7 @@ public class Test {
                         
                         ResultSet rs = null;
                         
-                        /*
+                        
 			rs = pa.SQLquery_grid(PreAggregate.AGGR_COUNT, iv_first_obj, range);
 			while(rs.next()){
 				System.out.println(rs.getInt(1)+"|"+rs.getLong(2) + "|" + rs.getLong(3));
@@ -282,7 +282,7 @@ public class Test {
 			rs.close();
                         
                         System.exit(0);
-                        */
+                        
                                             
                          
 			System.out.println("\n\n standard query!");
@@ -413,11 +413,11 @@ public class Test {
 			// new TweetConverter("/Users/flokstra/uk_raw.sql",c,"public","uk");
 			//
 
-			GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", null, "myAggregate", "coordinates",0 /* axis 2 split*/,200000,null);
+			//GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", null, "myAggregate", "coordinates",0 /* axis 2 split*/,200000,null);
                         //GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", "myAggregate"); 
                         
                         //GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "uk_neogeo", null, "myAggregate", "coordinates",0 /* axis 2 split*/,200000,null);
-                        //GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "uk_neogeo", "myAggregate");
+                        GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "uk_neogeo", "myAggregate");
                         
 			
                         //GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "nl_all", null, "myAggregate", "coordinates",1 /* axis 2 split*/,200000,null);
@@ -429,7 +429,7 @@ public class Test {
 			// pa.boxQuery("count",-0.058,51.58961,0.095,51.48287); // left of havering, few tweets
 			
 			// pa.boxQuery("count",-0.38326,51.62780,0.14554,51.39572); // a big london query
-			//pa.boxQuery("count",-8.4,60,1.9,49); // the entire UK query
+			pa.boxQuery("count",-8.4,60,1.9,49); // the entire UK query
 
 			// pa.boxQuery3d("count",-0.058,51.58961,0.095,51.48287,new Timestamp(1319000000000L), new Timestamp(1319900000000L)); // left of havering, few tweets
 			// pa.boxQuery3d("count",0.18471,51.60626,0.23073,51.55534,new Timestamp(1319000000000L), new Timestamp(1319900000000L)); // in the middle of havering map *correction anomaly

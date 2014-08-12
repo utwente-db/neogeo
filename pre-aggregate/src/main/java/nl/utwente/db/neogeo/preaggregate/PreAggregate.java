@@ -1019,7 +1019,7 @@ public class PreAggregate {
 		if ( serversideStairwalk ) {
 			int swgc[][] = new int[axis.length][3]; // start/width/gridcells
 
-			StringBuilder gksplit = new StringBuilder();
+			
 			long prev_dimsize = 1;
 			for(i=0; i<axis.length; i++) {
 				swgc[i][0] = iv_first[i];	// start
@@ -1031,18 +1031,54 @@ public class PreAggregate {
 				prev_dimsize *= iv_count[i];
 			}
 			StringBuilder sqlaggr = new StringBuilder();
-			if ((queryAggregateMask & aggregateMask & AGGR_COUNT) != 0)
-				sqlaggr.append(",sum(countAggr) AS countAggr");
-			if ((queryAggregateMask & aggregateMask & AGGR_SUM) != 0)
-				sqlaggr.append(",sum(sumAggr) AS sumAggr");
-			if ((queryAggregateMask & aggregateMask & AGGR_MIN) != 0)
-				sqlaggr.append(",min(minAggr) AS minAggr");
-			if ((queryAggregateMask & aggregateMask & AGGR_MAX) != 0)
-				sqlaggr.append(",max(maxAggr) AS maxAggr");
-			String gcells = "pa_grid(\'" + grid_paGridQuery(swgc) + "\')";
+                        
+                        if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                            if ((queryAggregateMask & aggregateMask & AGGR_COUNT) != 0)
+                                    sqlaggr.append(",sum(aggr1) AS countAggr");
+                            if ((queryAggregateMask & aggregateMask & AGGR_SUM) != 0)
+                                    sqlaggr.append(",sum(aggr2) AS sumAggr");
+                            if ((queryAggregateMask & aggregateMask & AGGR_MIN) != 0)
+                                    sqlaggr.append(",min(aggr3) AS minAggr");
+                            if ((queryAggregateMask & aggregateMask & AGGR_MAX) != 0)
+                                    sqlaggr.append(",max(aggr4) AS maxAggr");
+                        } else {                        
+                            if ((queryAggregateMask & aggregateMask & AGGR_COUNT) != 0)
+                                    sqlaggr.append(",sum(countAggr) AS countAggr");
+                            if ((queryAggregateMask & aggregateMask & AGGR_SUM) != 0)
+                                    sqlaggr.append(",sum(sumAggr) AS sumAggr");
+                            if ((queryAggregateMask & aggregateMask & AGGR_MIN) != 0)
+                                    sqlaggr.append(",min(minAggr) AS minAggr");
+                            if ((queryAggregateMask & aggregateMask & AGGR_MAX) != 0)
+                                    sqlaggr.append(",max(maxAggr) AS maxAggr");
+                        }
+                        
+                        StringBuilder gcells = new StringBuilder("pa_grid_enhanced(\'");
+                        gcells.append(grid_paGridQuery(swgc));
+                        gcells.append("\'");
+                        
+                        // MonetDB has a more advanced version of the pa_grid function
+                        // so we need to add additional parameters
+                        if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                            gcells.append(", ").append(SqlUtils.quoteValue(c, schema));
+                            gcells.append(", ").append(SqlUtils.quoteValue(c, table + PA_EXTENSION));
+                            gcells.append(", ").append(SqlUtils.quoteValue(c, "ckey"));
+                            
+                            if ((queryAggregateMask & aggregateMask & AGGR_COUNT) != 0)
+                                gcells.append(", ").append(SqlUtils.quoteValue(c, "countaggr"));
+                            if ((queryAggregateMask & aggregateMask & AGGR_SUM) != 0)
+                                gcells.append(", ").append(SqlUtils.quoteValue(c, "sumaggr"));
+                            if ((queryAggregateMask & aggregateMask & AGGR_MIN) != 0)
+                                gcells.append(", ").append(SqlUtils.quoteValue(c, "minaggr"));
+                            if ((queryAggregateMask & aggregateMask & AGGR_MAX) != 0)
+                                gcells.append(", ").append(SqlUtils.quoteValue(c, "maxaggr"));
+                        }
+                        
+                        gcells.append(")");
+                        
+                        
 			StringBuilder gk_ex = new StringBuilder();
 			StringBuilder order  = new StringBuilder();
-			
+                        
 			gk_ex.append("gkey");
 			int prevBits = 0;
 			for(i=0; i<iv_count.length; i++) {
@@ -1060,8 +1096,22 @@ public class PreAggregate {
 				order.append("d"+i);
 				prevBits += dimBits;
 			}
-			String sql = "SELECT "+gk_ex+sqlaggr+" FROM "+schema+"."+table+PA_EXTENSION+", "+gcells+ " WHERE ckey=pakey GROUP BY gkey ORDER BY "+order+";";
-			System.out.println("#!GRID_QUERY="+sql);	
+                        
+                        StringBuilder sql = new StringBuilder("SELECT ");
+                        sql.append(gk_ex).append(sqlaggr);
+                        sql.append(" FROM ");
+                        if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                            // only select from pa_grid function
+                           sql.append(gcells);
+                        } else {
+                            // select from _pa table and pa_grid function and join on ckey/pakey
+                            sql.append(schema).append(".").append(table).append(PA_EXTENSION).append(", ").append(gcells);
+                            sql.append(" WHERE ckey = pakey");
+                        }
+                        sql.append(" GROUP BY gkey");
+                        sql.append(" ORDER BY ").append(order);
+                        
+			System.out.println("#!GRID_QUERY="+sql.toString());	
 			//
 			if ( false ) {
 				int cellnr[] = { 7, 8 };
@@ -1109,7 +1159,7 @@ public class PreAggregate {
 			}
 			
 			//
-			result = SqlUtils.execute(c,sql);
+			result = SqlUtils.execute(c,sql.toString());
 		} else {
 			// explode it
 			PermutationGenerator p = new PermutationGenerator(axis.length);
@@ -1460,29 +1510,61 @@ public class PreAggregate {
 
 		// kd.switchSubindexOff();
 
-		String sqlaggr;
-		if ( aggr.equals("count") )
-			sqlaggr = "sum(countAggr)";
-		else if ( aggr.equals("sum") )
-			sqlaggr = "sum(sumAggr)";
-		else if ( aggr.equals("min") )
-			sqlaggr = "min(minAggr)";
-		else if ( aggr.equals("max") )
-			sqlaggr = "max(maxAggr)";
-		else
-			throw new SQLException("unexpected aggr: "+aggr);
-		StringBuffer qb = new StringBuffer("SELECT "+sqlaggr+" FROM "+schema+"."+table+PA_EXTENSION);
+		String sqlaggr = "";
+                String aggrCol = "";
+                if (serversideStairwalk  && SqlUtils.dbType(c) == DbType.MONETDB) {
+                    if ( aggr.equals("count") ) {
+                        sqlaggr = "sum(aggr1) AS countAggr";
+                        aggrCol = "countaggr";
+                    } else if ( aggr.equals("sum") ) {
+                        sqlaggr = "sum(aggr1) AS sumAggr";
+                        aggrCol = "sumaggr";
+                    } else if ( aggr.equals("min") ) {
+                        sqlaggr = "min(aggr1) AS minAggr";
+                        aggrCol = "minaggr";
+                    } else if ( aggr.equals("max") ) {
+                        sqlaggr = "max(aggr1) AS maxAggr";
+                        aggrCol = "maxaggr";
+                    } else {
+                        throw new SQLException("unexpected aggr: "+aggr);
+                    }
+                } else {                
+                    if ( aggr.equals("count") ) sqlaggr = "sum(countAggr)";
+                    else if ( aggr.equals("sum") ) sqlaggr = "sum(sumAggr)";
+                    else if ( aggr.equals("min") ) sqlaggr = "min(minAggr)";
+                    else if ( aggr.equals("max") ) sqlaggr = "max(maxAggr)";
+                    else throw new SQLException("unexpected aggr: "+aggr);
+                }
+                
+		StringBuffer qb = new StringBuffer("SELECT ");
+                qb.append(sqlaggr).append(" FROM ");
+                
+                // select directly from PA table when not doing serverside stairwalk
+                // or when database is not MonetDB
+                // because MonetDB does not need to select from PA table in serverside stairwalk
+                if (serversideStairwalk == false || SqlUtils.dbType(c) != DbType.MONETDB) {                
+                    qb.append(schema).append(".").append(table).append(PA_EXTENSION);
+                }
+
 		System.out.println("$ pa-command = "+range_paGridQuery(ranges));
 		long internalCount = 0;
 		if ( serversideStairwalk ) {
-			// use Postgres internal pacells2d function
+			// use internal pacells2d function
 			String pa_grid_str;
-
-			pa_grid_str = "pa_grid_cell('"+range_paGridQuery(ranges)+"') AS pakey "; // 2 times faster
-			qb.append(", ");
-			qb.append(pa_grid_str);
-			qb.append(" WHERE ckey=pakey");
-
+                        
+                        if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                            qb.append("pa_grid_enhanced(");
+                            qb.append(SqlUtils.quoteValue(c, range_paGridQuery(ranges)));
+                            qb.append(", ").append(SqlUtils.quoteValue(c, schema));
+                            qb.append(", ").append(SqlUtils.quoteValue(c, table + PA_EXTENSION));
+                            qb.append(", ").append(SqlUtils.quoteValue(c, "ckey"));
+                            qb.append(", ").append(SqlUtils.quoteValue(c, aggrCol));
+                            qb.append(")");
+                        } else {
+                            qb.append(", ");
+                            qb.append("pa_grid_cell('").append(range_paGridQuery(ranges)).append("') AS pakey ");
+                            qb.append(" WHERE ckey=pakey");
+                        }
 		} else {
 			Vector<AggrKey> resKeys;
 			resKeys = computePaCells(kd,ranges,axis);

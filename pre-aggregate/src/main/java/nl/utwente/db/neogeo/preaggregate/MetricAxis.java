@@ -535,6 +535,7 @@ public class  TimestampAxisIndexer implements AxisIndexer {
 			if(cnt>0)
 				// return new AxisSplitDimension(new Timestamp(_start*BASEBLOCKSIZE), new Timestamp((_start+deltal)*BASEBLOCKSIZE),cnt);
 				return new AxisSplitDimension(new Timestamp(this.low+_start*BASEBLOCKSIZE), new Timestamp(this.low+(_start+deltal)*BASEBLOCKSIZE),cnt);
+                        
 			throw new RuntimeException("remaining count value is less than or euqal to 0: "+cnt);
 		}
 	}
