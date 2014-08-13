@@ -172,7 +172,7 @@ function init() {
 			var type = split[1];
 
 			var layerOptions = {
-				strategies : [new OpenLayers.Strategy.BBOX()],
+				strategies : [new OpenLayers.Strategy.BBOX({ratio:1})],
 				protocol : new OpenLayers.Protocol.WFS({
 					version : "1.1.0",
 					url : TWEETS_URL, 
@@ -288,6 +288,10 @@ function init() {
 	var panel = new OpenLayers.Control.CustomNavToolbar();
 	panel.setLayer(panelLayers);
 	
+	//map.addControl(new OpenLayers.Control.PanZoomBar({
+	//position: new OpenLayers.Pixel(2, 15)
+	//}));
+	map.addControl(new OpenLayers.Control.Zoom());
 	map.addControl(new OpenLayers.Control.Permalink());
 	map.addControl(new OpenLayers.Control.ScaleLine());
 	map.addControl(new OpenLayers.Control.Permalink('permalink'));
