@@ -356,6 +356,32 @@ public class SqlUtils {
                         throw new UnsupportedOperationException("Database of type " + dbType(c) + " not yet supported!");
 		}	
 	}
+        
+        public static String gen_COPY_INTO (Connection c, String subquery, String filePath) throws SQLException {
+            return gen_COPY_INTO (c, subquery, filePath, ",", "\n", "\"", "");
+        }
+        
+        public static String gen_COPY_INTO (Connection c, String subquery, String filePath, String fieldSep, String rowSep, String strQuote, String nullAs) throws SQLException {
+            StringBuilder sql = new StringBuilder();
+            
+            switch ( dbType(c) ) {
+                case MONETDB:
+                    sql.append("COPY ").append(subquery).append("\n");
+                    sql.append(" INTO ").append(quoteValue(c, filePath)).append("\n");
+                    sql.append(" USING DELIMITERS ");
+                    sql.append(quoteValue(c, fieldSep)).append(", ");
+                    sql.append(quoteValue(c, rowSep)).append(", ");
+                    sql.append(quoteValue(c, strQuote)).append("\n");
+                    sql.append(" NULL AS ").append(quoteValue(c, nullAs)).append(";\n");
+                    
+                    break;
+                default:
+                    throw new UnsupportedOperationException("DbType " + dbType(c) + " not supported (yet?)");
+            }
+            
+            return sql.toString();
+            
+        }
 
 	public static String gen_Select_INTO(Connection c, String table, String select_head, String select_tail, boolean dropfirst) throws SQLException {
                 String dropstat = "";

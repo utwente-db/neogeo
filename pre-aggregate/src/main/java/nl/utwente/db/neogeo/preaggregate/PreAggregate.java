@@ -215,6 +215,48 @@ public class PreAggregate {
 		sql_build.addPost("DROP TABLE " + schema + "." + tableName + ";\n");
 		return tableName;
 	}
+        
+        protected short initializeAxis (String table, AggregateAxis[] axis) throws SQLException {
+            int i;
+            
+            if ( showAxisAndKey )
+                    System.out.println("#! Aggregate Axis:");
+            
+            Object obj_ranges[][] = getRangeValues(c,schema,table,axis);
+            short maxLevel = 0;
+            for (i = 0; i < axis.length; i++) {
+                    if (axis[i].isMetric()) {
+                            MetricAxis metric = (MetricAxis) axis[i];
+
+                            if (metric.hasRangeValues()) {
+                                    if ((metric.getIndex(obj_ranges[i][RMIN], true) < 0) || 
+                                            (metric.getIndex(obj_ranges[i][RMAX], true) < 0))
+                                            throw new RuntimeException("predefined ranges conflict with min/max dataset");
+                            } else {
+                                    metric.setRangeValues(obj_ranges[i][RMIN], obj_ranges[i][RMAX]);
+                            }
+
+                            /*
+                             * Adjust the axis a little bit too wide on blocksize multiples
+                             */
+                            Object wide_min, wide_max;
+
+                            wide_min = metric.reverseValue(-1);
+                            wide_max = metric.reverseValue(axis[i].axisSize());
+                            // System.out.println("#!OLD    AXIS: "+axis[i]);
+                            metric.setRangeValues(wide_min, wide_max);
+                            // System.out.println("#!ADJUST AXIS: "+axis[i]);
+                    }
+                    if ( axis[i].maxLevels() > maxLevel )
+                            maxLevel = axis[i].maxLevels();
+                    
+                    if (showAxisAndKey)
+                            System.out.println("AXIS["+i+"]="+axis[i]);
+            }
+            obj_ranges = null;
+            
+            return maxLevel;
+        }
 
 	protected void createPreAggregate(Connection c, String schema,
 			String table, String override_name, String label, AggregateAxis axis[],
@@ -236,40 +278,7 @@ public class PreAggregate {
 		/*
 		 * First initialize and compute the aggregation axis
 		 */
-		if ( showAxisAndKey )
-			System.out.println("#! Aggregate Axis:");
-		Object obj_ranges[][] = getRangeValues(c,schema,table,axis);
-		short maxLevel = 0;
-		for (i = 0; i < axis.length; i++) {
-			if (axis[i].isMetric()) {
-				MetricAxis metric = (MetricAxis) axis[i];
-
-				if (metric.hasRangeValues()) {
-					if ((metric.getIndex(obj_ranges[i][RMIN], true) < 0) || 
-						(metric.getIndex(obj_ranges[i][RMAX], true) < 0))
-						throw new RuntimeException(
-								"createPreAggregate: predefined ranges conflict with min/max dataset");
-				} else {
-					metric.setRangeValues(obj_ranges[i][RMIN], obj_ranges[i][RMAX]);
-				}
-
-				/*
-				 * Adjust the axis a little bit too wide on blocksize multiples
-				 */
-				Object wide_min, wide_max;
-
-				wide_min = metric.reverseValue(-1);
-				wide_max = metric.reverseValue(axis[i].axisSize());
-				// System.out.println("#!OLD    AXIS: "+axis[i]);
-				metric.setRangeValues(wide_min, wide_max);
-				// System.out.println("#!ADJUST AXIS: "+axis[i]);
-			}
-			if ( axis[i].maxLevels() > maxLevel )
-				maxLevel = axis[i].maxLevels();
-			if (showAxisAndKey)
-				System.out.println("AXIS["+i+"]="+axis[i]);
-		}
-		obj_ranges = null;
+		short maxLevel = initializeAxis(table, axis);
 
 		kd = new AggrKeyDescriptor(DEFAULT_KD, axis);
 		if (showAxisAndKey)
