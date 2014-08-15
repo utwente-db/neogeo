@@ -11,8 +11,12 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import static nl.utwente.db.neogeo.preaggregate.NominalGeoTaggedTweetAggregate.NOMINAL_POSTFIX;
 import nl.utwente.db.neogeo.preaggregate.SqlUtils.DbType;
+import org.apache.log4j.BasicConfigurator;
 
 public class Test {    
 	private static final String CONFIG_FILENAME = "database.properties";
@@ -102,7 +106,8 @@ public class Test {
                     System.err.println("Unable to create connection object!");
                     System.exit(1);
                 }
-                
+  
+                BasicConfigurator.configure();
 		                
                 runTest(connection, t.getSchema());
                 
@@ -415,12 +420,16 @@ public class Test {
 
 			//GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", null, "myAggregate", "coordinates",0 /* axis 2 split*/,200000,null);
                         //GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", "myAggregate"); 
+                    
+                        // axis to split: 0 (= x-axis)
+                        // chunkSize: 2000 (very small, but needed to experiment with chunking!)
+                        GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", null, "myAggregate", "coordinates", 0, 2000,null);
                         
                         //GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "uk_neogeo", null, "myAggregate", "coordinates",0 /* axis 2 split*/,200000,null);
                         //GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "uk_neogeo", "myAggregate");
                         
-                        //eotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "nl_all", null, "myAggregate", "coordinates",0 /* axis 2 split*/,200000,null);
-                        GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "uk_neogeo", "myAggregate");
+                        //GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "nl_all", null, "myAggregate", "coordinates",0 /* axis 2 split*/,200000,null);
+                        //GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "uk_neogeo", "myAggregate");
                         
 			
                         //GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "nl_all", null, "myAggregate", "coordinates",1 /* axis 2 split*/,200000,null);

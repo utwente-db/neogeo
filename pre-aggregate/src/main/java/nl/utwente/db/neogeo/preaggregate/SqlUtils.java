@@ -438,10 +438,13 @@ public class SqlUtils {
                     "CREATE FUNCTION GREATEST (num1 int, num2 int)\n" +
                     "RETURNS int\n" +
                     "BEGIN\n" +
-                    "\t	IF (num1 > num2)\n" +
-                    "\t THEN RETURN num1;\n" +
-                    "\t ELSE RETURN num2;\n" +
-                    "\t END IF;\n" +
+                    "\t  CASE \n" +
+                    "\t  WHEN (num1 IS NULL AND num2 IS NULL) THEN RETURN NULL;\n" +
+                    "\t  WHEN (num1 IS NULL) THEN RETURN num2;\n" +
+                    "\t  WHEN (num2 IS NULL) THEN RETURN num1;\n" +
+                    "\t  WHEN (num1 > num2) THEN RETURN num1;\n" +
+                    "\t  ELSE RETURN num2;\n" +
+                    "\t  END CASE;\n" +
                     "END;"
                 );
                 
@@ -476,10 +479,13 @@ public class SqlUtils {
                     "CREATE FUNCTION LEAST (num1 int, num2 int)\n" +
                     "RETURNS int\n" +
                     "BEGIN\n" +
-                    "\t	IF (num1 < num2)\n" +
-                    "\t THEN RETURN num1;\n" +
-                    "\t ELSE RETURN num2;\n" +
-                    "\t END IF;\n" +
+                    "\t   CASE \n" +
+                    "\t   WHEN (num1 IS NULL AND num2 IS NULL) THEN RETURN NULL;\n" +
+                    "\t   WHEN (num1 IS NULL) THEN RETURN num2;\n" +
+                    "\t   WHEN (num2 IS NULL) THEN RETURN num1;\n" +
+                    "\t   WHEN (num1 < num2) THEN RETURN num1;\n" +
+                    "\t   ELSE RETURN num2;\n" +
+                    "\t   END CASE;\n" +
                     "END;"
                 );
             }

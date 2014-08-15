@@ -23,7 +23,7 @@ public class PreAggregate {
 	private static final Logger LOGGER = Logger.getLogger("org.geotools.data.aggregation.PreAggregate");
 	
 	private final boolean gen_optimized = true;
-
+        
 	/*
 	 * Experiment setup variables
 	 * 
@@ -31,6 +31,7 @@ public class PreAggregate {
 	public static final boolean showAxisAndKey		= true;
 	public static final boolean	doResultCorrection	= true;
 	public static final boolean	serversideStairwalk	= true;
+        public static final boolean executeQueriesDirectly      = true;
 	public static final char	DEFAULT_KD			= AggrKeyDescriptor.KD_CROSSPRODUCT_LONG;
 
 	private	static final int	AGGR_BASE			= 0x01;
@@ -280,6 +281,8 @@ public class PreAggregate {
 		 * in post_script.
 		 */
 		SqlScriptBuilder sql_build = new SqlScriptBuilder(c);
+                
+                sql_build.setExecuteDirectly(executeQueriesDirectly);
                                 
 		for(i=0; i<axis.length; i++) {
 			// generate the range conversion function for the dimension
@@ -366,18 +369,7 @@ public class PreAggregate {
 			ro = axisToSplit.split(nChunks);
 		}
                 
-                String level0_n_table = schema + "." + indexPrefix + "0_n";
                 String level0_table = schema + "." + indexPrefix + "level0";
-                
-                // ensure level 0_n table namespace is available
-                if (SqlUtils.dbType(c) == DbType.MONETDB) {
-                    if (SqlUtils.existsTable(c, schema, indexPrefix + "0_n")) {
-                        sql_build.add("DROP TABLE " + level0_n_table + ";\n");
-                    }
-                } else {
-                    sql_build.add("DROP TABLE IF EXISTS " + level0_n_table + ";\n");
-                }
-                sql_build.newLine();
                 
                 // ensure level0 table namespace is available
                 if (SqlUtils.dbType(c) == DbType.MONETDB) {
@@ -388,6 +380,22 @@ public class PreAggregate {
                     sql_build.add("DROP TABLE IF EXISTS " + level0_table + ";\n");
                 }
                 sql_build.newLine();
+                
+                // ensure the chunks table does not exist already
+                String chunks_table = table_pa + "_chunks_tmp";
+                if (SqlUtils.existsTable(c, schema, chunks_table)) {
+                    sql_build.add("DROP TABLE " + chunks_table + ";\n");
+                }
+                
+                // create the chunks table
+                // this is a temporary table which holds all the data of the chunks
+                // and later get GROUP'ed into the final PA table
+                sql_build.add("CREATE TABLE " + chunks_table + " (ckey bigint, " +
+                            ((aggregateMask&AGGR_COUNT)!=0 ? "\tcountAggr bigint,\n" : "") + 
+                            ((aggregateMask&AGGR_SUM) !=0 ? "\tsumAggr "  +aggregateType+",\n" : "") +
+                            ((aggregateMask&AGGR_MIN)!=0 ? "\tminAggr "+aggregateType+",\n" : "") +
+                            ((aggregateMask&AGGR_MAX)!=0 ? "\tmaxAggr "+aggregateType+"\n" : "") +
+                            ");\n");
                 
 		for (i = 0; i < nChunks; i++) {
 			/*
@@ -406,114 +414,23 @@ public class PreAggregate {
 					schema + "." + table, where, axis, aggregateColumn,
 					aggregateMask));
 			sql_build.newLine();
-                        
-			//if ( i == 0 ) // drop this table only once
-				//sql_build.addPost("DROP TABLE " + level0_table + ";\n");
-                        
+                                                
 			String level0 = level0_table;
 
 			/*
 			 * Now generate the index levels 0 + n-1
-			 */                                                
-			if (i == -1) // drop this table only once
-				sql_build.addPost("DROP TABLE " + level0_n_table + ";\n");
-                        
+			 */                                                                        
 			if ( !gen_optimized ) {
-				level0_n_table = schema + "." + indexPrefix + "0_n";
-				String level0_n = generate_level0_n(c, level0_n_table, level0,
+				String level0_n = generate_level0_n(c, chunks_table, level0,
 						axis, dimTable, genKey, aggregateMask);
 				sql_build.add(level0_n);
 				sql_build.newLine();
 			} else {
 				// use the optimized strategy
-				generate_optimized(c, sql_build, level0_n_table, level0, lfp_table, axis, genKey, aggregateMask);
-			}
-                        
-			if ( nChunks == 1 ) {
-				sql_build.add("INSERT INTO " + table_pa
-						+ " (\n\tSELECT * FROM " + level0_n_table + "\n);");
-				sql_build.newLine();
-			} else {
-				StringBuilder add_aggr = new StringBuilder();
-
-				if ((aggregateMask & AGGR_COUNT) != 0)
-					add_aggr.append(",countAggr = pa_table.countAggr + pa_delta.countAggr");
-				if ((aggregateMask & AGGR_SUM) != 0)
-					add_aggr.append(",sumAggr = pa_table.sumAggr + pa_delta.sumAggr");
-				if ((aggregateMask & AGGR_MIN) != 0)
-					add_aggr.append(",minAggr = LEAST(pa_table.minAggr,pa_delta.minAggr)");
-				if ((aggregateMask & AGGR_MAX) != 0)
-					add_aggr.append(",maxAggr = GREATEST(pa_table.maxAggr,pa_delta.maxAggr)");
-                                
-                                if (SqlUtils.dbType(c) == DbType.MONETDB) {
-                                    // unfortunately, MonetDB does not support view-based updates
-                                    // so a less efficient approach is needed
-                                    StringBuilder select = new StringBuilder("SELECT pa_table.ckey");
-                                    StringBuilder insert = new StringBuilder("INSERT INTO " + table_pa + " (SELECT ckey");
-                                    
-                                    if ((aggregateMask & AGGR_COUNT) != 0) {
-                                            select.append(", pa_table.countAggr + pa_delta.countAggr AS countAggr");
-                                            insert.append(", countAggr");
-                                    }
-                                    if ((aggregateMask & AGGR_SUM) != 0) {
-                                            select.append(", pa_table.sumAggr + pa_delta.sumAggr AS sumAggr");
-                                            insert.append(", sumAggr");
-                                    }
-                                    if ((aggregateMask & AGGR_MIN) != 0) {
-                                            select.append(", LEAST(pa_table.minAggr,pa_delta.minAggr) AS minAggr");
-                                            insert.append(", minAggr");
-                                    }
-                                    if ((aggregateMask & AGGR_MAX) != 0) {
-                                            select.append(", GREATEST(pa_table.maxAggr,pa_delta.maxAggr) AS maxAggr");
-                                            insert.append(", maxAggr");
-                                    }
-                                    
-                                    select.append(" FROM " + table_pa + " AS pa_table, ");
-                                    select.append(level0_n_table + " AS pa_delta ");
-                                    select.append(" WHERE pa_delta.ckey = pa_table.ckey");
-                                    
-                                    // insert updated-rows into temp PA table
-                                    String tmp_table = table_pa + "_tmp";
-                                    sql_build.add(SqlUtils.gen_Select_INTO(c, tmp_table, select.toString(), "", false));
-                                    sql_build.newLine();
-                                    sql_build.newLine();
-                                    
-                                    // delete rows-to-be-updated from PA table
-                                    sql_build.add("DELETE FROM " + table_pa + 
-                                                  " WHERE ckey IN (SELECT ckey FROM " + tmp_table + ");\n");
-                                    sql_build.newLine();
-                                    
-                                    // transfer updated-rows from temp table to real PA table
-                                    insert.append(" FROM " + tmp_table + ");");
-                                    
-                                    sql_build.add(insert.toString());
-                                    sql_build.newLine();
-                                    
-                                    sql_build.add("DROP TABLE " + tmp_table + ";\n");       
-                                    sql_build.newLine();
-                                } else {                                
-                                    sql_build.add("UPDATE "
-						+ table_pa
-						+ " AS pa_table \n\tSET "
-						+ add_aggr.substring(1) // remove leading ','
-						+ " \n\tFROM "
-						+ level0_n_table
-						+ " AS pa_delta WHERE pa_delta.ckey = pa_table.ckey;\n\n");
-                                }
-
-				sql_build
-				.add("INSERT INTO "
-						+ table_pa
-						+ " (\n\tSELECT * FROM "
-						+ level0_n_table
-						+ " AS pa_delta \n\tWHERE NOT EXISTS (SELECT * FROM "
-						+ table_pa
-						+ " AS pa_table WHERE pa_delta.ckey = pa_table.ckey));\n");
-				sql_build.newLine();
+				generate_optimized(c, sql_build, chunks_table, level0, lfp_table, axis, genKey, aggregateMask);
 			}
                         
                         sql_build.add("DROP TABLE " + level0_table + ";\n");
-                        sql_build.add("DROP TABLE " + level0_n_table + ";\n");
                                                 
 			if ( false ) {
 				if ( gen_optimized )
@@ -525,24 +442,25 @@ public class PreAggregate {
 			}
 		}
                 
-                // MonetDB requires that the PA table is sorted on the primary key (ckey)
+                
+                sql_build.newLine();
+
+                // Group chunks by ckey and move into final PA table
+                // MonetDB also requires that the PA table is sorted on the primary key (ckey)
                 // to achieve high-performance (see: https://www.monetdb.org/pipermail/users-list/2014-July/007400.html)
-                if (SqlUtils.dbType(c) == DbType.MONETDB) {
-                    String table_pa_temp = table_pa + "_temp";
+                sql_build.add("INSERT INTO " + table_pa + " " +
+                        " SELECT ckey, SUM(countaggr) AS countaggr, SUM(sumaggr) AS sumaggr, MIN(minaggr) AS minaggr, MAX(maxaggr) AS maxaggr " +
+                        " FROM " + chunks_table +
+                        " GROUP BY ckey" +
+                        " ORDER BY ckey ASC;\n"
+                );
+                sql_build.newLine();
 
-                    sql_build.newLine();
-
-                    sql_build.add("CREATE TABLE " + table_pa_temp + " AS SELECT * FROM " + table_pa + " ORDER BY ckey ASC WITH DATA;");
-                    sql_build.newLine();
-                    sql_build.add("DROP TABLE " + table_pa + ";");
-                    sql_build.newLine();
-                    sql_build.add("CREATE TABLE " + table_pa + " AS SELECT * FROM " + table_pa_temp + " WITH DATA;");
-                    sql_build.newLine();
-                    sql_build.add("DROP TABLE " + table_pa_temp + ";");
-                    sql_build.newLine();
-                }
-
-		if ( true ) {
+                sql_build.add("DROP TABLE " + chunks_table + ";\n");
+                
+                sql_build.newLine();                
+ 
+		if (sql_build.executeDirectly() == false) {
 			System.out.println("\n#! SCRIPT:\n"+sql_build.getScript());
 			System.out.flush(); // flush before possible crash
 			PrintWriter writer;
@@ -788,7 +706,7 @@ public class PreAggregate {
 		return level0;
 	}
 	
-	protected void generate_optimized(Connection c, SqlScriptBuilder sql_build, String delta_table, String level0, String lfp_table, AggregateAxis axis[],
+	protected void generate_optimized(Connection c, SqlScriptBuilder sql_build, String pa_tmp_table, String level0, String lfp_table, AggregateAxis axis[],
 			String genKey, int aggregateMask) throws SQLException {
 		// first compute the total number of levels
 		int i, sumlevels = 0;
@@ -859,6 +777,10 @@ public class PreAggregate {
 		if ((aggregateMask & AGGR_MAX) != 0)
 			keystat.append(",\n\tmaxAggr");
 			
+                
+                sql_build.add("INSERT INTO " + pa_tmp_table + " " + keystat.toString() + " FROM " + level0 + ";\n");
+                
+                /*
 		sql_build.add(
 				SqlUtils.gen_Select_INTO(c, 
 				delta_table,
@@ -866,10 +788,12 @@ public class PreAggregate {
 				"FROM " + level0,
 				false)
 		);
+                */
+                
 		sql_build.newLine();
 	}
 	
-	public String generate_level0_n(Connection c, String delta_table,
+	public String generate_level0_n(Connection c, String chunks_table,
 			String level0, AggregateAxis axis[], String dimTable[],
 			String genKey, int aggregateMask) throws SQLException {
 		int i;
@@ -920,11 +844,11 @@ public class PreAggregate {
 				+ ((aggregateMask & AGGR_MAX) != 0 ? ",\n\tmaxAggr" : "");
 
 		// first update, then insert to prevent problems
-		String delta = SqlUtils.gen_Select_INTO(c, delta_table, "SELECT \t"
-				+ gk + " as ckey" + aggrAttr, "FROM\t(" + subindexQ
-				+ ") AS siq",
-				false); // incomplete
-		return delta;
+                StringBuilder insert = new StringBuilder("INSERT INTO ");
+                insert.append(chunks_table).append(" SELECT ").append(gk).append(" AS ckey").append(aggrAttr);
+                insert.append(" FROM (").append(subindexQ).append(") AS siq");
+
+		return insert.toString();
 	}
 
 	/*
