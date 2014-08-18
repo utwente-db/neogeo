@@ -2,12 +2,16 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package nl.utwente.db.neogeo.preaggregate;
+package nl.utwente.db.neogeo.preaggregate.mapreduce;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
+import nl.utwente.db.neogeo.preaggregate.AggregateAxis;
+import nl.utwente.db.neogeo.preaggregate.MetricAxis;
+import nl.utwente.db.neogeo.preaggregate.PreAggregate;
+import nl.utwente.db.neogeo.preaggregate.SqlUtils;
 import org.apache.log4j.Logger;
 
 /**
