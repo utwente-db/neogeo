@@ -40,7 +40,7 @@ public class CreateChunks extends PreAggregate {
         long startTime = System.currentTimeMillis();
         
         int i;
-        String dimTable[]	 = new String[axis.length];
+        Statement q = c.createStatement();
         
         // do some sanity checks
         if (table == null || table.isEmpty()) throw new Exception("Table can't be null");
@@ -61,7 +61,7 @@ public class CreateChunks extends PreAggregate {
         * First initialize and compute the aggregation axis
         */
         short maxLevel = initializeAxis(table, axis);
-       
+        
         MetricAxis axisToSplit = null;
         if ( axis[i_axisToSplit].isMetric() ) {
             axisToSplit = (MetricAxis)axis[i_axisToSplit];
@@ -69,33 +69,31 @@ public class CreateChunks extends PreAggregate {
             throw new SQLException("unable to split over non-metric axis: " + i_axisToSplit);
         }
         
+        // generate range functions for each axis
+        logger.info("Creating range functions for each dimension...");
+        for(i=0; i<axis.length; i++) {
+            // generate the range conversion function for the dimension
+            q.execute(axis[i].sqlRangeFunction(c, rangeFunName(i)));
+        }
+        logger.info("Functions created");
+        
         // do actual splitting
         long nTuples = SqlUtils.count(c,schema,table,"*");
         int nChunks = (int) (nTuples / chunkSize) + 1;
         Object[][] ro = axisToSplit.split(nChunks);
         
         logger.info("Axis " + i_axisToSplit + " will be split into " + nChunks + " chunks");
-        
-        // generate select query for chunks
-        StringBuilder selectQuery = new StringBuilder("SELECT ");
-        
-        for(i=0; i < axis.length; i++) {
-            selectQuery.append(axis[i].columnExpression()).append(", ");
-        }
-        
-        selectQuery.append(aggregateColumn).append("\n");
-        selectQuery.append(" FROM ").append(table).append("\n");
-        selectQuery.append(" WHERE ");
-        
+                
         // create chunks
-        Statement q = c.createStatement();
         for(i=0; i < nChunks; i++) {
             logger.info("Creating chunk #" + (i+1) + " out of " + nChunks + " chunks...");
             long startTimeChunk = System.currentTimeMillis();
+
+            StringBuilder where = new StringBuilder();
+            where.append(axisToSplit.columnExpression()).append(" >= ").append(SqlUtils.gen_Constant(c ,ro[i][0]));
+            where.append(" AND ").append(axisToSplit.columnExpression()).append(" < ").append(SqlUtils.gen_Constant(c ,ro[i][1]));
             
-            StringBuilder chunkSelectQuery = new StringBuilder(selectQuery);
-            chunkSelectQuery.append(axisToSplit.columnExpression()).append(" >= ").append(SqlUtils.gen_Constant(c ,ro[i][0]));
-            chunkSelectQuery.append(" AND ").append(axisToSplit.columnExpression()).append(" < ").append(SqlUtils.gen_Constant(c ,ro[i][1]));
+            String chunkSelectQuery = this.select_level0(c, table, where.toString(), axis, aggregateColumn, aggregateMask);
             
             String copyQuery = SqlUtils.gen_COPY_INTO(c, chunkSelectQuery.toString(), filePath + "chunk_" + i + ".csv");
             
@@ -109,6 +107,12 @@ public class CreateChunks extends PreAggregate {
             logger.info("Finished chunk #" + (i+1) + " out of " + nChunks + " in " + execTimeChunk + " ms");           
         }
         
+        // drop range functions
+        for(i=0; i<axis.length; i++) {
+            q.execute(SqlUtils.gen_DROP_FUNCTION(c, rangeFunName(i),axis[i].sqlType()));
+        }
+        
+        q.close();
         
         long execTime = System.currentTimeMillis() - startTime;
         logger.info("Finished chunk creation in " + execTime + " ms");

@@ -11,14 +11,15 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import static nl.utwente.db.neogeo.preaggregate.NominalGeoTaggedTweetAggregate.NOMINAL_POSTFIX;
 import nl.utwente.db.neogeo.preaggregate.SqlUtils.DbType;
 import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 public class Test {    
+        static final Logger logger = Logger.getLogger(Test.class);
+        
 	private static final String CONFIG_FILENAME = "database.properties";
 	private String hostname;
 	private String port;
@@ -108,6 +109,8 @@ public class Test {
                 }
   
                 BasicConfigurator.configure();
+                
+                //Logger.getRootLogger().setLevel(Level.INFO);
 		                
                 runTest(connection, t.getSchema());
                 

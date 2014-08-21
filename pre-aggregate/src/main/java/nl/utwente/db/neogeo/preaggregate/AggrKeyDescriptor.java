@@ -1,6 +1,7 @@
 package nl.utwente.db.neogeo.preaggregate;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class AggrKeyDescriptor {
@@ -81,6 +82,22 @@ public class AggrKeyDescriptor {
 		if ( totalBits > 63 )
 			throw new RuntimeException("no of bits in key > 63");
 	}
+        
+        /**
+         * Computes the long key for an existing ResultSet row from a query on the
+         * level_x table
+         * 
+         */
+        public long computeLongKey (ResultSet res) throws SQLException {
+            long key = 0L;
+            
+            for(short i=0; i < dimensions; i++) {
+                key = key * (int)Math.pow(2,levelBits) + res.getInt("l" + i);
+                key = key * (int)Math.pow(2,dimBits[i]) + (res.getInt("i" + i) + 1);
+            }            
+            
+            return key;
+        }
 	
 	public String crossproductLongKeyFunction(Connection c, String fun) throws SQLException {	
 		String sres = "startVar";

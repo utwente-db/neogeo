@@ -1,7 +1,9 @@
 package nl.utwente.db.neogeo.preaggregate.mapreduce;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -12,17 +14,27 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 import java.util.logging.ConsoleHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import nl.utwente.db.neogeo.preaggregate.AggregateAxis;
 import nl.utwente.db.neogeo.preaggregate.MetricAxis;
 import static nl.utwente.db.neogeo.preaggregate.NominalGeoTaggedTweetAggregate.NOMINAL_POSTFIX;
 import nl.utwente.db.neogeo.preaggregate.PreAggregate;
 import nl.utwente.db.neogeo.preaggregate.SqlUtils;
 import nl.utwente.db.neogeo.preaggregate.SqlUtils.DbType;
+import org.apache.commons.io.FileUtils;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.io.BytesWritable;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.NullWritable;
+import org.apache.hadoop.mapreduce.MapContext;
+import org.apache.hadoop.mapreduce.Mapper.Context;
 import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
 
-public class Test {    
+public class Test {            
 	private static final String CONFIG_FILENAME = "database.properties";
 	private String hostname;
 	private String port;
@@ -110,13 +122,74 @@ public class Test {
                     System.err.println("Unable to create connection object!");
                     System.exit(1);
                 }
-  
-                BasicConfigurator.configure();
+                
+                //BasicConfigurator.configure();
+                Logger.getRootLogger().setLevel(Level.DEBUG);
 		                                
-                runTest_create_chunks(connection, t.getSchema());
+                //runTest_create_chunks(connection, t.getSchema());
+                
+                //runTest_mapper();
+                
+                runTest_MapReduce(connection, t.getSchema());
             
                 connection.close();
 	}
+        
+        public static void runTest_MapReduce (Connection c, String schema) throws SQLException, IOException, InterruptedException {
+            CreateIndexMR job = new CreateIndexMR();
+            
+            String[] args = new String[]{"D:\\downloads\\preaggregate.xml", "/chunk_*.csv", "/out"};
+            
+            job.parseArgs(args);
+            
+            
+            //job.runJob();
+        }
+        
+        public static void runTest_mapper () throws Exception {
+            double	DFLT_BASEBOXSIZE = 0.001;
+            int 	DFLT_N = 4;   
+        
+            AggrMapper mapper = new IntAggrMapper();            
+            
+            Configuration conf = new Configuration();
+            
+            conf.set("aggregate_type", "int");
+            
+            conf.setInt("aggregate_mask", PreAggregate.AGGR_ALL);
+            
+            conf.setInt("axis_count", 2);
+            
+            conf.set("axis_0_class", "MetricAxis");
+            conf.set("axis_0_column", "coordinates_x");
+            conf.set("axis_0_type", "double");
+            conf.set("axis_0_low", "-0.12");
+            conf.set("axis_0_high", "0.449");
+            conf.set("axis_0_baseblocksize", String.valueOf(DFLT_BASEBOXSIZE));
+            conf.setInt("axis_0_n", DFLT_N);
+            
+            conf.set("axis_1_class", "MetricAxis");
+            conf.set("axis_1_column", "coordinates_y");
+            conf.set("axis_1_type", "double");
+            conf.set("axis_1_low", "51.327");
+            conf.set("axis_1_high", "51.658");
+            conf.set("axis_1_baseblocksize", String.valueOf(DFLT_BASEBOXSIZE));
+            conf.setInt("axis_1_n", DFLT_N);
+            
+            mapper.setConfiguration(conf);
+            
+            mapper.setup(null);
+            
+            BytesWritable value = new BytesWritable();
+            byte[] contents = FileUtils.readFileToByteArray(new File("D:\\Downloads\\chunks\\chunk_0.csv"));
+            
+            value.set(contents, 0, contents.length);
+            
+            //mapper.map(null, value, null);
+            
+            mapper.cleanup(null);
+        }
+               
 
         public static void runTest_create_chunks(Connection c, String schema) throws Exception {
 		double	DFLT_BASEBOXSIZE = 0.001;

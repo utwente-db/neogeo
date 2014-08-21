@@ -31,7 +31,7 @@ public class PreAggregate {
 	public static final boolean showAxisAndKey		= true;
 	public static final boolean	doResultCorrection	= true;
 	public static final boolean	serversideStairwalk	= true;
-        public static final boolean executeQueriesDirectly      = true;
+        public static final boolean executeQueriesDirectly      = false;
 	public static final char	DEFAULT_KD			= AggrKeyDescriptor.KD_CROSSPRODUCT_LONG;
 
 	private	static final int	AGGR_BASE			= 0x01;
@@ -191,7 +191,7 @@ public class PreAggregate {
 		return res;
 	}
 
-	private String rangeFunName(int dim) {
+	protected String rangeFunName(int dim) {
 		return indexPrefix + "d"+dim+"rf";
 	}
 
@@ -671,46 +671,54 @@ public class PreAggregate {
                 
                 sql_build.newLine();
 	}
+        
+        public String select_level0 (Connection c, String from, String where, AggregateAxis axis[], String aggregateColumn, int aggregateMask) throws SQLException {
+            StringBuilder select = new StringBuilder("SELECT ");
+            StringBuilder gb	 = new StringBuilder();
+       
+            for(int i=0; i < axis.length; i++) {
+                if (i>0) {
+                        select.append(",\n\t");
+                        gb.append(',');
+                }
+                if ( gen_optimized ) {
+                        select.append("0 AS l").append(i).append(",\n\t");
+                }
+
+                if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                    select.append("CAST(").append(rangeFunName(i)).append("(").append(axis[i].columnExpression()).append(") AS integer) AS i").append(i);
+                } else {                        
+                    select.append(rangeFunName(i)).append("(").append(axis[i].columnExpression()).append(") :: integer AS i").append(i);
+                }
+
+                gb.append("i").append(i);
+            }
+            
+            if ((aggregateMask & AGGR_COUNT) != 0) select.append(",\n\tCOUNT(").append(aggregateColumn).append(") AS countAggr");            
+            if ((aggregateMask &AGGR_SUM) != 0) select.append(",\n\tSUM(").append(aggregateColumn).append(") AS sumAggr"); 
+            if ((aggregateMask &AGGR_MIN) != 0) select.append(",\n\tMIN(").append(aggregateColumn).append(") AS minAggr"); 
+            if ((aggregateMask &AGGR_MAX) != 0) select.append(",\n\tMAX(").append(aggregateColumn).append(") AS maxAggr"); 
+            
+            select.append(" FROM ").append(from);
+            
+            if ( where != null ) {
+                select.append(" WHERE ").append(where);
+            }
+            
+            select.append("\nGROUP BY ").append(gb);
+            select.append("\n");
+            
+            return select.toString();
+        }
 	
 	public String generate_level0(Connection c, String level0_table, String from, String where, AggregateAxis axis[], String aggregateColumn, int aggregateMask) 
 	throws SQLException {
-		/*
-		 * Generate the level 0 table
-		 */
-		int i;
-		StringBuilder select = new StringBuilder();
-		StringBuilder gb	 = new StringBuilder();
-		for(i=0; i<axis.length; i++) {
-			if (i>0) {
-				select.append(",\n\t");
-				gb.append(',');
-			}
-			if ( gen_optimized ) {
-				select.append("0 AS l"+i+",\n\t");
-                        }
-                        
-                        if (SqlUtils.dbType(c) == DbType.MONETDB) {
-                            select.append("CAST(" + rangeFunName(i) + "(" + axis[i].columnExpression() + ") AS integer) AS i"+i);
-                        } else {                        
-                            select.append(rangeFunName(i)+"("+axis[i].columnExpression()+") :: integer AS i"+i);
-                        }
-                        
-			gb.append("i"+i);
-		}
-		//
-		if ( where != null )
-			where = "\nWHERE " + where;
-		else
-			where = "";
-		String level0 = SqlUtils.gen_Select_INTO(c, 
+		
+		String level0 = SqlUtils.gen_Select_INTO(
+                                c, 
 				level0_table,
-				"SELECT\n\t" + select +
-				((aggregateMask&AGGR_COUNT)!=0 ? ",\n\tCOUNT(" + aggregateColumn + ") AS countAggr" : "") +
-				((aggregateMask&AGGR_SUM) !=0 ? ",\n\tSUM(" + aggregateColumn + ") AS sumAggr" : "") +
-				((aggregateMask&AGGR_MIN) !=0 ? ",\n\tMIN(" + aggregateColumn + ") AS minAggr" : "") +
-				((aggregateMask&AGGR_MAX) !=0 ? ",\n\tMAX(" + aggregateColumn + ") AS maxAggr" : "")
-				, 
-				"FROM " + from + where + "\nGROUP BY "+gb,
+                                select_level0(c, from, where, axis, aggregateColumn, aggregateMask),
+				"",
 				false);
 		return level0;
 	}
