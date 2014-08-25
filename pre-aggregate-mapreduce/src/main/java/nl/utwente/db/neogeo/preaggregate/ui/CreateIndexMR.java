@@ -125,7 +125,6 @@ public class CreateIndexMR {
 
         FileOutputFormat.setOutputPath(job, outputPath);
 
-
         return job.waitForCompletion(true);
     }
 

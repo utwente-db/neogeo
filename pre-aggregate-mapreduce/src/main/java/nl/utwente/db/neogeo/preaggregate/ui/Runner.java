@@ -30,7 +30,7 @@ public class Runner {
     
     private FileSystem fs;
     
-    public void run (String[] args) throws IOException, PrepareMR.PrepareException, SQLException, ClassNotFoundException {
+    public void run (String[] args) throws IOException, PrepareMR.PrepareException, SQLException, ClassNotFoundException, RunMR.RunException, InterruptedException {
         conf = new Configuration();
         GenericOptionsParser optionParser = new GenericOptionsParser(conf, args);
         
@@ -53,22 +53,22 @@ public class Runner {
         }
     }
     
-    protected void runJob(String[] args) {
+    protected void runJob(String[] args) throws RunMR.RunException, IOException, ClassNotFoundException, InterruptedException {
         logger.info("Running MAPREDUCE phase");
-        long startTime = System.currentTimeMillis();
-        
-        if (args.length != 2) {
-            System.err.println("Usage: <jobPath>");
+                
+        if (args.length != 3) {
+            System.err.println("Usage: <config.xml> <jobPath>");
             System.exit(2);
         }
         
-        String jobPath = args[1];
+        PreAggregateConfig config = loadConfig(args[1]);
         
-        RunMR run = new RunMR(conf);
+        String jobPath = args[2];
+        
+        RunMR run = new RunMR(conf, config);
         run.setFS(fs);
-        run.doJob(jobPath);
-        
-        long execTime = System.currentTimeMillis() - startTime;
+        long execTime = run.doJob(jobPath);
+                
         logger.info("Finished MAPREDUCE phase");
         logger.info("Total time: " + execTime + " ms");
         
@@ -111,15 +111,16 @@ public class Runner {
         
         if (chunkSize < 1) throw new IllegalArgumentException("Invalid chunksize specified; must be larger than 0");        
        
+        long execTime = System.currentTimeMillis() - startTime;
+        
         PrepareMR prepare = new PrepareMR(conf, dbInfo, conn, config);
         prepare.setFS(fs);
-        prepare.doPrepare(jobPath, axisToSplitIdx, chunkSize);
+        long prepareTime = prepare.doPrepare(jobPath, axisToSplitIdx, chunkSize);
 
         closeConnection(conn);  
-        
-        long execTime = System.currentTimeMillis() - startTime;
+                
         logger.info("Finished PREPARE phase");
-        logger.info("Total time: " + execTime + " ms");
+        logger.info("Total time: " + (execTime + prepareTime) + " ms");
         
         // TODO: print next command
     }

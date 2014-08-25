@@ -90,7 +90,9 @@ public class PrepareMR extends PreAggregate {
         this.fs = fs;
     }
     
-    public void doPrepare (String jobPath, int axisToSplitIdx, long chunkSize) throws PrepareException, SQLException, IOException {       
+    public long doPrepare (String jobPath, int axisToSplitIdx, long chunkSize) throws PrepareException, SQLException, IOException {       
+        long startTime = System.currentTimeMillis();
+        
         Statement q = c.createStatement();
         
         this.jobPath = jobPath;
@@ -116,6 +118,8 @@ public class PrepareMR extends PreAggregate {
         
         // check if jobPath already exists on HDFS
         if (fs.exists(new Path(jobPath))) {
+            long pauseStartTime = System.currentTimeMillis();
+            
             logger.warn("Job path already exists on HDFS. Delete existing directory? (yes|no)");
             Scanner scan = new Scanner(System.in);
             String s = scan.next().toLowerCase();
@@ -129,6 +133,10 @@ public class PrepareMR extends PreAggregate {
                 logger.error("Quiting!");
                 System.exit(0);
             }
+            
+            // increase start time with time paused
+            long pauseTime = System.currentTimeMillis() - pauseStartTime;
+            startTime += pauseTime;
             
             // delete directory
             logger.info("Deleting existing job path...");
@@ -181,7 +189,7 @@ public class PrepareMR extends PreAggregate {
         } catch (MCLException ex) {
             throw new PrepareException("Error occured during raw MAPI connection with MonetDB database", ex);
         }
-        
+                
         // drop range functions
         logger.info("Dropping range functions for each dimension...");
         for(int i=0; i<axis.length; i++) {
@@ -196,6 +204,9 @@ public class PrepareMR extends PreAggregate {
         logger.info("Writing PreAggregate config to HDFS...");
         createConfig();
         logger.info("Config has been written");
+        
+        long execTime = System.currentTimeMillis() - startTime;
+        return execTime;
     }
     
     protected void createConfig () throws PrepareException, IOException {
@@ -203,7 +214,7 @@ public class PrepareMR extends PreAggregate {
         
         PreAggregateConfig config = new PreAggregateConfig(table, this.aggregateColumn, label, aggregateType, aggregateMask, axis);
         
-        String fileName = "preaggregate.xml";
+        String fileName = RunMR.CONFIG_FILENAME;
         try {
             config.writeToXml(new File(tempPath + "/" + fileName));
         } catch (Exception ex) {
@@ -228,7 +239,7 @@ public class PrepareMR extends PreAggregate {
         
         logger.info("Exporting to CSV...");
                
-        String fileName = "lfp_table.csv";
+        String fileName = RunMR.LFP_TABLE_FILENAME;
         CSVWriter writer = new CSVWriter(new FileWriter(tempPath.getAbsolutePath() + "/" + fileName), ',');
         
         Statement q = c.createStatement();

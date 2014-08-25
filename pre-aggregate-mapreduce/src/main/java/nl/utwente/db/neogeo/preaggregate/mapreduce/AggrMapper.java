@@ -27,6 +27,7 @@ import static nl.utwente.db.neogeo.preaggregate.PreAggregate.AGGR_MIN;
 import static nl.utwente.db.neogeo.preaggregate.PreAggregate.AGGR_SUM;
 import static nl.utwente.db.neogeo.preaggregate.PreAggregate.DEFAULT_KD;
 import nl.utwente.db.neogeo.preaggregate.PreAggregateConfig;
+import nl.utwente.db.neogeo.preaggregate.ui.RunMR;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.BytesWritable;
@@ -45,7 +46,7 @@ public abstract class AggrMapper<VALUEOUT extends Object> extends Mapper<NullWri
     public static final int BATCH_SIZE = 200;
     
     static final Logger logger = Logger.getLogger(AggrMapper.class);
-    
+        
     protected Connection conn;
     
     protected AggregateAxis[] axis;
@@ -81,7 +82,7 @@ public abstract class AggrMapper<VALUEOUT extends Object> extends Mapper<NullWri
         
         try {
             setupConn();
-            importHelperTable();
+            importLfpTable();
             createDataTable();            
         } catch (IOException ex) {
             throw ex;
@@ -91,11 +92,12 @@ public abstract class AggrMapper<VALUEOUT extends Object> extends Mapper<NullWri
     }
     
     protected void loadConfig(Context context) throws IOException {
-        File f = new File("." + CreateIndexMR.HDFS_CONFIG_FILE);
+        File f = new File("./" + RunMR.CONFIG_FILENAME);
         
         if (f.exists() == false) {
             throw new IOException("PreAggregate config file missing in DistributedCache!");
         }
+        
         try {
             aggConf = new PreAggregateConfig(f);
         } catch (PreAggregateConfig.InvalidConfigException ex) {
@@ -128,9 +130,9 @@ public abstract class AggrMapper<VALUEOUT extends Object> extends Mapper<NullWri
         q.execute(create.toString());
     }
     
-    protected void importHelperTable () throws SQLException, FileNotFoundException, IOException {
+    protected void importLfpTable () throws SQLException, FileNotFoundException, IOException {
         long start = System.currentTimeMillis();
-        logger.debug("Importing helper table...");
+        logger.debug("Importing level/factor possibilities table...");
                 
         Statement q = conn.createStatement();
         
@@ -158,8 +160,14 @@ public abstract class AggrMapper<VALUEOUT extends Object> extends Mapper<NullWri
         q.close();
         
         PreparedStatement insert = conn.prepareStatement(insertQuery.toString());
+        
+        File f = new File("./" + RunMR.LFP_TABLE_FILENAME);
+        
+        if (f.exists() == false) {
+            throw new IOException("LFP table CSV file missing in DistributedCache!");
+        }
                 
-        CSVReader reader = new CSVReader(new FileReader("D:\\Downloads\\_ipfx_lfp.csv"));
+        CSVReader reader = new CSVReader(new FileReader(f));
         
         String [] row;
         while ((row = reader.readNext()) != null) {
@@ -188,7 +196,7 @@ public abstract class AggrMapper<VALUEOUT extends Object> extends Mapper<NullWri
         insert.close();
         
         long time = System.currentTimeMillis() - start;
-        logger.debug("Finished importing helper table in " + time + " ms");
+        logger.debug("Finished importing LFP table in " + time + " ms");
     }
     
     protected void setupConn () throws SQLException {
@@ -223,7 +231,17 @@ public abstract class AggrMapper<VALUEOUT extends Object> extends Mapper<NullWri
             outputData(context);
         } catch (SQLException ex) {
             throw new IOException(ex);
-        }       
+        }   
+        
+        // clean up data table
+        try {
+            Statement q = conn.createStatement();
+            q.execute("DELETE FROM data");
+            q.close();
+        } catch (SQLException ex) {
+            throw new IOException("Unable to clear data table");
+        }
+        
             
         long execTime = System.currentTimeMillis() - startTime;
         logger.debug("Finished map task in " + execTime + " ms");
