@@ -195,7 +195,7 @@ public class PreAggregate {
 		return indexPrefix + "d"+dim+"rf";
 	}
 
-	private String create_dimTable(Connection c, String schema, int dim, int N, int levels, SqlScriptBuilder sql_build) throws SQLException {
+	protected String create_dimTable(Connection c, String schema, int dim, int N, int levels, SqlScriptBuilder sql_build) throws SQLException {
 		String tableName = indexPrefix + "dim"+dim;
 
                 if (SqlUtils.dbType(c) == DbType.MONETDB) {
@@ -362,7 +362,6 @@ public class PreAggregate {
                         }
                         
 			gen_lfp_table(c,sql_build, lfp_table,axis,dimTable);
-			sql_build.addPost("DROP TABLE " + lfp_table + ";\n");
 		}
 		
 		int nChunks = 1;
@@ -515,7 +514,12 @@ public class PreAggregate {
 		String lfp_table_tmp = lfp_table + "_tmp";
 		StringBuilder with = new StringBuilder();
 		StringBuilder select = new StringBuilder();
-		
+                
+                if (SqlUtils.existsTable(c, schema, lfp_table)) {
+                    sql_build.add("DROP TABLE " + lfp_table + ";");
+                    sql_build.newLine();
+                }
+                		
                 if (SqlUtils.dbType(c) == DbType.MONETDB) {
                     // MonetDB does not support WITH recursive
                     // therefore we need to create the temporary level/factor tables manually
@@ -670,6 +674,8 @@ public class PreAggregate {
                 }
                 
                 sql_build.newLine();
+                
+                sql_build.addPost("DROP TABLE " + lfp_table + ";\n");
 	}
         
         public String select_level0 (Connection c, String from, String where, AggregateAxis axis[], String aggregateColumn, int aggregateMask) throws SQLException {

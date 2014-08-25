@@ -6,11 +6,19 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import nl.utwente.db.neogeo.preaggregate.AggregateAxis;
 import nl.utwente.db.neogeo.preaggregate.MetricAxis;
 import nl.utwente.db.neogeo.preaggregate.PreAggregate;
 import org.apache.log4j.Logger;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -22,15 +30,105 @@ import org.w3c.dom.NodeList;
 public class PreAggregateConfig {
     static final Logger logger = Logger.getLogger(PreAggregateConfig.class);
     
+    protected String table;
+    
+    protected String column;
+    
+    protected String label;
+    
     protected String aggregateType;
     
     protected int aggregateMask;
     
     protected List<AggregateAxis> axisList;
     
+    public PreAggregateConfig(String table, String column, String label, String aggregateType, int aggregateMask, AggregateAxis[] axis) {
+        this.table = table;
+        this.column = column;
+        this.label = label;
+        this.aggregateType = aggregateType;
+        this.aggregateMask = aggregateMask;
+        
+        this.axisList = new ArrayList<AggregateAxis>();        
+        for(int i=0; i < axis.length; i++) {
+            this.axisList.add(axis[i]);
+        }
+    }
+        
     public PreAggregateConfig (File xmlFile) throws InvalidConfigException {
         axisList = new ArrayList<AggregateAxis>();
         loadFromFile(xmlFile);
+    }
+    
+    public void writeToXml(File xmlFile) throws ParserConfigurationException, TransformerConfigurationException, TransformerException {
+        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+	DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+        
+        // root elements
+        Document doc = docBuilder.newDocument();
+        Element rootElement = doc.createElement("preaggregate");
+        doc.appendChild(rootElement);
+        
+        if (table != null && table.isEmpty() == false) {
+            Element tableEl = doc.createElement("table");
+            tableEl.setTextContent(this.table);
+            rootElement.appendChild(tableEl);
+        }
+        
+        if (column != null && column.isEmpty() == false) {
+            Element columnEl = doc.createElement("column");
+            columnEl.setTextContent(this.column);
+            rootElement.appendChild(columnEl);
+        }
+        
+        if (label != null && label.isEmpty() == false) {
+            Element labelEl = doc.createElement("label");
+            labelEl.setTextContent(this.label);
+            rootElement.appendChild(labelEl);
+        }
+        
+        if (aggregateType != null && aggregateType.isEmpty() == false) {
+            Element aggregateTypeEl = doc.createElement("type");
+            aggregateTypeEl.setTextContent(this.aggregateType);
+            rootElement.appendChild(aggregateTypeEl);
+        }
+        
+        if (aggregateMask != -1) {
+            Element aggregateMaskEl = doc.createElement("mask");
+            aggregateMaskEl.setTextContent(String.valueOf(this.aggregateMask));
+            rootElement.appendChild(aggregateMaskEl);
+        }
+        
+        if (axisList.size() > 0) {
+            Element axisListEl = doc.createElement("axislist");
+            rootElement.appendChild(axisListEl);
+            
+            for(AggregateAxis axis : axisList) {
+                Element axisEl = doc.createElement("axis");
+
+                axisEl.setAttribute("class", axis.getClass().getSimpleName());                
+                axisEl.setAttribute("column", axis.columnExpression());
+                axisEl.setAttribute("type", axis.sqlType());
+                axisEl.setAttribute("n", String.valueOf(axis.N()));
+                
+                if (axis instanceof MetricAxis) {
+                    MetricAxis metricAxis = (MetricAxis) axis;
+                    axisEl.setAttribute("baseblocksize", String.valueOf(metricAxis.BASEBLOCKSIZE()));
+                    axisEl.setAttribute("low", String.valueOf(metricAxis.low()));
+                    axisEl.setAttribute("low", String.valueOf(metricAxis.high()));
+                }
+                
+                axisListEl.appendChild(axisEl);
+            }
+        }
+        
+        // write the content into xml file
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        DOMSource source = new DOMSource(doc);
+        StreamResult result = new StreamResult(xmlFile);
+
+        transformer.transform(source, result);
     }
     
     public String getAggregateType () {
@@ -80,6 +178,12 @@ public class PreAggregateConfig {
         
         if (nodeName.equals("type")) {
             aggregateType = node.getTextContent();
+        } else if (nodeName.equals("table")) {
+            table = node.getTextContent();
+        } else if (nodeName.equals("column")) {
+            column = node.getTextContent();
+        } else if (nodeName.equals("label")) {
+            label = node.getTextContent();
         } else if (nodeName.equals("mask")) {
             handleMask(node);            
         } else if (nodeName.equals("axislist")) {
@@ -180,7 +284,7 @@ public class PreAggregateConfig {
         this.axisList.add(axis);
     }
         
-    protected void handleMask(Node node) {
+    protected void handleMask(Node node) throws InvalidConfigException {
         String mask = node.getTextContent();
             
         if (mask.equalsIgnoreCase("ALL")) {
@@ -198,9 +302,25 @@ public class PreAggregateConfig {
             try {
                 this.aggregateMask = Integer.parseInt(mask);
             } catch (NumberFormatException e) {
-                logger.warn("Invalid aggregate mask specified in config file");
+                throw new InvalidConfigException("Invalid aggregate mask specified in config file");
             }
         }
+    }
+
+    public String getTable() {
+        return table;
+    }
+
+    public String getColumn() {
+        return column;
+    }
+    
+    public String getAggregateColumn() {
+        return column;
+    }
+
+    public String getLabel() {
+        return label;
     }
     
     public class InvalidConfigException extends Exception {

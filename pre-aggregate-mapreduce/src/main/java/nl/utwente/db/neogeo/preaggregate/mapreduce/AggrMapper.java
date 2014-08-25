@@ -1,5 +1,6 @@
 package nl.utwente.db.neogeo.preaggregate.mapreduce;
 
+import nl.utwente.db.neogeo.preaggregate.ui.CreateIndexMR;
 import au.com.bytecode.opencsv.CSVReader;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;

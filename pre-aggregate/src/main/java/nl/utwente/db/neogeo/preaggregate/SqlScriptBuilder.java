@@ -77,11 +77,11 @@ public class SqlScriptBuilder {
 	public void newLine() {
 		pre_str.append('\n');
 	}
-	
-	public void executeBatch()  throws SQLException{
-		try {
+        
+        public void executeBatch () throws SQLException {
+            try {
 			this.pre_stat.executeBatch();
-			this.post_stat.executeBatch();
+                        this.post_stat.executeBatch();
 		} catch (SQLException e) {
 			System.out.println("CAUGHT: "+e);
 			e.printStackTrace();
@@ -90,6 +90,32 @@ public class SqlScriptBuilder {
 		}
 		//
 		this.pre_stat = c.createStatement();
+                this.post_stat = c.createStatement();
+        }
+        
+        public void executePreBatch () throws SQLException {
+            try {
+			this.pre_stat.executeBatch();
+		} catch (SQLException e) {
+			System.out.println("CAUGHT: "+e);
+			e.printStackTrace();
+			System.out.println("NEXT: "+e.getNextException());
+			System.exit(0);
+		}
+		//
+		this.pre_stat = c.createStatement();
+        }
+        	
+	public void executePostBatch()  throws SQLException{
+		try {
+			this.post_stat.executeBatch();
+		} catch (SQLException e) {
+			System.out.println("CAUGHT: "+e);
+			e.printStackTrace();
+			System.out.println("NEXT: "+e.getNextException());
+			System.exit(0);
+		}
+		//
 		this.post_stat = c.createStatement();
 	}
 	
