@@ -12,12 +12,18 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
 import java.util.logging.Logger;
+import nl.utwente.db.neogeo.preaggregate.MetricAxis.AxisIndexer;
+import nl.utwente.db.neogeo.preaggregate.MetricAxis.DoubleAxisIndexer;
+import nl.utwente.db.neogeo.preaggregate.MetricAxis.IntegerAxisIndexer;
+import nl.utwente.db.neogeo.preaggregate.MetricAxis.LongAxisIndexer;
+import nl.utwente.db.neogeo.preaggregate.MetricAxis.TimestampAxisIndexer;
+import nl.utwente.db.neogeo.preaggregate.SqlUtils.DbType;
 
 public class PreAggregate {
 	private static final Logger LOGGER = Logger.getLogger("org.geotools.data.aggregation.PreAggregate");
 	
 	private final boolean gen_optimized = true;
-
+        
 	/*
 	 * Experiment setup variables
 	 * 
@@ -25,6 +31,7 @@ public class PreAggregate {
 	public static final boolean showAxisAndKey		= true;
 	public static final boolean	doResultCorrection	= true;
 	public static final boolean	serversideStairwalk	= true;
+        public static final boolean executeQueriesDirectly      = false;
 	public static final char	DEFAULT_KD			= AggrKeyDescriptor.KD_CROSSPRODUCT_LONG;
 
 	private	static final int	AGGR_BASE			= 0x01;
@@ -44,7 +51,7 @@ public class PreAggregate {
 
 	private static final boolean useDirect = true; // do direct texting in postgis without aggregate
 
-	public static final boolean do_assert		= true;
+	public static final boolean do_assert		= false;
 	public static final long    indexMask		= 0x00FFFFFFFFFFFFFFL; // warning, should match with levStart
 	public static final int		levStart 		= 56; // the first 8 bits
 
@@ -105,7 +112,7 @@ public class PreAggregate {
 
 	public PreAggregate(Connection c, String schema, String table, String override_name, String label, AggregateAxis axis[], String aggregateColumn, String aggregateType, int aggregateMask, int axisToSplit, long chunkSize, Object[][] newRange) 
 	throws SQLException {
-		createPreAggregate(c,schema,table,override_name, label,axis,aggregateColumn,aggregateType,aggregateMask,axisToSplit,chunkSize,newRange);
+        	createPreAggregate(c,schema,table,override_name, label,axis,aggregateColumn,aggregateType,aggregateMask,axisToSplit,chunkSize,newRange);
 	}
 
 	private void _init(Connection c, String schema, String table, String label)
@@ -118,6 +125,41 @@ public class PreAggregate {
 			throw new SQLException("No PreAggregate " + label + " for table " + schema + "."
 					+ table);
 	}
+        
+        /**
+         * Checks if the geometry_columns table exists and if a table/column has been properly registered
+         * 
+         * @param c
+         * @param schema
+         * @param table
+         * @param point_column
+         * @throws SQLException 
+         */
+        protected void checkMonetDbGis(Connection c, String schema, String table, String point_column) throws SQLException {
+            // check if geometry_columns table exists
+            if (SqlUtils.existsTable(c, schema, "geometry_columns") == false) {
+                throw new SQLException("GeoSpatial table `geometry_columns` does not exist in database. Create if first by executing the create_geometry_columns_monetdb.sql file!");
+            }
+            
+            // check if point column is registered in geometry_columns table
+            PreparedStatement stmt = c.prepareStatement("SELECT * from geometry_columns WHERE LOWER(f_table_schema) = ? AND LOWER(f_table_name) = ? AND LOWER(f_geometry_column) = ?");
+            stmt.setString(1, schema.toLowerCase());
+            stmt.setString(2, table.toLowerCase());
+            stmt.setString(3, point_column.toLowerCase());
+            
+            ResultSet res = stmt.executeQuery();
+            
+            if (res.next() == false) {
+                res.close();
+                stmt.close();
+                
+                throw new SQLException("Point column `" + point_column + "` for table `" + schema + "." + table + "` is not "
+                        + "registered in geometry_columns table! Manually insert it into the geometry_columns table first.");
+            }
+            
+            res.close();
+            stmt.close();
+        }
 
 	public Object[][] getRangeValues(Connection c) throws SQLException {
 		return getRangeValues(c, schema, table, axis);
@@ -149,14 +191,21 @@ public class PreAggregate {
 		return res;
 	}
 
-	private String rangeFunName(int dim) {
+	protected String rangeFunName(int dim) {
 		return indexPrefix + "d"+dim+"rf";
 	}
 
-	private String create_dimTable(String schema, int dim, int N, int levels, SqlScriptBuilder sql_build) throws SQLException {
+	protected String create_dimTable(Connection c, String schema, int dim, int N, int levels, SqlScriptBuilder sql_build) throws SQLException {
 		String tableName = indexPrefix + "dim"+dim;
 
-		sql_build.add("DROP TABLE IF EXISTS " + schema + "." + tableName + ";\n");
+                if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                    if (SqlUtils.existsTable(c, schema, tableName)) {
+                        sql_build.add("DROP TABLE " + schema + "." + tableName + ";\n");
+                    }                    
+                } else {
+                    sql_build.add("DROP TABLE IF EXISTS " + schema + "." + tableName + ";\n");
+                }                
+		
 		sql_build.add("CREATE TABLE " + schema + "." + tableName + " (" + "level int," + "factor int" + ");\n");
 		int factor = 0;
 		for (int i=0; i<levels; i++) {
@@ -166,6 +215,48 @@ public class PreAggregate {
 		sql_build.addPost("DROP TABLE " + schema + "." + tableName + ";\n");
 		return tableName;
 	}
+        
+        protected short initializeAxis (String table, AggregateAxis[] axis) throws SQLException {
+            int i;
+            
+            if ( showAxisAndKey )
+                    System.out.println("#! Aggregate Axis:");
+            
+            Object obj_ranges[][] = getRangeValues(c,schema,table,axis);
+            short maxLevel = 0;
+            for (i = 0; i < axis.length; i++) {
+                    if (axis[i].isMetric()) {
+                            MetricAxis metric = (MetricAxis) axis[i];
+
+                            if (metric.hasRangeValues()) {
+                                    if ((metric.getIndex(obj_ranges[i][RMIN], true) < 0) || 
+                                            (metric.getIndex(obj_ranges[i][RMAX], true) < 0))
+                                            throw new RuntimeException("predefined ranges conflict with min/max dataset");
+                            } else {
+                                    metric.setRangeValues(obj_ranges[i][RMIN], obj_ranges[i][RMAX]);
+                            }
+
+                            /*
+                             * Adjust the axis a little bit too wide on blocksize multiples
+                             */
+                            Object wide_min, wide_max;
+
+                            wide_min = metric.reverseValue(-1);
+                            wide_max = metric.reverseValue(axis[i].axisSize());
+                            // System.out.println("#!OLD    AXIS: "+axis[i]);
+                            metric.setRangeValues(wide_min, wide_max);
+                            // System.out.println("#!ADJUST AXIS: "+axis[i]);
+                    }
+                    if ( axis[i].maxLevels() > maxLevel )
+                            maxLevel = axis[i].maxLevels();
+                    
+                    if (showAxisAndKey)
+                            System.out.println("AXIS["+i+"]="+axis[i]);
+            }
+            obj_ranges = null;
+            
+            return maxLevel;
+        }
 
 	protected void createPreAggregate(Connection c, String schema,
 			String table, String override_name, String label, AggregateAxis axis[],
@@ -173,46 +264,21 @@ public class PreAggregate {
 			int i_axisToSplit, long chunkSize, Object[][] DELnewRange) throws SQLException {
 		int i;
 		String dimTable[]	 = new String[axis.length];
+                
+                this.c = c;
+                this.schema = schema;
+                
+                // Ensure that MonetDB has the necessary additional functions
+                if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                    SqlUtils.compatMonetDb(c);
+                }
 
 		long create_time_ms = new Date().getTime();
-
+                
 		/*
 		 * First initialize and compute the aggregation axis
 		 */
-		if ( showAxisAndKey )
-			System.out.println("#! Aggregate Axis:");
-		Object obj_ranges[][] = getRangeValues(c,schema,table,axis);
-		short maxLevel = 0;
-		for (i = 0; i < axis.length; i++) {
-			if (axis[i].isMetric()) {
-				MetricAxis metric = (MetricAxis) axis[i];
-
-				if (metric.hasRangeValues()) {
-					if ((metric.getIndex(obj_ranges[i][RMIN], true) < 0) || 
-						(metric.getIndex(obj_ranges[i][RMAX], true) < 0))
-						throw new RuntimeException(
-								"createPreAggregate: predefined ranges conflict with min/max dataset");
-				} else {
-					metric.setRangeValues(obj_ranges[i][RMIN], obj_ranges[i][RMAX]);
-				}
-
-				/*
-				 * Adjust the axis a little bit too wide on blocksize multiples
-				 */
-				Object wide_min, wide_max;
-
-				wide_min = metric.reverseValue(-1);
-				wide_max = metric.reverseValue(axis[i].axisSize());
-				// System.out.println("#!OLD    AXIS: "+axis[i]);
-				metric.setRangeValues(wide_min, wide_max);
-				// System.out.println("#!ADJUST AXIS: "+axis[i]);
-			}
-			if ( axis[i].maxLevels() > maxLevel )
-				maxLevel = axis[i].maxLevels();
-			if (showAxisAndKey)
-				System.out.println("AXIS["+i+"]="+axis[i]);
-		}
-		obj_ranges = null;
+		short maxLevel = initializeAxis(table, axis);
 
 		kd = new AggrKeyDescriptor(DEFAULT_KD, axis);
 		if (showAxisAndKey)
@@ -224,7 +290,9 @@ public class PreAggregate {
 		 * in post_script.
 		 */
 		SqlScriptBuilder sql_build = new SqlScriptBuilder(c);
-
+                
+                sql_build.setExecuteDirectly(executeQueriesDirectly);
+                                
 		for(i=0; i<axis.length; i++) {
 			// generate the range conversion function for the dimension
 			sql_build.add(axis[i].sqlRangeFunction(c, rangeFunName(i)));
@@ -233,7 +301,7 @@ public class PreAggregate {
 			sql_build.addPost(SqlUtils.gen_DROP_FUNCTION(c, rangeFunName(i),axis[i].sqlType()));
 
 			// generate the dimension level/factor value table
-			dimTable[i] = create_dimTable(schema,i,axis[i].N(),axis[i].maxLevels(), sql_build);
+			dimTable[i] = create_dimTable(c, schema,i,axis[i].N(),axis[i].maxLevels(), sql_build);
 			sql_build.newLine();
 		}
 
@@ -245,13 +313,25 @@ public class PreAggregate {
 		/*
 		 * Generate the table which contains the final index
 		 */
-		String table_pa ; 
-		if ( override_name == null )
+		String table_pa; 
+                String table_pa_idx;
+		if ( override_name == null ) {
 			table_pa = schema + "." + table + PA_EXTENSION;
-		else 
+                        table_pa_idx = table + PA_EXTENSION + "_idx";
+                } else {
 			table_pa = schema + "." + override_name;
+                        table_pa_idx = override_name + "_idx";
+                }
 		sql_build.add("-- create the table containg the pre aggregate index\n");
-		sql_build.add("DROP TABLE IF EXISTS " + table_pa + ";\n");
+                
+                if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                    if (SqlUtils.existsTable(c, schema, table_pa)) {
+                        sql_build.add("DROP TABLE " + table_pa + ";\n");
+                    }
+                } else {                
+                    sql_build.add("DROP TABLE IF EXISTS " + table_pa + ";\n");
+                }
+                
 		sql_build.add(
 				"CREATE TABLE " + table_pa + " (\n" +
 				"\tckey bigint NOT NULL PRIMARY KEY,\n" + 
@@ -261,15 +341,27 @@ public class PreAggregate {
 				((aggregateMask&AGGR_MAX)!=0 ? "\tmaxAggr "+aggregateType+"\n" : "") +
 				");\n"
 		);
-		sql_build.add("CREATE INDEX ON "+table_pa+" USING HASH(ckey);\n");
+                
+                if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                    sql_build.add("CREATE INDEX " + table_pa_idx + " ON " + table_pa + " (ckey);\n");
+                } else {                
+                    sql_build.add("CREATE INDEX " + table_pa_idx + " ON " + table_pa + " USING HASH(ckey);\n");
+                }
 		sql_build.newLine();
 
 		String lfp_table = schema + "." + indexPrefix + "lfp";
 		if ( gen_optimized ) {
 			sql_build.add("-- generate table with all level/factor possibilities\n");
-			sql_build.add("DROP TABLE IF EXISTS " + lfp_table + ";\n");
+                        
+                        if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                            if (SqlUtils.existsTable(c, schema, lfp_table)) {
+                                sql_build.add("DROP TABLE " + lfp_table + ";\n");
+                            }
+                        } else {                        
+                            sql_build.add("DROP TABLE IF EXISTS " + lfp_table + ";\n");
+                        }
+                        
 			gen_lfp_table(c,sql_build, lfp_table,axis,dimTable);
-			sql_build.addPost("DROP TABLE " + lfp_table + ";\n");
 		}
 		
 		int nChunks = 1;
@@ -284,6 +376,35 @@ public class PreAggregate {
 			nChunks = (int) (nTuples / chunkSize) +1;
 			ro = axisToSplit.split(nChunks);
 		}
+                
+                String level0_table = schema + "." + indexPrefix + "level0";
+                
+                // ensure level0 table namespace is available
+                if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                    if (SqlUtils.existsTable(c, schema, indexPrefix + "level0")) {
+                        sql_build.add("DROP TABLE " + level0_table + ";\n");
+                    }
+                } else {
+                    sql_build.add("DROP TABLE IF EXISTS " + level0_table + ";\n");
+                }
+                sql_build.newLine();
+                
+                // ensure the chunks table does not exist already
+                String chunks_table = table_pa + "_chunks_tmp";
+                if (SqlUtils.existsTable(c, schema, chunks_table)) {
+                    sql_build.add("DROP TABLE " + chunks_table + ";\n");
+                }
+                
+                // create the chunks table
+                // this is a temporary table which holds all the data of the chunks
+                // and later get GROUP'ed into the final PA table
+                sql_build.add("CREATE TABLE " + chunks_table + " (ckey bigint, " +
+                            ((aggregateMask&AGGR_COUNT)!=0 ? "\tcountAggr bigint,\n" : "") + 
+                            ((aggregateMask&AGGR_SUM) !=0 ? "\tsumAggr "  +aggregateType+",\n" : "") +
+                            ((aggregateMask&AGGR_MIN)!=0 ? "\tminAggr "+aggregateType+",\n" : "") +
+                            ((aggregateMask&AGGR_MAX)!=0 ? "\tmaxAggr "+aggregateType+"\n" : "") +
+                            ");\n");
+                
 		for (i = 0; i < nChunks; i++) {
 			/*
 			 * Generate the level 0 table
@@ -295,69 +416,30 @@ public class PreAggregate {
 			} else {
 				sql_build.add("-- computing pa_index in one step\n");
 			}
-			String level0_table = schema + "." + indexPrefix + "level0";
-			sql_build.add("DROP TABLE IF EXISTS " + level0_table + ";\n");
+			                        
 			//
 			sql_build.add(generate_level0(c, level0_table,
 					schema + "." + table, where, axis, aggregateColumn,
 					aggregateMask));
 			sql_build.newLine();
-			if ( i == 0 ) // drop this table only once
-				sql_build.addPost("DROP TABLE " + level0_table + ";\n");
+                                                
 			String level0 = level0_table;
 
 			/*
 			 * Now generate the index levels 0 + n-1
-			 */
-			String level0_n_table = schema + "." + indexPrefix + "0_n";;
-			sql_build.add("DROP TABLE IF EXISTS " + level0_n_table + ";\n");
-			sql_build.newLine();
-			if (i == -1) // drop this table only once
-				sql_build.addPost("DROP TABLE " + level0_n_table + ";\n");
+			 */                                                                        
 			if ( !gen_optimized ) {
-				level0_n_table = schema + "." + indexPrefix + "0_n";
-				String level0_n = generate_level0_n(c, level0_n_table, level0,
+				String level0_n = generate_level0_n(c, chunks_table, level0,
 						axis, dimTable, genKey, aggregateMask);
 				sql_build.add(level0_n);
 				sql_build.newLine();
 			} else {
 				// use the optimized strategy
-				generate_optimized(c, sql_build, level0_n_table, level0, lfp_table, axis, genKey, aggregateMask);
+				generate_optimized(c, sql_build, chunks_table, level0, lfp_table, axis, genKey, aggregateMask);
 			}
-			if ( nChunks == 1 ) {
-				sql_build.add("INSERT INTO " + table_pa
-						+ " (\n\tSELECT * FROM " + level0_n_table + "\n);");
-				sql_build.newLine();
-			} else {
-				StringBuilder add_aggr = new StringBuilder();
-
-				if ((aggregateMask & AGGR_COUNT) != 0)
-					add_aggr.append(",countAggr = pa_table.countAggr + pa_delta.countAggr");
-				if ((aggregateMask & AGGR_SUM) != 0)
-					add_aggr.append(",sumAggr = pa_table.sumAggr + pa_delta.sumAggr");
-				if ((aggregateMask & AGGR_MIN) != 0)
-					add_aggr.append(",minAggr = LEAST(pa_table.minAggr,pa_delta.minAggr)");
-				if ((aggregateMask & AGGR_MAX) != 0)
-					add_aggr.append(",maxAggr = GREATEST(pa_table.maxAggr,pa_delta.maxAggr)");
-				sql_build
-				.add("UPDATE "
-						+ table_pa
-						+ " AS pa_table \n\tSET "
-						+ add_aggr.substring(1) // remove leading ','
-						+ " \n\tFROM "
-						+ level0_n_table
-						+ " AS pa_delta WHERE pa_delta.ckey = pa_table.ckey;\n\n");
-
-				sql_build
-				.add("INSERT INTO "
-						+ table_pa
-						+ " (\n\tSELECT * FROM "
-						+ level0_n_table
-						+ " AS pa_delta \n\tWHERE NOT EXISTS (SELECT * FROM "
-						+ table_pa
-						+ " AS pa_table WHERE pa_delta.ckey = pa_table.ckey));\n");
-				sql_build.newLine();
-			}
+                        
+                        sql_build.add("DROP TABLE " + level0_table + ";\n");
+                                                
 			if ( false ) {
 				if ( gen_optimized )
 					sql_build.add(SqlUtils.gen_Select_INTO(c, 
@@ -367,8 +449,26 @@ public class PreAggregate {
 							"pa_org", "SELECT *", "FROM " + table_pa, false));
 			}
 		}
+                
+                
+                sql_build.newLine();
 
-		if ( true ) {
+                // Group chunks by ckey and move into final PA table
+                // MonetDB also requires that the PA table is sorted on the primary key (ckey)
+                // to achieve high-performance (see: https://www.monetdb.org/pipermail/users-list/2014-July/007400.html)
+                sql_build.add("INSERT INTO " + table_pa + " " +
+                        " SELECT ckey, SUM(countaggr) AS countaggr, SUM(sumaggr) AS sumaggr, MIN(minaggr) AS minaggr, MAX(maxaggr) AS maxaggr " +
+                        " FROM " + chunks_table +
+                        " GROUP BY ckey" +
+                        " ORDER BY ckey ASC;\n"
+                );
+                sql_build.newLine();
+
+                sql_build.add("DROP TABLE " + chunks_table + ";\n");
+                
+                sql_build.newLine();                
+ 
+		if (sql_build.executeDirectly() == false) {
 			System.out.println("\n#! SCRIPT:\n"+sql_build.getScript());
 			System.out.flush(); // flush before possible crash
 			PrintWriter writer;
@@ -414,18 +514,45 @@ public class PreAggregate {
 		String lfp_table_tmp = lfp_table + "_tmp";
 		StringBuilder with = new StringBuilder();
 		StringBuilder select = new StringBuilder();
-		
-		with.append("WITH RECURSIVE\n");
-		for(i=0; i<axis.length; i++) {
-			if ( i > 0 )
-				with.append(",\n");
-			with.append("\t t"+i+"(level,factor) AS (\n");
-			with.append("\t\tVALUES(0,1)\n");
-			with.append("\tUNION ALL\n");
-			with.append("\t\tSELECT level+1, factor*"+axis[i].N() + " FROM t"+i+" WHERE level < "+axis[i].maxLevels()+"\n");
-			with.append("\t)");
-		}
-		with.append("\n");
+                
+                if (SqlUtils.existsTable(c, schema, lfp_table)) {
+                    sql_build.add("DROP TABLE " + lfp_table + ";");
+                    sql_build.newLine();
+                }
+                		
+                if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                    // MonetDB does not support WITH recursive
+                    // therefore we need to create the temporary level/factor tables manually
+                    for(i=0; i<axis.length; i++) {
+                        if (SqlUtils.existsTable(c, schema, "t" + i)) {
+                            sql_build.add("DROP TABLE " + schema + ".t" + i + ";");
+                            sql_build.newLine();
+                        }
+                        
+                        sql_build.add("CREATE TABLE " + schema + ".t" + i + " (level int, factor int);");
+                        sql_build.newLine();
+                        
+                        for(int level=0; level <= axis[i].maxLevels(); level++) {
+                            int factor = 1 * (int)Math.pow(axis[i].N(), level);
+                            sql_build.add("INSERT INTO " + schema + ".t" + i + " VALUES (" + level + ", " + factor + ");");
+                            sql_build.newLine();
+                        }      
+                        
+                        sql_build.newLine();
+                    }
+                } else {
+                    with.append("WITH RECURSIVE\n");
+                    for(i=0; i<axis.length; i++) {
+                            if ( i > 0 )
+                                    with.append(",\n");
+                            with.append("\t t"+i+"(level,factor) AS (\n");
+                            with.append("\t\tVALUES(0,1)\n");
+                            with.append("\tUNION ALL\n");
+                            with.append("\t\tSELECT level+1, factor*"+axis[i].N() + " FROM t"+i+" WHERE level < "+axis[i].maxLevels()+"\n");
+                            with.append("\t)");
+                    }
+                    with.append("\n");
+                }
 		
 		StringBuilder greatest = new StringBuilder();
 		greatest.append("greatest(");
@@ -479,15 +606,23 @@ public class PreAggregate {
 		for(i=0; i<axis.length; i++) {
 			where.append("\tand "+"sd"+i+".level = least(t"+i+".level, "+greatest+"-1)\n");
 		}
-		// sql_build.add("DROP TABLE IF EXISTS " + lfp_table_tmp + ";\n");
+                                
 		String lfp_tmp = SqlUtils.gen_Select_INTO(c, 
 				lfp_table_tmp,
 				"SELECT" + select,
 				from.toString() + 
 				where,
 				false);
-		sql_build.add("DROP TABLE IF EXISTS " + lfp_table_tmp + ";\n");
-		sql_build.add(with.toString()+lfp_tmp+"\n");
+                
+                if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                    if (SqlUtils.existsTable(c, schema, lfp_table_tmp)) {
+                        sql_build.add("DROP TABLE " + lfp_table_tmp + ";\n");
+                    }
+                } else {                
+                    sql_build.add("DROP TABLE IF EXISTS " + lfp_table_tmp + ";\n");
+                }
+                
+		sql_build.add(with.toString() + lfp_tmp + "\n");
 		
 		select = new StringBuilder();
 		select.append("SELECT\t");
@@ -523,49 +658,78 @@ public class PreAggregate {
 		String lfp = SqlUtils.gen_Select_INTO(c, 
 				lfp_table,
 				select.toString(),
-				"FROM "+lfp_table_tmp,
+				"FROM " + lfp_table_tmp,
 				false);
 		sql_build.add(lfp);
-		sql_build.add("DROP TABLE IF EXISTS " + lfp_table_tmp + ";\n\n");
+                
+                sql_build.newLine();
+                
+		sql_build.add("DROP TABLE " + lfp_table_tmp + ";\n");
+                
+                if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                    for(i=0; i<axis.length; i++) {
+                        sql_build.add("DROP TABLE " + schema + ".t" + i + ";");
+                        sql_build.newLine();
+                    }
+                }
+                
+                sql_build.newLine();
+                
+                sql_build.addPost("DROP TABLE " + lfp_table + ";\n");
 	}
+        
+        public String select_level0 (Connection c, String from, String where, AggregateAxis axis[], String aggregateColumn, int aggregateMask) throws SQLException {
+            StringBuilder select = new StringBuilder("SELECT ");
+            StringBuilder gb	 = new StringBuilder();
+       
+            for(int i=0; i < axis.length; i++) {
+                if (i>0) {
+                        select.append(",\n\t");
+                        gb.append(',');
+                }
+                if ( gen_optimized ) {
+                        select.append("0 AS l").append(i).append(",\n\t");
+                }
+
+                if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                    select.append("CAST(").append(rangeFunName(i)).append("(").append(axis[i].columnExpression()).append(") AS integer) AS i").append(i);
+                } else {                        
+                    select.append(rangeFunName(i)).append("(").append(axis[i].columnExpression()).append(") :: integer AS i").append(i);
+                }
+
+                gb.append("i").append(i);
+            }
+            
+            if ((aggregateMask & AGGR_COUNT) != 0) select.append(",\n\tCOUNT(").append(aggregateColumn).append(") AS countAggr");            
+            if ((aggregateMask &AGGR_SUM) != 0) select.append(",\n\tSUM(").append(aggregateColumn).append(") AS sumAggr"); 
+            if ((aggregateMask &AGGR_MIN) != 0) select.append(",\n\tMIN(").append(aggregateColumn).append(") AS minAggr"); 
+            if ((aggregateMask &AGGR_MAX) != 0) select.append(",\n\tMAX(").append(aggregateColumn).append(") AS maxAggr"); 
+            
+            select.append(" FROM ").append(from);
+            
+            if ( where != null ) {
+                select.append(" WHERE ").append(where);
+            }
+            
+            select.append("\nGROUP BY ").append(gb);
+            select.append("\n");
+            
+            return select.toString();
+        }
 	
 	public String generate_level0(Connection c, String level0_table, String from, String where, AggregateAxis axis[], String aggregateColumn, int aggregateMask) 
 	throws SQLException {
-		/*
-		 * Generate the level 0 table
-		 */
-		int i;
-		StringBuilder select = new StringBuilder();
-		StringBuilder gb	 = new StringBuilder();
-		for(i=0; i<axis.length; i++) {
-			if (i>0) {
-				select.append(",\n\t");
-				gb.append(',');
-			}
-			if ( gen_optimized )
-				select.append("0 AS l"+i+",\n\t");
-			select.append(rangeFunName(i)+"("+axis[i].columnExpression()+") :: integer AS i"+i);
-			gb.append("i"+i);
-		}
-		//
-		if ( where != null )
-			where = "\nWHERE " + where;
-		else
-			where = "";
-		String level0 = SqlUtils.gen_Select_INTO(c, 
+		
+		String level0 = SqlUtils.gen_Select_INTO(
+                                c, 
 				level0_table,
-				"SELECT\n\t" + select +
-				((aggregateMask&AGGR_COUNT)!=0 ? ",\n\tCOUNT(" + aggregateColumn + ") AS countAggr" : "") +
-				((aggregateMask&AGGR_SUM) !=0 ? ",\n\tSUM(" + aggregateColumn + ") AS sumAggr" : "") +
-				((aggregateMask&AGGR_MIN) !=0 ? ",\n\tMIN(" + aggregateColumn + ") AS minAggr" : "") +
-				((aggregateMask&AGGR_MAX) !=0 ? ",\n\tMAX(" + aggregateColumn + ") AS maxAggr" : "")
-				, 
-				"FROM " + from + where + "\nGROUP BY "+gb,
+                                select_level0(c, from, where, axis, aggregateColumn, aggregateMask),
+				"",
 				false);
 		return level0;
 	}
 	
-	protected void generate_optimized(Connection c, SqlScriptBuilder sql_build, String delta_table, String level0, String lfp_table, AggregateAxis axis[],
+	protected void generate_optimized(Connection c, SqlScriptBuilder sql_build, String pa_tmp_table, String level0, String lfp_table, AggregateAxis axis[],
 			String genKey, int aggregateMask) throws SQLException {
 		// first compute the total number of levels
 		int i, sumlevels = 0;
@@ -636,6 +800,10 @@ public class PreAggregate {
 		if ((aggregateMask & AGGR_MAX) != 0)
 			keystat.append(",\n\tmaxAggr");
 			
+                
+                sql_build.add("INSERT INTO " + pa_tmp_table + " " + keystat.toString() + " FROM " + level0 + ";\n");
+                
+                /*
 		sql_build.add(
 				SqlUtils.gen_Select_INTO(c, 
 				delta_table,
@@ -643,10 +811,12 @@ public class PreAggregate {
 				"FROM " + level0,
 				false)
 		);
+                */
+                
 		sql_build.newLine();
 	}
 	
-	public String generate_level0_n(Connection c, String delta_table,
+	public String generate_level0_n(Connection c, String chunks_table,
 			String level0, AggregateAxis axis[], String dimTable[],
 			String genKey, int aggregateMask) throws SQLException {
 		int i;
@@ -697,11 +867,11 @@ public class PreAggregate {
 				+ ((aggregateMask & AGGR_MAX) != 0 ? ",\n\tmaxAggr" : "");
 
 		// first update, then insert to prevent problems
-		String delta = SqlUtils.gen_Select_INTO(c, delta_table, "SELECT \t"
-				+ gk + " as ckey" + aggrAttr, "FROM\t(" + subindexQ
-				+ ") AS siq",
-				false); // incomplete
-		return delta;
+                StringBuilder insert = new StringBuilder("INSERT INTO ");
+                insert.append(chunks_table).append(" SELECT ").append(gk).append(" AS ckey").append(aggrAttr);
+                insert.append(" FROM (").append(subindexQ).append(") AS siq");
+
+		return insert.toString();
 	}
 
 	/*
@@ -745,7 +915,7 @@ public class PreAggregate {
 			if (axis[i].isMetric()) {
 				MetricAxis ax = (MetricAxis) axis[i];
 
-				if (true) {
+				if (false) {
 					if (!ax.exactIndex(iv_first_obj[i][RMIN]))
 						throw new SQLException(
 								"SQLquery_grid: start of first interval in dim "
@@ -796,7 +966,7 @@ public class PreAggregate {
 		if ( serversideStairwalk ) {
 			int swgc[][] = new int[axis.length][3]; // start/width/gridcells
 
-			StringBuilder gksplit = new StringBuilder();
+			
 			long prev_dimsize = 1;
 			for(i=0; i<axis.length; i++) {
 				swgc[i][0] = iv_first[i];	// start
@@ -808,18 +978,54 @@ public class PreAggregate {
 				prev_dimsize *= iv_count[i];
 			}
 			StringBuilder sqlaggr = new StringBuilder();
-			if ((queryAggregateMask & aggregateMask & AGGR_COUNT) != 0)
-				sqlaggr.append(",sum(countAggr) AS countAggr");
-			if ((queryAggregateMask & aggregateMask & AGGR_SUM) != 0)
-				sqlaggr.append(",sum(sumAggr) AS sumAggr");
-			if ((queryAggregateMask & aggregateMask & AGGR_MIN) != 0)
-				sqlaggr.append(",min(minAggr) AS minAggr");
-			if ((queryAggregateMask & aggregateMask & AGGR_MAX) != 0)
-				sqlaggr.append(",max(maxAggr) AS maxAggr");
-			String gcells = "pa_grid(\'" + grid_paGridQuery(swgc) + "\')";
+                        
+                        if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                            if ((queryAggregateMask & aggregateMask & AGGR_COUNT) != 0)
+                                    sqlaggr.append(",sum(aggr1) AS countAggr");
+                            if ((queryAggregateMask & aggregateMask & AGGR_SUM) != 0)
+                                    sqlaggr.append(",sum(aggr2) AS sumAggr");
+                            if ((queryAggregateMask & aggregateMask & AGGR_MIN) != 0)
+                                    sqlaggr.append(",min(aggr3) AS minAggr");
+                            if ((queryAggregateMask & aggregateMask & AGGR_MAX) != 0)
+                                    sqlaggr.append(",max(aggr4) AS maxAggr");
+                        } else {                        
+                            if ((queryAggregateMask & aggregateMask & AGGR_COUNT) != 0)
+                                    sqlaggr.append(",sum(countAggr) AS countAggr");
+                            if ((queryAggregateMask & aggregateMask & AGGR_SUM) != 0)
+                                    sqlaggr.append(",sum(sumAggr) AS sumAggr");
+                            if ((queryAggregateMask & aggregateMask & AGGR_MIN) != 0)
+                                    sqlaggr.append(",min(minAggr) AS minAggr");
+                            if ((queryAggregateMask & aggregateMask & AGGR_MAX) != 0)
+                                    sqlaggr.append(",max(maxAggr) AS maxAggr");
+                        }
+                        
+                        StringBuilder gcells = new StringBuilder("pa_grid_enhanced(\'");
+                        gcells.append(grid_paGridQuery(swgc));
+                        gcells.append("\'");
+                        
+                        // MonetDB has a more advanced version of the pa_grid function
+                        // so we need to add additional parameters
+                        if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                            gcells.append(", ").append(SqlUtils.quoteValue(c, schema));
+                            gcells.append(", ").append(SqlUtils.quoteValue(c, table + PA_EXTENSION));
+                            gcells.append(", ").append(SqlUtils.quoteValue(c, "ckey"));
+                            
+                            if ((queryAggregateMask & aggregateMask & AGGR_COUNT) != 0)
+                                gcells.append(", ").append(SqlUtils.quoteValue(c, "countaggr"));
+                            if ((queryAggregateMask & aggregateMask & AGGR_SUM) != 0)
+                                gcells.append(", ").append(SqlUtils.quoteValue(c, "sumaggr"));
+                            if ((queryAggregateMask & aggregateMask & AGGR_MIN) != 0)
+                                gcells.append(", ").append(SqlUtils.quoteValue(c, "minaggr"));
+                            if ((queryAggregateMask & aggregateMask & AGGR_MAX) != 0)
+                                gcells.append(", ").append(SqlUtils.quoteValue(c, "maxaggr"));
+                        }
+                        
+                        gcells.append(")");
+                        
+                        
 			StringBuilder gk_ex = new StringBuilder();
 			StringBuilder order  = new StringBuilder();
-			
+                        
 			gk_ex.append("gkey");
 			int prevBits = 0;
 			for(i=0; i<iv_count.length; i++) {
@@ -837,8 +1043,22 @@ public class PreAggregate {
 				order.append("d"+i);
 				prevBits += dimBits;
 			}
-			String sql = "SELECT "+gk_ex+sqlaggr+" FROM "+schema+"."+table+PA_EXTENSION+", "+gcells+ " WHERE ckey=pakey GROUP BY gkey ORDER BY "+order+";";
-			System.out.println("#!GRID_QUERY="+sql);	
+                        
+                        StringBuilder sql = new StringBuilder("SELECT ");
+                        sql.append(gk_ex).append(sqlaggr);
+                        sql.append(" FROM ");
+                        if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                            // only select from pa_grid function
+                           sql.append(gcells);
+                        } else {
+                            // select from _pa table and pa_grid function and join on ckey/pakey
+                            sql.append(schema).append(".").append(table).append(PA_EXTENSION).append(", ").append(gcells);
+                            sql.append(" WHERE ckey = pakey");
+                        }
+                        sql.append(" GROUP BY gkey");
+                        sql.append(" ORDER BY ").append(order);
+                        
+			System.out.println("#!GRID_QUERY="+sql.toString());	
 			//
 			if ( false ) {
 				int cellnr[] = { 7, 8 };
@@ -886,7 +1106,7 @@ public class PreAggregate {
 			}
 			
 			//
-			result = SqlUtils.execute(c,sql);
+			result = SqlUtils.execute(c,sql.toString());
 		} else {
 			// explode it
 			PermutationGenerator p = new PermutationGenerator(axis.length);
@@ -939,33 +1159,136 @@ public class PreAggregate {
 		if ((queryAggregateMask & aggregateMask & AGGR_MAX) != 0)
 			sqlaggr.append(",max("+aggregateColumn+") AS maxAggr");
 
+                StringBuilder cols = new StringBuilder();
 		StringBuilder sqlgkey = new StringBuilder();
 		StringBuilder sqlwhere = new StringBuilder();
 		StringBuilder sqlgroupby = new StringBuilder();
+                
 		int factor = 1;
-		for(i=axis.length-1; i>=0; i--) {
-			if(i<2){
-				// coordinates				
-				sqlgkey.append("floor("+axis[i].columnExpression()+"/"+(((Double)iv_first_obj[i][1])-((Double)iv_first_obj[i][0]))+")*"+factor+"+");
-				sqlwhere.append( " and "+axis[i].columnExpression()+">="+iv_first_obj[i][0]);
-				sqlwhere.append( " and "+ axis[i].columnExpression()+"<="+
-					(((Double)iv_first_obj[i][0])+iv_count[i]*(((Double)iv_first_obj[i][1])-((Double)iv_first_obj[i][0]))));
-				sqlgroupby.append("floor("+axis[i].columnExpression()+"/"+(((Double)iv_first_obj[i][1])-((Double)iv_first_obj[i][0]))+"),");
-			} else {
-				// time dimension - if existent
-				sqlwhere.append( " and "+axis[i].columnExpression()+">= '"+((Timestamp)iv_first_obj[i][0])+"'::timestamp with time zone");
-				sqlwhere.append( " and "+axis[i].columnExpression()+"<= '"+
-						(((Timestamp)iv_first_obj[i][0])+"'::timestamp with time zone + ("+iv_count[i]+"*('"+((Timestamp)iv_first_obj[i][1])+"'::timestamp with time zone - '"+((Timestamp)iv_first_obj[i][0])+"'::timestamp with time zone))"));
-				if(iv_count[i]>1){
-					sqlgkey.append("floor(extract('epoch' from "+axis[i].columnExpression()+")/(extract('epoch' from '"+(((Timestamp)iv_first_obj[i][1])+"'::timestamp with time zone) - extract('epoch' from '"+((Timestamp)iv_first_obj[i][0]))+"'::timestamp with time zone)))*"+factor+"+");				
-					sqlgroupby.append("floor(extract('epoch' from "+axis[i].columnExpression()+")/(extract('epoch' from '"+(((Timestamp)iv_first_obj[i][1])+"'::timestamp with time zone) - extract('epoch' from '"+((Timestamp)iv_first_obj[i][0]))+"'::timestamp with time zone))),");
-				}
-			}
-			factor = factor*iv_count[i];
+		for(i=0; i < axis.length; i++) {
+                    String colKey = "d" + i;
+
+                    if (axis[i] instanceof MetricAxis) {
+                        MetricAxis metricAxis = (MetricAxis) axis[i];
+                        AxisIndexer indexer = metricAxis.getIndexer();
+
+                        // normal number-based axis?
+                        if (indexer instanceof DoubleAxisIndexer || indexer instanceof LongAxisIndexer || indexer instanceof IntegerAxisIndexer) {
+                            // coordinates	
+                            double start = (Double) iv_first_obj[i][0];
+                            double end = (((Double)iv_first_obj[i][0])+iv_count[i]*(((Double)iv_first_obj[i][1])-((Double)iv_first_obj[i][0])));
+
+                            // calculate range between start and end coordinate
+                            double range = (end - start);
+
+                            // extend range with BASEBLOCKSIZE
+                            // so that the end coordinates falls within range
+                            range = range + (Double)metricAxis.BASEBLOCKSIZE();
+
+                            // calculate factor to divide by
+                            double divideBy = range / iv_count[i];
+
+                            // calculate index of start coordinate
+                            // which is used to compensate calculation of indexes
+                            // so that the start index is *always* 0 (zero)
+                            double startIndex = start / divideBy;
+
+                            // MonetDB doesn't support expressions in the GROUP BY clause
+                            // therefore these must first be separately included as additional columns
+                            if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                                cols.append(", floor( ("+axis[i].columnExpression()+"/"+ divideBy +")");
+                                if (startIndex > 0) {
+                                    cols.append(" - ").append(startIndex);
+                                } else if (startIndex < 0) {
+                                    cols.append(" + ").append(Math.abs(startIndex));
+                                }
+                                cols.append(") AS " + colKey);
+                                sqlgkey.append(colKey + "*" + factor + "+");
+                                sqlgroupby.append(colKey + ",");
+                            } else {
+                                sqlgkey.append("floor( (").append(axis[i].columnExpression()).append("/").append(divideBy).append(")");
+                                if (startIndex > 0) {
+                                    sqlgkey.append(" - ").append(startIndex);
+                                } else if (startIndex < 0) {
+                                    sqlgkey.append(" + ").append(Math.abs(startIndex));
+                                }                                    
+                                sqlgkey.append(")*").append(factor).append("+");
+
+                                sqlgroupby.append("floor( (").append(axis[i].columnExpression()).append("/").append(divideBy).append(")");
+                                if (startIndex > 0) {
+                                    sqlgroupby.append(" - ").append(startIndex);
+                                } else if (startIndex < 0) {
+                                    sqlgroupby.append(" + ").append(Math.abs(startIndex));
+                                }    
+                                sqlgroupby.append("),");
+                            }
+
+                            sqlwhere.append( " and "+axis[i].columnExpression()+">="+ start);
+                            sqlwhere.append( " and "+ axis[i].columnExpression()+"<="+ end);
+
+                        // time-based axis?
+                        } else if (indexer instanceof TimestampAxisIndexer) {                            
+                            // time dimension filter
+                            sqlwhere.append( " AND " + axis[i].columnExpression() + " >= CAST('" + ((Timestamp)iv_first_obj[i][0]) + "' AS timestamp with time zone)");
+                            sqlwhere.append(" AND ").append(axis[i].columnExpression()).append(" <= CAST('")
+                                    .append(((Timestamp)iv_first_obj[i][1])).append("' AS timestamp with time zone)");
+                            
+
+                            // also need to group by time dimension (i.e. divide result into time buckets)?
+                            if(iv_count[i] > 1){
+                                    // Dennis Pallett:
+                                    // it's likely that the code below is not correct yet, so disable it for now
+                                    throw new UnsupportedOperationException("Time dimension does not support groups yet!");
+                                    
+                                    // TODO: implement grouping for time dimension
+                                    
+                                    /*
+                                    sqlgkey.append("floor(extract('epoch' from "+axis[i].columnExpression()+")/(extract('epoch' from '"+(((Timestamp)iv_first_obj[i][1])+"'::timestamp with time zone) - extract('epoch' from '"+((Timestamp)iv_first_obj[i][0]))+"'::timestamp with time zone)))*"+factor+"+");				
+                                    sqlgroupby.append("floor(extract('epoch' from "+axis[i].columnExpression()+")/(extract('epoch' from '"+(((Timestamp)iv_first_obj[i][1])+"'::timestamp with time zone) - extract('epoch' from '"+((Timestamp)iv_first_obj[i][0]))+"'::timestamp with time zone))),");
+                                    */
+                            } else {
+                                cols.append(", '0' AS " + colKey);
+                            }
+                        } else {
+                            throw new UnsupportedOperationException("MetricAxis with indexer of type " + indexer.getClass().getCanonicalName() + " not supported");
+                        }
+                    } else if (axis[i] instanceof NominalAxis) {
+                        // nominal dimension filter
+                        if (!(iv_first_obj[i][0] instanceof String)) {
+                            throw new SQLException("NominalAxis only works with String objects as start/end");
+                        }
+                        
+                        NominalAxis nominalAxis = (NominalAxis) axis[i];
+                        
+                        // convert actual word to its index
+                        int wordIndex = nominalAxis.getWordIndex((String)iv_first_obj[i][0]);
+
+                        // add filter to query
+                        sqlwhere.append(" AND ").append(nominalAxis.columnExpression()).append(" = ").append(wordIndex);
+                        
+                        // also need to group by nominal dimension?
+                        // currently not supported and not a good idea on how to do this
+                        // probably need support for multi-keyword filters first
+                        if(iv_count[i] > 1){
+                            throw new UnsupportedOperationException("Nominal dimension does not support groups yet!");
+                        } else {
+                            cols.append(", '0' AS " + colKey);
+                        }
+                        
+                    } else {
+                        throw new UnsupportedOperationException("Axis of type " + axis[i].getClass().getCanonicalName() + " not supported");
+                    }
+
+                    factor = factor * iv_count[i];
 		}
-		String sql = "SELECT "+sqlgkey.toString()+"0 as gkey"+sqlaggr+" FROM "+schema+"."+table+" WHERE true "+sqlwhere.toString()+
-						" GROUP BY "+sqlgroupby.toString();
+                
+                
+		String sql = "SELECT " + sqlgkey.toString() + "0 as gkey" + sqlaggr + cols.toString() + 
+                             " FROM " + schema + "." + table + 
+                             " WHERE true " + sqlwhere.toString()+
+                             " GROUP BY "+sqlgroupby.toString();
 		sql = sql.substring(0, sql.length()-1);
+                System.out.println(sql);
 		result = SqlUtils.execute(c, sql);
 		//
 		return result;
@@ -1134,29 +1457,61 @@ public class PreAggregate {
 
 		// kd.switchSubindexOff();
 
-		String sqlaggr;
-		if ( aggr.equals("count") )
-			sqlaggr = "sum(countAggr)";
-		else if ( aggr.equals("sum") )
-			sqlaggr = "sum(sumAggr)";
-		else if ( aggr.equals("min") )
-			sqlaggr = "min(minAggr)";
-		else if ( aggr.equals("max") )
-			sqlaggr = "max(maxAggr)";
-		else
-			throw new SQLException("unexpected aggr: "+aggr);
-		StringBuffer qb = new StringBuffer("SELECT "+sqlaggr+" FROM "+schema+"."+table+PA_EXTENSION);
+		String sqlaggr = "";
+                String aggrCol = "";
+                if (serversideStairwalk  && SqlUtils.dbType(c) == DbType.MONETDB) {
+                    if ( aggr.equals("count") ) {
+                        sqlaggr = "sum(aggr1) AS countAggr";
+                        aggrCol = "countaggr";
+                    } else if ( aggr.equals("sum") ) {
+                        sqlaggr = "sum(aggr1) AS sumAggr";
+                        aggrCol = "sumaggr";
+                    } else if ( aggr.equals("min") ) {
+                        sqlaggr = "min(aggr1) AS minAggr";
+                        aggrCol = "minaggr";
+                    } else if ( aggr.equals("max") ) {
+                        sqlaggr = "max(aggr1) AS maxAggr";
+                        aggrCol = "maxaggr";
+                    } else {
+                        throw new SQLException("unexpected aggr: "+aggr);
+                    }
+                } else {                
+                    if ( aggr.equals("count") ) sqlaggr = "sum(countAggr)";
+                    else if ( aggr.equals("sum") ) sqlaggr = "sum(sumAggr)";
+                    else if ( aggr.equals("min") ) sqlaggr = "min(minAggr)";
+                    else if ( aggr.equals("max") ) sqlaggr = "max(maxAggr)";
+                    else throw new SQLException("unexpected aggr: "+aggr);
+                }
+                
+		StringBuffer qb = new StringBuffer("SELECT ");
+                qb.append(sqlaggr).append(" FROM ");
+                
+                // select directly from PA table when not doing serverside stairwalk
+                // or when database is not MonetDB
+                // because MonetDB does not need to select from PA table in serverside stairwalk
+                if (serversideStairwalk == false || SqlUtils.dbType(c) != DbType.MONETDB) {                
+                    qb.append(schema).append(".").append(table).append(PA_EXTENSION);
+                }
+
 		System.out.println("$ pa-command = "+range_paGridQuery(ranges));
 		long internalCount = 0;
 		if ( serversideStairwalk ) {
-			// use Postgres internal pacells2d function
+			// use internal pacells2d function
 			String pa_grid_str;
-
-			pa_grid_str = "pa_grid_cell('"+range_paGridQuery(ranges)+"') AS pakey "; // 2 times faster
-			qb.append(", ");
-			qb.append(pa_grid_str);
-			qb.append(" WHERE ckey=pakey");
-
+                        
+                        if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                            qb.append("pa_grid_enhanced(");
+                            qb.append(SqlUtils.quoteValue(c, range_paGridQuery(ranges)));
+                            qb.append(", ").append(SqlUtils.quoteValue(c, schema));
+                            qb.append(", ").append(SqlUtils.quoteValue(c, table + PA_EXTENSION));
+                            qb.append(", ").append(SqlUtils.quoteValue(c, "ckey"));
+                            qb.append(", ").append(SqlUtils.quoteValue(c, aggrCol));
+                            qb.append(")");
+                        } else {
+                            qb.append(", ");
+                            qb.append("pa_grid_cell('").append(range_paGridQuery(ranges)).append("') AS pakey ");
+                            qb.append(" WHERE ckey=pakey");
+                        }
 		} else {
 			Vector<AggrKey> resKeys;
 			resKeys = computePaCells(kd,ranges,axis);

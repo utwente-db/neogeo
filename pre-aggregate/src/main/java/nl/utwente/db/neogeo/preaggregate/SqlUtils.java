@@ -9,9 +9,10 @@ import java.sql.Timestamp;
 
 public class SqlUtils {
 
-	protected enum DbType {
+	public enum DbType {
 		POSTGRES, 
-		MYSQL
+		MYSQL,
+                MONETDB
 	}
 
 	protected static String databaseType(Connection c) throws SQLException {
@@ -21,23 +22,52 @@ public class SqlUtils {
 	protected static Connection cached_connection = null;
 	protected static DbType	 cached_dbtype = DbType.POSTGRES;
 
-	protected synchronized static DbType dbType(Connection c)
+	public synchronized static DbType dbType(Connection c)
 	throws SQLException {
-		if (false) return DbType.MYSQL;
 		if (c == cached_connection)
 			return cached_dbtype;
 		else {
 			String s = databaseType(c);
 
 			cached_connection = c;
-			if (s.equals("PostgreSQL"))
+			if (s.equals("PostgreSQL")) {
 				return cached_dbtype = DbType.POSTGRES;
-			else if (s.equals("MySQL"))
+                        } else if (s.equals("MySQL")) {
 				return cached_dbtype = DbType.MYSQL;
-			cached_connection = null;
-			throw new SQLException("Unknown database type: " + s);
+                        } else if (s.toLowerCase().equals("monetdb")) {
+                                return cached_dbtype = DbType.MONETDB;
+                        } else {
+                            cached_connection = null;
+                            throw new SQLException("Unknown database type: " + s);
+                        }
 		}
 	}
+        
+        public static boolean existsFunction (Connection c, String function)
+        throws SQLException {
+            boolean res;
+            
+            Statement st;
+            ResultSet rs;
+            
+            String sql = null;            
+            switch(dbType(c)) {
+                case MONETDB:
+                    sql = "SELECT COUNT(*) FROM sys.functions WHERE name = '" + function.toLowerCase() + "' LIMIT 1";                            
+                    break;
+                default:
+                    throw new UnsupportedOperationException("DbType " + dbType(c) + " not yet supported");
+            }
+            
+            st = c.createStatement();
+            rs = st.executeQuery(sql);
+            rs.next();
+            res = (rs.getInt(1) >= 1);
+            rs.close();
+            st.close();
+            
+            return res;
+        }
 
 	public static boolean existsTable(Connection c, String schema, String table)
 	throws SQLException {
@@ -56,11 +86,23 @@ public class SqlUtils {
 			sql = "SELECT COUNT(*) from information_schema.Tables WHERE table_schema='"
 				+ schema + "\' AND table_name=\'" + table + "\';";
 			break;
+                case MONETDB:
+                        // schema may have been included within table name
+                        // so strip it
+                        int dot = table.indexOf(".");
+                        if (dot > -1) {
+                            table = table.substring(dot+1);
+                        }
+                    
+                        sql = "SELECT COUNT(*) FROM sys.tables AS t" +
+                              " INNER JOIN sys.schemas AS s ON t.schema_id = s.id" +
+                              " WHERE s.name = '" + schema + "' AND t.name = '" + table + "';";
+                        break;
 		}
 		st = c.createStatement();
 		rs = st.executeQuery(sql);
 		rs.next();
-		res = (rs.getInt(1) == 1);
+		res = (rs.getInt(1) >= 1);
 		rs.close();
 		st.close();
 		return res;
@@ -75,6 +117,11 @@ public class SqlUtils {
 		case MYSQL:
 			executeNORES(c,sql);
 			break;
+                case MONETDB:
+                        executeNORES(c, sql);
+                        break;
+                default:
+                        throw new UnsupportedOperationException("Database type '" + dbType(c) + "' not yet supported!");
 		}	
 	}
 
@@ -208,16 +255,42 @@ public class SqlUtils {
 		switch ( dbType(c) ) {
 		case POSTGRES:
 		case MYSQL:
-			return "CAST("+v+" as "+type+")";
+                case MONETDB:
+			return "CAST(" + v + " AS " + type + ")";
 		}	
 		throw new SQLException("UNEXPECTED");
 	}
+        
+        public static String quoteValue (Connection c, String value) throws SQLException {
+            return quoteValue(dbType(c), value);
+        }
+        
+        public static String quoteValue (DbType dbType, String value) {
+            return "'" + value.replaceAll("\\\\", "\\\\\\\\").replaceAll("'", "\\\\'") + "'";
+        }
+        
+        public static String quoteIdentifier (Connection c, String ident) throws SQLException {
+            return quoteIdentifier(dbType(c), ident);
+        }
+        
+        public static String quoteIdentifier(DbType dbType, String ident) {
+            String res = ident;
+            
+            switch(dbType) {
+                case MONETDB:
+                    res = "\"" + ident + "\"";
+                    break;
+            }
+            
+            return res;
+        }
 	
 	public static String gen_DIV(Connection c, String l, String r) throws SQLException {
 		switch ( dbType(c) ) {
-		case POSTGRES:
+                    case POSTGRES:
+                    case MONETDB:
 			return "DIV("+l+","+r+")";
-		case MYSQL:
+                    case MYSQL:
 			return "("+l+") div ("+r+")";
 		}	
 		throw new SQLException("UNEXPECTED");
@@ -225,9 +298,10 @@ public class SqlUtils {
 
 	public static String gen_MOD(Connection c, String l, String r) throws SQLException {
 		switch ( dbType(c) ) {
-		case POSTGRES:
+                    case POSTGRES:
+                    case MONETDB:
 			return "MOD("+l+","+r+")";
-		case MYSQL:
+                    case MYSQL:
 			return "("+l+") mod ("+r+")";
 		}	
 		throw new SQLException("UNEXPECTED");
@@ -235,24 +309,26 @@ public class SqlUtils {
 	
 	public static String sql_assign(Connection c, String name, String value) throws SQLException {
 		switch ( dbType(c) ) {
-		case POSTGRES:
+                    case POSTGRES:
 			return name + " := " + value;
-		case MYSQL:
+                    case MYSQL:
 			return "SET " + name + " := " + value;
+                    case MONETDB:
+                        return "SET " + name + " = " + value;
 		}
 		throw new SQLException("Unknonwn Database type");
 	}
 
 	public static String gen_Create_Or_Replace_Function(Connection c, String name, String par, String restype, String declare, String body) throws SQLException {
 		switch ( dbType(c) ) {
-		case POSTGRES:
+                    case POSTGRES:
 			return "CREATE OR REPLACE FUNCTION " + name +  "(" + par + ") RETURNS " + restype + " AS $$\n"+
 			declare +
 			"BEGIN\n"+
 			body +
 			"END\n"+
 			"$$ LANGUAGE plpgsql;\n";
-		case MYSQL:
+                    case MYSQL:
 			return	
 			"DROP FUNCTION IF EXISTS " + name + ";\n" +
 			"DELIMITER //\n" +
@@ -262,19 +338,67 @@ public class SqlUtils {
 			body +
 			"END //\n"+
 			"DELIMITER ;\n";
+                    case MONETDB:
+                        String drop = "";
+                        if (SqlUtils.existsFunction(c, name)) {
+                            drop = "DROP FUNCTION " + name + ";\n";
+                        }
+                        
+                        return
+                        drop +
+                        "CREATE FUNCTION " + name + " (" + par + ")\n" +
+                        "RETURNS " + restype + "\n" +
+                        "BEGIN\n" + 
+                        declare + 
+                        body + 
+                        "END;";
+                    default:
+                        throw new UnsupportedOperationException("Database of type " + dbType(c) + " not yet supported!");
 		}	
-		throw new SQLException("UNEXPECTED");
 	}
+        
+        public static String gen_COPY_INTO (Connection c, String subquery, String filePath) throws SQLException {
+            return gen_COPY_INTO (c, subquery, filePath, ",", "\n", "\"", "");
+        }
+        
+        public static String gen_COPY_INTO (Connection c, String subquery, String filePath, String fieldSep, String rowSep, String strQuote, String nullAs) throws SQLException {
+            StringBuilder sql = new StringBuilder();
+            
+            switch ( dbType(c) ) {
+                case MONETDB:
+                    sql.append("COPY ").append(subquery).append("\n");
+                    sql.append(" INTO ").append(quoteValue(c, filePath)).append("\n");
+                    sql.append(" USING DELIMITERS ");
+                    sql.append(quoteValue(c, fieldSep)).append(", ");
+                    sql.append(quoteValue(c, rowSep)).append(", ");
+                    sql.append(quoteValue(c, strQuote)).append("\n");
+                    sql.append(" NULL AS ").append(quoteValue(c, nullAs)).append(";\n");
+                    
+                    break;
+                default:
+                    throw new UnsupportedOperationException("DbType " + dbType(c) + " not supported (yet?)");
+            }
+            
+            return sql.toString();
+            
+        }
 
 	public static String gen_Select_INTO(Connection c, String table, String select_head, String select_tail, boolean dropfirst) throws SQLException {
+                String dropstat = "";
+                
 		switch ( dbType(c) ) {
 		case POSTGRES:
-			String dropstat = "";
 			if ( dropfirst )
 				dropstat = "DROP TABLE IF EXISTS " + table + ";\n";
 			return  dropstat + select_head +"\n"+
 			"INTO "+ table +"\n" +
 			select_tail + ";\n";
+                case MONETDB:
+                        if (dropfirst) {
+                            dropstat = "DROP TABLE " + table + ";\n";
+                        }
+                    
+                        return dropstat + "CREATE TABLE " + table + " AS " + select_head + " " + select_tail + " WITH DATA;";
 		case MYSQL:
 			return	"CREATE TABLE "+table+"\n"+
 			select_head + "\n"+
@@ -293,6 +417,7 @@ public class SqlUtils {
 			} else
 				return o.toString();
 		case MYSQL:
+                case MONETDB:
 			return o.toString();
 		}	
 		throw new SQLException("UNEXPECTED");
@@ -300,11 +425,114 @@ public class SqlUtils {
 	
 	public static String gen_DROP_FUNCTION(Connection c, String fun, String par_type) throws SQLException {
 		switch ( dbType(c) ) {
-		case POSTGRES:
+                    case POSTGRES:
+                    case MONETDB:
 			return  "DROP FUNCTION "+fun+"("+par_type+");\n";
-		case MYSQL:
+                    case MYSQL:
 			return  "DROP FUNCTION IF EXISTS "+fun+";\n";
 		}	
 		throw new SQLException("UNEXPECTED");
 	}
+        
+        
+        /**
+         * This procedure is used to ensure MonetDB has some additional functions, which are needed and not natively implemented.
+         * 
+         * @param c
+         * @author Dennis Pallett (dennis@pallett.nl)
+         */
+        public static void compatMonetDb (Connection c) throws SQLException {
+            // only suitable for MonetDB connections
+            if (dbType(c) != DbType.MONETDB) return;
+            
+            Statement q = c.createStatement();
+            
+            // UNIX EPOCH function (used by range function of TimeStamp Axis)
+            if (existsFunction(c, "UNIX_TIMESTAMP") == false) {
+                q.execute(
+                    "CREATE FUNCTION UNIX_TIMESTAMP (conv_time timestamp)\n" +
+                    "RETURNS bigint\n" +
+                    "BEGIN\n" +
+                    "\t RETURN ((conv_time - CAST('1970-01-01 00:00:00' as timestamp)) / 1000);\n" +
+                    "END;"
+                );
+            }   
+            
+            // GREATEST function
+            if (existsFunction(c, "GREATEST") == false) {
+                q.execute(
+                    "CREATE FUNCTION GREATEST (num1 int, num2 int)\n" +
+                    "RETURNS int\n" +
+                    "BEGIN\n" +
+                    "\t  CASE \n" +
+                    "\t  WHEN (num1 IS NULL AND num2 IS NULL) THEN RETURN NULL;\n" +
+                    "\t  WHEN (num1 IS NULL) THEN RETURN num2;\n" +
+                    "\t  WHEN (num2 IS NULL) THEN RETURN num1;\n" +
+                    "\t  WHEN (num1 > num2) THEN RETURN num1;\n" +
+                    "\t  ELSE RETURN num2;\n" +
+                    "\t  END CASE;\n" +
+                    "END;"
+                );
+                
+                q.execute(
+                    "CREATE FUNCTION GREATEST (num1 int, num2 int, num3 int)\n" +
+                    "RETURNS INT\n" +
+                    "BEGIN\n" +
+                    "\t RETURN GREATEST(num1, GREATEST(num2, num3));\n" +
+                    "END;"
+                );
+                
+                q.execute(
+                    "CREATE FUNCTION GREATEST (num1 int, num2 int, num3 int, num4 int)\n" +
+                    "RETURNS INT\n" +
+                    "BEGIN\n" +
+                    "\t RETURN GREATEST(num1, GREATEST(num2, num3, num4));\n" +
+                    "END;"
+                );
+                
+                q.execute(
+                    "CREATE FUNCTION GREATEST (num1 int, num2 int, num3 int, num4 int, num5 int)\n" +
+                    "RETURNS INT\n" +
+                    "BEGIN\n" +
+                    "\t  RETURN GREATEST(num1, GREATEST(num2, num3, num4, num5));\n" +
+                    "END;"
+                );
+            }
+            
+            // LEAST function
+            if (existsFunction(c, "LEAST") == false) {
+                q.execute(
+                    "CREATE FUNCTION LEAST (num1 int, num2 int)\n" +
+                    "RETURNS int\n" +
+                    "BEGIN\n" +
+                    "\t   CASE \n" +
+                    "\t   WHEN (num1 IS NULL AND num2 IS NULL) THEN RETURN NULL;\n" +
+                    "\t   WHEN (num1 IS NULL) THEN RETURN num2;\n" +
+                    "\t   WHEN (num2 IS NULL) THEN RETURN num1;\n" +
+                    "\t   WHEN (num1 < num2) THEN RETURN num1;\n" +
+                    "\t   ELSE RETURN num2;\n" +
+                    "\t   END CASE;\n" +
+                    "END;"
+                );
+            }
+            
+            // DIV function
+            if (existsFunction(c, "DIV") == false) {
+                q.execute(
+                    "CREATE FUNCTION DIV (num1 numeric, num2 numeric)\n" +
+                    "RETURNS numeric\n" +
+                    "BEGIN\n" +
+                    "\t RETURN num1 / num2;\n" +
+                    "END;"
+                );
+                
+                q.execute(
+                    "CREATE FUNCTION DIV (num1 bigint, num2 bigint)\n" +
+                    "RETURNS bigint\n" +
+                    "BEGIN\n" +
+                    "\t	RETURN num1 / num2;\n" +
+                    "END;"
+                );
+            }
+        }
 }

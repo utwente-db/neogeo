@@ -53,6 +53,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                   <DisplacementX>0</DisplacementX>
                   <DisplacementY>0</DisplacementY>
                 </Displacement>
+		<Rotation>-1</Rotation>
               </PointPlacement>
             </LabelPlacement>
           </TextSymbolizer>
@@ -101,6 +102,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                   <DisplacementX>0</DisplacementX>
                   <DisplacementY>0</DisplacementY>
                 </Displacement>
+		<Rotation>-1</Rotation>
               </PointPlacement>
             </LabelPlacement>
           </TextSymbolizer>
@@ -149,6 +151,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                   <DisplacementX>0</DisplacementX>
                   <DisplacementY>0</DisplacementY>
                 </Displacement>
+		<Rotation>-1</Rotation>
               </PointPlacement>
             </LabelPlacement>
           </TextSymbolizer>
@@ -197,6 +200,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                   <DisplacementX>0</DisplacementX>
                   <DisplacementY>0</DisplacementY>
                 </Displacement>
+		<Rotation>-1</Rotation>
               </PointPlacement>
             </LabelPlacement>
           </TextSymbolizer>
@@ -245,6 +249,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                   <DisplacementX>0</DisplacementX>
                   <DisplacementY>0</DisplacementY>
                 </Displacement>
+		<Rotation>-1</Rotation>
               </PointPlacement>
             </LabelPlacement>
           </TextSymbolizer>
@@ -293,6 +298,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                   <DisplacementX>0</DisplacementX>
                   <DisplacementY>0</DisplacementY>
                 </Displacement>
+		<Rotation>-1</Rotation>
               </PointPlacement>
             </LabelPlacement>
           </TextSymbolizer>
@@ -335,6 +341,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                   <DisplacementX>0</DisplacementX>
                   <DisplacementY>0</DisplacementY>
                 </Displacement>
+		<Rotation>-1</Rotation>
               </PointPlacement>
             </LabelPlacement>
           </TextSymbolizer>

@@ -25,7 +25,7 @@ public abstract class AggregateAxis {
 	public abstract short N();
 	
 	public abstract int axisSize();
-	
+        	
 	public abstract int getIndex(Object value, boolean checkBounds);
 	
 	public abstract Object reverseValue(int index);

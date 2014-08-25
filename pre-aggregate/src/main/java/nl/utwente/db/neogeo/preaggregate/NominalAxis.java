@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
+import nl.utwente.db.neogeo.preaggregate.SqlUtils.DbType;
 
 public class NominalAxis extends AggregateAxis {
 	
@@ -197,24 +198,64 @@ public class NominalAxis extends AggregateAxis {
 	public void tagWordIds2Table(Connection c, String schema, String org_table, String new_table) throws SQLException {
 		if ( !wordlistNominal() )
 			throw new SQLException("cannot tag words in plain numeric NominalAxis");
-		org_table = schema + "." + org_table;
-		new_table = schema + "." + new_table;
-		String wl_table = schema + "." + "wordlist";
+                
+                String wl_table = "wordlist";
+                
+		String org_table_full = schema + "." + org_table;
+		String new_table_full = schema + "." + new_table;
+		String wl_table_full = schema + "." + wl_table;
 
 		StringBuffer sql = new StringBuffer();
-		sql.append("DROP TABLE IF EXISTS "+new_table+";\n");
-		sql.append("DROP TABLE IF EXISTS "+wl_table+";\n");
-		sql.append("CREATE TABLE "+wl_table+" (word text,wordid int);\n");
+                
+                if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                    if (SqlUtils.existsTable(c, schema, new_table)) {
+                        sql.append("DROP TABLE " + new_table + ";\n");
+                    }
+                    if (SqlUtils.existsTable(c, schema, wl_table)) {
+                        sql.append("DROP TABLE " + wl_table + ";\n");
+                    }
+                } else {                
+                    sql.append("DROP TABLE IF EXISTS "+new_table_full+";\n");
+                    sql.append("DROP TABLE IF EXISTS "+wl_table_full+";\n");
+                }
+                
+		sql.append("CREATE TABLE "+wl_table_full+" (word text,wordid int);\n");
+                
 		for(int i=0; i<wordlist.length; i++) {
 			String match_str = wordlist[i];
 			
 			if ( match_str.equals(ALL))
 				match_str = "";
-			sql.append("INSERT INTO "+wl_table+" (word,wordid) VALUES(\'" + match_str.toLowerCase() + "\',"+i+");\n");
+			sql.append("INSERT INTO "+wl_table_full+" (word,wordid) VALUES(\'" + match_str.toLowerCase() + "\',"+i+");\n");
 		}
-		sql.append("\nSELECT "+org_table+".*, "+wl_table+".wordid "+"AS "+columnExpression()+"\nINTO "+new_table+"\nFROM "+org_table+", "+wl_table +
-					"\nWHERE strpos(lower("+org_table+"."+word_collection_column+"),"+wl_table+"."+"word)>0;\n");
-		sql.append("\nDROP TABLE IF EXISTS "+wl_table+";\n");
+                
+                if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                    sql.append("\n");
+                    sql.append("CREATE TABLE " + new_table + " AS\n");
+                    sql.append("SELECT " + org_table + ".*, " + wl_table + ".wordid AS tweet_wid FROM " + org_table + ", " + wl_table_full + "\n");
+                    sql.append("WHERE POSITION(" + wl_table + ".word IN lower(" + org_table + "." + word_collection_column + ")) > 0\n");
+                    sql.append("WITH DATA;\n");
+                } else {
+                    sql.append("\nSELECT "+org_table_full+".*, "+wl_table_full+".wordid "+"AS "+columnExpression()+"\nINTO "+new_table_full+"\nFROM "+org_table_full+", "+wl_table_full +
+					"\nWHERE strpos(lower("+org_table_full+"."+word_collection_column+"),"+wl_table_full+"."+"word)>0;\n");
+                }
+
+                if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                    sql.append("\n");
+                    
+                    // manually ensure that new words table also has Geometry columns properly registered
+                    sql.append("DELETE FROM geometry_columns WHERE f_table_schema = '" + schema + "' AND f_table_name = '" + new_table + "';\n");
+                    
+                    sql.append("\n");
+                    
+                    sql.append("INSERT INTO geometry_columns\n");
+                    sql.append("SELECT f_table_schema, '" + new_table + "', f_geometry_column, coord_dimension, srid, type\n");
+                    sql.append("FROM geometry_columns\n");
+                    sql.append("WHERE f_table_schema = '" + schema + "' AND f_table_name = '" + org_table + "';\n");
+                }
+                
+                sql.append("\nDROP TABLE "+wl_table_full+";\n");
+                
 		System.out.println(sql);
 		SqlUtils.executeSCRIPT(c, sql.toString());
 	}

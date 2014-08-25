@@ -3,9 +3,11 @@ package nl.utwente.db.neogeo.preaggregate;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import org.apache.log4j.Logger;
 
 
 public class SqlScriptBuilder {
+        static final Logger logger = Logger.getLogger(SqlScriptBuilder.class);
 	
 	private Connection c;
 	
@@ -16,11 +18,21 @@ public class SqlScriptBuilder {
 	
 	private StringBuilder pre_str;
 	private StringBuilder post_str;
+        
+        protected boolean executeDirectly = false;
 	
 	public SqlScriptBuilder(Connection c) throws SQLException{
 		this.c = c;
 		reset();
 	}
+        
+        public void setExecuteDirectly (boolean val) {
+            this.executeDirectly = val;
+        }
+        
+        public boolean executeDirectly () {
+            return this.executeDirectly;
+        }
 	
 	public void reset() throws SQLException {
 		this.pre_stat = c.createStatement();
@@ -30,15 +42,29 @@ public class SqlScriptBuilder {
 	}
 	
 	public void add(String s) throws SQLException {
-		if ( debug ) {
-			System.out.println("|----- EXECUTE:\n"+s+"|-----\n");
-			System.out.flush();
-			pre_stat.addBatch(s);
-			pre_stat.executeBatch();
+		if (executeDirectly) {
+                        logger.debug("Executing:\n" + s + "\n");
+                        
+                        long startTime = System.currentTimeMillis();
+                                                
+                        try {
+                            pre_stat.execute(s);
+                        } catch (SQLException e) {
+                            System.out.println("CAUGHT: "+e);
+                            e.printStackTrace();
+                            System.out.println("NEXT: "+e.getNextException());
+                            System.exit(0);
+                        }
+                        
+                        long execTime = System.currentTimeMillis() - startTime;
+                        logger.debug("Affected rows: " + pre_stat.getUpdateCount());
+                        logger.debug("Query execution time: " + execTime + " ms");
+                        
 			pre_stat = c.createStatement();
 		} else {
 			pre_stat.addBatch(s);
 		}
+                
 		pre_str.append(s);
 	}
 	
@@ -51,11 +77,11 @@ public class SqlScriptBuilder {
 	public void newLine() {
 		pre_str.append('\n');
 	}
-	
-	public void executeBatch()  throws SQLException{
-		try {
+        
+        public void executeBatch () throws SQLException {
+            try {
 			this.pre_stat.executeBatch();
-			this.post_stat.executeBatch();
+                        this.post_stat.executeBatch();
 		} catch (SQLException e) {
 			System.out.println("CAUGHT: "+e);
 			e.printStackTrace();
@@ -64,6 +90,32 @@ public class SqlScriptBuilder {
 		}
 		//
 		this.pre_stat = c.createStatement();
+                this.post_stat = c.createStatement();
+        }
+        
+        public void executePreBatch () throws SQLException {
+            try {
+			this.pre_stat.executeBatch();
+		} catch (SQLException e) {
+			System.out.println("CAUGHT: "+e);
+			e.printStackTrace();
+			System.out.println("NEXT: "+e.getNextException());
+			System.exit(0);
+		}
+		//
+		this.pre_stat = c.createStatement();
+        }
+        	
+	public void executePostBatch()  throws SQLException{
+		try {
+			this.post_stat.executeBatch();
+		} catch (SQLException e) {
+			System.out.println("CAUGHT: "+e);
+			e.printStackTrace();
+			System.out.println("NEXT: "+e.getNextException());
+			System.exit(0);
+		}
+		//
 		this.post_stat = c.createStatement();
 	}
 	

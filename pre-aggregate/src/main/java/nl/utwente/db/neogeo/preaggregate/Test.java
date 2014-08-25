@@ -11,16 +11,28 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
+import static nl.utwente.db.neogeo.preaggregate.NominalGeoTaggedTweetAggregate.NOMINAL_POSTFIX;
+import nl.utwente.db.neogeo.preaggregate.SqlUtils.DbType;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
-public class Test {
+public class Test {    
+        static final Logger logger = Logger.getLogger(Test.class);
+        
 	private static final String CONFIG_FILENAME = "database.properties";
 	private String hostname;
 	private String port;
 	private String username;
 	private String password;
 	private String database;
-
-	private void readProperties() {
+        private String schema = "public";
+        private String driverClass = "org.postgresql.Driver";
+        private String urlPrefix = "jdbc:postgresql";
+        
+        
+        
+ 	private void readProperties() {
 		Properties prop = new Properties();
 		try {
 			InputStream is =
@@ -31,32 +43,52 @@ public class Test {
 			username = prop.getProperty("username");
 			password = prop.getProperty("password");
 			database = prop.getProperty("database");
+                        
+                        if (prop.containsKey("schema")) {
+                            schema = prop.getProperty("schema");
+                        }
+                        
+                        if (prop.containsKey("driver")) {
+                            driverClass = prop.getProperty("driver");
+                        }
+                        
+                        if (prop.containsKey("url_prefix")) {
+                            urlPrefix = prop.getProperty("url_prefix");
+                        }                      
+                        
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-
-	public Connection getConnection(){
+        
+        public String getSchema () {
+            return this.schema;
+        }
+        
+	public Connection getConnection(){            
 		try {
-			Class.forName("org.postgresql.Driver");
+			Class.forName(driverClass);
 		} catch (ClassNotFoundException e) {
-			System.out.println("Where is your PostgreSQL JDBC Driver? "
+			System.out.println("Where is your JDBC Driver (" + driverClass + ")? "
 					+ "Include in your library path!");
 			e.printStackTrace();
 			return null;
 		}
-		System.out.println("PostgreSQL JDBC Driver Registered!");
+		System.out.println("JDBC Driver (" + driverClass + ") Registered!");
+                
+                // build up connection string
+                String connUrl = urlPrefix + "://" + hostname + ":" + port + "/" + database;
+                
 		Connection connection = null;
 		try {
-			connection = DriverManager.getConnection(
-					"jdbc:postgresql://"+hostname+":"+port+"/"+database, username, password);
+			connection = DriverManager.getConnection(connUrl, username, password);
 		} catch (SQLException e) {
 			System.out.println("Connection Failed! Check output console");
 			e.printStackTrace();
 			return null;
-
 		}
+                
 		if (connection != null) {
 			System.out.println("You made it, take control your database now!");
 		} else {
@@ -70,9 +102,28 @@ public class Test {
 		Test t = new Test();
 		t.readProperties();
 		Connection connection = t.getConnection();
-		// runTest_nominal( connection );
-		// setup_silo3( connection );
-		runTest_time(connection);
+                
+                if (connection == null) {
+                    System.err.println("Unable to create connection object!");
+                    System.exit(1);
+                }
+  
+                BasicConfigurator.configure();
+                
+                //Logger.getRootLogger().setLevel(Level.INFO);
+		                
+                runTest(connection, t.getSchema());
+                
+                //runTest_small_nominal(connection, t.getSchema());
+                //runTest_small_nominal_time(connection, t.getSchema());
+                
+                //runTest3(connection, t.getSchema());
+                
+                //runTest_standard_time(connection, t.getSchema());
+                
+                //runTest_standard_nominal(connection, t.getSchema());
+                
+                connection.close();
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -104,16 +155,100 @@ public class Test {
 		System.out.println("#!finished");
 	}
 	
-	public static void runTest(Connection c) throws Exception {
+        public static void printObjectArray(Object[][] obj) {
+           for(int i=0; i < obj.length; i++) {
+                for(int j=0; j < obj[i].length; j++) {
+                    System.out.println("obj[" + i + "][" + j + "] = " + obj[i][j]);
+                }
+            } 
+        }
+        
+        public static void runTest_standard_time (Connection c, String schema) throws Exception {
+            // NOTE: this requires an existing pre-aggregate setup with 3 dimensions: x, y and time!
+            PreAggregate pa = new PreAggregate(c, schema, "london_hav_neogeo", "myAggregate");
+            AggregateAxis[] axis = pa.getAxis();
+            
+            Object[][] obj_range = pa.getRangeValues(c);
+            
+            
+            //obj_range[2][0] = new Timestamp(1318424400000L); // 2011-10-12 15:00:00.0
+            //obj_range[2][1] = new Timestamp(1318431600000L); // 2011-10-12 17:00:00.0
+            
+            //printObjectArray(obj_range);
+            //System.exit(0);
+            
+            int[] count = new int[3];
+            count[0] = 4;
+            count[1] = 4;
+            count[2] = 1;
+            
+            AxisSplitDimension dim = null;
+            
+            Object[][] iv_first_obj = new Object[3][2];
+            iv_first_obj[0][0] = Math.floor(((Double)obj_range[0][0])/0.001)*0.001;
+            iv_first_obj[0][1] = ((Double)iv_first_obj[0][0])+Math.ceil((((Double)obj_range[0][1]) - ((Double)obj_range[0][0]))/4/0.001)*0.001;
+            iv_first_obj[1][0] = Math.floor(((Double)obj_range[1][0])/0.001)*0.001;
+            iv_first_obj[1][1] = ((Double)iv_first_obj[1][0])+Math.ceil((((Double)obj_range[1][1]) - ((Double)obj_range[1][0]))/4/0.001)*0.001;
+            
+            // use time axis to split dimension
+            dim = axis[2].splitAxis(obj_range[2][0], obj_range[2][1], count[2]);
+            iv_first_obj[2][0] = dim.getStart();
+            iv_first_obj[2][1] = dim.getEnd();
+            
+            
+            //printObjectArray(iv_first_obj);
+            //System.exit(0);
+            
+            ResultSet rs = null;
+            
+            /*
+            rs = pa.SQLquery_grid(PreAggregate.AGGR_COUNT, iv_first_obj, count);
+            while(rs.next()){
+                    System.out.println(rs.getInt(1)+"|"+rs.getLong(2) + "|" + rs.getLong(3));
+            }
+            rs.close();
+
+            System.exit(0);
+            */
+            
+            
+            
+            
+            System.out.println("\n\n standard query!");
+            rs = pa.SQLquery_grid_standard(PreAggregate.AGGR_COUNT, iv_first_obj, count);
+            while(rs.next()){
+                System.out.println(rs.getInt(1)+"|"+rs.getLong(2));
+            }
+            rs.close();
+
+            System.exit(0);
+            
+        }
+        
+	public static void runTest2(Connection c, String schema) throws Exception {
 		try {
 			// new TweetConverter(c,"public","london_hav_raw",c,"public","london_hav");
 			// new TweetConverter("/Users/flokstra/twitter_sm.db",c,"public","london_hav");
 			// new TweetConverter("/Users/flokstra/uk_raw.sql",c,"public","uk");
 			//
-			//GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "london_hav_neogeo", "myAggregate", "coordinates",0,200000,null);
-			GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "london_hav_neogeo", "myAggregate"); 
+
+                        //GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", null, "myAggregate", "coordinates",0 /* axis 2 split*/,200000,null);
+			//GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", "myAggregate"); 
+                    
+                        GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "uk_neogeo", "myAggregate"); 
+                        
+                        //System.exit(0);
+                        
 			Object[][] obj_range = pa.getRangeValues(c);
 			//			ResultSet rs = pa.SQLquery(PreAggregate.AGGR_COUNT, obj_range);
+                        
+                        
+                        //printObjectArray(obj_range);
+                        //System.exit(0);
+                        
+                        
+                                                                      
+                        /*
 			int[] range = new int[3];
 			range[0] = 3;
 			range[1] = 4;
@@ -125,17 +260,49 @@ public class Test {
 			iv_first_obj[1][1] = ((Double)iv_first_obj[1][0])+Math.ceil((((Double)obj_range[1][1]) - ((Double)obj_range[1][0]))/4/0.001)*0.001;
 			iv_first_obj[2][0] = new Timestamp(((Double)(Math.floor(((Timestamp)obj_range[2][0]).getTime()/3600000.0)*3600000)).longValue()); 
 			iv_first_obj[2][1] = new Timestamp(((Double)(Math.ceil(((Timestamp)obj_range[2][1]).getTime()/3600000.0)*3600000)).longValue());
-			ResultSet rs = pa.SQLquery_grid(PreAggregate.AGGR_COUNT, iv_first_obj, range);
+                        */
+                        
+                        int[] range = new int[2];
+			range[0] = 4;
+			range[1] = 4;
+			Object[][] iv_first_obj = new Object[2][2];
+			iv_first_obj[0][0] = Math.floor(((Double)obj_range[0][0])/0.001)*0.001;
+			iv_first_obj[0][1] = ((Double)iv_first_obj[0][0])+Math.ceil((((Double)obj_range[0][1]) - ((Double)obj_range[0][0]))/4/0.001)*0.001;
+			iv_first_obj[1][0] = Math.floor(((Double)obj_range[1][0])/0.001)*0.001;
+			iv_first_obj[1][1] = ((Double)iv_first_obj[1][0])+Math.ceil((((Double)obj_range[1][1]) - ((Double)obj_range[1][0]))/4/0.001)*0.001;
+                        
+                        
+                        /*
+                        printObjectArray(iv_first_obj);
+                        System.exit(0);
+                        */
+                        
+                        
+                        
+                        
+                        ResultSet rs = null;
+                        
+                        
+			rs = pa.SQLquery_grid(PreAggregate.AGGR_COUNT, iv_first_obj, range);
 			while(rs.next()){
-				System.out.println(rs.getInt(1)+"|"+rs.getLong(2));
+				System.out.println(rs.getInt(1)+"|"+rs.getLong(2) + "|" + rs.getLong(3));
 			}
 			rs.close();
+                        
+                        System.exit(0);
+                        
+                                            
+                         
 			System.out.println("\n\n standard query!");
 			rs = pa.SQLquery_grid_standard(PreAggregate.AGGR_COUNT, iv_first_obj, range);
 			while(rs.next()){
 				System.out.println(rs.getInt(1)+"|"+rs.getLong(2));
 			}
 			rs.close();
+                        
+                        System.exit(0);
+                        
+                        
 			System.out.println("\n\n with splitting!");
 			int i=0;
 			for(AggregateAxis a_base : pa.getAxis()){
@@ -247,30 +414,44 @@ public class Test {
 		System.out.println("#!finished");
 	}
 
-	public static void runTest2(Connection c) throws Exception {
+	public static void runTest(Connection c, String schema) throws Exception {
 		try {
 			// new TweetConverter(c,"public","london_hav_raw",c,"public","london_hav");
 			// new TweetConverter("/Users/flokstra/twitter_sm.db",c,"public","london_hav");
 			// new TweetConverter("/Users/flokstra/uk_raw.sql",c,"public","uk");
 			//
 
-			// GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "london_hav_neogeo", null, "myAggregate", "coordinates",0 /* axis 2 split*/,200000,null);
-			GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "nl_all", null, "myAggregate", "coordinates",1 /* axis 2 split*/,200000,null);
+			GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", null, "myAggregate", "coordinates",0 /* axis 2 split*/,200000,null);
+                        //GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", "myAggregate"); 
+                    
+                        // axis to split: 0 (= x-axis)
+                        // chunkSize: 2000 (very small, but needed to experiment with chunking!)
+                        //GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", null, "myAggregate", "coordinates", 0, 2000,null);
+                        
+                        //GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "uk_neogeo", null, "myAggregate", "coordinates",0 /* axis 2 split*/,200000,null);
+                        //GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "uk_neogeo", "myAggregate");
+                        
+                        //GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "nl_all", null, "myAggregate", "coordinates",0 /* axis 2 split*/,200000,null);
+                        //GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "uk_neogeo", "myAggregate");
+                        
+			
+                        //GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "nl_all", null, "myAggregate", "coordinates",1 /* axis 2 split*/,200000,null);
 
 			// GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "london_hav_neogeo", "myAggregate");
 			//
-			// pa.boxQuery("count",0.18471,51.60626,0.23073,51.55534); // in the middle of havering map *correction anomaly
+			 //pa.boxQuery("count",0.18471,51.60626,0.23073,51.55534); // in the middle of havering map *correction anomaly
 			// pa.boxQuery("count",-0.058,51.59,0.095,51.483); // left of havering, few tweets
 			// pa.boxQuery("count",-0.058,51.58961,0.095,51.48287); // left of havering, few tweets
 			
 			// pa.boxQuery("count",-0.38326,51.62780,0.14554,51.39572); // a big london query
-			// pa.boxQuery("count",-8.4,60,1.9,49); // the entire UK query
+			//pa.boxQuery("count",-8.4,60,1.9,49); // the entire UK query
 
 			// pa.boxQuery3d("count",-0.058,51.58961,0.095,51.48287,new Timestamp(1319000000000L), new Timestamp(1319900000000L)); // left of havering, few tweets
 			// pa.boxQuery3d("count",0.18471,51.60626,0.23073,51.55534,new Timestamp(1319000000000L), new Timestamp(1319900000000L)); // in the middle of havering map *correction anomaly
 
-			// pa.boxQuery("count",-0.058,51.59,0.095,51.483); // left of havering, few tweets
-			pa.boxQuery("count",4.3, 51.8,4.6,52.1); // ergens bij rotterdam
+			//pa.boxQuery("count",-0.058,51.59,0.095,51.483); // left of havering, few tweets
+			//pa.boxQuery("count",4.3, 51.8,4.6,52.1); // ergens bij rotterdam
+                        
 			System.exit(0);
 			
 			double vertcells = 70;
@@ -306,19 +487,83 @@ public class Test {
 		System.out.println("#!finished");
 	}
 
-	public static void runTest3(Connection c) throws Exception {
+	public static void runTest3(Connection c, String schema) throws Exception {
 		double	DFLT_BASEBOXSIZE = 0.001;
 		short	DFLT_N = 4;
 		//GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "uk_neogeo", "myAggregate", "coordinates",-1,200000,null);
-		AggregateAxis axis[] = {
-				new MetricAxis("ST_X(coordinates)","double",""+DFLT_BASEBOXSIZE,DFLT_N),
-				// new AggregateAxis("ST_X("+point_column+")","double","-0.119","0.448",""+DFLT_BASEBOXSIZE,DFLT_N),
-				new MetricAxis("ST_Y(coordinates)","double",""+DFLT_BASEBOXSIZE,DFLT_N),
-			    new MetricAxis("time","timestamp with time zone","360000" /*=10 min*/,(short)16)
-			};
-		PreAggregate pa = new PreAggregate(c,"public", "uk_neogeo", null /*override_name*/, "myAggregate",axis,"char_length(tweet)","bigint",PreAggregate.AGGR_ALL,2,200000,null);
-
+                
+                AggregateAxis axis[] = null;
+                if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                    axis = new AggregateAxis[]{
+                            new MetricAxis("coordinates_x", "double", "" + DFLT_BASEBOXSIZE,DFLT_N),
+                            new MetricAxis("coordinates_y", "double", "" + DFLT_BASEBOXSIZE,DFLT_N),
+                            new MetricAxis("\"time\"", "timestamp with time zone", "360000" /*=10 min*/, (short)16)
+                    };
+                } else {                
+                    axis = new AggregateAxis[]{
+                            new MetricAxis("ST_X(coordinates)", "double", "" + DFLT_BASEBOXSIZE,DFLT_N),
+                            new MetricAxis("ST_Y(coordinates)", "double", "" + DFLT_BASEBOXSIZE,DFLT_N),
+                            new MetricAxis("time", "timestamp with time zone", "360000" /*=10 min*/, (short)16)
+                    };
+                }
+                
+		//PreAggregate pa = new PreAggregate(c,"public", "uk_neogeo", null /*override_name*/, "myAggregate",axis,"char_length(tweet)","bigint",PreAggregate.AGGR_ALL,2,200000,null);
+                PreAggregate pa = new PreAggregate(c, schema, "london_hav_neogeo", null /*override_name*/, "myAggregate", axis, "len" , "bigint", PreAggregate.AGGR_ALL, 2, 200000, null);
 	}
+        
+        public static void runTest_standard_nominal (Connection c, String schema) throws Exception {
+            // NOTE: this requires an existing pre-aggregate setup with 3 dimensions: x, y and word (nominal)!
+            PreAggregate pa = new PreAggregate(c, schema, "london_hav_neogeo" + NOMINAL_POSTFIX, "myAggregate");
+            
+            Object[][] obj_range = pa.getRangeValues(c);
+           
+            //printObjectArray(obj_range);
+            //System.exit(0);
+            
+            int[] count = new int[3];
+            count[0] = 4;
+            count[1] = 4;
+            count[2] = 1;
+                        
+            Object[][] iv_first_obj = new Object[3][2];
+            iv_first_obj[0][0] = Math.floor(((Double)obj_range[0][0])/0.001)*0.001;
+            iv_first_obj[0][1] = ((Double)iv_first_obj[0][0])+Math.ceil((((Double)obj_range[0][1]) - ((Double)obj_range[0][0]))/4/0.001)*0.001;
+            iv_first_obj[1][0] = Math.floor(((Double)obj_range[1][0])/0.001)*0.001;
+            iv_first_obj[1][1] = ((Double)iv_first_obj[1][0])+Math.ceil((((Double)obj_range[1][1]) - ((Double)obj_range[1][0]))/4/0.001)*0.001;
+            
+            //iv_first_obj[2][0] = NominalAxis.ALL;
+            //iv_first_obj[2][1] = NominalAxis.ALL;
+            iv_first_obj[2][0] = "car";
+            iv_first_obj[2][1] = "car";
+            
+            //printObjectArray(iv_first_obj);
+            //System.exit(0);
+            
+            ResultSet rs = null;
+            
+            /*
+            rs = pa.SQLquery_grid(PreAggregate.AGGR_COUNT, iv_first_obj, count);
+            while(rs.next()){
+                    System.out.println(rs.getInt(1)+"|"+rs.getLong(2) + "|" + rs.getLong(3));
+            }
+            rs.close();
+
+            System.exit(0);
+            */
+            
+            
+            
+            
+            System.out.println("\n\n standard query!");
+            rs = pa.SQLquery_grid_standard(PreAggregate.AGGR_COUNT, iv_first_obj, count);
+            while(rs.next()){
+                System.out.println(rs.getInt(1)+"|"+rs.getLong(2));
+            }
+            rs.close();
+
+            System.exit(0);
+            
+        }
 	
 	public static void runTest_nominal(Connection c) throws Exception {
 		try {
@@ -417,7 +662,7 @@ public class Test {
 		System.out.println("#!finished");
 	}
 	
-	public static void runTest_small_nominal(Connection c) throws Exception {
+	public static void runTest_small_nominal(Connection c, String schema) throws Exception {
 		try {
 			String wordlist = 
 				NominalAxis.ALL + "," +
@@ -427,15 +672,64 @@ public class Test {
 			;
 
 			
-			NominalGeoTaggedTweetAggregate pa = new NominalGeoTaggedTweetAggregate(c, wordlist, "public", "london_hav_neogeo", null, "myAggregate", "coordinates",-1,200000,null);
-			// pa.boxQuery_word("count",0.18471,51.60626,0.23073,51.55534,"banker"); // left of havering, few tweets
-			pa.boxQuery_word("count",-0.38326,51.62780,1.14554,51.39572,NominalAxis.ALL);
+			NominalGeoTaggedTweetAggregate pa = new NominalGeoTaggedTweetAggregate(c, wordlist, schema, "london_hav_neogeo", null, "myAggregate", "coordinates",-1,200000,null);
+                        //NominalGeoTaggedTweetAggregate pa = new NominalGeoTaggedTweetAggregate(c, schema, "london_hav_neogeo", "myAggregate");
+			pa.boxQuery_word("count",0.18471,51.60626,0.23073,51.55534,"banker"); // left of havering, few tweets
+			//pa.boxQuery_word("count",-0.38326,51.62780,1.14554,51.39572,NominalAxis.ALL);
 			c.close();
 		} catch (SQLException e) {
 			System.out.println("Caught: " + e);
 			e.printStackTrace(System.out);
 		}
 		System.out.println("#!finished");
-	}	
+	}
+        
+        public static void runTest_small_nominal_time (Connection c, String schema) throws Exception {
+            try {
+			String wordlist = 
+				NominalAxis.ALL + "," +
+				"banker,"+
+				"car,"+
+				"people,"
+			;
+                        
+                        AggregateAxis x_axis = null;
+                        AggregateAxis y_axis = null;
+                        AggregateAxis time_axis = null;
+                        if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                            x_axis = new MetricAxis("coordinates_x", "double", "" + GeotaggedTweetAggregate.DFLT_BASEBOXSIZE, GeotaggedTweetAggregate.DFLT_N);
+                            y_axis = new MetricAxis("coordinates_y", "double", "" + GeotaggedTweetAggregate.DFLT_BASEBOXSIZE,GeotaggedTweetAggregate.DFLT_N);
+                            time_axis = new MetricAxis("\"time\"", "timestamp with time zone", "360000" /*=10 min*/, (short)16);
+                        } else {                
+                            x_axis = new MetricAxis("ST_X(coordinates)", "double", "" + GeotaggedTweetAggregate.DFLT_BASEBOXSIZE,GeotaggedTweetAggregate.DFLT_N);
+                            y_axis = new MetricAxis("ST_Y(coordinates)", "double", "" + GeotaggedTweetAggregate.DFLT_BASEBOXSIZE,GeotaggedTweetAggregate.DFLT_N);
+                            time_axis = new MetricAxis("time", "timestamp with time zone", "360000" /*=10 min*/, (short)16);
+                        }
+                        
+                        String table = "london_hav_neogeo";
+                        
+                        NominalAxis nominal_axis = new NominalAxis("tweet", "tweet_wid", wordlist);
+                        nominal_axis.tagWordIds2Table(c,schema,table,table+NOMINAL_POSTFIX);
+                        
+                        AggregateAxis axis[] = {
+                                x_axis, 
+                                y_axis,
+                                time_axis,
+                                nominal_axis
+                        };
+
+			PreAggregate pa = new PreAggregate(c, schema, table+NOMINAL_POSTFIX, null /*override_name*/, "myAggregate", axis, "len" , "bigint", PreAggregate.AGGR_ALL, 2, 200000, null);
+			//NominalGeoTaggedTweetAggregate pa = new NominalGeoTaggedTweetAggregate(c, wordlist, schema, "london_hav_neogeo", null, "myAggregate", "coordinates",-1,200000,null);
+                        
+                        //NominalGeoTaggedTweetAggregate pa = new NominalGeoTaggedTweetAggregate(c, schema, "london_hav_neogeo", "myAggregate");
+			//pa.boxQuery_word("count",0.18471,51.60626,0.23073,51.55534,"banker"); // left of havering, few tweets
+			//pa.boxQuery_word("count",-0.38326,51.62780,1.14554,51.39572,NominalAxis.ALL);
+			c.close();
+		} catch (SQLException e) {
+			System.out.println("Caught: " + e);
+			e.printStackTrace(System.out);
+		}
+		System.out.println("#!finished");
+        }
 	
 }

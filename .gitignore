@@ -23,6 +23,11 @@ local.properties
 *.launch
 
 ############
+  NETBEANS
+############
+nbactions.xml
+
+############
    JAVA
 ############
 *.class

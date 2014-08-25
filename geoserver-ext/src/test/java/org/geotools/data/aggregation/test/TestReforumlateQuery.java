@@ -84,7 +84,7 @@ public class TestReforumlateQuery {
 		try {
 			 Area area = new Area(-0.11900000000000001,0.448,51.328,51.658);
 			 
-			agg = new PreAggregate(c, "public", "london_hav_neogeo", "myAggregate"); 
+			agg = new PreAggregate(null, c, "public", "london_hav_neogeo", "myAggregate"); 
 			System.out.println("\n\n with splitting!");
 			int i=0;
 //			for(AggregateAxis a : agg.getAxis()){

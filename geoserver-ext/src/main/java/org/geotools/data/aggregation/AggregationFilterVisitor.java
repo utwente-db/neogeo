@@ -496,7 +496,7 @@ public class AggregationFilterVisitor extends DefaultFilterVisitor {
 	}
 
 	public Timestamp getStartTime(){
-		if(startTime==-1) return new Timestamp(agg.getTimeBounds()[0]);
+		if(startTime == -1) return new Timestamp(agg.getTimeBounds()[0]);
 		LOGGER.severe("get start time: "+startTime);
 		return new Timestamp(startTime);
 	}

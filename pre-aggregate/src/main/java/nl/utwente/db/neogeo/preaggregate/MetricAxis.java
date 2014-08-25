@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.logging.Logger;
+import nl.utwente.db.neogeo.preaggregate.SqlUtils.DbType;
 
 public class MetricAxis extends AggregateAxis {
 	
@@ -26,7 +27,7 @@ public class MetricAxis extends AggregateAxis {
 		public AxisSplitDimension splitAxis(Object low, Object high, int cnt);
 	}
 	
-public class IntegerAxisIndexer implements AxisIndexer {
+        public class IntegerAxisIndexer implements AxisIndexer {
 		private int low;
 		private int high;
 		private int axisSize;
@@ -308,10 +309,21 @@ public class DoubleAxisIndexer implements AxisIndexer {
 			return TYPE_EXPRESSION;
 		}
 		
-		public String sqlRangeFunction(Connection c, String fun) throws SQLException {
+		public String sqlRangeFunction(Connection c, String func) throws SQLException {
+                        String body = "";
+                        
+                        switch(SqlUtils.dbType(c)) {
+                            case MONETDB:
+                                body = "\tRETURN FLOOR((v - CAST(" + this.low + " AS double)) / CAST(" + this.BASEBLOCKSIZE + " AS double))" + ";\n";
+                                break;
+                            default:
+                                body = "\tRETURN FLOOR((v - " + this.low + "::double precision) / " + this.BASEBLOCKSIZE + "::double precision)" + ";\n";
+                                break;
+                        }
+
 			return SqlUtils.gen_Create_Or_Replace_Function(
-							c, fun, "v "+sqlType(), "integer",
-							"", "\tRETURN FLOOR((v - " + this.low + "::double precision) / " + this.BASEBLOCKSIZE + "::double precision)" + ";\n"
+							c, func, "v "+sqlType(), "integer",
+							"", body
 					);	
 		}
 
@@ -447,23 +459,44 @@ public class  TimestampAxisIndexer implements AxisIndexer {
 		public String sqlRangeFunction(Connection c, String fun) throws SQLException {
 			double base = this.low / 1000; // epoch is in seconds, not milliseconds
 			double bbs  = this.BASEBLOCKSIZE / 1000; // epoch is in seconds not milliseconds
-			return SqlUtils.gen_Create_Or_Replace_Function(
+                        
+                        if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                            return SqlUtils.gen_Create_Or_Replace_Function(
+							c, fun, "v "+sqlType(), "integer",
+							"", "\tRETURN FLOOR((UNIX_TIMESTAMP(v) - " + base + ") / " + bbs + ")" + ";\n"
+
+					);
+                        } else {
+                            return SqlUtils.gen_Create_Or_Replace_Function(
 							c, fun, "v "+sqlType(), "integer",
 							"", "\tRETURN FLOOR((EXTRACT(EPOCH FROM v) - " + base + ") / " + bbs + ")" + ";\n"
 
 					);	
+                        }
 		}
 
 		public AxisSplitDimension splitAxis(Object low, Object high, int cnt) throws RuntimeException {
 			if(cnt<=0) cnt=1;
 			int startl; //= this.low;
 			int endl;   //= this.high;
-			if(low==null || !(low instanceof Long) || (Long)low<this.low) {
-				low = this.low();
-			}
-			startl = getIndex(low, false);
-			if(high==null || !(high instanceof Long) || (Long)high<this.high) 
-				high = this.high();
+                        
+                        // ensure no nulls
+                        if (low == null) low = this.low();
+                        if (high == null) high = this.high();
+                        
+                        // convert possible long (i.e. epochs) into Timestamps
+                        if (low instanceof Long)low = new Timestamp((Long)low);                        
+                        if (high instanceof Long) high = new Timestamp((Long)high);
+                        
+                        // ensure valid Timestamp objects
+                        if (!(low instanceof Timestamp)) low = this.low();                        
+                        if (!(high instanceof Timestamp)) high = this.high();
+                        
+                        // ensure a valid low/high value
+			if (((Timestamp)low).getTime() < this.low) low = this.low();
+			if (((Timestamp)high).getTime() > this.high) high = this.high();
+                                                
+                        startl = getIndex(low, false);
 			endl = getIndex(high, false);
 			
 			if(endl<=startl) throw new RuntimeException("end value "+endl+" is less than start value "+startl);
@@ -502,11 +535,9 @@ public class  TimestampAxisIndexer implements AxisIndexer {
 			if(cnt>0)
 				// return new AxisSplitDimension(new Timestamp(_start*BASEBLOCKSIZE), new Timestamp((_start+deltal)*BASEBLOCKSIZE),cnt);
 				return new AxisSplitDimension(new Timestamp(this.low+_start*BASEBLOCKSIZE), new Timestamp(this.low+(_start+deltal)*BASEBLOCKSIZE),cnt);
+                        
 			throw new RuntimeException("remaining count value is less than or euqal to 0: "+cnt);
 		}
-
-		
-		
 	}
 
 	private AxisIndexer	indexer = null;
@@ -541,6 +572,10 @@ public class  TimestampAxisIndexer implements AxisIndexer {
 			String	type) {
 		this(columnExpression,type,null,(short)-1);
 	}
+        
+        public AxisIndexer getIndexer () {
+            return this.indexer;
+        }
 	
 	public boolean isMetric() {
 		return true;
@@ -573,7 +608,7 @@ public class  TimestampAxisIndexer implements AxisIndexer {
 		}
 		else
 			throw new RuntimeException("Unexpected");
-	}
+	}       
 	
 	public boolean hasRangeValues() {
 		return indexer != null;

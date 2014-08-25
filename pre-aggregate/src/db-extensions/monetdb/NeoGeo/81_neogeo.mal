@@ -1,0 +1,4 @@
+# Created by: Dennis Pallett (dennis@pallett.nl)
+
+# This announces the NeoGeo module to the MAL interpreter
+include neogeo;

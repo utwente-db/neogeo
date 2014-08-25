@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
+import nl.utwente.db.neogeo.preaggregate.SqlUtils.DbType;
 
 public class NominalGeoTaggedTweetAggregate extends PreAggregate {
 
@@ -23,9 +24,27 @@ public class NominalGeoTaggedTweetAggregate extends PreAggregate {
 	public NominalGeoTaggedTweetAggregate(Connection c, String wordlist, String schema, String table, String override_name, String label, String point_column, int axisToSplit, long chunkSize, Object[][] newRange)
 		throws SQLException {
 		String word_column = "tweet";
-		AggregateAxis x_axis = new MetricAxis("ST_X("+point_column+")","double",""+GeotaggedTweetAggregate.DFLT_BASEBOXSIZE,GeotaggedTweetAggregate.DFLT_N);
-		AggregateAxis y_axis = new MetricAxis("ST_Y("+point_column+")","double",""+GeotaggedTweetAggregate.DFLT_BASEBOXSIZE,GeotaggedTweetAggregate.DFLT_N);
-		nominal_axis = new NominalAxis(word_column, word_column+"_wid", wordlist);
+                
+                SqlUtils.DbType type = SqlUtils.dbType(c);
+                
+                if (type == SqlUtils.DbType.MONETDB) {
+                    this.checkMonetDbGis(c, schema, table, point_column);
+                }
+                
+                AggregateAxis x_axis = null;
+                AggregateAxis y_axis = null;
+                
+                 if (type == DbType.MONETDB) {            
+                    x_axis = new MetricAxis(point_column + "_x", "double" , "" + GeotaggedTweetAggregate.DFLT_BASEBOXSIZE, GeotaggedTweetAggregate.DFLT_N);
+                    y_axis = new MetricAxis(point_column+ "_y", "double", "" + GeotaggedTweetAggregate.DFLT_BASEBOXSIZE, GeotaggedTweetAggregate.DFLT_N);
+                } else if (type == DbType.POSTGRES) {
+                    x_axis = new MetricAxis("ST_X("+point_column+")","double",""+GeotaggedTweetAggregate.DFLT_BASEBOXSIZE,GeotaggedTweetAggregate.DFLT_N);
+                    y_axis = new MetricAxis("ST_Y("+point_column+")","double",""+GeotaggedTweetAggregate.DFLT_BASEBOXSIZE,GeotaggedTweetAggregate.DFLT_N);
+                } else {
+                    throw new UnsupportedOperationException("Database type " + type + " not yet supported!");
+                } 
+
+		nominal_axis = new NominalAxis(word_column, word_column + "_wid", wordlist);
 		nominal_axis.tagWordIds2Table(c,schema,table,table+NOMINAL_POSTFIX);
 		
 		AggregateAxis axis[] = {
@@ -33,7 +52,7 @@ public class NominalGeoTaggedTweetAggregate extends PreAggregate {
 			y_axis,
 			nominal_axis
 		};
-		createPreAggregate(c,schema,table+NOMINAL_POSTFIX,override_name, label,axis,"char_length(tweet)","bigint",AGGR_ALL,axisToSplit,chunkSize,newRange);
+		createPreAggregate(c,schema,table+NOMINAL_POSTFIX,override_name, label,axis, "len","bigint",AGGR_ALL,axisToSplit,chunkSize,newRange);
 	}
 	
 	public long boxQuery_word(String aggr, double x1, double y1, double x2, double y2, String word2match) throws SQLException {		

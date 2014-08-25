@@ -83,7 +83,7 @@ public class MysqlTest {
 		System.out.println("connection "+con.toString());
 		//psqlCon.readPreAggregateTest(con);
 		Test test = new Test();
-		test.runTest(con);
+		test.runTest(con, "public");
 		// to create the pre-aggregate
 		//PegelAndelfingen2Aggregate pegel = new PegelAndelfingen2Aggregate(con, "datagraph" , "pegel_andelfingen2", "andelfingen2", "timed");
 		// to operate the pre-aggregate

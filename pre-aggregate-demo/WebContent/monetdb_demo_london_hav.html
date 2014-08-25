@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Twitter MonetDB/Geoserver Demo for dataset london_hav_neogeo</title>
+<link rel="stylesheet" href="theme/default/style.css" type="text/css">
+<link rel="stylesheet" href="css/style.css" type="text/css">
+<script src="http://maps.google.com/maps/api/js?v=3&amp;sensor=false"></script>
+<script src="js/OpenLayers.js"></script>
+<script src="js/map.js"></script>
+<script type="text/javascript">
+	var MAP_CENTER = new OpenLayers.LonLat(0.2226867, 51.5558774).transform('EPSG:4326', 'EPSG:3857');
+	var MAP_ZOOM = 11;
+
+	var AGGREGATE_TITLE = 'Aggregate Tweets';
+	var AGGREGATE_URL = 'http://farm12.ewi.utwente.nl:8080/geoserver/nurc/wms';
+	var AGGREGATE_LAYER = 'nurc:aggregate_london_hav_neogeo_words___myAggregate';
+
+	//AGGREGATE_URL = 'http://localhost:8080/geoserver/nurc/wms';
+
+	var TWEETS_TITLE = 'Tweets';
+	var TWEETS_URL = 'http://farm12.ewi.utwente.nl:8080/geoserver/wfs';
+	var TWEETS_LAYER = 'nurc:london_hav_neogeo';
+
+	//TWEETS_URL = 'http://localhost/geoserver/wfs';
+
+	var TWEETS_MIN_SCALE = 100000;
+</script>
+
+
+<style type="text/css">
+#wrapper {
+	width: 640px;
+}
+
+#location {
+	float: right;
+}
+    .panel .sfItemInactive {
+        background:url(http://robert.szczepanek.pl/icon/0.1/identify.png) no-repeat;
+        opacity: 0.2;
+        width: 24px;
+        height: 24px;
+    }
+
+    .panel .sfItemActive {
+        background:url(http://robert.szczepanek.pl/icon/0.1/identify.png) no-repeat;
+        width: 24px;
+        height: 24px;
+    }
+
+/* Styles used by the default GetFeatureInfo output, added to make IE happy */
+table.featureInfo,table.featureInfo td,table.featureInfo th {
+	border: 1px solid #ddd;
+	border-collapse: collapse;
+	margin: 0;
+	padding: 0;
+	font-size: 90%;
+	padding: .2em .1em;
+}
+
+table.featureInfo th {
+	padding: .2em .2em;
+	font-weight: bold;
+	background: #eee;
+}
+
+table.featureInfo td {
+	background: #fff;
+}
+
+table.featureInfo tr.odd td {
+	background: #eee;
+}
+
+table.featureInfo caption {
+	text-align: left;
+	font-size: 100%;
+	font-weight: bold;
+	padding: .2em .2em;
+}
+</style>
+</head>
+<body onload="init()">
+<h1 id="title">Twitter MonetDB/Geoserver Demo for dataset london_hav_neogeo</h1>
+<div id="tags">Twitter, MonetDB, Geoserver, Aggregation index</div>
+<p id="shortdesc">Demonstration of the use of the aggregation index for twitter data with MonetDB.</p>
+<div id="map" class="smallmap"></div>
+<div id="wrapper">
+<div id="location">location</div>
+<div id="scale"></div>
+</div>
+<table>
+		<tr>
+		    <th>start</th><td><input disabled="disabled" size="4" type='text' id='startyear' value="2011" onchange="update_date()"/>-<input size="2" disabled="disabled" type="text" id="startmonth" value="10" onchange="update_date()"/>-<input size="2" type="text" id="startday" value="11" onchange="update_date()" />T<input type="text" size="2" id="starthour" value="13" onchange="update_date()" />:<input type="text" size="2" id="startminute" value="00" onchange="update_date()" />:00</td>
+		 </tr><tr>
+		    <th>end</th><td><input disabled="disabled" size="4" type='text' id='endyear' value="2011" onchange="update_date()"/>-<input size="2" disabled="disabled" type="text" id="endmonth" value="10" onchange="update_date()"/>-<input size="2" type="text" id="endday" value="30" onchange="update_date()" />T<input type="text" size="2" id="endhour" value="13" onchange="update_date()" />:<input type="text" size="2" id="endminute" value="00" onchange="update_date()" />:00</td>
+		</tr>
+		<tr>
+			<th>keyword</th>
+			<td>
+				<select id="keyword1" onchange="update_viewparams();">
+					<option value="">-- select a keyword to filter on --</option>
+					<option value="car">car</option>
+					<option value="banker">banker</option>
+					<option value="people">people</option>
+				</select>
+			</td>
+		</tr>
+		<tr><th>standard query</th><td><input type='checkbox' id='query'  onchange='update_viewparams()'/></td></tr>
+</table>
+        
+<br />
+<div id="nodelist"></div>
+<div id="docs">
+<p>Request feature info</p>
+<p>Please be aware that a maximum of 500 tweets are displayed to ensure the speed of the<br />
+application and the individual tweets layer is only enabled when zoomed in. To get a better<br />
+understanding on how many tweets are actually around use the aggregation<br />
+layer and once you have reached sufficient level of detail switch to the tweet layer.</p>
+</div>
+</body>
+</html>

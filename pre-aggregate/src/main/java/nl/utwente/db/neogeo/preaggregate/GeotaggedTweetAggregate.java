@@ -1,8 +1,12 @@
 package nl.utwente.db.neogeo.preaggregate;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
+import nl.utwente.db.neogeo.preaggregate.SqlUtils.DbType;
 
 public class GeotaggedTweetAggregate extends PreAggregate {
 
@@ -21,16 +25,34 @@ public class GeotaggedTweetAggregate extends PreAggregate {
 	
 	/*  constructor which (re)creates the aggregate */
 	public GeotaggedTweetAggregate(Connection c, String schema, String table, String override_name, String label, String point_column, int axisToSplit, long chunkSize, Object[][] newRange)
-		throws SQLException {
-		AggregateAxis x_axis = new MetricAxis("ST_X("+point_column+")","double",""+DFLT_BASEBOXSIZE,DFLT_N);
-		AggregateAxis y_axis = new MetricAxis("ST_Y("+point_column+")","double",""+DFLT_BASEBOXSIZE,DFLT_N);
+            throws SQLException {            
+                AggregateAxis x_axis = null;
+                AggregateAxis y_axis = null;
+                
+                DbType type = SqlUtils.dbType(c);
+                
+                if (type == DbType.MONETDB) {
+                    this.checkMonetDbGis(c, schema, table, point_column);
+                }
+                
+                if (type == DbType.MONETDB) {            
+                    x_axis = new MetricAxis(point_column + "_x", "double" , "" + DFLT_BASEBOXSIZE, DFLT_N);
+                    y_axis = new MetricAxis(point_column+ "_y", "double", "" + DFLT_BASEBOXSIZE, DFLT_N);
+                } else if (type == DbType.POSTGRES) {
+                    x_axis = new MetricAxis("ST_X("+point_column+")","double",""+DFLT_BASEBOXSIZE,DFLT_N);
+                    y_axis = new MetricAxis("ST_Y("+point_column+")","double",""+DFLT_BASEBOXSIZE,DFLT_N);
+                } else {
+                    throw new UnsupportedOperationException("Database type " + type + " not yet supported!");
+                } 
+                 
 		AggregateAxis axis[] = {
 			x_axis, 
 			y_axis
 		};
-		createPreAggregate(c,schema,table,override_name, label,axis,"char_length(tweet)","bigint",AGGR_ALL,axisToSplit,chunkSize,newRange);
+                
+		createPreAggregate(c,schema,table,override_name, label,axis,"len","bigint",AGGR_ALL,axisToSplit,chunkSize,newRange);
 	}
-	
+                	
 	public long boxQuery(String aggr, double x1, double y1, double x2, double y2) throws SQLException {		
 		Object ranges[][] = new Object[2][2];
 		ranges[0][0] = new Double(Math.min(x1,x2));
