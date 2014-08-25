@@ -21,13 +21,13 @@ returns table (
     )
 external name neogeo.pa_grid_enhanced;
 
-create function pa_grid_enhanced(pa_gridQuery text, sys string, tab string, ckey_col string, aggr1_col string, aggr2_col string, aggr3_col)
+create function pa_grid_enhanced(pa_gridQuery text, sys string, tab string, ckey_col string, aggr1_col string, aggr2_col string, aggr3_col string)
 returns table (
         gkey bigint, pakey bigint, aggr1 bigint, aggr2 bigint, aggr3 bigint
     )
 external name neogeo.pa_grid_enhanced;
 
-create function pa_grid_enhanced(pa_gridQuery text, sys string, tab string, ckey_col string, aggr1_col string, aggr2_col string, aggr3_col, aggr4_col)
+create function pa_grid_enhanced(pa_gridQuery text, sys string, tab string, ckey_col string, aggr1_col string, aggr2_col string, aggr3_col string, aggr4_col string)
 returns table (
         gkey bigint, pakey bigint, aggr1 bigint, aggr2 bigint, aggr3 bigint, aggr4 bigint
     )
