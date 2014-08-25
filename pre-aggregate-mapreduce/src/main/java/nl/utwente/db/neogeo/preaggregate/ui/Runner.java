@@ -50,9 +50,70 @@ public class Runner {
             runJob(remainingArgs);
         } else if (cmd.equals("finish")) {
             runFinish(remainingArgs);
+        } else if (cmd.equals("all")) {
+            runAll(remainingArgs);
         } else {
             throw new UnsupportedOperationException("Command '" + cmd + " not yet supported");
         }
+    }
+    
+    protected void runAll (String[] args) throws IOException, ClassNotFoundException, SQLException, PrepareMR.PrepareException, RunMR.RunException, InterruptedException, FinishMR.FinishException {
+        logger.info("Running ALL phases");
+                 
+        if (args.length != 6 && args.length != 7) {
+            System.err.println("Usage: all <database.properties> <config.xml> <jobPath> <axis_to_split> <chunk_size> [-delete-job]");
+            System.exit(2);
+        }
+        
+        DbInfo dbInfo = new DbInfo(args[1]);
+        Connection conn = setupConnection(dbInfo);
+        
+        PreAggregateConfig config = loadConfig(args[2]);
+        
+        String jobPath = args[3];
+        
+        int axisToSplitIdx;
+        try {
+            axisToSplitIdx = Integer.parseInt(args[4]);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid axis_to_split index specified; must be a valid integer");
+        }
+        
+        if (axisToSplitIdx >= config.getAxis().length) {
+            throw new IllegalArgumentException("Invalid axis_to_split index specified; axis does not exist");
+        }
+        
+        int chunkSize;
+        try {
+            chunkSize = Integer.parseInt(args[5]);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid chunksize specified; must be a valid integer");
+        }
+        
+        if (chunkSize < 1) throw new IllegalArgumentException("Invalid chunksize specified; must be larger than 0"); 
+        
+        boolean deleteJob = (args.length == 7 && args[6].equalsIgnoreCase("-delete-job"));
+        
+        logger.info("Running PREPARE phase...");
+        PrepareMR prepare = PrepareMRFactory.getPrepareMR(conf, dbInfo, conn, config);
+        prepare.setFS(fs);
+        long prepareTime = prepare.doPrepare(jobPath, axisToSplitIdx, chunkSize);
+        logger.info("Finished PREPARE phase in " + prepareTime + " ms");
+        
+        logger.info("Running MAPREDUCE phase...");
+        RunMR run = new RunMR(conf, config);
+        run.setFS(fs);
+        long runTime = run.doJob(jobPath);
+        logger.info("Finished MAPREDUCE phase in " + runTime + " ms");
+        
+        logger.info("Running FINISH phase...");
+        FinishMR finish = FinishMRFactory.getFinishMR(conf, dbInfo, conn);
+        finish.setFS(fs);
+        long finishTime = finish.doFinish(jobPath, deleteJob);
+        logger.info("Finished FINISH phase in " + finishTime + " ms");
+        
+        logger.info("Finished ALL phases");
+        logger.info("Total index creation time: " + (prepareTime + runTime + finishTime) + " ms");
     }
     
     protected void runFinish(String[] args) throws IOException, ClassNotFoundException, SQLException, FinishMR.FinishException {
@@ -60,7 +121,7 @@ public class Runner {
         long startTime = System.currentTimeMillis();
         
         if (args.length != 3 && args.length != 4) {
-            System.err.println("Usage: <database.properties> <jobPath> [-delete-job]");
+            System.err.println("Usage: finish <database.properties> <jobPath> [-delete-job]");
             System.exit(2);
         }
         
@@ -85,7 +146,7 @@ public class Runner {
         logger.info("Running MAPREDUCE phase");
                 
         if (args.length != 3) {
-            System.err.println("Usage: <config.xml> <jobPath>");
+            System.err.println("Usage: run <config.xml> <jobPath>");
             System.exit(2);
         }
         
@@ -108,7 +169,7 @@ public class Runner {
         long startTime = System.currentTimeMillis();
         
         if (args.length != 6) {
-            System.err.println("Usage: <database.properties> <config.xml> <jobPath> <axis_to_split> <chunk_size>");
+            System.err.println("Usage: prepare <database.properties> <config.xml> <jobPath> <axis_to_split> <chunk_size>");
             System.exit(2);
         }
         

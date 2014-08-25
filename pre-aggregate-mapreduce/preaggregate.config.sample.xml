@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<preaggregate>
+	<!-- specifies the table containing the original dataset -->
+	<table>london_hav_neogeo</table>
+
+	<!-- specifies the column that should be aggregated (i.e. a "measure") -->
+	<column>len</column>
+
+	<!-- specifies a random/custom label for the aggregation index -->
+	<label>myAggregate</label>
+
+	<!-- specifies the type of the aggregation column -->
+	<type>int</type>
+
+	<!-- specifies which aggregates should be included in the index. Valid options are: ALL, COUNT, SUM, MIN, MAX -->
+	<mask>ALL</mask>
+
+	<!-- specifies a list of axis/dimensions of the dataset -->
+	<axislist>
+		<axis class="MetricAxis" column="coordinates_x" type="double" baseblocksize="0.0010" n="4"  />
+		<axis class="MetricAxis" column="coordinates_y" type="double" baseblocksize="0.0010" n="4"  />
+	</axislist>
+</preaggregate>
