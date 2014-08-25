@@ -30,7 +30,7 @@ public class Runner {
     
     private FileSystem fs;
     
-    public void run (String[] args) throws IOException, PrepareMR.PrepareException, SQLException, ClassNotFoundException, RunMR.RunException, InterruptedException {
+    public void run (String[] args) throws IOException, PrepareMR.PrepareException, SQLException, ClassNotFoundException, RunMR.RunException, InterruptedException, FinishMR.FinishException {
         conf = new Configuration();
         GenericOptionsParser optionParser = new GenericOptionsParser(conf, args);
         
@@ -48,9 +48,37 @@ public class Runner {
             runPrepare(remainingArgs);
         } else if (cmd.equals("run")) {
             runJob(remainingArgs);
+        } else if (cmd.equals("finish")) {
+            runFinish(remainingArgs);
         } else {
             throw new UnsupportedOperationException("Command '" + cmd + " not yet supported");
         }
+    }
+    
+    protected void runFinish(String[] args) throws IOException, ClassNotFoundException, SQLException, FinishMR.FinishException {
+        logger.info("Running FINISH phase");
+        long startTime = System.currentTimeMillis();
+        
+        if (args.length != 3 && args.length != 4) {
+            System.err.println("Usage: <database.properties> <jobPath> [-delete-job]");
+            System.exit(2);
+        }
+        
+        DbInfo dbInfo = new DbInfo(args[1]);
+        Connection conn = setupConnection(dbInfo);
+        
+        String jobPath = args[2];
+        
+        boolean deleteJob = (args.length == 4 && args[3].equalsIgnoreCase("-delete-job"));
+                
+        long execTime = System.currentTimeMillis() - startTime;
+        
+        FinishMR finish = FinishMRFactory.getFinishMR(conf, dbInfo, conn);
+        finish.setFS(fs);
+        long finishTime = finish.doFinish(jobPath, deleteJob);
+        
+        logger.info("Finished FINISH phase");
+        logger.info("Total time: " + (execTime + finishTime) + " ms");
     }
     
     protected void runJob(String[] args) throws RunMR.RunException, IOException, ClassNotFoundException, InterruptedException {
@@ -113,7 +141,7 @@ public class Runner {
        
         long execTime = System.currentTimeMillis() - startTime;
         
-        PrepareMR prepare = new PrepareMR(conf, dbInfo, conn, config);
+        PrepareMR prepare = PrepareMRFactory.getPrepareMR(conf, dbInfo, conn, config);
         prepare.setFS(fs);
         long prepareTime = prepare.doPrepare(jobPath, axisToSplitIdx, chunkSize);
 

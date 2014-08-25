@@ -43,7 +43,7 @@ import org.apache.log4j.Logger;
  *
  * @author Dennis Pallett <dennis@pallett.nl>
  */
-public class PrepareMR extends PreAggregate {
+public abstract class PrepareMR extends PreAggregate {
     static final Logger logger = Logger.getLogger(PrepareMR.class);
     
     protected Configuration conf;
@@ -52,8 +52,7 @@ public class PrepareMR extends PreAggregate {
     
     protected FileSystem fs;
     
-    protected BufferedMCLReader mapiIn;
-    protected BufferedMCLWriter mapiOut;
+    
     
     protected File tempPath;
     
@@ -261,29 +260,22 @@ public class PrepareMR extends PreAggregate {
         logger.info("Finished level/factor possibilities helper table!");
     }
     
+    protected void prepareCreateChunks () throws PrepareException, IOException {
+        // can be implemented by sub-classes
+    }
+    
+    protected void finishCreateChunks () throws PrepareException, IOException {
+        // can be implemented by sub-classes
+    }
+    
+    // must be implemented by sub-classes
+    protected abstract int writeChunk(StringBuilder where, String fileName, int chunkNum) throws IOException, SQLException;
+    
     protected void createChunks (int nChunks, MetricAxis axisToSplit, Object[][] ro, String jobPath) throws IOException, MCLParseException, MCLException, PrepareException, SQLException {
         logger.info("Creating chunks...");
         
-        MapiSocket server = new MapiSocket();
-
-        server.setDatabase(dbInfo.getDatabase());
-        server.setLanguage("sql");
-        
-        List warning = server.connect(dbInfo.getHostname(), dbInfo.getPort(), dbInfo.getUsername(), dbInfo.getPassword());
-        if (warning != null) {
-            for (Iterator it = warning.iterator(); it.hasNext();) {
-                logger.warn(it.next().toString());
-            }
-        }
-        
-        mapiIn = server.getReader();
-        mapiOut = server.getWriter();
-
-        String error = mapiIn.waitForPrompt();
-        if (error != null) {
-            throw new PrepareException(error);
-        }
-        
+        prepareCreateChunks();
+                
         // start upload thread
         UploadThread upload = new UploadThread(fs, tempPath, jobPath);
         upload.start();
@@ -292,18 +284,16 @@ public class PrepareMR extends PreAggregate {
             logger.info("Creating chunk #" + (i+1) + " out of " + nChunks + " chunks...");
             long startTimeChunk = System.currentTimeMillis();
             
-            // open new file for this chunk
-            String fileName = "/chunk_" + i + ".csv";
-            Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tempPath.getAbsolutePath() + fileName), "utf-8"));
-            
+            // build WHERE clause for this chunk
             StringBuilder where = new StringBuilder();
             where.append(axisToSplit.columnExpression()).append(" >= ").append(SqlUtils.gen_Constant(c ,ro[i][0]));
             where.append(" AND ").append(axisToSplit.columnExpression()).append(" < ").append(SqlUtils.gen_Constant(c ,ro[i][1]));
             
-            int affectedRows = writeChunk(writer, where);
-                        
-            // finalize chunk
-            writer.close();
+            // new filename for this chunk
+            String fileName = "/chunk_" + i + ".csv";
+            
+            // write chunk
+            int affectedRows = writeChunk(where, fileName, i);                       
             
             // add to upload queue
             upload.addToQueue(fileName);
@@ -317,8 +307,8 @@ public class PrepareMR extends PreAggregate {
             }
         }
         
-        server.close();
-        
+        finishCreateChunks();
+
         // tell upload thread no more chunks are coming
         upload.setCreationFinished();
                 
@@ -341,42 +331,7 @@ public class PrepareMR extends PreAggregate {
         logger.info("All chunks created and uploaded to HDFS!");
     }
     
-    protected int writeChunk(Writer writer, StringBuilder where) throws IOException, SQLException {
-        String chunkSelectQuery = this.select_level0(c, table, where.toString(), axis, aggregateColumn, aggregateMask);
-        
-        int ret = 0;
-        if (SqlUtils.dbType(c) == DbType.MONETDB) {
-            // the leading 's' is essential, since it is a protocol
-            // marker that should not be omitted, likewise the
-            // trailing semicolon
-            mapiOut.write('s');
-            
-            String copyQuery = "COPY " + chunkSelectQuery + " INTO STDOUT USING DELIMITERS ',','\\n';";
-            
-            mapiOut.write(copyQuery);
-            mapiOut.newLine();
-            mapiOut.writeLine("");
-            
-            String line;
-            while((line = mapiIn.readLine()) != null) {
-                int lineType = mapiIn.getLineType();
-
-                // when PROMPT is reached all data has been read
-                if (lineType == BufferedMCLReader.PROMPT) break;
-
-                // ignore all other official lines
-                if (lineType != 0) continue;
-
-               writer.write(line);
-               writer.write("\n");
-               ret++;
-            }
-        } else {
-            throw new UnsupportedOperationException("Database type " + SqlUtils.dbType(c) + " not yet supported");
-        }
-        
-        return ret;
-    }
+    
     
     class UploadThread extends Thread {
         protected FileSystem fs;
