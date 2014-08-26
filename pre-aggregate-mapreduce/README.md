@@ -12,11 +12,11 @@ The prepare phase splits the dataset, which must already be located in a databas
 
 This command has the following options:
 
-- **<database.properties>:** specifies the path to a properties file containing the details of your database instance. See database.example.properties for an example of this file.
-- **<preaggregate.config.xml>:** specifies the path the PreAggregateConfiguration XML file that specifies the details of the PreAggregate index that should be created. See preaggregate.config.sample.xml for an example of this file.
-- **<hdfs_job_path>:** specifies the path on your HDFS filesystem where all the data of the index creation will be stored. This directory will be automatically created by the PREPARE utility.
-- **<axis_to_split>:** specifies on which axis the dataset will be split. Must be in the form of the index identifier of the example, e.g. 0 or 1 or higher depending on the number of indexes you have specified in the PreAggregate config.
-- **<chunksize>:** specifies the size of each chunk. A lower value will result in more chunks.
+- **database.properties:** specifies the path to a properties file containing the details of your database instance. See database.example.properties for an example of this file.
+- **preaggregate.config.xml:** specifies the path the PreAggregateConfiguration XML file that specifies the details of the PreAggregate index that should be created. See preaggregate.config.sample.xml for an example of this file.
+- **hdfs_job_path:** specifies the path on your HDFS filesystem where all the data of the index creation will be stored. This directory will be automatically created by the PREPARE utility.
+- **axis_to_split:** specifies on which axis the dataset will be split. Must be in the form of the index identifier of the example, e.g. 0 or 1 or higher depending on the number of indexes you have specified in the PreAggregate config.
+- **chunksize:** specifies the size of each chunk. A lower value will result in more chunks.
 
 After successfull completion of this phase the full dataset will be loaded onto the HDFS filesystem into *n* chunks and be ready for processing. 
 
@@ -27,8 +27,8 @@ The run phase is a standard MapReduce job and creates the actual PreAggregate in
 
 This command has the following options:
 
-- **<preaggregate.config.xml>:** specifies the path the PreAggregateConfiguration XML file that specifies the details of the PreAggregate index that should be created. See preaggregate.config.sample.xml for an example of this file.
-- **<hdfs_job_path>:** specifies the path on your HDFS filesystem where all the data of the index creation will be stored. This directory will be automatically created by the PREPARE utility.
+- **preaggregate.config.xml:** specifies the path the PreAggregateConfiguration XML file that specifies the details of the PreAggregate index that should be created. See preaggregate.config.sample.xml for an example of this file.
+- **hdfs_job_path:** specifies the path on your HDFS filesystem where all the data of the index creation will be stored. This directory will be automatically created by the PREPARE utility.
 
 After succesfull completion of this phase the index will have been created and will be located (in possibly several parts) on the HDFS filesystem, ready to be located back into your database.
 
@@ -39,9 +39,9 @@ The finish phase loads the PreAggregate index back into your database. It can be
 
 This command has the following options:
 
-- **<database.properties>:** specifies the path to a properties file containing the details of your database instance. See database.example.properties for an example of this file.
-- **<hdfs_job_path>:** specifies the path on your HDFS filesystem where all the data of the index creation will be stored. This directory will be automatically created by the PREPARE utility.
-- **-delete-job:** *(Optional) this switch is used to indicate that all the job data must be deleted from the HDFS filesystem
+- **database.properties:** specifies the path to a properties file containing the details of your database instance. See database.example.properties for an example of this file.
+- **hdfs_job_path:** specifies the path on your HDFS filesystem where all the data of the index creation will be stored. This directory will be automatically created by the PREPARE utility.
+- **-delete-job:** *(Optional)* this switch is used to indicate that all the job data must be deleted from the HDFS filesystem
 
 After succesfull completeion of this phase the PreAggregate index will be properly loaded back into your database and will also have been registered with the PreAggregate repository. You can now use it for PreAggregate grid/cell queries.
 
