@@ -1,5 +1,6 @@
 package nl.utwente.db.neogeo.preaggregate;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -223,7 +224,9 @@ public class DoubleAxisIndexer implements AxisIndexer {
 		public DoubleAxisIndexer(Object low, Object high, Object BASEBLOCKSIZE) {
 			this.low = (low instanceof Double) ? ((Double)low).doubleValue() : Double.parseDouble(low.toString());
 			this.high = (high instanceof Double) ? ((Double)high).doubleValue() : Double.parseDouble(high.toString());
+                                                
 			this.BASEBLOCKSIZE = (BASEBLOCKSIZE instanceof Double) ? ((Double)BASEBLOCKSIZE).doubleValue() : Double.parseDouble(BASEBLOCKSIZE.toString());
+
 			// 
 			this.low  = Math.floor(this.low /this.BASEBLOCKSIZE) * this.BASEBLOCKSIZE;
 			this.high = Math.ceil(this.high/this.BASEBLOCKSIZE) * this.BASEBLOCKSIZE;

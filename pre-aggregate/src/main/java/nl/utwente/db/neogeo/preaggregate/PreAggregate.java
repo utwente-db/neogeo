@@ -310,44 +310,8 @@ public class PreAggregate {
 		sql_build.add(kd.crossproductLongKeyFunction(c, genKey));
 		sql_build.newLine();
 
-		/*
-		 * Generate the table which contains the final index
-		 */
-		String table_pa; 
-                String table_pa_idx;
-		if ( override_name == null ) {
-			table_pa = schema + "." + table + PA_EXTENSION;
-                        table_pa_idx = table + PA_EXTENSION + "_idx";
-                } else {
-			table_pa = schema + "." + override_name;
-                        table_pa_idx = override_name + "_idx";
-                }
-		sql_build.add("-- create the table containg the pre aggregate index\n");
-                
-                if (SqlUtils.dbType(c) == DbType.MONETDB) {
-                    if (SqlUtils.existsTable(c, schema, table_pa)) {
-                        sql_build.add("DROP TABLE " + table_pa + ";\n");
-                    }
-                } else {                
-                    sql_build.add("DROP TABLE IF EXISTS " + table_pa + ";\n");
-                }
-                
-		sql_build.add(
-				"CREATE TABLE " + table_pa + " (\n" +
-				"\tckey bigint NOT NULL PRIMARY KEY,\n" + 
-				((aggregateMask&AGGR_COUNT)!=0 ? "\tcountAggr bigint,\n" : "") + 
-				((aggregateMask&AGGR_SUM) !=0 ? "\tsumAggr "  +aggregateType+",\n" : "") +
-				((aggregateMask&AGGR_MIN)!=0 ? "\tminAggr "+aggregateType+",\n" : "") +
-				((aggregateMask&AGGR_MAX)!=0 ? "\tmaxAggr "+aggregateType+"\n" : "") +
-				");\n"
-		);
-                
-                if (SqlUtils.dbType(c) == DbType.MONETDB) {
-                    sql_build.add("CREATE INDEX " + table_pa_idx + " ON " + table_pa + " (ckey);\n");
-                } else {                
-                    sql_build.add("CREATE INDEX " + table_pa_idx + " ON " + table_pa + " USING HASH(ckey);\n");
-                }
-		sql_build.newLine();
+                // create the table that will hold the final index
+		String table_pa = create_index_table(sql_build, override_name);
 
 		String lfp_table = schema + "." + indexPrefix + "lfp";
 		if ( gen_optimized ) {
@@ -507,6 +471,49 @@ public class PreAggregate {
 		 */
 		_init(c, schema, table, label);
 	}
+        
+        protected String create_index_table (SqlScriptBuilder sql_build, String override_name) throws SQLException {
+            /*
+            * Generate the table which contains the final index
+            */
+           String table_pa; 
+           String table_pa_idx;
+           if ( override_name == null ) {
+                   table_pa = schema + "." + table + PA_EXTENSION;
+                   table_pa_idx = table + PA_EXTENSION + "_idx";
+           } else {
+                   table_pa = schema + "." + override_name;
+                   table_pa_idx = override_name + "_idx";
+           }
+           sql_build.add("-- create the table containg the pre aggregate index\n");
+
+           if (SqlUtils.dbType(c) == DbType.MONETDB) {
+               if (SqlUtils.existsTable(c, schema, table_pa)) {
+                   sql_build.add("DROP TABLE " + table_pa + ";\n");
+               }
+           } else {                
+               sql_build.add("DROP TABLE IF EXISTS " + table_pa + ";\n");
+           }
+
+           sql_build.add(
+                           "CREATE TABLE " + table_pa + " (\n" +
+                           "\tckey bigint NOT NULL PRIMARY KEY,\n" + 
+                           ((aggregateMask&AGGR_COUNT)!=0 ? "\tcountAggr bigint,\n" : "") + 
+                           ((aggregateMask&AGGR_SUM) !=0 ? "\tsumAggr "  +aggregateType+",\n" : "") +
+                           ((aggregateMask&AGGR_MIN)!=0 ? "\tminAggr "+aggregateType+",\n" : "") +
+                           ((aggregateMask&AGGR_MAX)!=0 ? "\tmaxAggr "+aggregateType+"\n" : "") +
+                           ");\n"
+           );
+
+           if (SqlUtils.dbType(c) == DbType.MONETDB) {
+               sql_build.add("CREATE INDEX " + table_pa_idx + " ON " + table_pa + " (ckey);\n");
+           } else {                
+               sql_build.add("CREATE INDEX " + table_pa_idx + " ON " + table_pa + " USING HASH(ckey);\n");
+           }
+           sql_build.newLine();
+           
+           return table_pa;
+        }
 
 	protected void gen_lfp_table(Connection c, SqlScriptBuilder sql_build , String lfp_table, AggregateAxis axis[], String dimTable[]) throws SQLException {
 		int i, j;
@@ -999,9 +1006,14 @@ public class PreAggregate {
                                     sqlaggr.append(",max(maxAggr) AS maxAggr");
                         }
                         
-                        StringBuilder gcells = new StringBuilder("pa_grid_enhanced(\'");
-                        gcells.append(grid_paGridQuery(swgc));
-                        gcells.append("\'");
+                        StringBuilder gcells = new StringBuilder("pa_grid");
+                        
+                        // use enhanced version with MonetDB
+                        if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                            gcells.append("_enhanced");
+                        }
+                        
+                        gcells.append("(\'").append(grid_paGridQuery(swgc)).append("\'");
                         
                         // MonetDB has a more advanced version of the pa_grid function
                         // so we need to add additional parameters
@@ -1836,7 +1848,7 @@ public class PreAggregate {
 		return true;
 	}
 
-	private static void update_repository(Connection c, String schema, String tableName, String label, String aggregateColumn, String aggregateType, AggrKeyDescriptor kd, AggregateAxis axis[], int aggregateMask)
+	protected static void update_repository(Connection c, String schema, String tableName, String label, String aggregateColumn, String aggregateType, AggrKeyDescriptor kd, AggregateAxis axis[], int aggregateMask)
 	throws SQLException {
 		checkRepository(c,schema);
 		SqlUtils.executeNORES(c,

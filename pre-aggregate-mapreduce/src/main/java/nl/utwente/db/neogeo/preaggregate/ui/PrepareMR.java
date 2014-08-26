@@ -33,7 +33,6 @@ import nl.utwente.db.neogeo.preaggregate.PreAggregateConfig;
 import nl.utwente.db.neogeo.preaggregate.SqlScriptBuilder;
 import nl.utwente.db.neogeo.preaggregate.SqlUtils;
 import nl.utwente.db.neogeo.preaggregate.SqlUtils.DbType;
-import static nl.utwente.db.neogeo.preaggregate.ui.CreateChunks.logger;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -43,7 +42,7 @@ import org.apache.log4j.Logger;
  *
  * @author Dennis Pallett <dennis@pallett.nl>
  */
-public class PrepareMR extends PreAggregate {
+public abstract class PrepareMR extends PreAggregate {
     static final Logger logger = Logger.getLogger(PrepareMR.class);
     
     protected Configuration conf;
@@ -52,8 +51,7 @@ public class PrepareMR extends PreAggregate {
     
     protected FileSystem fs;
     
-    protected BufferedMCLReader mapiIn;
-    protected BufferedMCLWriter mapiOut;
+    
     
     protected File tempPath;
     
@@ -90,7 +88,9 @@ public class PrepareMR extends PreAggregate {
         this.fs = fs;
     }
     
-    public void doPrepare (String jobPath, int axisToSplitIdx, long chunkSize) throws PrepareException, SQLException, IOException {       
+    public long doPrepare (String jobPath, int axisToSplitIdx, long chunkSize) throws PrepareException, SQLException, IOException {       
+        long startTime = System.currentTimeMillis();
+        
         Statement q = c.createStatement();
         
         this.jobPath = jobPath;
@@ -116,6 +116,8 @@ public class PrepareMR extends PreAggregate {
         
         // check if jobPath already exists on HDFS
         if (fs.exists(new Path(jobPath))) {
+            long pauseStartTime = System.currentTimeMillis();
+            
             logger.warn("Job path already exists on HDFS. Delete existing directory? (yes|no)");
             Scanner scan = new Scanner(System.in);
             String s = scan.next().toLowerCase();
@@ -129,6 +131,10 @@ public class PrepareMR extends PreAggregate {
                 logger.error("Quiting!");
                 System.exit(0);
             }
+            
+            // increase start time with time paused
+            long pauseTime = System.currentTimeMillis() - pauseStartTime;
+            startTime += pauseTime;
             
             // delete directory
             logger.info("Deleting existing job path...");
@@ -181,7 +187,7 @@ public class PrepareMR extends PreAggregate {
         } catch (MCLException ex) {
             throw new PrepareException("Error occured during raw MAPI connection with MonetDB database", ex);
         }
-        
+                
         // drop range functions
         logger.info("Dropping range functions for each dimension...");
         for(int i=0; i<axis.length; i++) {
@@ -196,6 +202,9 @@ public class PrepareMR extends PreAggregate {
         logger.info("Writing PreAggregate config to HDFS...");
         createConfig();
         logger.info("Config has been written");
+        
+        long execTime = System.currentTimeMillis() - startTime;
+        return execTime;
     }
     
     protected void createConfig () throws PrepareException, IOException {
@@ -203,9 +212,21 @@ public class PrepareMR extends PreAggregate {
         
         PreAggregateConfig config = new PreAggregateConfig(table, this.aggregateColumn, label, aggregateType, aggregateMask, axis);
         
-        String fileName = "preaggregate.xml";
+        String fileName = RunMR.CONFIG_FILENAME;
+        File configFile = new File(tempPath + "/" + fileName);
+        
+        if (configFile.exists()) {
+            configFile.delete();
+            
+            // also delete possible CRC file
+            // work-around for bug https://issues.apache.org/jira/browse/HADOOP-7199
+            // also see: http://stackoverflow.com/questions/15434709/checksum-exception-when-reading-from-or-copying-to-hdfs-in-apache-hadoop
+            File crcFile = new File(tempPath + "/." + fileName + ".crc");
+            if (crcFile.exists()) crcFile.delete();
+        }
+        
         try {
-            config.writeToXml(new File(tempPath + "/" + fileName));
+            config.writeToXml(configFile);
         } catch (Exception ex) {
             throw new PrepareException("Unable to write PreAggregateConfig XML file to temp directory", ex);
         }
@@ -228,7 +249,7 @@ public class PrepareMR extends PreAggregate {
         
         logger.info("Exporting to CSV...");
                
-        String fileName = "lfp_table.csv";
+        String fileName = RunMR.LFP_TABLE_FILENAME;
         CSVWriter writer = new CSVWriter(new FileWriter(tempPath.getAbsolutePath() + "/" + fileName), ',');
         
         Statement q = c.createStatement();
@@ -250,29 +271,22 @@ public class PrepareMR extends PreAggregate {
         logger.info("Finished level/factor possibilities helper table!");
     }
     
+    protected void prepareCreateChunks () throws PrepareException, IOException {
+        // can be implemented by sub-classes
+    }
+    
+    protected void finishCreateChunks () throws PrepareException, IOException {
+        // can be implemented by sub-classes
+    }
+    
+    // must be implemented by sub-classes
+    protected abstract int writeChunk(StringBuilder where, String fileName, int chunkNum) throws IOException, SQLException;
+    
     protected void createChunks (int nChunks, MetricAxis axisToSplit, Object[][] ro, String jobPath) throws IOException, MCLParseException, MCLException, PrepareException, SQLException {
         logger.info("Creating chunks...");
         
-        MapiSocket server = new MapiSocket();
-
-        server.setDatabase(dbInfo.getDatabase());
-        server.setLanguage("sql");
-        
-        List warning = server.connect(dbInfo.getHostname(), dbInfo.getPort(), dbInfo.getUsername(), dbInfo.getPassword());
-        if (warning != null) {
-            for (Iterator it = warning.iterator(); it.hasNext();) {
-                logger.warn(it.next().toString());
-            }
-        }
-        
-        mapiIn = server.getReader();
-        mapiOut = server.getWriter();
-
-        String error = mapiIn.waitForPrompt();
-        if (error != null) {
-            throw new PrepareException(error);
-        }
-        
+        prepareCreateChunks();
+                
         // start upload thread
         UploadThread upload = new UploadThread(fs, tempPath, jobPath);
         upload.start();
@@ -281,18 +295,16 @@ public class PrepareMR extends PreAggregate {
             logger.info("Creating chunk #" + (i+1) + " out of " + nChunks + " chunks...");
             long startTimeChunk = System.currentTimeMillis();
             
-            // open new file for this chunk
-            String fileName = "/chunk_" + i + ".csv";
-            Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tempPath.getAbsolutePath() + fileName), "utf-8"));
-            
+            // build WHERE clause for this chunk
             StringBuilder where = new StringBuilder();
             where.append(axisToSplit.columnExpression()).append(" >= ").append(SqlUtils.gen_Constant(c ,ro[i][0]));
             where.append(" AND ").append(axisToSplit.columnExpression()).append(" < ").append(SqlUtils.gen_Constant(c ,ro[i][1]));
             
-            int affectedRows = writeChunk(writer, where);
-                        
-            // finalize chunk
-            writer.close();
+            // new filename for this chunk
+            String fileName = "/chunk_" + i + ".csv";
+            
+            // write chunk
+            int affectedRows = writeChunk(where, fileName, i);                       
             
             // add to upload queue
             upload.addToQueue(fileName);
@@ -306,8 +318,8 @@ public class PrepareMR extends PreAggregate {
             }
         }
         
-        server.close();
-        
+        finishCreateChunks();
+
         // tell upload thread no more chunks are coming
         upload.setCreationFinished();
                 
@@ -330,42 +342,7 @@ public class PrepareMR extends PreAggregate {
         logger.info("All chunks created and uploaded to HDFS!");
     }
     
-    protected int writeChunk(Writer writer, StringBuilder where) throws IOException, SQLException {
-        String chunkSelectQuery = this.select_level0(c, table, where.toString(), axis, aggregateColumn, aggregateMask);
-        
-        int ret = 0;
-        if (SqlUtils.dbType(c) == DbType.MONETDB) {
-            // the leading 's' is essential, since it is a protocol
-            // marker that should not be omitted, likewise the
-            // trailing semicolon
-            mapiOut.write('s');
-            
-            String copyQuery = "COPY " + chunkSelectQuery + " INTO STDOUT USING DELIMITERS ',','\\n';";
-            
-            mapiOut.write(copyQuery);
-            mapiOut.newLine();
-            mapiOut.writeLine("");
-            
-            String line;
-            while((line = mapiIn.readLine()) != null) {
-                int lineType = mapiIn.getLineType();
-
-                // when PROMPT is reached all data has been read
-                if (lineType == BufferedMCLReader.PROMPT) break;
-
-                // ignore all other official lines
-                if (lineType != 0) continue;
-
-               writer.write(line);
-               writer.write("\n");
-               ret++;
-            }
-        } else {
-            throw new UnsupportedOperationException("Database type " + SqlUtils.dbType(c) + " not yet supported");
-        }
-        
-        return ret;
-    }
+    
     
     class UploadThread extends Thread {
         protected FileSystem fs;

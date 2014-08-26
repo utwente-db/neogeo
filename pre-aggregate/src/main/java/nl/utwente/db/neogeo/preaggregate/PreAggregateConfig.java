@@ -115,7 +115,7 @@ public class PreAggregateConfig {
                     MetricAxis metricAxis = (MetricAxis) axis;
                     axisEl.setAttribute("baseblocksize", String.valueOf(metricAxis.BASEBLOCKSIZE()));
                     axisEl.setAttribute("low", String.valueOf(metricAxis.low()));
-                    axisEl.setAttribute("low", String.valueOf(metricAxis.high()));
+                    axisEl.setAttribute("high", String.valueOf(metricAxis.high()));
                 }
                 
                 axisListEl.appendChild(axisEl);
@@ -274,7 +274,8 @@ public class PreAggregateConfig {
             low = lowNode.getTextContent();
             high = highNode.getTextContent();
         }
-                
+        
+        
         MetricAxis axis = new MetricAxis(column, type, baseblocksize, N);
         
         if (low != null && low.isEmpty() == false && high != null && high.isEmpty() == false) {

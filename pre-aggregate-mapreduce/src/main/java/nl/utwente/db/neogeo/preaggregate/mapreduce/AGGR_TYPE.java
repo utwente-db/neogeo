@@ -1,15 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package nl.utwente.db.neogeo.preaggregate.mapreduce;
 
 /**
  *
- * @author
- * Dennis
- * Pallett
- * <dennis@pallett.nl>
+ * @author Dennis Pallett <dennis@pallett.nl>
  */
 public enum AGGR_TYPE {
     TYPE_DOUBLE ("double"), 
