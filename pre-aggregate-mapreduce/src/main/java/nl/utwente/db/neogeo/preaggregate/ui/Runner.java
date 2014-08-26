@@ -101,7 +101,7 @@ public class Runner {
         logger.info("Finished PREPARE phase in " + prepareTime + " ms");
         
         logger.info("Running MAPREDUCE phase...");
-        RunMR run = new RunMR(conf, config);
+        RunMR run = new RunMR(conf);
         run.setFS(fs);
         long runTime = run.doJob(jobPath);
         logger.info("Finished MAPREDUCE phase in " + runTime + " ms");
@@ -145,16 +145,14 @@ public class Runner {
     protected void runJob(String[] args) throws RunMR.RunException, IOException, ClassNotFoundException, InterruptedException {
         logger.info("Running MAPREDUCE phase");
                 
-        if (args.length != 3) {
-            System.err.println("Usage: run <config.xml> <jobPath>");
+        if (args.length != 2) {
+            System.err.println("Usage: run <jobPath>");
             System.exit(2);
         }
+               
+        String jobPath = args[1];
         
-        PreAggregateConfig config = loadConfig(args[1]);
-        
-        String jobPath = args[2];
-        
-        RunMR run = new RunMR(conf, config);
+        RunMR run = new RunMR(conf);
         run.setFS(fs);
         long execTime = run.doJob(jobPath);
                 

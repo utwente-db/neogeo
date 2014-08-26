@@ -1,5 +1,6 @@
 package nl.utwente.db.neogeo.preaggregate.ui;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 import nl.utwente.db.neogeo.preaggregate.PreAggregateConfig;
@@ -39,9 +40,10 @@ public class RunMR {
     
     protected FileSystem fs;
     
-    public RunMR (Configuration conf, PreAggregateConfig config) {
+    protected File tempPath;
+    
+    public RunMR (Configuration conf) {
         this.conf = conf;
-        this.config = config;
     }
     
     public void setFS (FileSystem fs) {
@@ -55,6 +57,14 @@ public class RunMR {
         if (fs.exists(new Path(jobPath)) == false) {
             throw new RunException("Job path does not exist on HDFS");
         }
+        
+        tempPath = new File(System.getProperty("java.io.tmpdir"));
+        if (tempPath.exists() == false) {
+            throw new IOException("Unable to find temporary directory, path '" + tempPath.getAbsolutePath() + "' does not exist");
+        }
+        
+        // load PreAggregateConfig
+        loadConfig(jobPath);
         
         Path configPath = new Path(jobPath + "/" + CONFIG_FILENAME);
         if (fs.exists(configPath) == false) {
@@ -142,6 +152,33 @@ public class RunMR {
         
         long execTime = System.currentTimeMillis() - startTime;
         return execTime;
+    }
+    
+    protected void loadConfig (String jobPath) throws IOException, RunException {
+        logger.info("Loading PreAggregateConfig XML file...");
+        
+        Path configPath = new Path(jobPath + "/" + RunMR.CONFIG_FILENAME);
+        if (fs.exists(configPath) == false) {
+            throw new RunException("Missing PreAggregateConfig XML file on HDFS in jobPath");
+        }
+        
+        // copy config file to local filesystem
+        fs.copyToLocalFile(false, configPath, new Path(tempPath.getAbsolutePath() + "/" + RunMR.CONFIG_FILENAME));
+        
+        File configFile = new File(tempPath.getAbsolutePath() + "/" + RunMR.CONFIG_FILENAME);
+        
+        if (configFile.exists() == false) {
+            throw new RunException("PreAggregateConfig XML file has not been copied to local filesystem properly!");
+        }
+        
+        try {
+            // test config file
+            config = new PreAggregateConfig(configFile);
+        } catch (PreAggregateConfig.InvalidConfigException ex) {
+            throw new IOException("Unable to read PreAggregate config file", ex);
+        }
+          
+        logger.info("Loaded config file");
     }
     
     class RunException extends Exception {
