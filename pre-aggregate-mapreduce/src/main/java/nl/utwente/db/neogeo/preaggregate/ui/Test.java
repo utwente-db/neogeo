@@ -253,16 +253,7 @@ public class Test {
         System.out.println("Finished");
     }
 
-    public static void runTest_MapReduce(Connection c, String schema) throws SQLException, IOException, InterruptedException {
-        CreateIndexMR job = new CreateIndexMR();
-
-        String[] args = new String[]{"D:\\downloads\\preaggregate.xml", "/chunk_*.csv", "/out"};
-
-        job.parseArgs(args);
-
-
-        //job.runJob();
-    }
+  
 
     public static void runTest_mapper() throws Exception {
         double DFLT_BASEBOXSIZE = 0.001;

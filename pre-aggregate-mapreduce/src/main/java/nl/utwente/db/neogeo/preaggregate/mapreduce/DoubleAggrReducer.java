@@ -8,11 +8,11 @@ import org.apache.hadoop.io.LongWritable;
  *
  * @author Dennis Pallett <dennis@pallett.nl>
  */
-public class IntAggrReducer extends AggrReducer<IntAggrWritable> {
+public class DoubleAggrReducer extends AggrReducer<DoubleAggrWritable> {
     
     @Override
-    public void reduce(LongWritable ckey, Iterable<IntAggrWritable> values, Context context) throws IOException, InterruptedException {
-        Iterator<IntAggrWritable> iter = values.iterator();
+    public void reduce(LongWritable ckey, Iterable<DoubleAggrWritable> values, Context context) throws IOException, InterruptedException {
+        Iterator<DoubleAggrWritable> iter = values.iterator();
         
         if (iter.hasNext() == false) {
             // no values at all? weird situation, just do nothing
@@ -20,14 +20,14 @@ public class IntAggrReducer extends AggrReducer<IntAggrWritable> {
         }
         
         // set initial values
-        IntAggrWritable first = iter.next();
+        DoubleAggrWritable first = iter.next();
         long count = first.getCount();
-        int sum = first.getSum();
-        int min = first.getMin();
-        int max = first.getMax();
+        double sum = first.getSum();
+        double min = first.getMin();
+        double max = first.getMax();
         
         while(iter.hasNext()) {
-            IntAggrWritable row = iter.next();
+            DoubleAggrWritable row = iter.next();
             
             count += row.getCount();
             sum += row.getSum();
@@ -36,7 +36,7 @@ public class IntAggrReducer extends AggrReducer<IntAggrWritable> {
             if (row.getMax() > max) max = row.getMax();           
         }
         
-        IntAggrWritable newValue = new IntAggrWritable(count, sum, min, max);
+        DoubleAggrWritable newValue = new DoubleAggrWritable(count, sum, min, max);
  
         context.write(ckey, newValue);
     }

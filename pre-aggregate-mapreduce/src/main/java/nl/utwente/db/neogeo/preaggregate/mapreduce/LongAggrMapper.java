@@ -9,15 +9,15 @@ import org.apache.hadoop.io.LongWritable;
  *
  * @author Dennis Pallett <dennis@pallett.nl>
  */
-public class IntAggrMapper extends AggrMapper<IntAggrWritable> {
+public class LongAggrMapper extends AggrMapper<LongAggrWritable> {
     
-    public IntAggrMapper () {
-        this.aggregateType = AGGR_TYPE.TYPE_INT;
+    public LongAggrMapper () {
+        this.aggregateType = AGGR_TYPE.TYPE_BIGINT;
     }
 
     @Override
     protected void emit(Context context, LongWritable ckey, ResultSet res) throws IOException, SQLException, InterruptedException {
-        IntAggrWritable value = new IntAggrWritable(res.getInt("countaggr"), res.getInt("sumaggr"), res.getInt("minaggr"), res.getInt("maxaggr"));
+        LongAggrWritable value = new LongAggrWritable(res.getLong("countaggr"), res.getLong("sumaggr"), res.getLong("minaggr"), res.getLong("maxaggr"));
         context.write(ckey, value);
     }
     
