@@ -23,11 +23,10 @@ After successfull completion of this phase the full dataset will be loaded onto 
 ### RUN phase
 The run phase is a standard MapReduce job and creates the actual PreAggregate index. This phase can be executed with the following command:
 
-`hadoop jar "neogeo-mapreduce-0.0.1-SNAPSHOT-jar-with-dependencies.jar" run <preaggregate.config.xml> <hdfs_job_path>`
+`hadoop jar "neogeo-mapreduce-0.0.1-SNAPSHOT-jar-with-dependencies.jar" run <hdfs_job_path>`
 
 This command has the following options:
 
-- **preaggregate.config.xml:** specifies the path the PreAggregateConfiguration XML file that specifies the details of the PreAggregate index that should be created. See preaggregate.config.sample.xml for an example of this file.
 - **hdfs_job_path:** specifies the path on your HDFS filesystem where all the data of the index creation will be stored. This directory will be automatically created by the PREPARE utility.
 
 After succesfull completion of this phase the index will have been created and will be located (in possibly several parts) on the HDFS filesystem, ready to be located back into your database.
