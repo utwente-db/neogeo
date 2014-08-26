@@ -35,7 +35,7 @@ After succesfull completion of this phase the index will have been created and w
 ### FINISH phase
 The finish phase loads the PreAggregate index back into your database. It can be executed with the following command:
 
-`hadoop jar neogeo-mapreduce-0.0.1-SNAPSHOT-jar-with-dependencies.jar finish <database.properties> <hdfs_job_path> [-delete-job]
+`hadoop jar neogeo-mapreduce-0.0.1-SNAPSHOT-jar-with-dependencies.jar finish <database.properties> <hdfs_job_path> [-delete-job]`
 
 This command has the following options:
 
