@@ -115,7 +115,7 @@ public abstract class FinishMR extends PreAggregate {
     }
     
     // must be overriden by sub-classes
-    protected abstract void insertDataIntoTable(InputStream in)  throws IOException, FinishException;
+    protected abstract void insertDataIntoTable(InputStream in)  throws IOException, FinishException, SQLException;
     
     protected void insertData(String jobPath, String indexTable) throws SQLException, FileNotFoundException, IOException, FinishException, MCLParseException, MCLException {
         logger.info("Copying data into PreAggregate index table...");

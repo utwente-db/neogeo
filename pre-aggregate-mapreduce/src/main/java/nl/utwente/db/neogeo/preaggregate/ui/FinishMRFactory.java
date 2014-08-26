@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package nl.utwente.db.neogeo.preaggregate.ui;
 
 import java.sql.Connection;
@@ -27,6 +23,8 @@ public class FinishMRFactory {
         
         if (dbType == DbType.MONETDB) {
             return new FinishMRMonetDB(conf, dbInfo, c);
+        } else if (dbType == DbType.POSTGRES) {
+            return new FinishMRPostgres(conf, dbInfo, c);
         } else {
             throw new UnsupportedOperationException("Database type " + dbType + " not yet supported by FinishMR");
         }

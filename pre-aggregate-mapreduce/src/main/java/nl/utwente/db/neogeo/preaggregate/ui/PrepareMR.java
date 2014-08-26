@@ -33,7 +33,6 @@ import nl.utwente.db.neogeo.preaggregate.PreAggregateConfig;
 import nl.utwente.db.neogeo.preaggregate.SqlScriptBuilder;
 import nl.utwente.db.neogeo.preaggregate.SqlUtils;
 import nl.utwente.db.neogeo.preaggregate.SqlUtils.DbType;
-import static nl.utwente.db.neogeo.preaggregate.ui.CreateChunks.logger;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -214,8 +213,20 @@ public abstract class PrepareMR extends PreAggregate {
         PreAggregateConfig config = new PreAggregateConfig(table, this.aggregateColumn, label, aggregateType, aggregateMask, axis);
         
         String fileName = RunMR.CONFIG_FILENAME;
+        File configFile = new File(tempPath + "/" + fileName);
+        
+        if (configFile.exists()) {
+            configFile.delete();
+            
+            // also delete possible CRC file
+            // work-around for bug https://issues.apache.org/jira/browse/HADOOP-7199
+            // also see: http://stackoverflow.com/questions/15434709/checksum-exception-when-reading-from-or-copying-to-hdfs-in-apache-hadoop
+            File crcFile = new File(tempPath + "/." + fileName + ".crc");
+            if (crcFile.exists()) crcFile.delete();
+        }
+        
         try {
-            config.writeToXml(new File(tempPath + "/" + fileName));
+            config.writeToXml(configFile);
         } catch (Exception ex) {
             throw new PrepareException("Unable to write PreAggregateConfig XML file to temp directory", ex);
         }

@@ -321,31 +321,5 @@ public class Test {
         //prepare.doPrepare("/data/london_hav_neogeo/", 0, 2000);
     }
 
-    public static void runTest_create_chunks(Connection c, String schema) throws Exception {
-        double DFLT_BASEBOXSIZE = 0.001;
-        short DFLT_N = 4;
-        //GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "uk_neogeo", "myAggregate", "coordinates",-1,200000,null);
-
-        AggregateAxis axis[] = null;
-        if (SqlUtils.dbType(c) == DbType.MONETDB) {
-            axis = new AggregateAxis[]{
-                new MetricAxis("coordinates_x", "double", "" + DFLT_BASEBOXSIZE, DFLT_N),
-                new MetricAxis("coordinates_y", "double", "" + DFLT_BASEBOXSIZE, DFLT_N), //new MetricAxis("\"time\"", "timestamp with time zone", "360000" /*=10 min*/, (short)16)
-            };
-        } else {
-            axis = new AggregateAxis[]{
-                new MetricAxis("ST_X(coordinates)", "double", "" + DFLT_BASEBOXSIZE, DFLT_N),
-                new MetricAxis("ST_Y(coordinates)", "double", "" + DFLT_BASEBOXSIZE, DFLT_N), //new MetricAxis("time", "timestamp with time zone", "360000" /*=10 min*/, (short)16)
-            };
-        }
-
-        CreateChunks obj = new CreateChunks(c, schema);
-
-        obj.create("london_hav_neogeo", axis, "len", "bigint", PreAggregate.AGGR_ALL, 0, 2000, "/home/dbguest/chunks/");
-
-        //obj.create("uk_neogeo", axis, "len", "bigint", PreAggregate.AGGR_ALL, 0, 200000, "/home/dbguest/chunks/");
-
-        //PreAggregate pa = new PreAggregate(c,"public", "uk_neogeo", null /*override_name*/, "myAggregate",axis,"char_length(tweet)","bigint",PreAggregate.AGGR_ALL,2,200000,null);
-        //PreAggregate pa = new PreAggregate(c, schema, "london_hav_neogeo", null /*override_name*/, "myAggregate", axis, "len" , "bigint", PreAggregate.AGGR_ALL, 2, 200000, null);
-    }
+    
 }

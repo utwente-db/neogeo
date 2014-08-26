@@ -24,6 +24,8 @@ public class PrepareMRFactory {
         
         if (dbType == DbType.MONETDB) {
             return new PrepareMRMonetDB (conf, dbInfo, c, config);
+        } else if (dbType == DbType.POSTGRES) {
+            return new PrepareMRPostgres (conf, dbInfo, c, config);
         } else {
             throw new UnsupportedOperationException("Database type " + dbType + " not yet supported by PrepareMR");
         }
