@@ -14,6 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import nl.utwente.db.neogeo.preaggregate.AggrKey;
 import nl.utwente.db.neogeo.preaggregate.AggrKeyDescriptor;
 import nl.utwente.db.neogeo.preaggregate.AggregateAxis;
 import static nl.utwente.db.neogeo.preaggregate.PreAggregate.AGGR_COUNT;
@@ -52,6 +53,8 @@ public abstract class AggrMapper<VALUEOUT extends Object> extends Mapper<NullWri
     protected Configuration conf;
     
     protected PreAggregateConfig aggConf;
+    
+    protected AggrKey aggrKey;
     
     public void setConfiguration (Configuration conf) {
         this.conf = conf;
@@ -103,6 +106,7 @@ public abstract class AggrMapper<VALUEOUT extends Object> extends Mapper<NullWri
 
         // initialize KeyDescriptor
         kd = new AggrKeyDescriptor(DEFAULT_KD, axis);
+        aggrKey = new AggrKey(kd);
     }
     
     protected void createDataTable() throws SQLException {
@@ -310,8 +314,8 @@ public abstract class AggrMapper<VALUEOUT extends Object> extends Mapper<NullWri
         Statement q = conn.createStatement();
         
         ResultSet res = q.executeQuery("SELECT * from data");        
-        while(res.next()) {
-            long ckey = kd.computeLongKey(res);            
+        while(res.next()) {            
+            long ckey = computeAggrKey(res);            
                         
             if (context != null) {
                 emit(context, new LongWritable(ckey), res);
@@ -322,6 +326,16 @@ public abstract class AggrMapper<VALUEOUT extends Object> extends Mapper<NullWri
         
         res.close();
         q.close();
+    }
+    
+    protected long computeAggrKey (ResultSet res) throws SQLException {
+        for(short i=0; i < axis.length; i++) { 
+            aggrKey.setIndex(i, res.getShort("i" + i));
+            aggrKey.setLevel(i, res.getShort("l" + i));
+        }
+        
+        // for now we assume the CrossProductLongKey
+        return aggrKey.crossproductLongKey();
     }
     
     protected void insertCsv (Text value) throws SQLException, IOException {

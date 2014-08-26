@@ -1006,9 +1006,14 @@ public class PreAggregate {
                                     sqlaggr.append(",max(maxAggr) AS maxAggr");
                         }
                         
-                        StringBuilder gcells = new StringBuilder("pa_grid_enhanced(\'");
-                        gcells.append(grid_paGridQuery(swgc));
-                        gcells.append("\'");
+                        StringBuilder gcells = new StringBuilder("pa_grid");
+                        
+                        // use enhanced version with MonetDB
+                        if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                            gcells.append("_enhanced");
+                        }
+                        
+                        gcells.append("(\'").append(grid_paGridQuery(swgc)).append("\'");
                         
                         // MonetDB has a more advanced version of the pa_grid function
                         // so we need to add additional parameters
