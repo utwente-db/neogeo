@@ -9,9 +9,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.BitSet;
 import java.util.Date;
 import java.util.Properties;
 import static nl.utwente.db.neogeo.preaggregate.NominalGeoTaggedTweetAggregate.NOMINAL_POSTFIX;
+import static nl.utwente.db.neogeo.preaggregate.PreAggregate.DEFAULT_KD;
 import nl.utwente.db.neogeo.preaggregate.SqlUtils.DbType;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
@@ -99,6 +101,7 @@ public class Test {
 
 	public static void main(String[] argv) throws Exception {
 		System.out.println("Test pre-aggregate package");
+                /*
 		Test t = new Test();
 		t.readProperties();
 		Connection connection = t.getConnection();
@@ -113,6 +116,9 @@ public class Test {
                 //Logger.getRootLogger().setLevel(Level.INFO);
 		                
                 runTest(connection, t.getSchema());
+                */
+                
+                runTest_ckey();
                 
                 //runTest_small_nominal(connection, t.getSchema());
                 //runTest_small_nominal_time(connection, t.getSchema());
@@ -123,8 +129,73 @@ public class Test {
                 
                 //runTest_standard_nominal(connection, t.getSchema());
                 
-                connection.close();
+                //connection.close();
 	}
+        
+        public static void runTest_ckey () {
+            //double	DFLT_BASEBOXSIZE = 0.0000001;
+            //double	DFLT_BASEBOXSIZE = 0.01;
+            double	DFLT_BASEBOXSIZE = 0.001;
+            short	DFLT_N = 4;
+            
+            MetricAxis x_axis = new MetricAxis("coordinates_x", "double", "" + DFLT_BASEBOXSIZE,DFLT_N);
+            MetricAxis y_axis = new MetricAxis("coordinates_y", "double", "" + DFLT_BASEBOXSIZE,DFLT_N);
+            
+            x_axis.setRangeValues("-0.12", "0.449");
+            y_axis.setRangeValues("51.327", "51.658");
+            
+            AggregateAxis axis[] = new AggregateAxis[]{x_axis, y_axis};
+                        
+            //AggrKeyDescriptor kd = new AggrKeyDescriptor(AggrKeyDescriptor.KD_CROSSPRODUCT_LONG, axis);
+            AggrKeyDescriptor kd = new AggrKeyDescriptor(AggrKeyDescriptor.KD_BYTE_STRING, axis);
+            
+            AggrKey key = new AggrKey(kd);
+            
+            short dim0 = (short) 0;
+            short l0 = (short)0;
+            int i0 = 2;
+            
+            short dim1 = (short) 1;
+            short l1 = (short)0;
+            int i1 = 101;
+            
+            key.setLevel(dim0, l0);
+            key.setIndex(dim0, i0);
+            
+            key.setLevel(dim1, l1);
+            key.setIndex(dim1, i1);
+            
+            
+            byte[] data = new byte[4];
+            data[0] = Short.valueOf(l0).byteValue();
+            data[1] = Integer.valueOf(i0).byteValue();
+            
+            data[2] = Short.valueOf(l1).byteValue();
+            data[3] = Integer.valueOf(i1).byteValue();
+            
+            
+            
+            Object keyVal = key.toKey();
+            System.out.println("KEY = " + String.valueOf(keyVal));
+            
+            if (keyVal != null) {
+                System.out.println("KEY TYPE = " + keyVal.getClass().getCanonicalName());
+            }
+            
+            AggrKey newKey = null;
+            try {
+                newKey = AggrKey.decodeByteKey(kd, keyVal.toString());
+            } catch (AggrKey.InvalidKeyException ex) {
+                java.util.logging.Logger.getLogger(Test.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            }
+            
+            for(short i=0; i < axis.length; i++) {
+                System.out.println("l" + i + " = " + newKey.getLevel(i));
+                System.out.println("i" + i + " = " + newKey.getIndex(i));
+            }
+                        
+  
+        }
 	
 	@SuppressWarnings("deprecation")
 	public static void runTest_time(Connection c) throws Exception {

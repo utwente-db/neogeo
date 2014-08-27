@@ -19,31 +19,48 @@ public class AggrKeyDescriptor {
 	public short	maxLevel  = -1;
 	public short	levelBits = -1;
 	public short	dimBits[] = null;
+        
+        public short    levelBytes = -1;
 	public short	totalBits = -1;
+        public short    totalBytes = -1;
+        public short    dimBytes[] = null;
 	
 	public AggregateAxis axis[];
 	
-	public	AggrKeyDescriptor(char kind, AggregateAxis axis[]) {
+	public	AggrKeyDescriptor(char kind, AggregateAxis axis[]) throws TooManyBitsException {
 		_init(kind, axis);
 	}
 	
-	protected void _init(char kind, AggregateAxis axis[]) {
+	protected void _init(char kind, AggregateAxis axis[]) throws TooManyBitsException {
 		this.kind		= kind;
 		this.axis		= axis;
+                this.dimensions = (short)axis.length;
 		switch ( kind ) {
 		 case KD_NULL:
 			_init(KD_CROSSPRODUCT_LONG, axis);
 		    break;
 		 case KD_CROSSPRODUCT_LONG:
-			 this.dimensions = (short)axis.length;
 			 this.computeBitLayout(kind, axis);
 			 break;
 		 case KD_BYTE_STRING:
-			 throw new RuntimeException("INCOMPLETE");
+                        this.computeByteLayout(kind, axis);
+			 break;
 		 default:
 			 throw new RuntimeException("bad kind");
 		}
 	}
+        
+        public short getTotalBits () {
+            return this.totalBits;
+        }
+        
+        public short getTotalBytes () {
+            return this.totalBytes;
+        }
+        
+        public short getLevelBytes () {
+            return this.levelBytes;
+        }
 	
 	public char kind() {
 		return this.kind;
@@ -63,8 +80,55 @@ public class AggrKeyDescriptor {
 	
 	public void subindexAssert() {
 	}
+        
+        private void computeByteLayout (char kind, AggregateAxis axis[]) {
+            dimBytes = new short[axis.length];
+            
+            totalBytes = 0;
+            for(int i=0; i < axis.length; i++) {
+                short axisBits = axis[i].bits();   
+                
+                System.out.println("Axis " + i + " bits: " + axisBits);
+                
+                // determine what type this dimension needs
+                if (axisBits <= 8) {
+                    dimBytes[i] += 1; // can be stored in a single byte
+                } else if (axisBits <= 16) {
+                    dimBytes[i] += 2; // short, so 2 bytes
+                } else if (axisBits <= 24) {
+                    dimBytes[i] = 3; // in-between
+                } else if (axisBits <= 32) {
+                    dimBytes[i] += 4; // int, so 4 bytes
+                } else if (axisBits <= 64) {
+                    dimBytes[i] += 8; // long, so 8 bytes
+                } else {
+                    // what?! needs more than long? not supported
+                    throw new RuntimeException("Axis " + axis[i].columnExpression() + " needs more bits than supported by a long");
+                }
+                
+                totalBytes += dimBytes[i];
+                
+                // calculate max level
+                if (axis[i].maxLevels() > maxLevel) maxLevel = axis[i].maxLevels();
+            }
+            
+            if (maxLevel <= Byte.MAX_VALUE) {
+                levelBytes = 1;
+            } else if (maxLevel <= Short.MAX_VALUE) {
+                levelBytes = 2;
+            } else if (maxLevel <= Integer.MAX_VALUE) {
+                levelBytes = 4;
+            } else if (maxLevel <= Long.MAX_VALUE) {
+                levelBytes = 8;
+            } else {
+                // what?! level is bigger than long, should be impossible
+                throw new RuntimeException("MaxLevel is bigger than Long.MAX_VALUE");
+            }
+            
+            totalBytes += (levelBytes * axis.length);
+        }
 	
-	private void computeBitLayout(char kind, AggregateAxis axis[]) {
+	private void computeBitLayout(char kind, AggregateAxis axis[]) throws TooManyBitsException {
 		dimBits = new short[axis.length];
 		
 		totalBits = 0;
@@ -80,7 +144,7 @@ public class AggrKeyDescriptor {
 		else
 			totalBits += levelBits;
 		if ( totalBits > 63 )
-			throw new RuntimeException("no of bits in key > 63");
+			throw new TooManyBitsException("no of bits in key > 63");
 	}
         
 	public String crossproductLongKeyFunction(Connection c, String fun) throws SQLException {	
@@ -118,4 +182,10 @@ public class AggrKeyDescriptor {
 		sb.append(">");
 		return sb.toString();
 	}
+        
+        public class TooManyBitsException extends Exception {
+            public TooManyBitsException (String msg) {
+                super(msg);
+            }
+        }
 }
