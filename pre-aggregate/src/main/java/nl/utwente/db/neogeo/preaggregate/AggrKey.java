@@ -3,6 +3,80 @@ package nl.utwente.db.neogeo.preaggregate;
 import java.util.Arrays;
 
 public final class AggrKey {
+    
+        final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
+        public static String bytesToHex(byte[] bytes) {
+            char[] hexChars = new char[bytes.length * 2];
+            for ( int j = 0; j < bytes.length; j++ ) {
+                int v = bytes[j] & 0xFF;
+                hexChars[j * 2] = hexArray[v >>> 4];
+                hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+            }
+            return new String(hexChars);
+        }
+        
+        
+    
+        public static byte[] hexStringToByteArray(String s) {
+            int len = s.length();
+            byte[] data = new byte[len / 2];
+            for (int i = 0; i < len; i += 2) {
+                data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+                                     + Character.digit(s.charAt(i+1), 16));
+            }
+            return data;
+        }
+        
+        public static AggrKey decodeByteKey (AggrKeyDescriptor kd, String keyHex) throws InvalidKeyException {
+            byte[] arr = hexStringToByteArray(keyHex);
+            return decodeByteKey(kd, arr);
+        }
+        
+        public static AggrKey decodeByteKey (AggrKeyDescriptor kd, byte[] arr) throws InvalidKeyException {
+            // can only accept KeyDescriptor of BYTE_STRING kind
+            if (kd.kind() != AggrKeyDescriptor.KD_BYTE_STRING) {
+                return null;
+            }
+            
+            AggrKey ret = new AggrKey(kd);
+            
+            // verify length of key
+            if (arr.length != kd.getTotalBytes()) {
+                throw new InvalidKeyException("Number of bytes in ByteKey (" + arr.length + ") is not as expected (" + kd.getTotalBytes() + ")");
+            }
+            
+            short idx=0;
+            for(short i=0; i < kd.dimensions(); i++) {
+                short level = -1;
+                if (kd.levelBytes == 1) {
+                    level = (short) arr[idx++];
+                } else if (kd.levelBytes == 2) {
+                    level = (short) (arr[idx++] << 8 | (arr[idx++] & 0xFF));
+                }
+                
+                int index = -1;
+                if (kd.dimBytes[i] == 1) {
+                    index = (int) arr[idx++];
+                } else if (kd.dimBytes[i] == 2) {
+                    index = (int) (arr[idx++] << 8 | (arr[idx++] & 0xFF));
+                } else if (kd.dimBytes[i] == 3) {
+                    index = (int) (arr[idx++] << 16 | (arr[idx++] & 0xFF) << 8 | (arr[idx++] & 0xFF));
+                } else if (kd.dimBytes[i] == 4) {
+                    index = arr[idx++] << 24 | (arr[idx++] & 0xFF) << 16 | (arr[idx++] & 0xFF) << 8 | (arr[idx++] & 0xFF);
+                }
+                
+                ret.setLevel(i, level);
+                ret.setIndex(i, index);
+            }
+            
+            return ret;
+        }
+        
+        public static class InvalidKeyException extends Exception {
+            public InvalidKeyException (String msg) {
+                super(msg);
+            }
+        }
 	
 	private AggrKeyDescriptor kd;
 	private int[]	data;
@@ -82,13 +156,52 @@ public final class AggrKey {
 		// System.out.println("# "+toString()+"="+res+"[nres="+nres+"]");
 		return res;
 	}
+        
+        
+        
+        
+        
+        public String byteKey () {            
+            byte[] arr = new byte[kd.getTotalBytes()];
+                        
+            byte idx = 0;            
+            for(short i=0; i < kd.dimensions(); i++) {
+                short level = getLevel(i);
+                int index = getIndex(i);
+                
+                if (kd.getLevelBytes() == 1) {
+                    arr[idx++] = (byte)level;
+                } else if (kd.getLevelBytes() == 2) {    
+                    arr[idx++] = (byte)(level >> 8);
+                    arr[idx++] = (byte)(level);
+                }
+                
+                if (kd.dimBytes[i] == 4) {
+                    arr[idx++] = (byte)(index >> 24);
+                }
+                
+                if (kd.dimBytes[i] >= 3) {
+                    arr[idx++] = (byte)(index >> 16);
+                }
+                
+                if (kd.dimBytes[i] >= 2) {
+                    arr[idx++] = (byte)(index >> 8);
+                }
+                
+                arr[idx++] = (byte)(index);
+            }
+            
+            return bytesToHex(arr);
+        }
+        
+        
 	
 	public Object toKey() {
 		switch (kd.kind()) {	
 		 case AggrKeyDescriptor.KD_CROSSPRODUCT_LONG:
 			 return new Long(crossproductLongKey());
 		 case AggrKeyDescriptor.KD_BYTE_STRING:
-			 throw new RuntimeException("BYTE STRING LONG NOT IMPL");
+			 return byteKey();
 		 default:
 			 throw new RuntimeException("UNEXPECTED");
 		}
@@ -122,5 +235,7 @@ public final class AggrKey {
 		sb.append(")>");
 		return sb.toString();
 	}
+        
+        
 	
 }
