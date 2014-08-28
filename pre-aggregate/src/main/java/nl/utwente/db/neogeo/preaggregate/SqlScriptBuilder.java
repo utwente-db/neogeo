@@ -69,6 +69,9 @@ public class SqlScriptBuilder {
 	}
 	
 	public void addPost(String s) throws SQLException {
+                logger.debug("Post query added:");
+                logger.debug(s);
+            
 		// System.out.println("|-----\n"+s+"|-----\n");
 		post_stat.addBatch(s);
 		post_str.append(s);

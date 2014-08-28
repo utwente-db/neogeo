@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.utwente.db.neogeo.preaggregate.MetricAxis.AxisIndexer;
 import nl.utwente.db.neogeo.preaggregate.MetricAxis.DoubleAxisIndexer;
@@ -30,9 +31,12 @@ public class PreAggregate {
 	 */
 	public static final boolean showAxisAndKey		= true;
 	public static final boolean	doResultCorrection	= true;
-	public static final boolean	serversideStairwalk	= true;
-        public static final boolean executeQueriesDirectly      = false;
+	//public static final boolean	serversideStairwalk	= true;
+        public static final boolean	serversideStairwalk	= false;
+        
+        public static final boolean executeQueriesDirectly      = true;
 	public static final char	DEFAULT_KD			= AggrKeyDescriptor.KD_CROSSPRODUCT_LONG;
+        //public static final char	DEFAULT_KD			= AggrKeyDescriptor.KD_BYTE_STRING;
 
 	private	static final int	AGGR_BASE			= 0x01;
 	public static final	int		AGGR_COUNT			= AGGR_BASE;
@@ -267,6 +271,11 @@ public class PreAggregate {
                 
                 this.c = c;
                 this.schema = schema;
+                this.table = table;
+                this.axis = axis;
+                this.aggregateColumn = aggregateColumn;
+                this.aggregateType = aggregateType;
+                this.aggregateMask = aggregateMask;
                 
                 // Ensure that MonetDB has the necessary additional functions
                 if (SqlUtils.dbType(c) == DbType.MONETDB) {
@@ -279,8 +288,19 @@ public class PreAggregate {
 		 * First initialize and compute the aggregation axis
 		 */
 		short maxLevel = initializeAxis(table, axis);
-
-		kd = new AggrKeyDescriptor(DEFAULT_KD, axis);
+                
+                try {
+                    kd = new AggrKeyDescriptor(DEFAULT_KD, axis);
+                } catch (AggrKeyDescriptor.TooManyBitsException ex) {
+                    LOGGER.warning("Bits of key > 63, switching to ByteString key. Consider reducing number of dimensions of baseblocksize!");
+                    
+                    try {                        
+                        kd = new AggrKeyDescriptor(AggrKeyDescriptor.KD_BYTE_STRING, axis);
+                    } catch (AggrKeyDescriptor.TooManyBitsException ex1) {
+                        throw new RuntimeException("Unable to switch to ByteString key, still too many bits!");
+                    }
+                }
+                
 		if (showAxisAndKey)
 			System.out.println("KEY="+kd);
 
@@ -306,9 +326,8 @@ public class PreAggregate {
 		}
 
 		// generate the function which converts all dimension levels/range indices into one value
-		String genKey = indexPrefix+"genKey";
-		sql_build.add(kd.crossproductLongKeyFunction(c, genKey));
-		sql_build.newLine();
+		String genKey = indexPrefix+"genKey";                
+                kd.createKeyFunction (c, genKey, sql_build); 
 
                 // create the table that will hold the final index
 		String table_pa = create_index_table(sql_build, override_name);
@@ -355,14 +374,19 @@ public class PreAggregate {
                 
                 // ensure the chunks table does not exist already
                 String chunks_table = table_pa + "_chunks_tmp";
-                if (SqlUtils.existsTable(c, schema, chunks_table)) {
-                    sql_build.add("DROP TABLE " + chunks_table + ";\n");
+                if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                    if (SqlUtils.existsTable(c, schema, chunks_table)) {
+                        sql_build.add("DROP TABLE " + chunks_table + ";\n");
+                    }
+                } else {
+                    sql_build.add("DROP TABLE IF EXISTS " + chunks_table + ";\n");
                 }
+                sql_build.newLine();
                 
                 // create the chunks table
                 // this is a temporary table which holds all the data of the chunks
                 // and later get GROUP'ed into the final PA table
-                sql_build.add("CREATE TABLE " + chunks_table + " (ckey bigint, " +
+                sql_build.add("CREATE TABLE " + chunks_table + " (ckey " + kd.keySqlType() + ", " +
                             ((aggregateMask&AGGR_COUNT)!=0 ? "\tcountAggr bigint,\n" : "") + 
                             ((aggregateMask&AGGR_SUM) !=0 ? "\tsumAggr "  +aggregateType+",\n" : "") +
                             ((aggregateMask&AGGR_MIN)!=0 ? "\tminAggr "+aggregateType+",\n" : "") +
@@ -497,7 +521,7 @@ public class PreAggregate {
 
            sql_build.add(
                            "CREATE TABLE " + table_pa + " (\n" +
-                           "\tckey bigint NOT NULL PRIMARY KEY,\n" + 
+                           "\tckey " + kd.keySqlType() + " NOT NULL PRIMARY KEY,\n" + 
                            ((aggregateMask&AGGR_COUNT)!=0 ? "\tcountAggr bigint,\n" : "") + 
                            ((aggregateMask&AGGR_SUM) !=0 ? "\tsumAggr "  +aggregateType+",\n" : "") +
                            ((aggregateMask&AGGR_MIN)!=0 ? "\tminAggr "+aggregateType+",\n" : "") +
@@ -727,11 +751,10 @@ public class PreAggregate {
 	public String generate_level0(Connection c, String level0_table, String from, String where, AggregateAxis axis[], String aggregateColumn, int aggregateMask) 
 	throws SQLException {
 		
-		String level0 = SqlUtils.gen_Select_INTO(
+		String level0 = SqlUtils.gen_Create_Table_As_Select(
                                 c, 
 				level0_table,
                                 select_level0(c, from, where, axis, aggregateColumn, aggregateMask),
-				"",
 				false);
 		return level0;
 	}
@@ -1532,7 +1555,7 @@ public class PreAggregate {
 			qb.append(" WHERE ");
 			for (i = 0; i < resKeys.size(); i++) {
 				qb.append(((i > 0) ? " OR " : "") + "ckey="
-						+ resKeys.elementAt(i).toKey());
+						+ SqlUtils.quoteValue(c, resKeys.elementAt(i).toKey()));
 			}
 		}
 		qb.append(";");
@@ -1842,8 +1865,13 @@ public class PreAggregate {
 				throw new NullPointerException();
 		}
 		axis = read_axis;
-		//
-		kd = new AggrKeyDescriptor(keyFlag,axis); // INCOMPLETE, put in flag type
+                
+                try {
+                    // INCOMPLETE, put in flag type
+                    kd = new AggrKeyDescriptor(keyFlag,axis); // INCOMPLETE, put in flag type
+                } catch (AggrKeyDescriptor.TooManyBitsException ex) {
+                    LOGGER.warning("Too many bits > 63");
+                }
 		//
 		return true;
 	}

@@ -101,7 +101,7 @@ public class Test {
 
 	public static void main(String[] argv) throws Exception {
 		System.out.println("Test pre-aggregate package");
-                /*
+                
 		Test t = new Test();
 		t.readProperties();
 		Connection connection = t.getConnection();
@@ -116,9 +116,9 @@ public class Test {
                 //Logger.getRootLogger().setLevel(Level.INFO);
 		                
                 runTest(connection, t.getSchema());
-                */
                 
-                runTest_ckey();
+                
+                //runTest_ckey();
                 
                 //runTest_small_nominal(connection, t.getSchema());
                 //runTest_small_nominal_time(connection, t.getSchema());
@@ -147,7 +147,12 @@ public class Test {
             AggregateAxis axis[] = new AggregateAxis[]{x_axis, y_axis};
                         
             //AggrKeyDescriptor kd = new AggrKeyDescriptor(AggrKeyDescriptor.KD_CROSSPRODUCT_LONG, axis);
-            AggrKeyDescriptor kd = new AggrKeyDescriptor(AggrKeyDescriptor.KD_BYTE_STRING, axis);
+            AggrKeyDescriptor kd = null;
+            try {
+                kd = new AggrKeyDescriptor(AggrKeyDescriptor.KD_BYTE_STRING, axis);
+            } catch (AggrKeyDescriptor.TooManyBitsException ex) {
+                java.util.logging.Logger.getLogger(Test.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            }
             
             AggrKey key = new AggrKey(kd);
             
@@ -492,8 +497,8 @@ public class Test {
 			// new TweetConverter("/Users/flokstra/uk_raw.sql",c,"public","uk");
 			//
 
-			//GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", null, "myAggregate", "coordinates",0 /* axis 2 split*/,200000,null);
-                        GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", "myAggregate"); 
+			GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", null, "myAggregate", "coordinates",0 /* axis 2 split*/,200000,null);
+                        //GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", "myAggregate"); 
                     
                         // axis to split: 0 (= x-axis)
                         // chunkSize: 2000 (very small, but needed to experiment with chunking!)
@@ -512,7 +517,7 @@ public class Test {
 			//
 			 //pa.boxQuery("count",0.18471,51.60626,0.23073,51.55534); // in the middle of havering map *correction anomaly
 			// pa.boxQuery("count",-0.058,51.59,0.095,51.483); // left of havering, few tweets
-			pa.boxQuery("count",-0.058,51.58961,0.095,51.48287); // left of havering, few tweets
+                        pa.boxQuery("count",-0.058,51.58961,0.095,51.48287); // left of havering, few tweets
 			
 			// pa.boxQuery("count",-0.38326,51.62780,0.14554,51.39572); // a big london query
 			//pa.boxQuery("count",-8.4,60,1.9,49); // the entire UK query

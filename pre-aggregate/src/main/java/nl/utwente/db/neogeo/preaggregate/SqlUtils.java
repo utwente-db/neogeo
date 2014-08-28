@@ -55,6 +55,9 @@ public class SqlUtils {
                 case MONETDB:
                     sql = "SELECT COUNT(*) FROM sys.functions WHERE name = '" + function.toLowerCase() + "' LIMIT 1";                            
                     break;
+                case POSTGRES:
+                    sql = "";
+                    break;
                 default:
                     throw new UnsupportedOperationException("DbType " + dbType(c) + " not yet supported");
             }
@@ -261,12 +264,21 @@ public class SqlUtils {
 		throw new SQLException("UNEXPECTED");
 	}
         
-        public static String quoteValue (Connection c, String value) throws SQLException {
+        public static String quoteValue (Connection c, Object value) throws SQLException {
             return quoteValue(dbType(c), value);
         }
         
-        public static String quoteValue (DbType dbType, String value) {
-            return "'" + value.replaceAll("\\\\", "\\\\\\\\").replaceAll("'", "\\\\'") + "'";
+        public static String quoteValue (DbType dbType, Object value) {
+            String ret = "";
+            
+            if (value instanceof Number) {
+                ret = value.toString();
+            } else {
+                String str = (String) value;
+                ret = "'" + str.replaceAll("\\\\", "\\\\\\\\").replaceAll("'", "\\\\'") + "'";
+            }
+            
+            return ret;
         }
         
         public static String quoteIdentifier (Connection c, String ident) throws SQLException {
@@ -383,6 +395,28 @@ public class SqlUtils {
             
         }
 
+        public static String gen_Create_Table_As_Select (Connection c, String table, String select, boolean dropFirst) throws SQLException {
+            String dropstat = "";
+                
+		switch ( dbType(c) ) {
+		case POSTGRES:
+			if ( dropFirst )
+				dropstat = "DROP TABLE IF EXISTS " + table + ";\n";
+                        
+			return  dropstat + "CREATE TABLE " + table + " AS " + select +";\n";
+                case MONETDB:
+                        if (dropFirst) {
+                            dropstat = "DROP TABLE " + table + ";\n";
+                        }
+                    
+                        return dropstat + "CREATE TABLE " + table + " AS " + select + " WITH DATA;";
+		case MYSQL:
+			return	"CREATE TABLE "+table+"\n"+
+			select + ";\n";
+		}	
+		throw new SQLException("UNEXPECTED");
+        }
+        
 	public static String gen_Select_INTO(Connection c, String table, String select_head, String select_tail, boolean dropfirst) throws SQLException {
                 String dropstat = "";
                 
@@ -390,19 +424,13 @@ public class SqlUtils {
 		case POSTGRES:
 			if ( dropfirst )
 				dropstat = "DROP TABLE IF EXISTS " + table + ";\n";
+                        
 			return  dropstat + select_head +"\n"+
 			"INTO "+ table +"\n" +
 			select_tail + ";\n";
                 case MONETDB:
-                        if (dropfirst) {
-                            dropstat = "DROP TABLE " + table + ";\n";
-                        }
-                    
-                        return dropstat + "CREATE TABLE " + table + " AS " + select_head + " " + select_tail + " WITH DATA;";
-		case MYSQL:
-			return	"CREATE TABLE "+table+"\n"+
-			select_head + "\n"+
-			select_tail + ";\n";
+                case MYSQL:
+                        return gen_Create_Table_As_Select(c, table, select_head + " " + select_tail, dropfirst);
 		}	
 		throw new SQLException("UNEXPECTED");
 	}
@@ -425,8 +453,8 @@ public class SqlUtils {
 	
 	public static String gen_DROP_FUNCTION(Connection c, String fun, String par_type) throws SQLException {
 		switch ( dbType(c) ) {
-                    case POSTGRES:
                     case MONETDB:
+                    case POSTGRES:
 			return  "DROP FUNCTION "+fun+"("+par_type+");\n";
                     case MYSQL:
 			return  "DROP FUNCTION IF EXISTS "+fun+";\n";
