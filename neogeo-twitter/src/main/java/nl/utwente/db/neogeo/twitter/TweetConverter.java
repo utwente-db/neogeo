@@ -199,7 +199,7 @@ public class TweetConverter {
 					stat, 
 					t.id_str(), 
 					t.tweet(), 
-					pt.insertPlace(t),
+					-9999, // pt.insertPlace(t),
 					t.created_at(),
 					t.user_screen_name(), 
 					t.place_full_name(),
