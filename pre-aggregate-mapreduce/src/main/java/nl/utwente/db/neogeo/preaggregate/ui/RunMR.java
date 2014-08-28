@@ -3,21 +3,19 @@ package nl.utwente.db.neogeo.preaggregate.ui;
 import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
+import nl.utwente.db.neogeo.preaggregate.AggrKeyDescriptor;
 import nl.utwente.db.neogeo.preaggregate.PreAggregateConfig;
-import nl.utwente.db.neogeo.preaggregate.mapreduce.DoubleAggrMapper;
-import nl.utwente.db.neogeo.preaggregate.mapreduce.DoubleAggrReducer;
+import nl.utwente.db.neogeo.preaggregate.mapreduce.AggrMapper;
+import nl.utwente.db.neogeo.preaggregate.mapreduce.AggrReducer;
 import nl.utwente.db.neogeo.preaggregate.mapreduce.DoubleAggrWritable;
-import nl.utwente.db.neogeo.preaggregate.mapreduce.IntAggrMapper;
-import nl.utwente.db.neogeo.preaggregate.mapreduce.IntAggrReducer;
 import nl.utwente.db.neogeo.preaggregate.mapreduce.IntAggrWritable;
-import nl.utwente.db.neogeo.preaggregate.mapreduce.LongAggrMapper;
-import nl.utwente.db.neogeo.preaggregate.mapreduce.LongAggrReducer;
 import nl.utwente.db.neogeo.preaggregate.mapreduce.LongAggrWritable;
 import nl.utwente.db.neogeo.preaggregate.mapreduce.WholeFileInputFormat;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
@@ -112,22 +110,16 @@ public class RunMR {
         
         job.setInputFormatClass(WholeFileInputFormat.class);
         
+        job.setMapperClass(AggrMapper.class);
+        job.setReducerClass(AggrReducer.class);
+        
         if (config.getAggregateType().equalsIgnoreCase("int") || config.getAggregateType().equalsIgnoreCase("integer")) {
-            job.setMapperClass(IntAggrMapper.class);
-            job.setReducerClass(IntAggrReducer.class);
-
             job.setMapOutputValueClass(IntAggrWritable.class);
             job.setOutputValueClass(IntAggrWritable.class);
         } else if (config.getAggregateType().equalsIgnoreCase("bigint")) {
-            job.setMapperClass(LongAggrMapper.class);
-            job.setReducerClass(LongAggrReducer.class);
-
             job.setMapOutputValueClass(LongAggrWritable.class);
             job.setOutputValueClass(LongAggrWritable.class);
         } else if (config.getAggregateType().equalsIgnoreCase("double") || config.getAggregateType().equalsIgnoreCase("double precision")) {
-            job.setMapperClass(DoubleAggrMapper.class);
-            job.setReducerClass(DoubleAggrReducer.class);
-
             job.setMapOutputValueClass(DoubleAggrWritable.class);
             job.setOutputValueClass(DoubleAggrWritable.class);
         } else {
@@ -138,8 +130,15 @@ public class RunMR {
         job.setCombinerClass(job.getReducerClass());
         
         // Set map output and reducer output key Class type (both the ckey -> bigint/long)
-        job.setMapOutputKeyClass(LongWritable.class);
-        job.setOutputKeyClass(LongWritable.class);
+        if (config.getKeyKind() == AggrKeyDescriptor.KD_BYTE_STRING) {
+            job.setMapOutputKeyClass(Text.class);
+            job.setOutputKeyClass(Text.class);
+        } else if (config.getKeyKind() == AggrKeyDescriptor.KD_CROSSPRODUCT_LONG) {
+            job.setMapOutputKeyClass(LongWritable.class);
+            job.setOutputKeyClass(LongWritable.class);
+        } else {
+            throw new UnsupportedOperationException("KeyKind '" + config.getKeyKind() + "' not yet supported");
+        }
         
         // add helper files to DistributedCache
         job.addCacheFile(configPath.toUri());

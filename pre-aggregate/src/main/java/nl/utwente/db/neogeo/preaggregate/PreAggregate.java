@@ -330,7 +330,7 @@ public class PreAggregate {
                 kd.createKeyFunction (c, genKey, sql_build); 
 
                 // create the table that will hold the final index
-		String table_pa = create_index_table(sql_build, override_name);
+		String table_pa = create_index_table(sql_build, override_name, kd);
 
 		String lfp_table = schema + "." + indexPrefix + "lfp";
 		if ( gen_optimized ) {
@@ -496,7 +496,7 @@ public class PreAggregate {
 		_init(c, schema, table, label);
 	}
         
-        protected String create_index_table (SqlScriptBuilder sql_build, String override_name) throws SQLException {
+        protected String create_index_table (SqlScriptBuilder sql_build, String override_name, AggrKeyDescriptor kd) throws SQLException {
             /*
             * Generate the table which contains the final index
             */

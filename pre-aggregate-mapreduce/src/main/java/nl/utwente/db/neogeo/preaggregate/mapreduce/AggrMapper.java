@@ -14,6 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
 import nl.utwente.db.neogeo.preaggregate.AggrKey;
 import nl.utwente.db.neogeo.preaggregate.AggrKeyDescriptor;
 import nl.utwente.db.neogeo.preaggregate.AggregateAxis;
@@ -35,7 +36,7 @@ import org.apache.hadoop.mapreduce.Mapper;
  *
  * @author Dennis Pallett <dennis@pallett.nl>
  */
-public abstract class AggrMapper<VALUEOUT extends Object> extends Mapper<NullWritable, Text, LongWritable, VALUEOUT> {
+public class AggrMapper<KEYOUT extends Object, VALUEOUT extends Object> extends Mapper<NullWritable, Text, KEYOUT, VALUEOUT> {
     public static final int BATCH_SIZE = 200;
     
     static final Logger logger = Logger.getLogger(AggrMapper.class);
@@ -98,14 +99,29 @@ public abstract class AggrMapper<VALUEOUT extends Object> extends Mapper<NullWri
         } catch (PreAggregateConfig.InvalidConfigException ex) {
             throw new IOException("Unable to load PreAggregate config file", ex);
         }
+        
+        if (aggConf.getAggregateType().equalsIgnoreCase("int") || aggConf.getAggregateType().equalsIgnoreCase("integer")) {
+            aggregateType = AGGR_TYPE.TYPE_INT;
+        } else if (aggConf.getAggregateType().equalsIgnoreCase("bigint")) {
+            aggregateType = AGGR_TYPE.TYPE_BIGINT;
+        } else if (aggConf.getAggregateType().equalsIgnoreCase("double") || aggConf.getAggregateType().equalsIgnoreCase("double precision")) {
+            aggregateType = AGGR_TYPE.TYPE_DOUBLE;
+        } else {
+            throw new UnsupportedOperationException("AggregateType of '" + aggConf.getAggregateType() + "' not yet supported!");
+        }
     }
     
     protected void initializeAxis (Context context) throws IOException {         
         // initialize axis array
         this.axis = aggConf.getAxis();
-
-        // initialize KeyDescriptor
-        kd = new AggrKeyDescriptor(DEFAULT_KD, axis);
+        
+        try {
+            // initialize KeyDescriptor
+            kd = new AggrKeyDescriptor(aggConf.getKeyKind(), axis);
+        } catch (AggrKeyDescriptor.TooManyBitsException ex) {
+            throw new IOException("Unable to initialize KeyDescriptor", ex);
+        }
+        
         aggrKey = new AggrKey(kd);
     }
     
@@ -307,20 +323,31 @@ public abstract class AggrMapper<VALUEOUT extends Object> extends Mapper<NullWri
         
         q.close();
     }
-    
-    protected abstract void emit (Context context, LongWritable ckey, ResultSet res) throws IOException, SQLException, InterruptedException;
+        
+    //protected abstract void emit (Context context, KEYOUT ckey, ResultSet res) throws IOException, SQLException, InterruptedException;
     
     protected void outputData(Context context) throws SQLException, IOException, InterruptedException {
         Statement q = conn.createStatement();
         
         ResultSet res = q.executeQuery("SELECT * from data");        
         while(res.next()) {            
-            long ckey = computeAggrKey(res);            
+            KEYOUT key = (KEYOUT)computeAggrKey(res);         
                         
-            if (context != null) {
-                emit(context, new LongWritable(ckey), res);
+            if (context != null) {                
+                VALUEOUT value = null;
+                if (this.aggregateType == AGGR_TYPE.TYPE_INT) {
+                    value = (VALUEOUT)(new IntAggrWritable(res.getInt("countaggr"), res.getInt("sumaggr"), res.getInt("minaggr"), res.getInt("maxaggr")));
+                } else if (this.aggregateType == AGGR_TYPE.TYPE_BIGINT) {
+                    value = (VALUEOUT)(new LongAggrWritable(res.getLong("countaggr"), res.getLong("sumaggr"), res.getLong("minaggr"), res.getLong("maxaggr")));
+                } else if (this.aggregateType == AGGR_TYPE.TYPE_DOUBLE) {
+                    value = (VALUEOUT)(new DoubleAggrWritable(res.getLong("countaggr"), res.getDouble("sumaggr"), res.getDouble("minaggr"), res.getDouble("maxaggr")));
+                }
+                
+                if (key != null && value != null) {
+                    context.write(key, value);
+                }
             } else {            
-                logger.debug(ckey + "\t" + res.getInt("countaggr") + "\t" + res.getInt("sumaggr"));
+                logger.debug(key + "\t" + res.getInt("countaggr") + "\t" + res.getInt("sumaggr"));
             }
         }
         
@@ -328,14 +355,22 @@ public abstract class AggrMapper<VALUEOUT extends Object> extends Mapper<NullWri
         q.close();
     }
     
-    protected long computeAggrKey (ResultSet res) throws SQLException {
+    protected Object computeAggrKey (ResultSet rs) throws SQLException {
         for(short i=0; i < axis.length; i++) { 
-            aggrKey.setIndex(i, res.getShort("i" + i));
-            aggrKey.setLevel(i, res.getShort("l" + i));
+            aggrKey.setIndex(i, rs.getShort("i" + i));
+            aggrKey.setLevel(i, rs.getShort("l" + i));
         }
         
-        // for now we assume the CrossProductLongKey
-        return aggrKey.crossproductLongKey();
+        Object genKey = aggrKey.toKey();
+        Object ret = null;
+        
+        if (genKey instanceof Long) {
+            ret = new LongWritable(((Long)genKey).longValue());
+        } else if (genKey instanceof String) {
+            ret = new Text(genKey.toString());
+        }
+        
+        return ret;
     }
     
     protected void insertCsv (Text value) throws SQLException, IOException {

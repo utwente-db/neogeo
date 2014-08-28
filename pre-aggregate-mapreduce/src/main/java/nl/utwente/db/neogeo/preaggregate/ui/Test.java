@@ -28,7 +28,6 @@ import nl.utwente.db.neogeo.preaggregate.PreAggregate;
 import nl.utwente.db.neogeo.preaggregate.SqlUtils;
 import nl.utwente.db.neogeo.preaggregate.SqlUtils.DbType;
 import nl.utwente.db.neogeo.preaggregate.mapreduce.AggrMapper;
-import nl.utwente.db.neogeo.preaggregate.mapreduce.IntAggrMapper;
 import org.apache.commons.io.FileUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.BytesWritable;
@@ -255,49 +254,7 @@ public class Test {
 
   
 
-    public static void runTest_mapper() throws Exception {
-        double DFLT_BASEBOXSIZE = 0.001;
-        int DFLT_N = 4;
-
-        AggrMapper mapper = new IntAggrMapper();
-
-        Configuration conf = new Configuration();
-
-        conf.set("aggregate_type", "int");
-
-        conf.setInt("aggregate_mask", PreAggregate.AGGR_ALL);
-
-        conf.setInt("axis_count", 2);
-
-        conf.set("axis_0_class", "MetricAxis");
-        conf.set("axis_0_column", "coordinates_x");
-        conf.set("axis_0_type", "double");
-        conf.set("axis_0_low", "-0.12");
-        conf.set("axis_0_high", "0.449");
-        conf.set("axis_0_baseblocksize", String.valueOf(DFLT_BASEBOXSIZE));
-        conf.setInt("axis_0_n", DFLT_N);
-
-        conf.set("axis_1_class", "MetricAxis");
-        conf.set("axis_1_column", "coordinates_y");
-        conf.set("axis_1_type", "double");
-        conf.set("axis_1_low", "51.327");
-        conf.set("axis_1_high", "51.658");
-        conf.set("axis_1_baseblocksize", String.valueOf(DFLT_BASEBOXSIZE));
-        conf.setInt("axis_1_n", DFLT_N);
-
-        mapper.setConfiguration(conf);
-
-        mapper.setup(null);
-
-        BytesWritable value = new BytesWritable();
-        byte[] contents = FileUtils.readFileToByteArray(new File("D:\\Downloads\\chunks\\chunk_0.csv"));
-
-        value.set(contents, 0, contents.length);
-
-        //mapper.map(null, value, null);
-
-        mapper.cleanup(null);
-    }
+    
     
     public static void runTest_prepare(Connection c, String schema) throws Exception {
         double DFLT_BASEBOXSIZE = 0.001;

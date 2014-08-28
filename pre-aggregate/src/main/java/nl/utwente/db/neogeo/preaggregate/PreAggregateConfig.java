@@ -42,6 +42,8 @@ public class PreAggregateConfig {
     
     protected List<AggregateAxis> axisList;
     
+    protected char keyKind = PreAggregate.DEFAULT_KD;
+    
     public PreAggregateConfig(String table, String column, String label, String aggregateType, int aggregateMask, AggregateAxis[] axis) {
         this.table = table;
         this.column = column;
@@ -99,6 +101,10 @@ public class PreAggregateConfig {
             rootElement.appendChild(aggregateMaskEl);
         }
         
+        Element keyKindEl = doc.createElement("keykind");
+        keyKindEl.setTextContent(String.valueOf(this.keyKind));
+        rootElement.appendChild(keyKindEl);
+        
         if (axisList.size() > 0) {
             Element axisListEl = doc.createElement("axislist");
             rootElement.appendChild(axisListEl);
@@ -143,6 +149,14 @@ public class PreAggregateConfig {
         return this.axisList;
     }
     
+    public char getKeyKind () {
+        return this.keyKind;
+    }
+    
+    public void setKeyKind (char keyKind) {
+        this.keyKind = keyKind;
+    }
+    
     public AggregateAxis[] getAxis () {
         return axisList.toArray(new AggregateAxis[axisList.size()]);
     }
@@ -184,6 +198,8 @@ public class PreAggregateConfig {
             column = node.getTextContent();
         } else if (nodeName.equals("label")) {
             label = node.getTextContent();
+        } else if (nodeName.equals("keykind")) {
+            handleKeyKind(node);
         } else if (nodeName.equals("mask")) {
             handleMask(node);            
         } else if (nodeName.equals("axislist")) {
@@ -285,6 +301,17 @@ public class PreAggregateConfig {
         this.axisList.add(axis);
     }
         
+    protected void handleKeyKind (Node node) throws InvalidConfigException {
+        String val = node.getTextContent();
+        
+        if (val.length() > 1) {
+            throw new InvalidConfigException("Invalid KeyKind specified in config file");
+        }
+        
+        // get KeyKind
+        keyKind = val.charAt(0);
+    }
+    
     protected void handleMask(Node node) throws InvalidConfigException {
         String mask = node.getTextContent();
             

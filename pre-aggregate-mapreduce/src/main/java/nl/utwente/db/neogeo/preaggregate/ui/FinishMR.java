@@ -46,6 +46,8 @@ public abstract class FinishMR extends PreAggregate {
     protected File tempPath;
     
     protected PreAggregateConfig aggConf;
+    
+    protected AggrKeyDescriptor kd;
 
     public FinishMR (Configuration conf, DbInfo dbInfo, Connection c) {
         this.conf = conf;
@@ -80,6 +82,12 @@ public abstract class FinishMR extends PreAggregate {
             throw new FinishException("Output directory does not exist in job path: has the MapReduce job been run yet?");
         }
         
+        try {
+            kd = new AggrKeyDescriptor(aggConf.getKeyKind(), axis);
+        } catch (AggrKeyDescriptor.TooManyBitsException ex) {
+            throw new FinishException("Unable to initialize KeyDescriptor", ex);
+        }
+        
         // create PreAggregate index table
         String indexTable = createIndexTable();
         
@@ -98,7 +106,7 @@ public abstract class FinishMR extends PreAggregate {
         
         // add the index to the repository
         logger.info("Adding index to PreAggregate repository...");
-	AggrKeyDescriptor kd = new AggrKeyDescriptor(DEFAULT_KD, axis);
+        
 	update_repository(c, schema, table, label, aggregateColumn, aggregateType, kd, axis, aggregateMask);
         logger.info("Index added to repository");
         
@@ -146,7 +154,7 @@ public abstract class FinishMR extends PreAggregate {
         logger.info("Creating PreAggregate index table...");
         
         SqlScriptBuilder sqlBuild = new SqlScriptBuilder(c);        
-        String table = this.create_index_table(sqlBuild, null /* override_name not yet supported */);
+        String table = this.create_index_table(sqlBuild, null /* override_name not yet supported */, kd);
         sqlBuild.executeBatch();
         
         logger.info("Index table created");
