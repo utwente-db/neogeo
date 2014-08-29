@@ -31,8 +31,8 @@ public class PreAggregate {
 	 */
 	public static final boolean showAxisAndKey		= true;
 	public static final boolean	doResultCorrection	= true;
-	//public static final boolean	serversideStairwalk	= true;
-        public static final boolean	serversideStairwalk	= false;
+	public static final boolean	serversideStairwalk	= true;
+        //public static final boolean	serversideStairwalk	= false;
         
         public static final boolean executeQueriesDirectly      = true;
 	public static final char	DEFAULT_KD			= AggrKeyDescriptor.KD_CROSSPRODUCT_LONG;
@@ -1394,7 +1394,7 @@ public class PreAggregate {
 		return qb.toString();
 	}
 
-	private String cellCondition(int ranges[][]) {
+	private String cellCondition(int ranges[][]) throws SQLException {
 		if ( serversideStairwalk ) {
 			// use Postgres internal pacells2d function
 			String pa_grid_str;
@@ -1409,7 +1409,7 @@ public class PreAggregate {
 			qb.append(" WHERE ");
 			for (int i = 0; i < resKeys.size(); i++) {
 				qb.append(((i > 0) ? " OR " : "") + "ckey="
-						+ resKeys.elementAt(i).toKey());
+						+ SqlUtils.quoteValue(c, resKeys.elementAt(i).toKey()));
 			}
 			return qb.toString();
 		}
@@ -1740,13 +1740,25 @@ public class PreAggregate {
 		if ( (swgc.length != axis.length) || (swgc[0].length != 3) )
 			throw new RuntimeException("Dimensions for grid_paQuery wrong");
 		StringBuffer sb = new StringBuffer();
-		sb.append("#G|"+kd.kind()+"|");
-		sb.append(kd.levelBits+"|");
+                
+                // start grid query
+                sb.append("#G|");
+                
+                // add type of AggrKey
+                sb.append(kd.kind()).append("|");
+                
+                // add size of level
+                sb.append(kd.levelBits).append("|");
+                
+                // number of dimensions		
 		sb.append(kd.dimensions()+"|");
+                
+                // add info of each dimension
 		for(int i=0; i<swgc.length; i++) {
-			sb.append(axis[i].N()+",");
-			sb.append(kd.dimBits[i]+",");
-			sb.append(swgc[i][0]+","+swgc[i][1]+","+swgc[i][2]+"|");
+                    sb.append(axis[i].N()).append(",");                 
+                    sb.append(kd.dimBits[i]).append(",");
+                                        
+                    sb.append(swgc[i][0]+","+swgc[i][1]+","+swgc[i][2]+"|");
 		}
 		sb.append(schema+"."+table+"|"+schema+"."+table+"_btree"+"|");
 		if ( false ) System.out.println("XX="+sb);

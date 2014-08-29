@@ -129,7 +129,7 @@ public class RunMR {
         // re-use Reducer as Combiner
         job.setCombinerClass(job.getReducerClass());
         
-        // Set map output and reducer output key Class type (both the ckey -> bigint/long)
+        // Set map output and reducer output key Class type
         if (config.getKeyKind() == AggrKeyDescriptor.KD_BYTE_STRING) {
             job.setMapOutputKeyClass(Text.class);
             job.setOutputKeyClass(Text.class);

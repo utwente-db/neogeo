@@ -113,6 +113,8 @@ public class AggrKeyDescriptor {
                 if (axis[i].maxLevels() > maxLevel) maxLevel = axis[i].maxLevels();
             }
             
+            levelBits = MetricAxis.log2(maxLevel);
+            
             if (maxLevel <= Byte.MAX_VALUE) {
                 levelBytes = 1;
             } else if (maxLevel <= Short.MAX_VALUE) {
