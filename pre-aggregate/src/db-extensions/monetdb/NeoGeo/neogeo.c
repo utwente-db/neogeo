@@ -10,7 +10,7 @@
 #define MYALLOC(X)  malloc(X)
 #define MYFREE(X)   free(X)
 
-#include "pa_grid.template"
+#include "pa_grid.template.c"
 
 char *
 compute_pa_grid(Client cntxt, MalBlkPtr mb, MalStkPtr stk, InstrPtr pci)
@@ -166,7 +166,13 @@ compute_pa_grid_enhanced(Client cntxt, MalBlkPtr mb, MalStkPtr stk, InstrPtr pci
 
 	// insert PA keys into BATs
 	while(next_pa_grid(grid)) {
-		BUN b = BUNfnd(BATmirror(ckey_bat), &grid->cellKey);
+		BUN b;
+		if (grid->q.keyFlag == KD_BYTE_STRING) {
+			b = BUNfnd(BATmirror(ckey_bat), (ptr) grid->cellByteKey);
+		} else {
+			b = BUNfnd(BATmirror(ckey_bat), &grid->cellKey);
+		}
+
 		if (b != BUN_NONE) {
 			BUNappend(gkey, &grid->gridKey, FALSE);
 			BUNappend(pakey, &grid->cellKey, FALSE);
@@ -174,7 +180,8 @@ compute_pa_grid_enhanced(Client cntxt, MalBlkPtr mb, MalStkPtr stk, InstrPtr pci
 			for (i = 0; i < aggrCount; i++) {
 				BUNappend(aggr_ret[i], BUNtail(bat_iter[i], b), FALSE);
 			}
-		}	
+		}
+
 	}
 
 	// free the grid
