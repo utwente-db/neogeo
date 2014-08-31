@@ -39,3 +39,18 @@ returns table (
     )
 external name neogeo.pa_grid_cell;
 
+create function byte_to_hex_bigendian (num integer) 
+returns char(2)
+external name neogeo.byte_to_hex_bigendian;
+
+create function short_to_hex_bigendian (num integer) 
+returns char(4)
+external name neogeo.short_to_hex_bigendian;
+
+create function int24_to_hex_bigendian (num integer) 
+returns char(6)
+external name neogeo.int24_to_hex_bigendian;
+
+create function int_to_hex_bigendian (num integer) 
+returns char(8)
+external name neogeo.int_to_hex_bigendian;

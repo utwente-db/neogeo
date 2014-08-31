@@ -52,4 +52,18 @@ pattern pa_grid_cell(query:str)(
 address compute_pa_grid_cell
 comment "Computes a single Pre-Aggregate grid cell";
 
+command byte_to_hex_bigendian(num:int):str
+address byte_to_hex_bigendian
+comment "Converts byte integer to hex value";
 
+command short_to_hex_bigendian(num:int):str
+address short_to_hex_bigendian
+comment "Converts short integer to hex value";
+
+command int24_to_hex_bigendian(num:int):str
+address int24_to_hex_bigendian
+comment "Converts 3-byte integer to hex value";
+
+command int_to_hex_bigendian(num:int):str
+address int_to_hex_bigendian
+comment "Converts integer to hex value";

@@ -169,6 +169,8 @@ public final class AggrKey {
                 short level = getLevel(i);
                 int index = getIndex(i);
                 
+                // TODO: don't depend on bit shifting, simply use division/module
+                
                 if (kd.getLevelBytes() == 1) {
                     arr[idx++] = (byte)level;
                 } else if (kd.getLevelBytes() == 2) {    

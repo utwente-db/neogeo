@@ -100,11 +100,9 @@ public class AggrKeyDescriptor {
                     dimBytes[i] = 3; // in-between
                 } else if (axisBits <= 32) {
                     dimBytes[i] += 4; // int, so 4 bytes
-                } else if (axisBits <= 64) {
-                    dimBytes[i] += 8; // long, so 8 bytes
                 } else {
-                    // what?! needs more than long? not supported
-                    throw new RuntimeException("Axis " + axis[i].columnExpression() + " needs more bits than supported by a long");
+                    // more bits than 32 not supported
+                    throw new RuntimeException("Axis " + axis[i].columnExpression() + " needs more bits (" + axisBits + ") than supported by int32");
                 }
                 
                 totalBytes += dimBytes[i];
@@ -121,11 +119,9 @@ public class AggrKeyDescriptor {
                 levelBytes = 2;
             } else if (maxLevel <= Integer.MAX_VALUE) {
                 levelBytes = 4;
-            } else if (maxLevel <= Long.MAX_VALUE) {
-                levelBytes = 8;
             } else {
-                // what?! level is bigger than long, should be impossible
-                throw new RuntimeException("MaxLevel is bigger than Long.MAX_VALUE");
+                // level is too big
+                throw new RuntimeException("MaxLevel is bigger than Integer.MAX_VALUE");
             }
             
             totalBytes += (levelBytes * axis.length);

@@ -6,11 +6,130 @@
 /* monetdb_config.h must be the first include in each .c file */
 #include "monetdb_config.h"
 #include "neogeo.h"
+#include <limits.h>
 
 #define MYALLOC(X)  malloc(X)
 #define MYFREE(X)   free(X)
 
 #include "pa_grid.template.c"
+
+char *
+byte_to_hex_bigendian(char **ret, const int *num)
+{
+	//assert calling sanity
+	assert(ret != NULL);
+
+	int in = *num;
+
+	if (in > SCHAR_MAX) {
+		throw(ILLARG, "neogeo.byte_to_hex_bigendian", "illegal argument: number cannot be bigger than 127");
+	}
+
+
+	static char byte[1];
+	byte[0] = (char)in;
+
+	char* hex = toHex(byte, 1);
+	*ret = GDKstrdup(hex);
+
+	return MAL_SUCCEED;
+}
+
+char *
+short_to_hex_bigendian(char **ret, const int *num)
+{
+	//assert calling sanity
+	assert(ret != NULL);
+
+	int v_int = *num;
+
+	if (v_int > SHRT_MAX)	{
+		throw(ILLARG, "neogeo.short_to_hex_bigendian", "illegal argument: number cannot be bigger than 32,767");
+	}
+
+	int v_i = 1;
+	int	v_temp;
+	static char bytes[2];
+
+	while(v_i >= 0) {
+		v_temp = v_int % 128;
+		v_int = v_int - v_temp;
+		v_int = v_int / 128;
+
+		bytes[v_i] = (char)v_temp;
+		v_i = v_i - 1;
+	}
+
+	char* hex = toHex(bytes, 2);
+	*ret = GDKstrdup(hex);
+
+	return MAL_SUCCEED;
+}
+
+char *
+int24_to_hex_bigendian(char **ret, const int *num)
+{
+	//assert calling sanity
+	assert(ret != NULL);	
+
+	int v_int = *num;
+
+	if (v_int > 8388607)	{ // 2^23-1 (int24, 3 bytes, so 24 bits and minus 1 for sign)
+		throw(ILLARG, "neogeo.int24_to_hex_bigendian", "illegal argument: number cannot be bigger than 8,388,607");
+	}
+
+	int v_i = 2;
+	int	v_temp;
+
+	static char bytes[3];
+
+	while(v_i >= 0) {
+		v_temp = v_int % 196;
+		v_int = v_int - v_temp;
+		v_int = v_int / 196;
+
+		bytes[v_i] = (char)v_temp;
+		v_i = v_i - 1;
+	}
+
+	char* hex = toHex(bytes, 3);
+	*ret = GDKstrdup(hex);
+
+	return MAL_SUCCEED;
+}
+
+char *
+int_to_hex_bigendian(char **ret, const int *num)
+{
+	//assert calling sanity
+	assert(ret != NULL);	
+
+	int v_int = *num;
+
+	if (v_int > LONG_MAX)	{
+		throw(ILLARG, "neogeo.int_to_hex_bigendian", "illegal argument: number cannot be bigger than 2,147,483,647");
+	}
+
+	int v_i = 3;
+	int	v_temp;
+
+	static char bytes[4];
+
+	while(v_i >= 0) {
+		v_temp = v_int % 256;
+		v_int = v_int - v_temp;
+		v_int = v_int / 256;
+
+		bytes[v_i] = (char)v_temp;
+		v_i = v_i - 1;
+	}
+
+	char* hex = toHex(bytes, 4);
+	*ret = GDKstrdup(hex);
+
+	return MAL_SUCCEED;
+}
+
 
 char *
 compute_pa_grid(Client cntxt, MalBlkPtr mb, MalStkPtr stk, InstrPtr pci)
