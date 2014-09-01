@@ -15,6 +15,59 @@ public final class AggrKey {
             return new String(hexChars);
         }
         
+        public static byte[] shortToBytesBigEndian (short num) {
+            byte[] ret = new byte[2];
+            
+            int i = ret.length - 1;
+            byte temp;
+            
+            while(i > 0) {
+                temp = (byte)(num % 128);
+                num = (short)(num - temp);
+                num = (short)(num / 128);
+                
+                ret[i] = temp;
+                i--;
+            }
+            
+            return ret;
+        }
+        
+        public static byte[] int24ToBytesBigEndian (int num) {
+            byte[] ret = new byte[3];
+            
+            int i = ret.length - 1;
+            byte temp;
+            
+            while(i > 0) {
+                temp = (byte)(num % 196);
+                num = (int)(num - temp);
+                num = (int)(num / 196);
+                
+                ret[i] = temp;
+                i--;
+            }
+            
+            return ret;
+        }
+        
+        public static byte[] intToBytesBigEndian (int num) {
+            byte[] ret = new byte[4];
+            
+            int i = ret.length - 1;
+            byte temp;
+            
+            while(i > 0) {
+                temp = (byte)(num % 256);
+                num = (int)(num - temp);
+                num = (int)(num / 256);
+                
+                ret[i] = temp;
+                i--;
+            }
+            
+            return ret;
+        }
         
     
         public static byte[] hexStringToByteArray(String s) {
@@ -158,9 +211,6 @@ public final class AggrKey {
 	}
         
         
-        
-        
-        
         public String byteKey () {            
             byte[] arr = new byte[kd.getTotalBytes()];
                         
@@ -169,28 +219,35 @@ public final class AggrKey {
                 short level = getLevel(i);
                 int index = getIndex(i);
                 
-                // TODO: don't depend on bit shifting, simply use division/module
-                
                 if (kd.getLevelBytes() == 1) {
                     arr[idx++] = (byte)level;
-                } else if (kd.getLevelBytes() == 2) {    
-                    arr[idx++] = (byte)(level >> 8);
-                    arr[idx++] = (byte)(level);
+                } else if (kd.getLevelBytes() == 2) { 
+                    byte[] bytes = shortToBytesBigEndian(level);
+                    arr[idx++] = bytes[0];
+                    arr[idx++] = bytes[1];
                 }
                 
-                if (kd.dimBytes[i] == 4) {
-                    arr[idx++] = (byte)(index >> 24);
+                byte[] bytes = null;
+                switch(kd.dimBytes[i]) {
+                    case 4:
+                       bytes = intToBytesBigEndian(index);
+                       break;
+                    case 3:
+                        bytes = int24ToBytesBigEndian(index);
+                        break;
+                    case 2:
+                        bytes = shortToBytesBigEndian((short)index);
+                        break;
+                    case 1:
+                        bytes = new byte[]{(byte)index};
+                        break;
                 }
                 
-                if (kd.dimBytes[i] >= 3) {
-                    arr[idx++] = (byte)(index >> 16);
+                if (bytes != null) {
+                    for(int j=0; j < bytes.length; j++) {
+                        arr[idx++] = bytes[j];
+                    }
                 }
-                
-                if (kd.dimBytes[i] >= 2) {
-                    arr[idx++] = (byte)(index >> 8);
-                }
-                
-                arr[idx++] = (byte)(index);
             }
             
             return bytesToHex(arr);

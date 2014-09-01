@@ -56,7 +56,7 @@ public class SqlUtils {
                     sql = "SELECT COUNT(*) FROM sys.functions WHERE name = '" + function.toLowerCase() + "' LIMIT 1";                            
                     break;
                 case POSTGRES:
-                    sql = "";
+                    sql = "SELECT COUNT(*) FROM pg_proc WHERE LOWER(proname) = '" + function.toLowerCase() + "';";
                     break;
                 default:
                     throw new UnsupportedOperationException("DbType " + dbType(c) + " not yet supported");
@@ -454,6 +454,7 @@ public class SqlUtils {
 	public static String gen_DROP_FUNCTION(Connection c, String fun, String par_type) throws SQLException {
 		switch ( dbType(c) ) {
                     case MONETDB:
+                        return "DROP FUNCTION " + fun + ";\n";
                     case POSTGRES:
 			return  "DROP FUNCTION "+fun+"("+par_type+");\n";
                     case MYSQL:

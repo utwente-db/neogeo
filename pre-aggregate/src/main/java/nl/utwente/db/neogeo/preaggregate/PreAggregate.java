@@ -35,8 +35,8 @@ public class PreAggregate {
         //public static final boolean	serversideStairwalk	= false;
         
         public static final boolean executeQueriesDirectly      = true;
-	public static final char	DEFAULT_KD			= AggrKeyDescriptor.KD_CROSSPRODUCT_LONG;
-        //public static final char	DEFAULT_KD			= AggrKeyDescriptor.KD_BYTE_STRING;
+	//public static final char	DEFAULT_KD			= AggrKeyDescriptor.KD_CROSSPRODUCT_LONG;
+        public static final char	DEFAULT_KD			= AggrKeyDescriptor.KD_BYTE_STRING;
 
 	private	static final int	AGGR_BASE			= 0x01;
 	public static final	int		AGGR_COUNT			= AGGR_BASE;
@@ -157,6 +157,9 @@ public class PreAggregate {
                 res.close();
                 stmt.close();
                 
+                
+                // Example:
+                // INSERT INTO geometry_columns VALUES ('sys', 'london_hav_neogeo', 'coordinates', 2, 4326, 'POINT');
                 throw new SQLException("Point column `" + point_column + "` for table `" + schema + "." + table + "` is not "
                         + "registered in geometry_columns table! Manually insert it into the geometry_columns table first.");
             }
@@ -298,6 +301,15 @@ public class PreAggregate {
                         kd = new AggrKeyDescriptor(AggrKeyDescriptor.KD_BYTE_STRING, axis);
                     } catch (AggrKeyDescriptor.TooManyBitsException ex1) {
                         throw new RuntimeException("Unable to switch to ByteString key, still too many bits!");
+                    }
+                }
+                
+                // check if database has necessary supporting functions to generate aggregate keys
+                if (kd.checkForSupportFunctions(c) == false ) {
+                    if (SqlUtils.dbType(c) == DbType.MONETDB && kd.kind() == AggrKeyDescriptor.KD_BYTE_STRING) {
+                        throw new RuntimeException("MonetDB needs C-based NeoGeo extension to be able to generate ByteString AggregateKeys. Make sure it is installed first!");
+                    } else {
+                        throw new RuntimeException("Database is missing necessary support functions to be able to generate AggregateKeys");
                     }
                 }
                 
