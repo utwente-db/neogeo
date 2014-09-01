@@ -11,7 +11,7 @@ PG_MODULE_MAGIC;
 #define MYALLOC(X)  epalloc(X)
 #define MYFREE(X)   pfree(X)
 
-#include "pa_grid.template"
+#include "pa_grid.template.c"
 
 PG_FUNCTION_INFO_V1(compute_pa_grid);
 
@@ -90,6 +90,7 @@ compute_pa_grid(PG_FUNCTION_ARGS)
 
         snprintf(grid->values[0], 24, "%ld", grid->gridKey);
         snprintf(grid->values[1], 24, "%ld", grid->cellKey);
+		snprintf(grid->values[2], (grid->q.totalBytes+1) * 2, "%s", grid->cellByteKey);
 
         /* build a tuple */
         tuple = BuildTupleFromCStrings(attinmeta, grid->values);
