@@ -32,7 +32,7 @@ static void * epalloc(int size) {
 #define VECTORNAME VectorLong
 #define VECTORTYPE long
 #define VFUN(X)       X ## Long
-#include "vector.template"
+#include "vector.template.c"
 
 #undef VECTORNAME
 #define VECTORNAME VectorVector
@@ -40,7 +40,7 @@ static void * epalloc(int size) {
 #define VECTORTYPE VectorLong*
 #undef VFUN
 #define VFUN(X)       X ## Vector
-#include "vector.template"
+#include "vector.template.c"
 
 #undef VECTORNAME
 #define VECTORNAME VectorCharArray
@@ -48,7 +48,7 @@ static void * epalloc(int size) {
 #define VECTORTYPE char*
 #undef VFUN
 #define VFUN(X)       X ## CharArray
-#include "vector.template"
+#include "vector.template.c"
 
 /*
  * Some utility fun
