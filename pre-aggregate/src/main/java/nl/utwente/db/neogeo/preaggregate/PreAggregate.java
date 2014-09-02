@@ -1100,7 +1100,12 @@ public class PreAggregate {
                         } else {
                             // select from _pa table and pa_grid function and join on ckey/pakey
                             sql.append(schema).append(".").append(table).append(PA_EXTENSION).append(", ").append(gcells);
-                            sql.append(" WHERE ckey = pakey");
+                            
+                            if (kd.kind() == AggrKeyDescriptor.KD_BYTE_STRING) {
+                                sql.append(" WHERE ckey = pa_bytekey");
+                            } else {
+                                sql.append(" WHERE ckey = pakey");
+                            }
                         }
                         sql.append(" GROUP BY gkey");
                         sql.append(" ORDER BY ").append(order);
@@ -1556,8 +1561,15 @@ public class PreAggregate {
                             qb.append(")");
                         } else {
                             qb.append(", ");
-                            qb.append("pa_grid_cell('").append(range_paGridQuery(ranges)).append("') AS pakey ");
-                            qb.append(" WHERE ckey=pakey");
+                            
+                            if (kd.kind() == AggrKeyDescriptor.KD_BYTE_STRING) {
+                                // byte version doesn't have a cell function but also uses grid function
+                                qb.append("pa_grid('").append(range_paGridQuery(ranges)).append("')");
+                                qb.append(" WHERE ckey=pa_bytekey");
+                            } else {                            
+                                qb.append("pa_grid_cell('").append(range_paGridQuery(ranges)).append("') AS pakey ");
+                                qb.append(" WHERE ckey=pakey");
+                            }
                         }
 		} else {
 			Vector<AggrKey> resKeys;

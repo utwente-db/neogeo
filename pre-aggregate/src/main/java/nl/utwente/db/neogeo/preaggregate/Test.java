@@ -116,7 +116,7 @@ public class Test {
                 
                 //Logger.getRootLogger().setLevel(Level.INFO);
 		                
-                runTest(connection, t.getSchema());
+                runTest2(connection, t.getSchema());
                 
                 
                 //runTest_ckey();
@@ -498,8 +498,8 @@ public class Test {
 			// new TweetConverter("/Users/flokstra/uk_raw.sql",c,"public","uk");
 			//
 
-			GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", null, "myAggregate", "coordinates",0 /* axis 2 split*/,200000,null);
-                        //GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", "myAggregate"); 
+			//GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", null, "myAggregate", "coordinates",0 /* axis 2 split*/,200000,null);
+                        GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", "myAggregate"); 
                     
                         // axis to split: 0 (= x-axis)
                         // chunkSize: 2000 (very small, but needed to experiment with chunking!)
@@ -517,7 +517,7 @@ public class Test {
 			// GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "london_hav_neogeo", "myAggregate");
 			//
 			 //pa.boxQuery("count",0.18471,51.60626,0.23073,51.55534); // in the middle of havering map *correction anomaly
-			// pa.boxQuery("count",-0.058,51.59,0.095,51.483); // left of havering, few tweets
+			pa.boxQuery("count",-0.058,51.59,0.095,51.483); // left of havering, few tweets
                         //pa.boxQuery("count",-0.058,51.58961,0.095,51.48287); // left of havering, few tweets
 			
 			// pa.boxQuery("count",-0.38326,51.62780,0.14554,51.39572); // a big london query
