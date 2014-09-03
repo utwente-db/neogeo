@@ -610,7 +610,7 @@ static int pacells_n(pa_grid* grid, int current_D[]) {
 	counter++;
   }
 
-  fprintf(stdout, "Found %d keys\n", counter);
+  //fprintf(stdout, "Found %d keys\n", counter);
 
   if ( 0 ) { // takes 20ms for 95.000 keys
     // fprintf(stdout,"#! doing a quicksort!");

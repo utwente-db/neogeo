@@ -35,8 +35,7 @@ public class PreAggregate {
         //public static final boolean	serversideStairwalk	= false;
         
         public static final boolean executeQueriesDirectly      = true;
-	//public static final char	DEFAULT_KD			= AggrKeyDescriptor.KD_CROSSPRODUCT_LONG;
-        public static final char	DEFAULT_KD			= AggrKeyDescriptor.KD_BYTE_STRING;
+	public static final char	DEFAULT_KD			= AggrKeyDescriptor.KD_CROSSPRODUCT_LONG;
 
 	private	static final int	AGGR_BASE			= 0x01;
 	public static final	int		AGGR_COUNT			= AGGR_BASE;
@@ -398,12 +397,22 @@ public class PreAggregate {
                 // create the chunks table
                 // this is a temporary table which holds all the data of the chunks
                 // and later get GROUP'ed into the final PA table
-                sql_build.add("CREATE TABLE " + chunks_table + " (ckey " + kd.keySqlType() + ", " +
-                            ((aggregateMask&AGGR_COUNT)!=0 ? "\tcountAggr bigint,\n" : "") + 
-                            ((aggregateMask&AGGR_SUM) !=0 ? "\tsumAggr "  +aggregateType+",\n" : "") +
-                            ((aggregateMask&AGGR_MIN)!=0 ? "\tminAggr "+aggregateType+",\n" : "") +
-                            ((aggregateMask&AGGR_MAX)!=0 ? "\tmaxAggr "+aggregateType+"\n" : "") +
-                            ");\n");
+                StringBuilder createSql = new StringBuilder("CREATE TABLE ");
+                createSql.append(chunks_table).append(" (\n");
+                createSql.append("ckey ").append(kd.keySqlType()).append(",\n");
+                if ((aggregateMask&AGGR_COUNT) != 0) createSql.append("\t").append("countAggr bigint,\n");
+                if ((aggregateMask&AGGR_SUM) != 0) createSql.append("\t").append("sumAggr ").append(aggregateType).append(",\n");
+                if ((aggregateMask&AGGR_MIN) != 0) createSql.append("\t").append("minAggr ").append(aggregateType).append(",\n");
+                if ((aggregateMask&AGGR_MAX) != 0) createSql.append("\t").append("maxAggr ").append(aggregateType).append("\n");
+                
+                // ensure that column list does not end with a comma (,)
+                if (createSql.charAt(createSql.length()-2) == ',') {
+                    createSql.deleteCharAt(createSql.length()-2);
+                }
+                
+                createSql.append(");\n");
+                
+                sql_build.add(createSql.toString());
                 
 		for (i = 0; i < nChunks; i++) {
 			/*
@@ -456,12 +465,25 @@ public class PreAggregate {
                 // Group chunks by ckey and move into final PA table
                 // MonetDB also requires that the PA table is sorted on the primary key (ckey)
                 // to achieve high-performance (see: https://www.monetdb.org/pipermail/users-list/2014-July/007400.html)
-                sql_build.add("INSERT INTO " + table_pa + " " +
-                        " SELECT ckey, SUM(countaggr) AS countaggr, SUM(sumaggr) AS sumaggr, MIN(minaggr) AS minaggr, MAX(maxaggr) AS maxaggr " +
-                        " FROM " + chunks_table +
-                        " GROUP BY ckey" +
-                        " ORDER BY ckey ASC;\n"
-                );
+                StringBuilder insertSql = new StringBuilder("INSERT INTO ");
+                insertSql.append(table_pa).append(" ");
+                insertSql.append("SELECT ckey, ");
+                
+                if ((aggregateMask & AGGR_COUNT) !=0) insertSql.append("SUM(countaggr) AS countaggr, ");
+                if ((aggregateMask & AGGR_SUM) !=0) insertSql.append("SUM(sumaggr) AS sumaggr, ");
+                if ((aggregateMask & AGGR_MIN) !=0) insertSql.append("MIN(minaggr) AS minaggr, ");
+                if ((aggregateMask & AGGR_MAX) !=0) insertSql.append("MAX(maxaggr) AS maxaggr");
+
+                // ensure that column list does not end with a comma (,)
+                if (insertSql.charAt(insertSql.length()-2) == ',') {
+                    insertSql.deleteCharAt(insertSql.length()-2);
+                }
+                
+                insertSql.append(" FROM ").append(chunks_table);
+                insertSql.append(" GROUP BY ckey \n");
+                insertSql.append(" ORDER BY ckey ASC;\n");
+                
+                sql_build.add(insertSql.toString());
                 sql_build.newLine();
 
                 sql_build.add("DROP TABLE " + chunks_table + ";\n");
@@ -531,15 +553,23 @@ public class PreAggregate {
                sql_build.add("DROP TABLE IF EXISTS " + table_pa + ";\n");
            }
 
-           sql_build.add(
-                           "CREATE TABLE " + table_pa + " (\n" +
-                           "\tckey " + kd.keySqlType() + " NOT NULL PRIMARY KEY,\n" + 
-                           ((aggregateMask&AGGR_COUNT)!=0 ? "\tcountAggr bigint,\n" : "") + 
-                           ((aggregateMask&AGGR_SUM) !=0 ? "\tsumAggr "  +aggregateType+",\n" : "") +
-                           ((aggregateMask&AGGR_MIN)!=0 ? "\tminAggr "+aggregateType+",\n" : "") +
-                           ((aggregateMask&AGGR_MAX)!=0 ? "\tmaxAggr "+aggregateType+"\n" : "") +
-                           ");\n"
-           );
+           StringBuilder createSql = new StringBuilder("CREATE TABLE ");
+           createSql.append(table_pa).append(" (\n");
+           createSql.append("\t").append("ckey ").append(kd.keySqlType()).append(" NOT NULL PRIMARY KEY, \n");
+           
+           if ((aggregateMask & AGGR_COUNT) !=0) createSql.append("\t").append("countAggr bigint,\n");
+           if ((aggregateMask & AGGR_SUM) !=0) createSql.append("\t").append("sumAggr ").append(aggregateType).append(",\n");
+           if ((aggregateMask & AGGR_MIN) !=0) createSql.append("\t").append("minAggr ").append(aggregateType).append(",\n");
+           if ((aggregateMask & AGGR_MAX) !=0) createSql.append("\t").append("maxAggr ").append(aggregateType).append("\n");
+           
+           // ensure that column list does not end with a comma (,)
+           if (createSql.charAt(createSql.length()-2) == ',') {
+               createSql.deleteCharAt(createSql.length()-2);
+           }
+           
+           createSql.append(");\n");
+           
+           sql_build.add(createSql.toString());
 
            if (SqlUtils.dbType(c) == DbType.MONETDB) {
                sql_build.add("CREATE INDEX " + table_pa_idx + " ON " + table_pa + " (ckey);\n");
