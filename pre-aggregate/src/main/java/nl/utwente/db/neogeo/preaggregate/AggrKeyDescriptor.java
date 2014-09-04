@@ -1,12 +1,17 @@
 package nl.utwente.db.neogeo.preaggregate;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import nl.utwente.db.neogeo.preaggregate.SqlUtils.DbType;
+import org.apache.commons.io.IOUtils;
 
-public class AggrKeyDescriptor {
-	
+public class AggrKeyDescriptor {	
 	public static final boolean defaultSubindexed	= true;
 	
 	public static final char KD_NULL				= '\0';
@@ -50,6 +55,55 @@ public class AggrKeyDescriptor {
 			 throw new RuntimeException("bad kind");
 		}
 	}
+        
+        public boolean checkForSupportFunctions(Connection c) throws SQLException {
+            boolean ret = false;
+            
+            if (SqlUtils.dbType(c) == DbType.POSTGRES) {
+                if (SqlUtils.existsFunction(c, "byte_to_binary_bigendian") == false
+                    || SqlUtils.existsFunction(c, "short_to_binary_bigendian") == false
+                    || SqlUtils.existsFunction(c, "int24_to_binary_bigendian") == false
+                    || SqlUtils.existsFunction(c, "int_to_binary_bigendian") == false) {
+                        // try to create them
+                        InputStream is = this.getClass().getClassLoader().getResourceAsStream("binary_functions_postgres.sql");
+                        
+                        try {                        
+                            String sql = IOUtils.toString(is, "UTF-8");
+                            
+                            // split script file into distinct queries
+                            String[] split = sql.split("----- QUERY SPLIT -----");
+                            
+                            // execute each query -> creates each function
+                            Statement q = c.createStatement();
+                            for(String query : split) {
+                                q.executeUpdate(query);
+                            }
+                            q.close();
+                        } catch (IOException ex) {
+                            throw new SQLException("Unable to load SQL file to create binary PostgreSQL functions", ex);
+                        }
+                }
+                
+                // functions should be created now
+                ret = (SqlUtils.existsFunction(c, "byte_to_binary_bigendian")
+                       && SqlUtils.existsFunction(c, "short_to_binary_bigendian")
+                       && SqlUtils.existsFunction(c, "int24_to_binary_bigendian")
+                       && SqlUtils.existsFunction(c, "int_to_binary_bigendian"));
+                
+            } else if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                // check if one of the functions exists
+                // that is enough, because they come as a completey package
+                // with the NeoGeo C-extension
+                ret = SqlUtils.existsFunction(c, "byte_to_hex_bigendian");
+                
+            } else {
+                // assume everything ok for unknown database
+                ret = true;
+            }
+            
+            
+            return ret;
+        }
         
         public short getTotalBits () {
             return this.totalBits;
@@ -100,11 +154,9 @@ public class AggrKeyDescriptor {
                     dimBytes[i] = 3; // in-between
                 } else if (axisBits <= 32) {
                     dimBytes[i] += 4; // int, so 4 bytes
-                } else if (axisBits <= 64) {
-                    dimBytes[i] += 8; // long, so 8 bytes
                 } else {
-                    // what?! needs more than long? not supported
-                    throw new RuntimeException("Axis " + axis[i].columnExpression() + " needs more bits than supported by a long");
+                    // more bits than 32 not supported
+                    throw new RuntimeException("Axis " + axis[i].columnExpression() + " needs more bits (" + axisBits + ") than supported by int32");
                 }
                 
                 totalBytes += dimBytes[i];
@@ -113,17 +165,17 @@ public class AggrKeyDescriptor {
                 if (axis[i].maxLevels() > maxLevel) maxLevel = axis[i].maxLevels();
             }
             
+            levelBits = MetricAxis.log2(maxLevel);
+            
             if (maxLevel <= Byte.MAX_VALUE) {
                 levelBytes = 1;
             } else if (maxLevel <= Short.MAX_VALUE) {
                 levelBytes = 2;
             } else if (maxLevel <= Integer.MAX_VALUE) {
                 levelBytes = 4;
-            } else if (maxLevel <= Long.MAX_VALUE) {
-                levelBytes = 8;
             } else {
-                // what?! level is bigger than long, should be impossible
-                throw new RuntimeException("MaxLevel is bigger than Long.MAX_VALUE");
+                // level is too big
+                throw new RuntimeException("MaxLevel is bigger than Integer.MAX_VALUE");
             }
             
             totalBytes += (levelBytes * axis.length);
@@ -168,11 +220,9 @@ public class AggrKeyDescriptor {
             }
         }
         
-        public void createByteKeyFunction (Connection c, String fun, SqlScriptBuilder sql_build) throws SQLException {
-            if (SqlUtils.dbType(c) != DbType.POSTGRES) {
-                throw new UnsupportedOperationException("Only PostgreSQL supported at this moment");
-            }
-                       
+        protected void createByteKeyFunctionPostgres (Connection c, String fun, SqlScriptBuilder sql_build) throws SQLException {
+            if (SqlUtils.dbType(c) != DbType.POSTGRES) throw new UnsupportedOperationException("Only PostgreSQL supported by this method");
+            
             StringBuilder pars = new StringBuilder();
             StringBuilder body = new StringBuilder("\tRETURN ");
             
@@ -215,6 +265,59 @@ public class AggrKeyDescriptor {
 
             // remove function after use
             sql_build.addPost(SqlUtils.gen_DROP_FUNCTION(c, fun, pars.toString()));
+        }
+        
+        protected void createByteKeyFunctionMonetDb (Connection c, String fun, SqlScriptBuilder sql_build) throws SQLException {
+            if (SqlUtils.dbType(c) != DbType.MONETDB) throw new UnsupportedOperationException("Only MonetDB supported by this method");
+            
+            StringBuilder pars = new StringBuilder();
+            StringBuilder body = new StringBuilder("\tRETURN ");
+            
+            for(short i=0; i < dimensions; i++) {
+                if (i > 0) pars.append(',');
+                pars.append("l").append(i).append(" integer,i").append(i).append(" integer");
+                
+                if (i > 0) body.append(" || ");
+                
+                if (this.levelBytes == 1) {
+                    body.append("byte_to_hex_bigendian(l").append(i).append(")");
+                } else if (levelBytes == 2) {
+                    body.append("short_to_hex_bigendian(l").append(i).append(")");
+                }
+                
+                body.append(" || ");
+                
+                if (this.dimBytes[i] == 1) {
+                    body.append("byte_to_hex_bigendian(i").append(i).append(")");
+                } else if (this.dimBytes[i] == 2) {
+                    body.append("short_to_hex_bigendian(i").append(i).append(")");
+                } else if (this.dimBytes[i] == 3) {
+                    body.append("int24_to_hex_bigendian(i").append(i).append(")");
+                } else if (this.dimBytes[i] == 4) {
+                    body.append("int_to_hex_bigendian(i").append(i).append(")");
+                }                
+            }
+            body.append(";\n");
+            
+            String funcDef = SqlUtils.gen_Create_Or_Replace_Function(c, fun, pars.toString(), keySqlType(), "", body.toString());
+            
+            sql_build.add(funcDef);
+            sql_build.newLine();
+
+            // remove function after use
+            sql_build.addPost(SqlUtils.gen_DROP_FUNCTION(c, fun, pars.toString()));
+        }
+        
+        public void createByteKeyFunction (Connection c, String fun, SqlScriptBuilder sql_build) throws SQLException {
+            if (SqlUtils.dbType(c) == DbType.POSTGRES) {
+                createByteKeyFunctionPostgres(c, fun, sql_build);
+            } else if (SqlUtils.dbType(c) == DbType.MONETDB) {
+                createByteKeyFunctionMonetDb (c, fun, sql_build);
+            } else {
+                throw new UnsupportedOperationException("Only PostgreSQL supported at this moment");
+            }
+                       
+            
         }
         
 	public void createCrossproductLongKeyFunction(Connection c, String fun, SqlScriptBuilder sql_build) throws SQLException {	

@@ -6,6 +6,9 @@
 
 #define MYERROR(M)	{ fprintf(stderr,"%s\n",M); }
 
+const char* HEXVAL = "0123456789ABCDEF";
+
+
 /*
  *
  *
@@ -29,7 +32,7 @@ static void * epalloc(int size) {
 #define VECTORNAME VectorLong
 #define VECTORTYPE long
 #define VFUN(X)       X ## Long
-#include "vector.template"
+#include "vector.template.c"
 
 #undef VECTORNAME
 #define VECTORNAME VectorVector
@@ -37,8 +40,15 @@ static void * epalloc(int size) {
 #define VECTORTYPE VectorLong*
 #undef VFUN
 #define VFUN(X)       X ## Vector
+#include "vector.template.c"
 
-#include "vector.template"
+#undef VECTORNAME
+#define VECTORNAME VectorCharArray
+#undef VECTORTYPE
+#define VECTORTYPE char*
+#undef VFUN
+#define VFUN(X)       X ## CharArray
+#include "vector.template.c"
 
 /*
  * Some utility fun
@@ -160,6 +170,7 @@ typedef struct Ktype {
 typedef struct pa_grid_def {
   int	N;
   int	bits;
+  int   bytes;
   long	maxRange;
   //
   int start;
@@ -173,6 +184,8 @@ typedef struct pa_grid_def {
 typedef struct pa_query {
   char         keyFlag;
   int          levelbits;
+  int	       levelBytes;
+  int		   totalBytes;
   int          dimensions; // current number of dimensions
   pa_grid_def  d[MAX_DIMENSION];
   char         table_name[MAX_NAME];
@@ -183,6 +196,8 @@ static void initQuery(pa_query* q, char keyFlag) {
     q->dimensions   = 0;
     q->keyFlag      = keyFlag;
     q->levelbits    = -1; // by default no subindexing
+    q->levelBytes   = -1;
+	q->totalBytes	= 0;
 }
 
 static void addQueryDimension(pa_query* q, int N, int bits, int start, int cellwidth, int gridsize) {
@@ -193,6 +208,28 @@ static void addQueryDimension(pa_query* q, int N, int bits, int start, int cellw
     d->start        = start;
     d->cellwidth    = cellwidth;
     d->gridsize     = gridsize;
+
+    // calculate nr. of bytes based on nr. of bits
+    
+    if (bits <= 8) {
+		d->bytes = 1;
+    } else if (bits <= 16) {
+        d->bytes = 2; 
+    } else if (bits <= 24) {
+        d->bytes = 3; 
+    } else if (bits <= 32) {
+        d->bytes = 4; 
+    } else if (bits <= 64) {
+        d->bytes = 8; 
+    } else {
+        fprintf(stdout,"#! Dimension has too many bits!\n");
+    }
+
+	q->totalBytes = q->totalBytes + d->bytes + q->levelBytes;
+
+    //fprintf(stdout, "#! Dimension bytes %d\n", d->bytes);
+    
+
 }
 
 typedef struct pa_grid {
@@ -203,14 +240,17 @@ typedef struct pa_grid {
   int     current_stw_res;
   //
   VectorLong* stw_res;
+  VectorCharArray* stw_res_byte;
   //
   VectorVector* stairs;
   //
   long      gridKey;
   long    cellKey;
+  char*	  cellByteKey;
   //
   char       **values; // needed for printing
 } pa_grid;
+
 
 /*
  *
@@ -433,6 +473,66 @@ static long crossProductLongKey(pa_grid* grid, Ktype *K) {
     return res;
 }
 
+static char* toHex(char* src, int len) {
+	char* ret;
+
+	ret = (char*)MYALLOC(len * 2 * sizeof(char));
+
+	int i;
+	for(i=0; i < len; i++) {
+		ret[i*2] = HEXVAL[((src[i] >> 4) & 0xF)];
+		ret[(i*2) + 1] = HEXVAL[(src[i]) & 0x0F];
+	}
+
+	ret[(len*2)] = '\0';
+	ret[(len*2)+1] = '\0';
+
+	return ret;
+}
+
+static char* byteStringKey(pa_grid* grid, Ktype *K) {
+	char *key;
+
+	//key =(char*)MYALLOC(grid->q.totalBytes * 2 * sizeof(char));
+	key = (char*)MYALLOC(grid->q.totalBytes * sizeof(char));
+
+	int idx = 0;
+	int i;
+	for(i=0; i<grid->q.dimensions; i++) {
+		int level = K->l[i];
+		int index = K->i[i];
+
+		//fprintf(stdout, "i%d = %d, ", i, index);
+
+		if (grid->q.levelBytes == 1) {
+			key[idx++] = (char) level;
+		} else if (grid->q.levelBytes == 2) {
+			key[idx++] = (char)(level >> 8);
+            key[idx++] = (char)(level);
+		}
+
+		if (grid->q.d[i].bytes == 4) {
+			key[idx++] = (char)(index >> 24);
+		}
+		
+		if (grid->q.d[i].bytes >= 3) {
+			key[idx++] = (char)(index >> 16);
+		}
+		
+		if (grid->q.d[i].bytes >= 2) {
+			key[idx++] = (char)(index >> 8);
+		}
+		
+		key[idx++] = (char)(index);
+	}
+	
+	char *hexKey = toHex(key, grid->q.totalBytes);
+
+	//fprintf(stdout, "%s\n", hexKey);
+
+    return hexKey;
+}
+
 static void release_K(pa_grid* grid, Ktype *K) {
     long keyValue = 0;
 
@@ -445,13 +545,16 @@ static void release_K(pa_grid* grid, Ktype *K) {
        keyValue = crossProductLongKey(grid,K);
        break;
      case KD_BYTE_STRING:
-       fprintf(stdout,"#! NOT IMPLEMENTED KD_BYTE_STRING\n");
+	   add2VectorCharArray(grid->stw_res_byte, byteStringKey(grid, K));
        break;
      default:
        fprintf(stdout,"#! UNEXPECTED keyFlag\n");
     }
+
     // printK(K); fprintf(stdout," = %ld\n",keyValue);
-    add2VectorLong(grid->stw_res, keyValue);
+	if (keyValue != 0) {
+		add2VectorLong(grid->stw_res, keyValue);
+	}    
 }
 
 /*
@@ -459,14 +562,19 @@ static void release_K(pa_grid* grid, Ktype *K) {
  *
  */
 
-static VectorLong* pacells_n(pa_grid* grid, int current_D[]) {
+static int pacells_n(pa_grid* grid, int current_D[]) {
   int i;
   long lk;
   pmut PG;
   VectorLong *steps;
   Ktype K;
 
-  resetVectorLong(grid->stw_res);
+  if (grid->q.keyFlag == KD_BYTE_STRING) {
+	  resetVectorCharArray(grid->stw_res_byte);
+  } else {
+	  resetVectorLong(grid->stw_res);
+  }
+
   //
   pmut_init(&PG,grid->q.dimensions);
   for(i=0; i<grid->q.dimensions; i++) {
@@ -479,14 +587,17 @@ static VectorLong* pacells_n(pa_grid* grid, int current_D[]) {
     	  grid->q.d[i].start + (gp * grid->q.d[i].cellwidth),
     	  grid->q.d[i].start + ((gp+1) * grid->q.d[i].cellwidth),
     	  grid->q.d[i].N) )
-	  return NULL;
+	  return 0;
+
       if ( vector_sizeLong(steps) > 0 )
       	pmut_setRange(&PG,i,0,vector_sizeLong(steps));
       else 
-        return grid->stw_res;
+        return 1;
   }
+
   //
   pmut_start(&PG);
+  int counter = 0;
   while ( pmut_next(&PG) ) {
     resetK(&K);
     for(i=0; i<grid->q.dimensions; i++) {
@@ -496,12 +607,17 @@ static VectorLong* pacells_n(pa_grid* grid, int current_D[]) {
       K.i[i] = li_i(lk);
     }
     release_K(grid,&K);
+	counter++;
   }
+
+  //fprintf(stdout, "Found %d keys\n", counter);
+
   if ( 0 ) { // takes 20ms for 95.000 keys
     // fprintf(stdout,"#! doing a quicksort!");
     l_quicksort(grid->stw_res->values, 0, grid->stw_res->size - 1);
   }
-  return grid->stw_res;
+
+  return 1;
 }
 
 static int loadcell_pa_grid(pa_grid* grid, int current_D[]) {
@@ -513,33 +629,53 @@ static int loadcell_pa_grid(pa_grid* grid, int current_D[]) {
       grid->gridKey += current_D[i];
       // fprintf(stdout,"#### y_log2({%d} %ld, %ld)[%ld]\n",my_log2(grid->q.d[i].gridsize),current_D[i],grid->q.d[i].gridsize,grid->gridKey);
   }
+
   // fprintf(stdout,"#### gridKey = %ld\n",grid->gridKey);
-  if ( !(grid->stw_res = pacells_n(grid, current_D)))
+  if (pacells_n(grid, current_D) == 0)
   	return 0;
+
   grid->current_stw_res = -1;
   return 1;
 }
 
 static int next_pa_grid(pa_grid* grid) {
   if ( !grid->end_of_grid ) {
-    if ( ++grid->current_stw_res >= vector_sizeLong(grid->stw_res) ) {
+	int resSize;
+
+	if (grid->q.keyFlag == KD_BYTE_STRING) {
+		resSize = vector_sizeCharArray(grid->stw_res_byte);
+	} else {
+		resSize = vector_sizeLong(grid->stw_res);
+	}
+
+    if ( ++grid->current_stw_res >= resSize ) {
       grid->cellKey = -1;
+
       // load the next cell
       if ( ++grid->current_D[0] >= grid->q.d[0].gridsize) {
         // end of row, take next
         if ( ++grid->current_D[1] >= grid->q.d[1].gridsize) {
-        grid->end_of_grid = 1;
-      return !grid->end_of_grid;
-    } else {
-      grid->current_D[0] = 0;
-    }
+			grid->end_of_grid = 1;
+			return !grid->end_of_grid;
+		} else {
+			grid->current_D[0] = 0;
+		}
       }
-      if ( !loadcell_pa_grid(grid,grid->current_D) )
+
+      if ( !loadcell_pa_grid(grid,grid->current_D) ) {
       	return -1;
+	  }
+
       return next_pa_grid(grid);
-    } else
-      grid->cellKey = vector_getLong(grid->stw_res, grid->current_stw_res);
+    } else {
+	  if (grid->q.keyFlag == KD_BYTE_STRING) {
+		  grid->cellByteKey = vector_getCharArray(grid->stw_res_byte, grid->current_stw_res);
+	  } else {
+	      grid->cellKey = vector_getLong(grid->stw_res, grid->current_stw_res);
+	  }
+	}
   }
+
   return !grid->end_of_grid;
 }
 
@@ -549,13 +685,27 @@ static int decode_paGridQuery(char* p, pa_query *q) {
 
     if ( *p++ != '#' )
         return 0;
+
     if ( *p != 'G' ) // grid mode
         return 0;
+
     p = strchr((const char*)p,(int)'|') + 1;
     initQuery(q, *p);
+
     p = strchr((const char*)p,(int)'|') + 1;
-    q->levelbits = atoi(p); p = strchr((const char*)p,(int)'|') + 1;
+    q->levelbits = atoi(p); 
+    
+    
+    // calculate size of level in bytes
+    if (q->levelbits <= 8) {
+	q->levelBytes = 1;
+    } else if (q->levelbits <= 16) {
+	q->levelBytes = 2;
+    }   
+
+    p = strchr((const char*)p,(int)'|') + 1;
     dimensions = atoi(p);
+
     p = strchr((const char*)p,(int)'|') + 1;
     for(i=0; i<dimensions; i++) {
       int N, bits, start, width, gsize;
@@ -568,15 +718,18 @@ static int decode_paGridQuery(char* p, pa_query *q) {
       //
       p = strchr((const char*)p,(int)'|') + 1;
     };
+
     pn = strchr((const char*)p,(int)'|');
     ssize = (pn - p);
     strncpy(q->table_name,p,ssize);
     q->table_name[ssize] = 0;
+
     p = pn + 1;
     pn = strchr((const char*)p,(int)'|');
     ssize = (pn - p);
     strncpy(q->btree_name,p,ssize);
     q->btree_name[ssize] = 0;
+
     return 1;
 }
 
@@ -587,10 +740,21 @@ static pa_grid* create_pa_grid(char *p) {
   if ( !grid )
   	return NULL;
   decode_paGridQuery(p, &grid->q);
-  if ( !(grid->stw_res    = createVectorLong(VECTOR_DFLT_SIZE)))
-  	return NULL;
+
+  
+  if (grid->q.keyFlag == KD_BYTE_STRING) {
+	  if ( !(grid->stw_res_byte    = createVectorCharArray(VECTOR_DFLT_SIZE))) {
+		  return NULL;
+	  }
+  } else {
+	  if ( !(grid->stw_res    = createVectorLong(VECTOR_DFLT_SIZE))) {
+		  return NULL;
+	  } 
+  }	
+
   if ( !(grid->stairs = createVectorVector(MAX_DIMENSION)))
   	return NULL;
+
   for(i=0; i<grid->q.dimensions; i++) {
         VectorLong* vl;
 
@@ -598,6 +762,7 @@ static pa_grid* create_pa_grid(char *p) {
 		return NULL;
         add2VectorVector(grid->stairs, vl);
   }
+
   if ( (grid->q.d[0].gridsize > 0) && (grid->q.d[1].gridsize > 0) ) {
     grid->end_of_grid = 0;
     for(i=0; i<grid->q.dimensions; i++)
@@ -606,9 +771,11 @@ static pa_grid* create_pa_grid(char *p) {
   } else {
     grid->end_of_grid = 1; // terminate
   }
-  grid->values = (char **) MYALLOC(2 * sizeof(char *));
+
+  grid->values = (char **) MYALLOC(3 * sizeof(char *));
   grid->values[0] = (char *) MYALLOC(64 * sizeof(char));
   grid->values[1] = (char *) MYALLOC(64 * sizeof(char));
+  grid->values[2] = (char *) MYALLOC((grid->q.totalBytes+1) * 8 * sizeof(char));
   return grid;
 }
 
@@ -617,9 +784,18 @@ static void free_pa_grid(pa_grid* grid) {
 
   MYFREE(grid->values[0]);
   MYFREE(grid->values[1]);
+  MYFREE(grid->values[2]);
   MYFREE(grid->values);
-  if ( grid->stw_res )
-    freeVectorLong( grid->stw_res );
+
+  if (grid->q.keyFlag == KD_BYTE_STRING) {
+	  if ( grid->stw_res_byte ) {
+		  freeVectorCharArray(grid->stw_res_byte);
+	  }
+  } else {
+	  if ( grid->stw_res )
+		freeVectorLong( grid->stw_res );
+  }
+
   if ( grid->stairs ) {
     for(i=0; i<vector_sizeVector(grid->stairs); i++) {
         freeVectorLong( vector_getVector(grid->stairs,i));

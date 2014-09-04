@@ -42,13 +42,18 @@ public class PreAggregateConfig {
     
     protected List<AggregateAxis> axisList;
     
+    protected char keyKind = PreAggregate.DEFAULT_KD;
+    
     public PreAggregateConfig(String table, String column, String label, String aggregateType, int aggregateMask, AggregateAxis[] axis) {
         this.table = table;
         this.column = column;
         this.label = label;
-        this.aggregateType = aggregateType;
-        this.aggregateMask = aggregateMask;
         
+        if (aggregateType.equalsIgnoreCase("int")) aggregateType = "integer";
+        this.aggregateType = aggregateType;
+        
+        this.aggregateMask = aggregateMask;
+                
         this.axisList = new ArrayList<AggregateAxis>();        
         for(int i=0; i < axis.length; i++) {
             this.axisList.add(axis[i]);
@@ -89,7 +94,7 @@ public class PreAggregateConfig {
         
         if (aggregateType != null && aggregateType.isEmpty() == false) {
             Element aggregateTypeEl = doc.createElement("type");
-            aggregateTypeEl.setTextContent(this.aggregateType);
+            aggregateTypeEl.setTextContent(aggregateType);
             rootElement.appendChild(aggregateTypeEl);
         }
         
@@ -98,6 +103,10 @@ public class PreAggregateConfig {
             aggregateMaskEl.setTextContent(String.valueOf(this.aggregateMask));
             rootElement.appendChild(aggregateMaskEl);
         }
+        
+        Element keyKindEl = doc.createElement("keykind");
+        keyKindEl.setTextContent(String.valueOf(this.keyKind));
+        rootElement.appendChild(keyKindEl);
         
         if (axisList.size() > 0) {
             Element axisListEl = doc.createElement("axislist");
@@ -143,6 +152,14 @@ public class PreAggregateConfig {
         return this.axisList;
     }
     
+    public char getKeyKind () {
+        return this.keyKind;
+    }
+    
+    public void setKeyKind (char keyKind) {
+        this.keyKind = keyKind;
+    }
+    
     public AggregateAxis[] getAxis () {
         return axisList.toArray(new AggregateAxis[axisList.size()]);
     }
@@ -178,12 +195,15 @@ public class PreAggregateConfig {
         
         if (nodeName.equals("type")) {
             aggregateType = node.getTextContent();
+            if (aggregateType.equalsIgnoreCase("int")) aggregateType = "integer";
         } else if (nodeName.equals("table")) {
             table = node.getTextContent();
         } else if (nodeName.equals("column")) {
             column = node.getTextContent();
         } else if (nodeName.equals("label")) {
             label = node.getTextContent();
+        } else if (nodeName.equals("keykind")) {
+            handleKeyKind(node);
         } else if (nodeName.equals("mask")) {
             handleMask(node);            
         } else if (nodeName.equals("axislist")) {
@@ -285,6 +305,17 @@ public class PreAggregateConfig {
         this.axisList.add(axis);
     }
         
+    protected void handleKeyKind (Node node) throws InvalidConfigException {
+        String val = node.getTextContent();
+        
+        if (val.length() > 1) {
+            throw new InvalidConfigException("Invalid KeyKind specified in config file");
+        }
+        
+        // get KeyKind
+        keyKind = val.charAt(0);
+    }
+    
     protected void handleMask(Node node) throws InvalidConfigException {
         String mask = node.getTextContent();
             

@@ -11,14 +11,13 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import nl.utwente.db.neogeo.preaggregate.MetricAxis.AxisIndexer;
 import nl.utwente.db.neogeo.preaggregate.MetricAxis.DoubleAxisIndexer;
 import nl.utwente.db.neogeo.preaggregate.MetricAxis.IntegerAxisIndexer;
 import nl.utwente.db.neogeo.preaggregate.MetricAxis.LongAxisIndexer;
 import nl.utwente.db.neogeo.preaggregate.MetricAxis.TimestampAxisIndexer;
 import nl.utwente.db.neogeo.preaggregate.SqlUtils.DbType;
+import org.apache.log4j.Logger;
 
 public class PreAggregate {
 	private static final Logger LOGGER = Logger.getLogger("org.geotools.data.aggregation.PreAggregate");
@@ -29,14 +28,13 @@ public class PreAggregate {
 	 * Experiment setup variables
 	 * 
 	 */
-	public static final boolean showAxisAndKey		= true;
+        public static final boolean     showAxisAndKey          = true;
 	public static final boolean	doResultCorrection	= true;
-	//public static final boolean	serversideStairwalk	= true;
-        public static final boolean	serversideStairwalk	= false;
+	public static final boolean	serversideStairwalk	= true;
+        //public static final boolean	serversideStairwalk	= false;
         
         public static final boolean executeQueriesDirectly      = true;
 	public static final char	DEFAULT_KD			= AggrKeyDescriptor.KD_CROSSPRODUCT_LONG;
-        //public static final char	DEFAULT_KD			= AggrKeyDescriptor.KD_BYTE_STRING;
 
 	private	static final int	AGGR_BASE			= 0x01;
 	public static final	int		AGGR_COUNT			= AGGR_BASE;
@@ -157,6 +155,9 @@ public class PreAggregate {
                 res.close();
                 stmt.close();
                 
+                
+                // Example:
+                // INSERT INTO geometry_columns VALUES ('sys', 'london_hav_neogeo', 'coordinates', 2, 4326, 'POINT');
                 throw new SQLException("Point column `" + point_column + "` for table `" + schema + "." + table + "` is not "
                         + "registered in geometry_columns table! Manually insert it into the geometry_columns table first.");
             }
@@ -223,8 +224,8 @@ public class PreAggregate {
         protected short initializeAxis (String table, AggregateAxis[] axis) throws SQLException {
             int i;
             
-            if ( showAxisAndKey )
-                    System.out.println("#! Aggregate Axis:");
+            if (showAxisAndKey)
+                LOGGER.debug("Aggregate Axis:");
             
             Object obj_ranges[][] = getRangeValues(c,schema,table,axis);
             short maxLevel = 0;
@@ -255,7 +256,7 @@ public class PreAggregate {
                             maxLevel = axis[i].maxLevels();
                     
                     if (showAxisAndKey)
-                            System.out.println("AXIS["+i+"]="+axis[i]);
+                        LOGGER.debug("AXIS["+i+"]="+axis[i]);
             }
             obj_ranges = null;
             
@@ -292,7 +293,7 @@ public class PreAggregate {
                 try {
                     kd = new AggrKeyDescriptor(DEFAULT_KD, axis);
                 } catch (AggrKeyDescriptor.TooManyBitsException ex) {
-                    LOGGER.warning("Bits of key > 63, switching to ByteString key. Consider reducing number of dimensions of baseblocksize!");
+                    LOGGER.warn("Bits of key > 63, switching to ByteString key. Consider reducing number of dimensions of baseblocksize!");
                     
                     try {                        
                         kd = new AggrKeyDescriptor(AggrKeyDescriptor.KD_BYTE_STRING, axis);
@@ -301,8 +302,17 @@ public class PreAggregate {
                     }
                 }
                 
-		if (showAxisAndKey)
-			System.out.println("KEY="+kd);
+                // check if database has necessary supporting functions to generate aggregate keys
+                if (kd.checkForSupportFunctions(c) == false ) {
+                    if (SqlUtils.dbType(c) == DbType.MONETDB && kd.kind() == AggrKeyDescriptor.KD_BYTE_STRING) {
+                        throw new RuntimeException("MonetDB needs C-based NeoGeo extension to be able to generate ByteString AggregateKeys. Make sure it is installed first!");
+                    } else {
+                        throw new RuntimeException("Database is missing necessary support functions to be able to generate AggregateKeys");
+                    }
+                }
+                
+                if (showAxisAndKey)
+                    LOGGER.debug("KEY="+kd);
 
 		/*
 		 * Start generating the SQL commands for the pre aggregate index creation. 
@@ -330,7 +340,7 @@ public class PreAggregate {
                 kd.createKeyFunction (c, genKey, sql_build); 
 
                 // create the table that will hold the final index
-		String table_pa = create_index_table(sql_build, override_name);
+		String table_pa = create_index_table(sql_build, override_name, kd);
 
 		String lfp_table = schema + "." + indexPrefix + "lfp";
 		if ( gen_optimized ) {
@@ -355,9 +365,17 @@ public class PreAggregate {
 				axisToSplit = (MetricAxis)axis[i_axisToSplit];
 			else
 				throw new SQLException("unable to split over non-metric axis: "+i_axisToSplit);
+                        
+                        LOGGER.info("Counting number of tuples in table to determine nr. of chunks...");
+                        
 			long nTuples = SqlUtils.count(c,schema,table,"*");
+                        
+                        LOGGER.info("Found " + nTuples + " tuples in table");                        
+                        
 			nChunks = (int) (nTuples / chunkSize) +1;
 			ro = axisToSplit.split(nChunks);
+                        
+                        LOGGER.info("Total number of chunks: " + nChunks);
 		}
                 
                 String level0_table = schema + "." + indexPrefix + "level0";
@@ -386,14 +404,26 @@ public class PreAggregate {
                 // create the chunks table
                 // this is a temporary table which holds all the data of the chunks
                 // and later get GROUP'ed into the final PA table
-                sql_build.add("CREATE TABLE " + chunks_table + " (ckey " + kd.keySqlType() + ", " +
-                            ((aggregateMask&AGGR_COUNT)!=0 ? "\tcountAggr bigint,\n" : "") + 
-                            ((aggregateMask&AGGR_SUM) !=0 ? "\tsumAggr "  +aggregateType+",\n" : "") +
-                            ((aggregateMask&AGGR_MIN)!=0 ? "\tminAggr "+aggregateType+",\n" : "") +
-                            ((aggregateMask&AGGR_MAX)!=0 ? "\tmaxAggr "+aggregateType+"\n" : "") +
-                            ");\n");
+                StringBuilder createSql = new StringBuilder("CREATE TABLE ");
+                createSql.append(chunks_table).append(" (\n");
+                createSql.append("ckey ").append(kd.keySqlType()).append(",\n");
+                if ((aggregateMask&AGGR_COUNT) != 0) createSql.append("\t").append("countAggr bigint,\n");
+                if ((aggregateMask&AGGR_SUM) != 0) createSql.append("\t").append("sumAggr ").append(aggregateType).append(",\n");
+                if ((aggregateMask&AGGR_MIN) != 0) createSql.append("\t").append("minAggr ").append(aggregateType).append(",\n");
+                if ((aggregateMask&AGGR_MAX) != 0) createSql.append("\t").append("maxAggr ").append(aggregateType).append("\n");
+                
+                // ensure that column list does not end with a comma (,)
+                if (createSql.charAt(createSql.length()-2) == ',') {
+                    createSql.deleteCharAt(createSql.length()-2);
+                }
+                
+                createSql.append(");\n");
+                
+                sql_build.add(createSql.toString());
                 
 		for (i = 0; i < nChunks; i++) {
+                        long chunkStartTime = System.currentTimeMillis();
+                    
 			/*
 			 * Generate the level 0 table
 			 */
@@ -401,8 +431,10 @@ public class PreAggregate {
 			if ( nChunks > 1 ) {
 				where = "("+axisToSplit.columnExpression()+">="+SqlUtils.gen_Constant(c,ro[i][0])+" AND "+axisToSplit.columnExpression()+"<"+SqlUtils.gen_Constant(c,ro[i][1])+")";
 				sql_build.add("-- adding increment "+i+" to pa index\n");
+                                LOGGER.info("Generating increment " + (i+1) + " out of " + nChunks);
 			} else {
 				sql_build.add("-- computing pa_index in one step\n");
+                                LOGGER.info("Generating full PA index in one step");
 			}
 			                        
 			//
@@ -436,6 +468,13 @@ public class PreAggregate {
 					sql_build.add(SqlUtils.gen_Select_INTO(c, 
 							"pa_org", "SELECT *", "FROM " + table_pa, false));
 			}
+                        
+                        long chunkExecTime = System.currentTimeMillis() - chunkStartTime;
+                        if (nChunks > 1) {
+                            LOGGER.info("Finished increment in " + chunkExecTime + " ms");
+                        } else {
+                            LOGGER.info("Finished generating full PA index");
+                        }
 		}
                 
                 
@@ -444,12 +483,25 @@ public class PreAggregate {
                 // Group chunks by ckey and move into final PA table
                 // MonetDB also requires that the PA table is sorted on the primary key (ckey)
                 // to achieve high-performance (see: https://www.monetdb.org/pipermail/users-list/2014-July/007400.html)
-                sql_build.add("INSERT INTO " + table_pa + " " +
-                        " SELECT ckey, SUM(countaggr) AS countaggr, SUM(sumaggr) AS sumaggr, MIN(minaggr) AS minaggr, MAX(maxaggr) AS maxaggr " +
-                        " FROM " + chunks_table +
-                        " GROUP BY ckey" +
-                        " ORDER BY ckey ASC;\n"
-                );
+                StringBuilder insertSql = new StringBuilder("INSERT INTO ");
+                insertSql.append(table_pa).append(" ");
+                insertSql.append("SELECT ckey, ");
+                
+                if ((aggregateMask & AGGR_COUNT) !=0) insertSql.append("SUM(countaggr) AS countaggr, ");
+                if ((aggregateMask & AGGR_SUM) !=0) insertSql.append("SUM(sumaggr) AS sumaggr, ");
+                if ((aggregateMask & AGGR_MIN) !=0) insertSql.append("MIN(minaggr) AS minaggr, ");
+                if ((aggregateMask & AGGR_MAX) !=0) insertSql.append("MAX(maxaggr) AS maxaggr");
+
+                // ensure that column list does not end with a comma (,)
+                if (insertSql.charAt(insertSql.length()-2) == ',') {
+                    insertSql.deleteCharAt(insertSql.length()-2);
+                }
+                
+                insertSql.append(" FROM ").append(chunks_table);
+                insertSql.append(" GROUP BY ckey \n");
+                insertSql.append(" ORDER BY ckey ASC;\n");
+                
+                sql_build.add(insertSql.toString());
                 sql_build.newLine();
 
                 sql_build.add("DROP TABLE " + chunks_table + ";\n");
@@ -478,13 +530,11 @@ public class PreAggregate {
 
 		if (showAxisAndKey) {
 			long input_tuples = SqlUtils.count(c, schema, table, "*");
-			System.out.print("# input tuples=" + input_tuples);
 			long cells = SqlUtils.count(c, schema, table + PA_EXTENSION, "*");
 			int perc = (int)(((double)cells/(double)input_tuples)*100);
-			System.out.println(", aggregate index cells=" + cells + "["+perc+"%]");
-			System.out.println("# aggregate index creation time = "
+			LOGGER.debug("# input tuples=" + input_tuples + ", aggregate index cells=" + cells + "["+perc+"%]");
+			LOGGER.debug("# aggregate index creation time = "
 					+ create_time_ms + "ms");
-			System.out.println("");
 		}
 
 		// add the index to the repository
@@ -496,7 +546,7 @@ public class PreAggregate {
 		_init(c, schema, table, label);
 	}
         
-        protected String create_index_table (SqlScriptBuilder sql_build, String override_name) throws SQLException {
+        protected String create_index_table (SqlScriptBuilder sql_build, String override_name, AggrKeyDescriptor kd) throws SQLException {
             /*
             * Generate the table which contains the final index
             */
@@ -519,15 +569,23 @@ public class PreAggregate {
                sql_build.add("DROP TABLE IF EXISTS " + table_pa + ";\n");
            }
 
-           sql_build.add(
-                           "CREATE TABLE " + table_pa + " (\n" +
-                           "\tckey " + kd.keySqlType() + " NOT NULL PRIMARY KEY,\n" + 
-                           ((aggregateMask&AGGR_COUNT)!=0 ? "\tcountAggr bigint,\n" : "") + 
-                           ((aggregateMask&AGGR_SUM) !=0 ? "\tsumAggr "  +aggregateType+",\n" : "") +
-                           ((aggregateMask&AGGR_MIN)!=0 ? "\tminAggr "+aggregateType+",\n" : "") +
-                           ((aggregateMask&AGGR_MAX)!=0 ? "\tmaxAggr "+aggregateType+"\n" : "") +
-                           ");\n"
-           );
+           StringBuilder createSql = new StringBuilder("CREATE TABLE ");
+           createSql.append(table_pa).append(" (\n");
+           createSql.append("\t").append("ckey ").append(kd.keySqlType()).append(" NOT NULL PRIMARY KEY, \n");
+           
+           if ((aggregateMask & AGGR_COUNT) !=0) createSql.append("\t").append("countAggr bigint,\n");
+           if ((aggregateMask & AGGR_SUM) !=0) createSql.append("\t").append("sumAggr ").append(aggregateType).append(",\n");
+           if ((aggregateMask & AGGR_MIN) !=0) createSql.append("\t").append("minAggr ").append(aggregateType).append(",\n");
+           if ((aggregateMask & AGGR_MAX) !=0) createSql.append("\t").append("maxAggr ").append(aggregateType).append("\n");
+           
+           // ensure that column list does not end with a comma (,)
+           if (createSql.charAt(createSql.length()-2) == ',') {
+               createSql.deleteCharAt(createSql.length()-2);
+           }
+           
+           createSql.append(");\n");
+           
+           sql_build.add(createSql.toString());
 
            if (SqlUtils.dbType(c) == DbType.MONETDB) {
                sql_build.add("CREATE INDEX " + table_pa_idx + " ON " + table_pa + " (ckey);\n");
@@ -1088,7 +1146,12 @@ public class PreAggregate {
                         } else {
                             // select from _pa table and pa_grid function and join on ckey/pakey
                             sql.append(schema).append(".").append(table).append(PA_EXTENSION).append(", ").append(gcells);
-                            sql.append(" WHERE ckey = pakey");
+                            
+                            if (kd.kind() == AggrKeyDescriptor.KD_BYTE_STRING) {
+                                sql.append(" WHERE ckey = pa_bytekey");
+                            } else {
+                                sql.append(" WHERE ckey = pakey");
+                            }
                         }
                         sql.append(" GROUP BY gkey");
                         sql.append(" ORDER BY ").append(order);
@@ -1394,7 +1457,7 @@ public class PreAggregate {
 		return qb.toString();
 	}
 
-	private String cellCondition(int ranges[][]) {
+	private String cellCondition(int ranges[][]) throws SQLException {
 		if ( serversideStairwalk ) {
 			// use Postgres internal pacells2d function
 			String pa_grid_str;
@@ -1409,7 +1472,7 @@ public class PreAggregate {
 			qb.append(" WHERE ");
 			for (int i = 0; i < resKeys.size(); i++) {
 				qb.append(((i > 0) ? " OR " : "") + "ckey="
-						+ resKeys.elementAt(i).toKey());
+						+ SqlUtils.quoteValue(c, resKeys.elementAt(i).toKey()));
 			}
 			return qb.toString();
 		}
@@ -1544,8 +1607,15 @@ public class PreAggregate {
                             qb.append(")");
                         } else {
                             qb.append(", ");
-                            qb.append("pa_grid_cell('").append(range_paGridQuery(ranges)).append("') AS pakey ");
-                            qb.append(" WHERE ckey=pakey");
+                            
+                            if (kd.kind() == AggrKeyDescriptor.KD_BYTE_STRING) {
+                                // byte version doesn't have a cell function but also uses grid function
+                                qb.append("pa_grid('").append(range_paGridQuery(ranges)).append("')");
+                                qb.append(" WHERE ckey=pa_bytekey");
+                            } else {                            
+                                qb.append("pa_grid_cell('").append(range_paGridQuery(ranges)).append("') AS pakey ");
+                                qb.append(" WHERE ckey=pakey");
+                            }
                         }
 		} else {
 			Vector<AggrKey> resKeys;
@@ -1740,13 +1810,25 @@ public class PreAggregate {
 		if ( (swgc.length != axis.length) || (swgc[0].length != 3) )
 			throw new RuntimeException("Dimensions for grid_paQuery wrong");
 		StringBuffer sb = new StringBuffer();
-		sb.append("#G|"+kd.kind()+"|");
-		sb.append(kd.levelBits+"|");
+                
+                // start grid query
+                sb.append("#G|");
+                
+                // add type of AggrKey
+                sb.append(kd.kind()).append("|");
+                
+                // add size of level
+                sb.append(kd.levelBits).append("|");
+                
+                // number of dimensions		
 		sb.append(kd.dimensions()+"|");
+                
+                // add info of each dimension
 		for(int i=0; i<swgc.length; i++) {
-			sb.append(axis[i].N()+",");
-			sb.append(kd.dimBits[i]+",");
-			sb.append(swgc[i][0]+","+swgc[i][1]+","+swgc[i][2]+"|");
+                    sb.append(axis[i].N()).append(",");                 
+                    sb.append(kd.dimBits[i]).append(",");
+                                        
+                    sb.append(swgc[i][0]+","+swgc[i][1]+","+swgc[i][2]+"|");
 		}
 		sb.append(schema+"."+table+"|"+schema+"."+table+"_btree"+"|");
 		if ( false ) System.out.println("XX="+sb);
@@ -1789,6 +1871,7 @@ public class PreAggregate {
 	private static void checkRepository(Connection c, String schema) throws SQLException{
 		// create one repository per schema
 		if (!SqlUtils.existsTable(c, schema, aggregateRepositoryName)) {
+                        LOGGER.info("Main PA index repository does not exist yet, creating now...");
 			SqlUtils.executeNORES(c,
 					"CREATE TABLE " + schema + "." + aggregateRepositoryName + " (" +
 					"tableName TEXT," +
@@ -1801,9 +1884,11 @@ public class PreAggregate {
 					"count int" +
 					");"
 			);
+                        LOGGER.info("Main PA index repository created");
 		}
 
 		if (!SqlUtils.existsTable(c, schema, aggregateRepositoryDimName)) {
+                        LOGGER.info("Secondary PA axis index repository does not exist yet, creating now...");
 			SqlUtils.executeNORES(c, 
 					"CREATE TABLE " + schema + "." + aggregateRepositoryDimName + " (" +
 					"tableName TEXT," + 
@@ -1818,6 +1903,7 @@ public class PreAggregate {
 					"Nmax int," +
 					"bits int" +
 			");");
+                        LOGGER.info("Secondary PA axis index created");
 		}
 	}
 
@@ -1870,7 +1956,7 @@ public class PreAggregate {
                     // INCOMPLETE, put in flag type
                     kd = new AggrKeyDescriptor(keyFlag,axis); // INCOMPLETE, put in flag type
                 } catch (AggrKeyDescriptor.TooManyBitsException ex) {
-                    LOGGER.warning("Too many bits > 63");
+                    LOGGER.warn("Too many bits > 63");
                 }
 		//
 		return true;
@@ -1878,7 +1964,10 @@ public class PreAggregate {
 
 	protected static void update_repository(Connection c, String schema, String tableName, String label, String aggregateColumn, String aggregateType, AggrKeyDescriptor kd, AggregateAxis axis[], int aggregateMask)
 	throws SQLException {
+                LOGGER.info("Adding PreAggregate index to PA index repository...");
+                
 		checkRepository(c,schema);
+                
 		SqlUtils.executeNORES(c,
 				"DELETE FROM " + schema + "." + aggregateRepositoryName +
 				" WHERE tableName=\'"+tableName+"\' AND label=\'"+label+"\';"
@@ -1942,6 +2031,8 @@ public class PreAggregate {
 			psi.execute();
 		}
 		ps.execute();
+                
+                LOGGER.info("Index has been added to index repository");
 	}
 
 	public AggregateAxis[] getAxis(){

@@ -43,7 +43,12 @@ public class SqlScriptBuilder {
 	
 	public void add(String s) throws SQLException {
 		if (executeDirectly) {
-                        logger.debug("Executing:\n" + s + "\n");
+                        logger.debug("-------------------------------------");
+                        logger.debug("Executing query:");
+                        String[] split = s.split("\n");
+                        for(String line : split) {
+                            logger.debug(line);
+                        }
                         
                         long startTime = System.currentTimeMillis();
                                                 
@@ -59,6 +64,7 @@ public class SqlScriptBuilder {
                         long execTime = System.currentTimeMillis() - startTime;
                         logger.debug("Affected rows: " + pre_stat.getUpdateCount());
                         logger.debug("Query execution time: " + execTime + " ms");
+                        logger.debug("-------------------------------------");
                         
 			pre_stat = c.createStatement();
 		} else {

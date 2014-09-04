@@ -24,6 +24,8 @@ $BODY$
 LANGUAGE plpgsql VOLATILE
 COST 100;
 
+-- NOTE: the following is used to split this SQL script into distinct queries. Do not change!
+----- QUERY SPLIT -----
 
 CREATE OR REPLACE FUNCTION short_to_binary_bigendian(v_number integer)
   RETURNS bytea AS
@@ -50,6 +52,8 @@ $BODY$
 LANGUAGE plpgsql VOLATILE
 COST 100;
 
+----- QUERY SPLIT -----
+
 CREATE OR REPLACE FUNCTION int24_to_binary_bigendian(v_number integer)
   RETURNS bytea AS
 $BODY$ 
@@ -74,6 +78,8 @@ END;
 $BODY$
 LANGUAGE plpgsql VOLATILE
 COST 100;
+
+----- QUERY SPLIT -----
 
 CREATE OR REPLACE FUNCTION int_to_binary_bigendian(v_number integer)
   RETURNS bytea AS

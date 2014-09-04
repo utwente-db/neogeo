@@ -1,4 +1,4 @@
-CREATE TYPE __pa_gridcells AS (gkey bigint, pakey bigint);
+CREATE TYPE __pa_gridcells AS (gkey bigint, pakey bigint, pa_bytekey text);
 
 CREATE OR REPLACE FUNCTION pa_grid(pa_gridQuery text)
     RETURNS SETOF __pa_gridcells

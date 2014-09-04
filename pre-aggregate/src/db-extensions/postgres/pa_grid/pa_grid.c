@@ -11,7 +11,7 @@ PG_MODULE_MAGIC;
 #define MYALLOC(X)  epalloc(X)
 #define MYFREE(X)   pfree(X)
 
-#include "pa_grid.template"
+#include "pa_grid.template.c"
 
 PG_FUNCTION_INFO_V1(compute_pa_grid);
 
@@ -90,6 +90,7 @@ compute_pa_grid(PG_FUNCTION_ARGS)
 
         snprintf(grid->values[0], 24, "%ld", grid->gridKey);
         snprintf(grid->values[1], 24, "%ld", grid->cellKey);
+		snprintf(grid->values[2], (grid->q.totalBytes+1) * 2, "%s", grid->cellByteKey);
 
         /* build a tuple */
         tuple = BuildTupleFromCStrings(attinmeta, grid->values);
@@ -135,16 +136,23 @@ compute_pa_grid_cell(PG_FUNCTION_ARGS)
                      errmsg("function returning record called in context "
                             "that cannot accept type record")));
 
-	/* 
-	 * WARNING: there stil is a small change that memory is alllocated
-	 *	    during the next calls. This could cause problems.
-	 * My user context stuff, allocate all memory expected in this call.
-	 * Other memory allocated outside this context will be thrown away
-	 * after the first call.
-	 */ 
-	text  *arg1 = PG_GETARG_TEXT_P(0);
-	funcctx->user_fctx = create_pa_grid(VARDATA(arg1));
-	grid = (pa_grid*)funcctx->user_fctx;
+		/* 
+		 * WARNING: there stil is a small change that memory is alllocated
+		 *	    during the next calls. This could cause problems.
+		 * My user context stuff, allocate all memory expected in this call.
+		 * Other memory allocated outside this context will be thrown away
+		 * after the first call.
+		 */ 
+		text  *arg1 = PG_GETARG_TEXT_P(0);
+		funcctx->user_fctx = create_pa_grid(VARDATA(arg1));
+		grid = (pa_grid*)funcctx->user_fctx;
+
+		if (grid->q.keyFlag == KD_BYTE_STRING)	
+		{
+			ereport(ERROR,
+                    (errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+                     errmsg("pa_grid_cell does not support byte keys. Use pa_grid function!")));
+		}
 
         MemoryContextSwitchTo(oldcontext);
     }

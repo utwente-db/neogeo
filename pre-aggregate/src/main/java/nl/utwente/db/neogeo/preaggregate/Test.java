@@ -100,6 +100,7 @@ public class Test {
 	}
 
 	public static void main(String[] argv) throws Exception {
+                
 		System.out.println("Test pre-aggregate package");
                 
 		Test t = new Test();
@@ -115,7 +116,9 @@ public class Test {
                 
                 //Logger.getRootLogger().setLevel(Level.INFO);
 		                
-                runTest(connection, t.getSchema());
+                //runTest2(connection, t.getSchema());
+                
+                runTestOsm(connection, t.getSchema());
                 
                 
                 //runTest_ckey();
@@ -309,9 +312,9 @@ public class Test {
 			//
 
                         //GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", null, "myAggregate", "coordinates",0 /* axis 2 split*/,200000,null);
-			//GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", "myAggregate"); 
+			GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", "myAggregate"); 
                     
-                        GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "uk_neogeo", "myAggregate"); 
+                        //GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "uk_neogeo", "myAggregate"); 
                         
                         //System.exit(0);
                         
@@ -497,8 +500,8 @@ public class Test {
 			// new TweetConverter("/Users/flokstra/uk_raw.sql",c,"public","uk");
 			//
 
-			GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", null, "myAggregate", "coordinates",0 /* axis 2 split*/,200000,null);
-                        //GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", "myAggregate"); 
+			//GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", null, "myAggregate", "coordinates",0 /* axis 2 split*/,200000,null);
+                        GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, schema, "london_hav_neogeo", "myAggregate"); 
                     
                         // axis to split: 0 (= x-axis)
                         // chunkSize: 2000 (very small, but needed to experiment with chunking!)
@@ -516,8 +519,8 @@ public class Test {
 			// GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "london_hav_neogeo", "myAggregate");
 			//
 			 //pa.boxQuery("count",0.18471,51.60626,0.23073,51.55534); // in the middle of havering map *correction anomaly
-			// pa.boxQuery("count",-0.058,51.59,0.095,51.483); // left of havering, few tweets
-                        pa.boxQuery("count",-0.058,51.58961,0.095,51.48287); // left of havering, few tweets
+			pa.boxQuery("count",-0.058,51.59,0.095,51.483); // left of havering, few tweets
+                        //pa.boxQuery("count",-0.058,51.58961,0.095,51.48287); // left of havering, few tweets
 			
 			// pa.boxQuery("count",-0.38326,51.62780,0.14554,51.39572); // a big london query
 			//pa.boxQuery("count",-8.4,60,1.9,49); // the entire UK query
@@ -585,6 +588,51 @@ public class Test {
                 
 		//PreAggregate pa = new PreAggregate(c,"public", "uk_neogeo", null /*override_name*/, "myAggregate",axis,"char_length(tweet)","bigint",PreAggregate.AGGR_ALL,2,200000,null);
                 PreAggregate pa = new PreAggregate(c, schema, "london_hav_neogeo", null /*override_name*/, "myAggregate", axis, "len" , "bigint", PreAggregate.AGGR_ALL, 2, 200000, null);
+	}
+        
+        public static void runTestOsm(Connection c, String schema) throws Exception {
+		double	DFLT_BASEBOXSIZE = 0.001;
+		short	DFLT_N = 4;
+		//GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "uk_neogeo", "myAggregate", "coordinates",-1,200000,null);
+                
+                AggregateAxis axis[] = null;    
+                axis = new AggregateAxis[]{
+                        new MetricAxis("ST_X(coordinates)", "double", "" + DFLT_BASEBOXSIZE,DFLT_N),
+                        new MetricAxis("ST_Y(coordinates)", "double", "" + DFLT_BASEBOXSIZE,DFLT_N),
+                        new MetricAxis("tagkey_id", "int", "1",DFLT_N)
+                        //new MetricAxis("time", "timestamp with time zone", "360000" /*=10 min*/, (short)16)
+                };
+                
+                
+		//PreAggregate pa = new PreAggregate(c,"public", "uk_neogeo", null /*override_name*/, "myAggregate",axis,"char_length(tweet)","bigint",PreAggregate.AGGR_ALL,2,200000,null);
+                //PreAggregate pa = new PreAggregate(c, schema, "osm_poi", null /*override_name*/, "myAggregate", axis, "val" , "int", PreAggregate.AGGR_COUNT, 0, 200000, null);
+                PreAggregate pa = new PreAggregate(c, schema, "osm_poi", "myAggregate");
+                
+                Object[][] obj_range = pa.getRangeValues(c);
+                
+                int[] count = new int[3];
+                count[0] = 4;
+                count[1] = 4;
+                count[2] = 1;
+                
+                Object[][] iv_first_obj = new Object[3][2];
+                iv_first_obj[0][0] = Math.floor(((Double)obj_range[0][0])/0.001)*0.001;
+                iv_first_obj[0][1] = ((Double)iv_first_obj[0][0])+Math.ceil((((Double)obj_range[0][1]) - ((Double)obj_range[0][0]))/4/0.001)*0.001;
+                iv_first_obj[1][0] = Math.floor(((Double)obj_range[1][0])/0.001)*0.001;
+                iv_first_obj[1][1] = ((Double)iv_first_obj[1][0])+Math.ceil((((Double)obj_range[1][1]) - ((Double)obj_range[1][0]))/4/0.001)*0.001;
+                
+                iv_first_obj[2][0] = 4;
+                iv_first_obj[2][1] = 4;
+                
+                ResultSet rs = null;
+                
+                rs = pa.SQLquery_grid(PreAggregate.AGGR_COUNT, iv_first_obj, count);
+                while(rs.next()){
+                        System.out.println(rs.getInt(1)+"|"+rs.getLong(2) + "|" + rs.getLong(3) + "|" + rs.getInt(4));
+                }
+                rs.close();
+
+                System.exit(0);
 	}
         
         public static void runTest_standard_nominal (Connection c, String schema) throws Exception {

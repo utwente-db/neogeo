@@ -4,6 +4,8 @@ boolean is set to true in Java.
 
 Do:
 
+Note: before running make/make install make sure to copy the *.template.c files into the current directory of the extension. These template files are required!
+
 make 
 # this creates the dynamic library
 

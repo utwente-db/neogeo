@@ -26,6 +26,7 @@ import nl.cwi.monetdb.mcl.io.BufferedMCLReader;
 import nl.cwi.monetdb.mcl.io.BufferedMCLWriter;
 import nl.cwi.monetdb.mcl.net.MapiSocket;
 import nl.cwi.monetdb.mcl.parser.MCLParseException;
+import nl.utwente.db.neogeo.preaggregate.AggrKeyDescriptor;
 import nl.utwente.db.neogeo.preaggregate.AggregateAxis;
 import nl.utwente.db.neogeo.preaggregate.MetricAxis;
 import nl.utwente.db.neogeo.preaggregate.PreAggregate;
@@ -50,12 +51,12 @@ public abstract class PrepareMR extends PreAggregate {
     protected DbInfo dbInfo;
     
     protected FileSystem fs;
-    
-    
-    
+
     protected File tempPath;
     
     protected String jobPath;
+    
+    protected char keyKind;
     
     public PrepareMR (Configuration conf, DbInfo dbInfo, Connection c, String table, String override_name, String label, 
                       AggregateAxis axis[], String aggregateColumn, String aggregateType, int aggregateMask)  {
@@ -69,6 +70,7 @@ public abstract class PrepareMR extends PreAggregate {
         this.aggregateColumn = aggregateColumn;
         this.aggregateType = aggregateType;
         this.aggregateMask = aggregateMask;
+        this.keyKind = PreAggregate.DEFAULT_KD;
     }
     
     public PrepareMR (Configuration conf, DbInfo dbInfo, Connection c, PreAggregateConfig config) {
@@ -82,6 +84,7 @@ public abstract class PrepareMR extends PreAggregate {
         this.aggregateColumn = config.getAggregateColumn();
         this.aggregateType = config.getAggregateType();
         this.aggregateMask = config.getAggregateMask();
+        this.keyKind = config.getKeyKind();
     }
     
     public void setFS (FileSystem fs) {
@@ -98,7 +101,7 @@ public abstract class PrepareMR extends PreAggregate {
         // sanity checks
         if (axisToSplitIdx >= axis.length) throw new PrepareException("Axis to split index is invalid");
         if (chunkSize == 0) throw new PrepareException("Chunk size cannot be zero!");
-        
+                
         // Ensure that MonetDB has the necessary additional functions
         if (SqlUtils.dbType(c) == SqlUtils.DbType.MONETDB) {
             SqlUtils.compatMonetDb(c);
@@ -165,6 +168,26 @@ public abstract class PrepareMR extends PreAggregate {
         }
         logger.info("Functions created");
         
+        // check key kind
+        AggrKeyDescriptor kd = null;
+        try {
+            // check KeyKind
+            kd = new AggrKeyDescriptor(keyKind, axis);
+        } catch (AggrKeyDescriptor.TooManyBitsException ex) {
+            if (keyKind == AggrKeyDescriptor.KD_CROSSPRODUCT_LONG) {
+                logger.warn("Too many bits (" + kd.totalBits + ") for CrossProductLong key. Switching to BinaryString key. Consider reducing number of dimensions or baseblocksize");
+                
+                try {
+                    keyKind = AggrKeyDescriptor.KD_BYTE_STRING;
+                    kd = new AggrKeyDescriptor(keyKind, axis);
+                } catch (AggrKeyDescriptor.TooManyBitsException ex1) {
+                    // should not happen
+                }
+            } else {
+                // should not happen
+            }
+        }
+        
         logger.info("Creating dimension level/factor tables...");
         sqlBuildDimTables.executePreBatch();
         logger.info("Tables created");
@@ -211,6 +234,7 @@ public abstract class PrepareMR extends PreAggregate {
         logger.info("Creating and uploading PreAggregate config file...");
         
         PreAggregateConfig config = new PreAggregateConfig(table, this.aggregateColumn, label, aggregateType, aggregateMask, axis);
+        config.setKeyKind(keyKind);
         
         String fileName = RunMR.CONFIG_FILENAME;
         File configFile = new File(tempPath + "/" + fileName);
