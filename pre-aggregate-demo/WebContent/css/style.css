@@ -141,3 +141,6 @@ body {
     -webkit-text-size-adjust: none;
 }
 
+p {
+ max-width: 600px;
+}
