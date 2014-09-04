@@ -1,6 +1,6 @@
 # PreAggregate Tools
 
-This Maven project is used to automatically generate a set of (binary) tools for managemant of the PreAggregate index.
+This Maven project is used to automatically generate a set of (binary) tools for management of the PreAggregate index.
 
 ## Tools
 Currently this project will generate 1 tool, as discussed in the next subsection.
