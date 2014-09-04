@@ -11,14 +11,13 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import nl.utwente.db.neogeo.preaggregate.MetricAxis.AxisIndexer;
 import nl.utwente.db.neogeo.preaggregate.MetricAxis.DoubleAxisIndexer;
 import nl.utwente.db.neogeo.preaggregate.MetricAxis.IntegerAxisIndexer;
 import nl.utwente.db.neogeo.preaggregate.MetricAxis.LongAxisIndexer;
 import nl.utwente.db.neogeo.preaggregate.MetricAxis.TimestampAxisIndexer;
 import nl.utwente.db.neogeo.preaggregate.SqlUtils.DbType;
+import org.apache.log4j.Logger;
 
 public class PreAggregate {
 	private static final Logger LOGGER = Logger.getLogger("org.geotools.data.aggregation.PreAggregate");
@@ -29,7 +28,7 @@ public class PreAggregate {
 	 * Experiment setup variables
 	 * 
 	 */
-	public static final boolean showAxisAndKey		= true;
+        public static final boolean     showAxisAndKey          = true;
 	public static final boolean	doResultCorrection	= true;
 	public static final boolean	serversideStairwalk	= true;
         //public static final boolean	serversideStairwalk	= false;
@@ -225,8 +224,8 @@ public class PreAggregate {
         protected short initializeAxis (String table, AggregateAxis[] axis) throws SQLException {
             int i;
             
-            if ( showAxisAndKey )
-                    System.out.println("#! Aggregate Axis:");
+            if (showAxisAndKey)
+                LOGGER.debug("Aggregate Axis:");
             
             Object obj_ranges[][] = getRangeValues(c,schema,table,axis);
             short maxLevel = 0;
@@ -257,7 +256,7 @@ public class PreAggregate {
                             maxLevel = axis[i].maxLevels();
                     
                     if (showAxisAndKey)
-                            System.out.println("AXIS["+i+"]="+axis[i]);
+                        LOGGER.debug("AXIS["+i+"]="+axis[i]);
             }
             obj_ranges = null;
             
@@ -294,7 +293,7 @@ public class PreAggregate {
                 try {
                     kd = new AggrKeyDescriptor(DEFAULT_KD, axis);
                 } catch (AggrKeyDescriptor.TooManyBitsException ex) {
-                    LOGGER.warning("Bits of key > 63, switching to ByteString key. Consider reducing number of dimensions of baseblocksize!");
+                    LOGGER.warn("Bits of key > 63, switching to ByteString key. Consider reducing number of dimensions of baseblocksize!");
                     
                     try {                        
                         kd = new AggrKeyDescriptor(AggrKeyDescriptor.KD_BYTE_STRING, axis);
@@ -312,8 +311,8 @@ public class PreAggregate {
                     }
                 }
                 
-		if (showAxisAndKey)
-			System.out.println("KEY="+kd);
+                if (showAxisAndKey)
+                    LOGGER.debug("KEY="+kd);
 
 		/*
 		 * Start generating the SQL commands for the pre aggregate index creation. 
@@ -366,9 +365,17 @@ public class PreAggregate {
 				axisToSplit = (MetricAxis)axis[i_axisToSplit];
 			else
 				throw new SQLException("unable to split over non-metric axis: "+i_axisToSplit);
+                        
+                        LOGGER.info("Counting number of tuples in table to determine nr. of chunks...");
+                        
 			long nTuples = SqlUtils.count(c,schema,table,"*");
+                        
+                        LOGGER.info("Found " + nTuples + " tuples in table");                        
+                        
 			nChunks = (int) (nTuples / chunkSize) +1;
 			ro = axisToSplit.split(nChunks);
+                        
+                        LOGGER.info("Total number of chunks: " + nChunks);
 		}
                 
                 String level0_table = schema + "." + indexPrefix + "level0";
@@ -415,6 +422,8 @@ public class PreAggregate {
                 sql_build.add(createSql.toString());
                 
 		for (i = 0; i < nChunks; i++) {
+                        long chunkStartTime = System.currentTimeMillis();
+                    
 			/*
 			 * Generate the level 0 table
 			 */
@@ -422,8 +431,10 @@ public class PreAggregate {
 			if ( nChunks > 1 ) {
 				where = "("+axisToSplit.columnExpression()+">="+SqlUtils.gen_Constant(c,ro[i][0])+" AND "+axisToSplit.columnExpression()+"<"+SqlUtils.gen_Constant(c,ro[i][1])+")";
 				sql_build.add("-- adding increment "+i+" to pa index\n");
+                                LOGGER.info("Generating increment " + (i+1) + " out of " + nChunks);
 			} else {
 				sql_build.add("-- computing pa_index in one step\n");
+                                LOGGER.info("Generating full PA index in one step");
 			}
 			                        
 			//
@@ -457,6 +468,13 @@ public class PreAggregate {
 					sql_build.add(SqlUtils.gen_Select_INTO(c, 
 							"pa_org", "SELECT *", "FROM " + table_pa, false));
 			}
+                        
+                        long chunkExecTime = System.currentTimeMillis() - chunkStartTime;
+                        if (nChunks > 1) {
+                            LOGGER.info("Finished increment in " + chunkExecTime + " ms");
+                        } else {
+                            LOGGER.info("Finished generating full PA index");
+                        }
 		}
                 
                 
@@ -512,13 +530,11 @@ public class PreAggregate {
 
 		if (showAxisAndKey) {
 			long input_tuples = SqlUtils.count(c, schema, table, "*");
-			System.out.print("# input tuples=" + input_tuples);
 			long cells = SqlUtils.count(c, schema, table + PA_EXTENSION, "*");
 			int perc = (int)(((double)cells/(double)input_tuples)*100);
-			System.out.println(", aggregate index cells=" + cells + "["+perc+"%]");
-			System.out.println("# aggregate index creation time = "
+			LOGGER.debug("# input tuples=" + input_tuples + ", aggregate index cells=" + cells + "["+perc+"%]");
+			LOGGER.debug("# aggregate index creation time = "
 					+ create_time_ms + "ms");
-			System.out.println("");
 		}
 
 		// add the index to the repository
@@ -1855,6 +1871,7 @@ public class PreAggregate {
 	private static void checkRepository(Connection c, String schema) throws SQLException{
 		// create one repository per schema
 		if (!SqlUtils.existsTable(c, schema, aggregateRepositoryName)) {
+                        LOGGER.info("Main PA index repository does not exist yet, creating now...");
 			SqlUtils.executeNORES(c,
 					"CREATE TABLE " + schema + "." + aggregateRepositoryName + " (" +
 					"tableName TEXT," +
@@ -1867,9 +1884,11 @@ public class PreAggregate {
 					"count int" +
 					");"
 			);
+                        LOGGER.info("Main PA index repository created");
 		}
 
 		if (!SqlUtils.existsTable(c, schema, aggregateRepositoryDimName)) {
+                        LOGGER.info("Secondary PA axis index repository does not exist yet, creating now...");
 			SqlUtils.executeNORES(c, 
 					"CREATE TABLE " + schema + "." + aggregateRepositoryDimName + " (" +
 					"tableName TEXT," + 
@@ -1884,6 +1903,7 @@ public class PreAggregate {
 					"Nmax int," +
 					"bits int" +
 			");");
+                        LOGGER.info("Secondary PA axis index created");
 		}
 	}
 
@@ -1936,7 +1956,7 @@ public class PreAggregate {
                     // INCOMPLETE, put in flag type
                     kd = new AggrKeyDescriptor(keyFlag,axis); // INCOMPLETE, put in flag type
                 } catch (AggrKeyDescriptor.TooManyBitsException ex) {
-                    LOGGER.warning("Too many bits > 63");
+                    LOGGER.warn("Too many bits > 63");
                 }
 		//
 		return true;
@@ -1944,7 +1964,10 @@ public class PreAggregate {
 
 	protected static void update_repository(Connection c, String schema, String tableName, String label, String aggregateColumn, String aggregateType, AggrKeyDescriptor kd, AggregateAxis axis[], int aggregateMask)
 	throws SQLException {
+                LOGGER.info("Adding PreAggregate index to PA index repository...");
+                
 		checkRepository(c,schema);
+                
 		SqlUtils.executeNORES(c,
 				"DELETE FROM " + schema + "." + aggregateRepositoryName +
 				" WHERE tableName=\'"+tableName+"\' AND label=\'"+label+"\';"
@@ -2008,6 +2031,8 @@ public class PreAggregate {
 			psi.execute();
 		}
 		ps.execute();
+                
+                LOGGER.info("Index has been added to index repository");
 	}
 
 	public AggregateAxis[] getAxis(){

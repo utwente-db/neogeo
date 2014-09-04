@@ -48,9 +48,12 @@ public class PreAggregateConfig {
         this.table = table;
         this.column = column;
         this.label = label;
-        this.aggregateType = aggregateType;
-        this.aggregateMask = aggregateMask;
         
+        if (aggregateType.equalsIgnoreCase("int")) aggregateType = "integer";
+        this.aggregateType = aggregateType;
+        
+        this.aggregateMask = aggregateMask;
+                
         this.axisList = new ArrayList<AggregateAxis>();        
         for(int i=0; i < axis.length; i++) {
             this.axisList.add(axis[i]);
@@ -91,7 +94,7 @@ public class PreAggregateConfig {
         
         if (aggregateType != null && aggregateType.isEmpty() == false) {
             Element aggregateTypeEl = doc.createElement("type");
-            aggregateTypeEl.setTextContent(this.aggregateType);
+            aggregateTypeEl.setTextContent(aggregateType);
             rootElement.appendChild(aggregateTypeEl);
         }
         
@@ -192,6 +195,7 @@ public class PreAggregateConfig {
         
         if (nodeName.equals("type")) {
             aggregateType = node.getTextContent();
+            if (aggregateType.equalsIgnoreCase("int")) aggregateType = "integer";
         } else if (nodeName.equals("table")) {
             table = node.getTextContent();
         } else if (nodeName.equals("column")) {

@@ -116,7 +116,9 @@ public class Test {
                 
                 //Logger.getRootLogger().setLevel(Level.INFO);
 		                
-                runTest2(connection, t.getSchema());
+                //runTest2(connection, t.getSchema());
+                
+                runTestOsm(connection, t.getSchema());
                 
                 
                 //runTest_ckey();
@@ -586,6 +588,51 @@ public class Test {
                 
 		//PreAggregate pa = new PreAggregate(c,"public", "uk_neogeo", null /*override_name*/, "myAggregate",axis,"char_length(tweet)","bigint",PreAggregate.AGGR_ALL,2,200000,null);
                 PreAggregate pa = new PreAggregate(c, schema, "london_hav_neogeo", null /*override_name*/, "myAggregate", axis, "len" , "bigint", PreAggregate.AGGR_ALL, 2, 200000, null);
+	}
+        
+        public static void runTestOsm(Connection c, String schema) throws Exception {
+		double	DFLT_BASEBOXSIZE = 0.001;
+		short	DFLT_N = 4;
+		//GeotaggedTweetAggregate pa = new GeotaggedTweetAggregate(c, "public", "uk_neogeo", "myAggregate", "coordinates",-1,200000,null);
+                
+                AggregateAxis axis[] = null;    
+                axis = new AggregateAxis[]{
+                        new MetricAxis("ST_X(coordinates)", "double", "" + DFLT_BASEBOXSIZE,DFLT_N),
+                        new MetricAxis("ST_Y(coordinates)", "double", "" + DFLT_BASEBOXSIZE,DFLT_N),
+                        new MetricAxis("tagkey_id", "int", "1",DFLT_N)
+                        //new MetricAxis("time", "timestamp with time zone", "360000" /*=10 min*/, (short)16)
+                };
+                
+                
+		//PreAggregate pa = new PreAggregate(c,"public", "uk_neogeo", null /*override_name*/, "myAggregate",axis,"char_length(tweet)","bigint",PreAggregate.AGGR_ALL,2,200000,null);
+                //PreAggregate pa = new PreAggregate(c, schema, "osm_poi", null /*override_name*/, "myAggregate", axis, "val" , "int", PreAggregate.AGGR_COUNT, 0, 200000, null);
+                PreAggregate pa = new PreAggregate(c, schema, "osm_poi", "myAggregate");
+                
+                Object[][] obj_range = pa.getRangeValues(c);
+                
+                int[] count = new int[3];
+                count[0] = 4;
+                count[1] = 4;
+                count[2] = 1;
+                
+                Object[][] iv_first_obj = new Object[3][2];
+                iv_first_obj[0][0] = Math.floor(((Double)obj_range[0][0])/0.001)*0.001;
+                iv_first_obj[0][1] = ((Double)iv_first_obj[0][0])+Math.ceil((((Double)obj_range[0][1]) - ((Double)obj_range[0][0]))/4/0.001)*0.001;
+                iv_first_obj[1][0] = Math.floor(((Double)obj_range[1][0])/0.001)*0.001;
+                iv_first_obj[1][1] = ((Double)iv_first_obj[1][0])+Math.ceil((((Double)obj_range[1][1]) - ((Double)obj_range[1][0]))/4/0.001)*0.001;
+                
+                iv_first_obj[2][0] = 4;
+                iv_first_obj[2][1] = 4;
+                
+                ResultSet rs = null;
+                
+                rs = pa.SQLquery_grid(PreAggregate.AGGR_COUNT, iv_first_obj, count);
+                while(rs.next()){
+                        System.out.println(rs.getInt(1)+"|"+rs.getLong(2) + "|" + rs.getLong(3) + "|" + rs.getInt(4));
+                }
+                rs.close();
+
+                System.exit(0);
 	}
         
         public static void runTest_standard_nominal (Connection c, String schema) throws Exception {
