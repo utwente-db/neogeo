@@ -217,6 +217,8 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 		
 		Vector<String> keywords = null;
 		
+                String[][] axisFilters = new String[agg.getAxis().length][2];
+                
 		for(Entry<String, String> e : values.entrySet()){
 			String kw = e.getKey();
 			
@@ -229,7 +231,25 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 						keywords = new Vector<String>();
 					keywords.add(kv);
 				}
-			}
+			} else if (kw.toLowerCase().startsWith("axis")) {
+                            String[] split = kw.toLowerCase().split("_");
+                            String kv = e.getValue();
+                            
+                            try {
+                                int axisIndex = Integer.parseInt(split[0].substring(4));
+                                if (axisIndex < agg.getAxis().length) {
+                                    if (split[1].equals("start")) {
+                                        axisFilters[axisIndex][0] = kv;
+                                    } else {
+                                        axisFilters[axisIndex][1] = kv;
+                                    }
+                                } else {
+                                    LOGGER.warning("Axis filter " + axisIndex + " out-of-bounds");
+                                }
+                            } catch (NumberFormatException ex) {
+                                LOGGER.warning("Invalid axis index specified for axis filter");
+                            }
+                        }
 			LOGGER.severe("hint entry: "+e.getKey()+"="+e.getValue());
 		}
 		boolean pa_query = true;
@@ -267,7 +287,7 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 				Area area = getReaderInternalGetFeatureInfo(req);
 				if(area== null) return null;
 				// JF, QUERY HERE
-				ret = reformulateQuery(area,startTime,endTime, keywords, this.iv_count);
+				ret = reformulateQuery(area,startTime,endTime, keywords, this.iv_count, axisFilters);
 				double startX = (Double) ret[0][0];
 				double grid_deltaX = ((Double)ret[0][1]) - startX;
 				double endX = startX+grid_deltaX*((Integer)ret[0][2]);
@@ -283,9 +303,9 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 				cnt[1] = (int) Math.round((_endY-_startY) / grid_deltaY);
 				if(cntAxis>2) cnt[2] = this.iv_count[2];
 				a = new Area(_startX, _endX, _startY, _endY);
-				ret = reformulateQuery(a ,startTime,endTime, keywords, cnt);
+				ret = reformulateQuery(a ,startTime,endTime, keywords, cnt, axisFilters);
 			} else {
-				ret = reformulateQuery(a,startTime,endTime, keywords, this.iv_count);
+				ret = reformulateQuery(a,startTime,endTime, keywords, this.iv_count, axisFilters);
 			}
 			range = new int[ret.length];
 			iv_first_obj = new Object[ret.length][2];
@@ -397,13 +417,15 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 	}
 
 	// JF INCOMPLETE, EXTEND WITH A wordlist
-	private Object[][] reformulateQuery(Area area, Timestamp start, Timestamp end, Vector<String> vword, int[] iv_count) throws RuntimeException{
-		int i=0;
+	private Object[][] reformulateQuery(Area area, Timestamp start, Timestamp end, Vector<String> vword, int[] iv_count, String[][] axisFilters) throws RuntimeException{
 		//int[] range = new int[agg.getAxis().length];
 		Object[][] iv_obj = new Object[agg.getAxis().length][3];
-                boolean hasTime = false;
-		for(AggregateAxis a : agg.getAxis()){
+  
+                AggregateAxis[] axis = agg.getAxis();
+                for(int i=0; i < axis.length; i++) {
+                        AggregateAxis a = axis[i];
 			AxisSplitDimension dim = null;
+                        
 			LOGGER.severe("axis :"+a.columnExpression());
 			if(a==x) {
 				double lowx = Math.min(area.getLowX(),area.getHighX());
@@ -412,7 +434,6 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 				LOGGER.severe(lowx+"|"+highx+"|"+ iv_count[0]);
 				LOGGER.severe("processing axis x:"+a.columnExpression());
 				dim = a.splitAxis(lowx,highx, iv_count[0]);
-				i=0;
 			} else if(a==y) {
 				double lowy = Math.min(area.getLowY(),area.getHighY());
 				double highy = Math.max(area.getLowY(),area.getHighY());
@@ -420,31 +441,49 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 				LOGGER.severe(lowy+"|"+highy+"|"+ iv_count[1]);
 				LOGGER.severe("processing axis y:"+a.columnExpression());
 				dim = a.splitAxis(lowy,highy,iv_count[1]);
-				i=1;
 			} else if(a==time) {
 				LOGGER.severe(start+"|"+ end+"|"+ iv_count[2]);
 				LOGGER.severe("processing axis time:"+a.columnExpression());
 				dim = a.splitAxis(start, end, iv_count[2]);                                
-				i=2;
-                                hasTime = true;
-			} else if (a==nominal) {
-				String select_word = NominalAxis.ALL;
-				LOGGER.severe("processing axis nominal:");
-				if ( vword != null && vword.size() > 0 ) {
-					if ( vword.size() > 1 )
-						LOGGER.severe("INCOMPLETE: cannot select on Multiple words");
-					select_word = vword.get(0);
-				} 
+			} else if (a instanceof NominalAxis) {
+                                NominalAxis nomAxis = (NominalAxis) a;
                                 
-                                // work-around for index depending on availability of time axis or not
-				i = (hasTime) ? 3 : 2; 
-                                
-				iv_obj[i][0] = select_word;
-				iv_obj[i][1] = select_word;
-				iv_obj[i][2] = 1;
-				dim = null;
-				LOGGER.severe("nominal axis select on word: \""+select_word+"\"");
-			}
+                                if (nomAxis.toFIELDstore().equals(NominalAxis.WORDLISTNOMINAL)) {                                
+                                    String select_word = NominalAxis.ALL;
+                                    LOGGER.severe("processing axis nominal:");
+                                    if ( vword != null && vword.size() > 0 ) {
+                                            if ( vword.size() > 1 ) LOGGER.severe("INCOMPLETE: cannot select on Multiple words");
+                                            select_word = vword.get(0);
+                                    } 
+
+                                    iv_obj[i][0] = select_word;
+                                    iv_obj[i][1] = select_word;
+                                    iv_obj[i][2] = 1;
+                                    LOGGER.severe("nominal axis select on word: \""+select_word+"\"");
+                                } else {
+                                    // default word index is 0, we assume that is the 'ALL' index
+                                    int wordIndex = 0;
+                                    
+                                    if (axisFilters[i][0] != null) {
+                                        try {
+                                            wordIndex = Integer.parseInt(axisFilters[i][0]);
+                                        } catch (NumberFormatException e) {
+                                            LOGGER.severe("SEVERE: invalid WordIndex specified for axis " + i);
+                                        }
+                                    }   
+                                    
+                                    iv_obj[i][0] = new Integer(wordIndex);
+                                    iv_obj[i][1] = new Integer(wordIndex);
+                                    
+                                    iv_obj[i][2] = 1;
+                                    LOGGER.severe("nominal axis select on word_index: " + wordIndex);
+                                }
+                                dim = null;
+                        } else {
+                            dim = a.splitAxis(0, 0, 1);
+                        }
+                        
+                        
 			//if(dim==null) throw new Exception("query area out of available data domain due to problems in axis "+a.columnExpression());
 			//			range[i] = dim.getCount();
 			if (dim != null) {
