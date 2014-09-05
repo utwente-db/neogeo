@@ -144,3 +144,13 @@ body {
 p {
  max-width: 600px;
 }
+
+table.styled th {
+ font-weight: bold;
+ text-align: right;
+ padding-right: 5px;
+}
+
+table.styled td {
+ padding: 2px;
+} 

@@ -380,8 +380,10 @@ function update_date() {
 	}
 }
 
-function update_viewparams() {
-	var viewparams = "";
+function update_viewparams(viewparams) {
+	if (typeof(viewparams) == 'undefined') {
+		viewparams = "";
+	}
 
 	for(var i=1; i <= 5; i++) {
 		var field = OpenLayers.Util.getElement('keyword' + i);
