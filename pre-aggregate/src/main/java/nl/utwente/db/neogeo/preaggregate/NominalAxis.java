@@ -83,6 +83,14 @@ public class NominalAxis extends AggregateAxis {
 	public String type() {
 		return "nominal";
 	}
+        
+        public int from() {
+            return from;
+        }
+        
+        public int to () {
+            return to;
+        }
 	
 	public short N() {
 		return (short)axisSize();

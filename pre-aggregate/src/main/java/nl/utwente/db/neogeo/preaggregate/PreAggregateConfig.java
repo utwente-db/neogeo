@@ -125,6 +125,11 @@ public class PreAggregateConfig {
                     axisEl.setAttribute("baseblocksize", String.valueOf(metricAxis.BASEBLOCKSIZE()));
                     axisEl.setAttribute("low", String.valueOf(metricAxis.low()));
                     axisEl.setAttribute("high", String.valueOf(metricAxis.high()));
+                } else if (axis instanceof NominalAxis) {
+                    // TODO: support in-built word list into XML
+                    NominalAxis nomAxis = (NominalAxis) axis;
+                    axisEl.setAttribute("from", String.valueOf(nomAxis.from()));
+                    axisEl.setAttribute("to", String.valueOf(nomAxis.to()));
                 }
                 
                 axisListEl.appendChild(axisEl);
@@ -215,6 +220,8 @@ public class PreAggregateConfig {
             handleAxis(node);
         } else if (node.getNodeType() == Node.TEXT_NODE) {
             // ignore text nodes
+        } else if (node.getNodeType() == Node.COMMENT_NODE) {
+            // ignore comment nodes
         } else {
             throw new InvalidConfigException("Unknown node '" + nodeName + "' in config file");
         }
@@ -244,9 +251,46 @@ public class PreAggregateConfig {
         
         if (className.equalsIgnoreCase("MetricAxis")) {
             handleMetricAxis(node, attr, column);
+        } else if (className.equalsIgnoreCase("NominalAxis")) {
+            handleNominalAxis(node, attr, column);
         } else {
             throw new InvalidConfigException("Invalid axis node detected: axis of class type '" + className + "' not yet supported!");
         }         
+    }
+    
+    protected void handleNominalAxis(Node node, NamedNodeMap attr, String column) throws InvalidConfigException {
+        // TODO: also support nominal axis with included word list into XML
+        
+        Node fromNode = attr.getNamedItem("from");
+        String fromStr = (fromNode != null) ? fromNode.getTextContent() : null;
+        if (fromStr == null || fromStr.isEmpty()) {
+            throw new InvalidConfigException("Invalid NominalAxis node detected: missing 'from' attribute");
+        }
+        
+        Node toNode = attr.getNamedItem("to");
+        String toStr = (toNode != null) ? toNode.getTextContent() : null;
+        if (toStr == null || toStr.isEmpty()) {
+            throw new InvalidConfigException("Invalid NominalAxis node detected: missing 'to' attribute");
+        }
+        
+        int from = -1;
+        int to = -1;
+        
+        try {
+            from = Integer.parseInt(fromStr);
+        } catch (NumberFormatException e) {
+            throw new InvalidConfigException("Invalid NominalAxis node detected: 'from' attribute must be a valid integer");
+        }
+        
+        try {
+            to = Integer.parseInt(toStr);
+        } catch (NumberFormatException e) {
+            throw new InvalidConfigException("Invalid NominalAxis node detected: 'to' attribute must be a valid integer");
+        }
+        
+        NominalAxis axis = new NominalAxis(column, from, to);
+        
+        this.axisList.add(axis);
     }
     
     protected void handleMetricAxis (Node node, NamedNodeMap attr, String column) throws InvalidConfigException {

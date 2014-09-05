@@ -1035,16 +1035,32 @@ public class PreAggregate {
 			} else {
 				// it must be Nominal
 				NominalAxis nax = (NominalAxis)axis[i];
-				if ( ! (iv_first_obj[i][RMIN] instanceof String ) || ! (iv_first_obj[i][RMAX] instanceof String ) )
-					throw new SQLException(
-							"bad String bound on dimension " + i);
-				iv_first[i] = nax.getWordIndex((String)iv_first_obj[i][RMIN]);
+                                
+                                if (iv_first_obj[i][RMIN] instanceof Integer && iv_first_obj[i][RMAX] instanceof Integer) {
+                                    iv_first[i] = ((Integer)iv_first_obj[i][RMIN]).intValue();
+                                                                        
+                                    if (iv_first[i] != ((Integer)iv_first_obj[i][RMAX]).intValue()) {
+                                        throw new SQLException("Nominal Integer bounds must be equal on dimension " + i);
+                                    }
+                                } else if (iv_first_obj[i][RMIN] instanceof String && iv_first_obj[i][RMAX] instanceof String) {
+                                    // check if NominalAxis has word list and is therefore able to convert String bounds into Integer index bounds
+                                    if (nax.fromFIELDstore().equals(NominalAxis.WORDLISTNOMINAL) == false) {
+                                        throw new SQLException("String bounds specified on dimension " + i + " but no WordList available");
+                                    }
+                                    
+                                    iv_first[i] = nax.getWordIndex((String)iv_first_obj[i][RMIN]);
+                                    
+                                    if ( iv_first[i] != nax.getWordIndex((String)iv_first_obj[i][RMAX]) ) {
+					throw new SQLException("Nominal String bounds must be equal on dimension " + i);
+                                    }
+                                } else {
+                                    throw new SQLException("Bad bounds on dimension " + i + ", must be either Integer or String");
+                                }
+                                
 				if ( iv_first[i] < 0 )
 					throw new SQLException(
 							"unknown word "+iv_first_obj[i][RMIN]+" dimension " + i);
-				if ( iv_first[i] != nax.getWordIndex((String)iv_first_obj[i][RMAX]) )
-					throw new SQLException(
-							"Nominal String bounds must be equal on dimension " + i);
+				
 				iv_last[i] = iv_first[i] + 1;
 				iv_size[i] = 1;
 			}
@@ -1064,7 +1080,7 @@ public class PreAggregate {
 				} else {
 				}
 				prev_dimsize *= iv_count[i];
-			}
+			} 
 			StringBuilder sqlaggr = new StringBuilder();
                         
                         if (SqlUtils.dbType(c) == DbType.MONETDB) {

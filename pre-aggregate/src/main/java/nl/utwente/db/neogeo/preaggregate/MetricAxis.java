@@ -114,8 +114,33 @@ public class MetricAxis extends AggregateAxis {
 					);	
 		}
 
-		public AxisSplitDimension splitAxis(Object low, Object high, int cnt) {
-		throw new RuntimeException("Function not implemented yet!");
+		public AxisSplitDimension splitAxis(Object startObj, Object endObj, int cnt) {
+                    if (cnt <= 0 || startObj == null || endObj == null) throw new RuntimeException("count, low or high values are invalid");
+                                        
+                    // convert Strings to Integers
+                    if (startObj instanceof String) startObj = Integer.valueOf((String)startObj);
+                    if (endObj instanceof String) endObj = Integer.valueOf((String)endObj);
+                    
+                    // ensure we have Integer objects
+                    if ((startObj instanceof Integer) == false) throw new RuntimeException("low value is invalid; not an Integer object");
+                    if ((endObj instanceof Integer) == false) throw new RuntimeException("high value is invalid; not an Integer object");
+                                     
+                    // convert to indexes
+                    int startIdx = getIndex(startObj, true);
+                    int endIdx = getIndex(endObj, true);
+                    
+                    // check index bounds
+                    if (startIdx == INDEX_TOO_SMALL) throw new RuntimeException("low value is out-of-bounds; too small!");
+                    if (startIdx == INDEX_TOO_LARGE) throw new RuntimeException("low value is out-of-bounds; too large!");
+                    if (endIdx == INDEX_TOO_SMALL) throw new RuntimeException("high value is out-of-bounds; too small!");
+                    if (endIdx == INDEX_TOO_LARGE) throw new RuntimeException("high value is out-of-bounds; too large!");
+                    
+                    if (cnt == 1) {
+                        return new AxisSplitDimension(startObj, endObj, 1);
+                    } else {                    
+                        int deltaIdx = (int)Math.ceil((endIdx-startIdx) / cnt);                    
+                        return new AxisSplitDimension(reverseValue(startIdx), reverseValue(startIdx+deltaIdx), cnt);
+                    }
 		}
 		
 	}
@@ -766,3 +791,4 @@ public class  TimestampAxisIndexer implements AxisIndexer {
 	}
 
 }
+
