@@ -8,7 +8,7 @@ Creating the PreAggregate index using MapReduce consists of 3 distinct phases: P
 ### PREPARE phase
 The prepare phase splits the dataset, which must already be located in a database table, into *n* distinct chunks and puts these chunks onto the HDFS filesystem of your Hadoop cluster. This phase can be executed with the following command:
 
-`hadoop jar neogeo-mapreduce-0.0.1-SNAPSHOT-jar-with-dependencies.jar prepare <database.properties> <preaggregate.config.xml> <hdfs_job_path> <axis_to_split> <chunksize>`
+`yarn jar neogeo-mapreduce-0.0.1-SNAPSHOT-jar-with-dependencies.jar prepare <database.properties> <preaggregate.config.xml> <hdfs_job_path> <axis_to_split> <chunksize>`
 
 This command has the following options:
 
@@ -23,7 +23,7 @@ After successfull completion of this phase the full dataset will be loaded onto 
 ### RUN phase
 The run phase is a standard MapReduce job and creates the actual PreAggregate index. This phase can be executed with the following command:
 
-`hadoop jar "neogeo-mapreduce-0.0.1-SNAPSHOT-jar-with-dependencies.jar" run <hdfs_job_path> [<yarn.site.ip.address>]`
+`yarn jar "neogeo-mapreduce-0.0.1-SNAPSHOT-jar-with-dependencies.jar" run <hdfs_job_path> [<yarn.site.ip.address>]`
 
 This command has the following options:
 
@@ -35,7 +35,7 @@ After succesfull completion of this phase the index will have been created and w
 ### FINISH phase
 The finish phase loads the PreAggregate index back into your database. It can be executed with the following command:
 
-`hadoop jar neogeo-mapreduce-0.0.1-SNAPSHOT-jar-with-dependencies.jar finish <database.properties> <hdfs_job_path> [-delete-job]`
+`yarn jar neogeo-mapreduce-0.0.1-SNAPSHOT-jar-with-dependencies.jar finish <database.properties> <hdfs_job_path> [-delete-job]`
 
 This command has the following options:
 
