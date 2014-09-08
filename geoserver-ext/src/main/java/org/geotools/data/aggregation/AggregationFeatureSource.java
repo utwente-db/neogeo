@@ -448,7 +448,7 @@ public class AggregationFeatureSource extends ContentFeatureSource {
 			} else if (a instanceof NominalAxis) {
                                 NominalAxis nomAxis = (NominalAxis) a;
                                 
-                                if (nomAxis.toFIELDstore().equals(NominalAxis.WORDLISTNOMINAL)) {                                
+                                if (nomAxis.wordlistNominal()) {                                
                                     String select_word = NominalAxis.ALL;
                                     LOGGER.severe("processing axis nominal:");
                                     if ( vword != null && vword.size() > 0 ) {
