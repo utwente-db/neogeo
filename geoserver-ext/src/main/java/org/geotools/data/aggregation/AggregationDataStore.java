@@ -48,7 +48,8 @@ public class AggregationDataStore extends ContentDataStore {
 			"resolution_y integer,"+
 			"resolution_time integer,"+
 			"response_time double precision,"+
-			"\"time\" timestamp with time zone) ";
+			"\"time\" timestamp with time zone, "+
+                        "serverside_stairwalk smallint) ";
 	
         protected PreparedStatement logQuery;
 
@@ -117,8 +118,9 @@ public class AggregationDataStore extends ContentDataStore {
                                 SqlUtils.quoteIdentifier(dbType, "resolution_y") + ", " +
                                 SqlUtils.quoteIdentifier(dbType, "resolution_time") + ", " +
                                 SqlUtils.quoteIdentifier(dbType, "response_time") + ", " +
-                                SqlUtils.quoteIdentifier(dbType, "time") +
-                                ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");                            
+                                SqlUtils.quoteIdentifier(dbType, "time")  + ", " +
+                                SqlUtils.quoteIdentifier(dbType, "serverside_stairwalk") +
+                                ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");                            
                     } catch (SQLException e) {
                         LOGGER.severe("Unable to setup query logging!");
                         e.printStackTrace();
@@ -302,7 +304,7 @@ public class AggregationDataStore extends ContentDataStore {
                 logQuery.setString(2, agg.getLabel());
                 logQuery.setString(3, request);
                 logQuery.setString(4, ip);
-                
+                                
                 logQuery.setInt(5, mask);
                 
                 logQuery.setDouble(6, a.getLowX());
@@ -344,6 +346,8 @@ public class AggregationDataStore extends ContentDataStore {
                 
                 logQuery.setDouble(17, response_time);
                 logQuery.setTimestamp(18, new Timestamp(System.currentTimeMillis()));
+                
+                logQuery.setInt(19, (this.enableServersideStairwalk) ? 1 : 0);
                 
                 logQuery.execute();
                 logQuery.clearParameters();

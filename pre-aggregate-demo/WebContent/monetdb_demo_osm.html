@@ -16,7 +16,7 @@
 	var MAP_CENTER = new OpenLayers.LonLat(5.0010084, 52.1220219).transform('EPSG:4326', 'EPSG:3857');
 	var MAP_ZOOM = 7;
 
-	var AGGREGATE_TITLE = 'Aggregate Tweets';
+	var AGGREGATE_TITLE = 'Points-of-Interest';
 	var AGGREGATE_URL = 'http://localhost:8080/geoserver/nurc/wms';
 	var AGGREGATE_LAYER = 'nurc:aggregate_osm_poi_nl___myAggregate';
 
@@ -91,13 +91,21 @@ table.featureInfo caption {
 
 <br /><br />
 
+<p>This demonstration shows how the PreAggregate index enables visual exploration of Points&#8209;of&#8209;Interest data, extracted from OpenStreetMap data (downloaded from <a href="http://www.geofabrik.de/">Geofabrik.de</a>).</p>
+
+<br />
+
+<p>Use the two selection boxes below to filter the Points&#8209;of&#8209;Interest on the type and related sub-type of points.</p>
+
+<br />
+
 <table class="styled">
 	<tr>
-		<th>Tag key:</th>
+		<th>Point type:</th>
 		<td><select id="tagkey"><select></td>
 	</tr>
 	<tr>
-		<th>Tag value:</th>
+		<th>Point sub-type:</th>
 		<td><select id="tagvalue"></select></td>
 	</tr>
 </table>
@@ -126,7 +134,7 @@ table.featureInfo caption {
 
 			var opt = document.createElement("option");
 			opt.value = values[i][0];
-			opt.innerHTML = values[i][1] + " (" + values[i][2] + ")";
+			opt.innerHTML = values[i][1];
 
 			tagValueEl.appendChild(opt);
 		}
@@ -134,8 +142,8 @@ table.featureInfo caption {
 
 	
 	tagKeyEl.addEventListener("change", function (e) {
-		updateTag();
 		updateValues();
+		updateTag();
 	}, false);
 
 	tagValueEl.addEventListener("change", function (e) {
@@ -145,7 +153,7 @@ table.featureInfo caption {
 	for(var i=0; i < OSM_TAG_KEYS.length; i++) {
 		var opt = document.createElement("option");
 		opt.value = OSM_TAG_KEYS[i][0];
-		opt.innerHTML = OSM_TAG_KEYS[i][1] + " (" + OSM_TAG_KEYS[i][2] + ")";
+		opt.innerHTML = OSM_TAG_KEYS[i][1];
 
 		tagKeyEl.appendChild(opt);
 	}
