@@ -48,7 +48,7 @@ public class RunMR {
         this.fs = fs;
     }
     
-    public long doJob (String jobPath) throws IOException, RunException, ClassNotFoundException, InterruptedException {
+    public long doJob (String jobPath, String yarnSite) throws IOException, RunException, ClassNotFoundException, InterruptedException {
         long startTime = System.currentTimeMillis();
         
         // verify paths exist
@@ -104,6 +104,12 @@ public class RunMR {
         
         // this ensures a CSV output (i.e. key is also separated from value with a ,)
         conf.set("mapreduce.output.textoutputformat.separator", ",");
+        
+        if (yarnSite != null) {
+            conf.set("mapreduce.framework.name", "yarn");
+            conf.set("yarn.resourcemanager.address", yarnSite + ":8032");
+            conf.set("yarn.resourcemanager.scheduler.address", yarnSite + ":8030");
+        }
         
         Job job = Job.getInstance(conf, "Create PreAggregate Index");
         job.setJarByClass(RunMR.class);
