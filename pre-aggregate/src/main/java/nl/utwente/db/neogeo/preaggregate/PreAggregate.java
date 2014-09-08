@@ -30,8 +30,7 @@ public class PreAggregate {
 	 */
         public static final boolean     showAxisAndKey          = true;
 	public static final boolean	doResultCorrection	= true;
-	public static final boolean	serversideStairwalk	= true;
-        //public static final boolean	serversideStairwalk	= false;
+        public static final boolean     DEFAULT_SERVERSIDE_STAIRWALK = false;
         
         public static final boolean executeQueriesDirectly      = true;
 	public static final char	DEFAULT_KD			= AggrKeyDescriptor.KD_CROSSPRODUCT_LONG;
@@ -87,6 +86,8 @@ public class PreAggregate {
 	protected String schema;
 	protected String table;
 	protected String label;
+        
+        protected boolean serversideStairwalk = DEFAULT_SERVERSIDE_STAIRWALK;
 
 	AggrKeyDescriptor kd = null;
 	String indexPrefix = "_ipfx_"; // incomplete, should be unique in database
@@ -127,6 +128,10 @@ public class PreAggregate {
 			throw new SQLException("No PreAggregate " + label + " for table " + schema + "."
 					+ table);
 	}
+        
+        public void enableServersideStairwalk(boolean val) {
+            this.serversideStairwalk = val;
+        }
         
         /**
          * Checks if the geometry_columns table exists and if a table/column has been properly registered

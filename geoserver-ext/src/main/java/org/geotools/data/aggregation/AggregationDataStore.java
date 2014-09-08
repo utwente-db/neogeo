@@ -64,11 +64,13 @@ public class AggregationDataStore extends ContentDataStore {
 	private int ySize;
 	private int timeSize;
 	private int mask;
+        private boolean enableServersideStairwalk;
         private boolean enableLogging;
 
 
 	public AggregationDataStore(DbType dbType, String hostname, int port, String schema, String database, 
-                String username, String password, int xSize, int ySize, int timeSize, int mask, boolean enableLogging){
+                String username, String password, int xSize, int ySize, int timeSize, int mask,
+                boolean enableServersideStairwalk, boolean enableLogging){
             
                 this.dbType = dbType;
 		this.hostname = hostname; 
@@ -81,6 +83,7 @@ public class AggregationDataStore extends ContentDataStore {
 		this.ySize = ySize;
 		this.timeSize = timeSize;
 		this.mask = mask;
+                this.enableServersideStairwalk = enableServersideStairwalk;
                 this.enableLogging = enableLogging;
                 
 		con = getConnection();
@@ -260,13 +263,21 @@ public class AggregationDataStore extends ContentDataStore {
         public boolean isLoggingEnabled () {
             return this.enableLogging;
         }
+        
+        public boolean isServersideStairwalkEnabled () {
+            return this.enableServersideStairwalk;
+        }
 
 	public PreAggregate createPreAggregate(String typename) throws SQLException{
 		String tablename = PreAggregate.getTablenameFromTypeName(typename);
 		String label = PreAggregate.getLabelFromTypeName(typename);
 		Connection c = getConnection();
 		// System.out.println("JF:succes connection: "+c);
-		return new PreAggregate(dbType, c,schema,tablename,label);
+		PreAggregate pa = new PreAggregate(dbType, c,schema,tablename,label);
+                
+                pa.enableServersideStairwalk(this.enableServersideStairwalk);
+                
+                return pa;
 	}
 
         public void logQuery (Request req, PreAggregate agg, int mask, Area a, Timestamp start_time, Timestamp end_time, Vector<String> keywordsList,
