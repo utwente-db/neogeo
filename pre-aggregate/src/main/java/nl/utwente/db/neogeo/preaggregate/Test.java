@@ -118,7 +118,7 @@ public class Test {
 		                
                 //runTest2(connection, t.getSchema());
                 
-                runTestOsm(connection, t.getSchema());
+                //runTestOsm(connection, t.getSchema());
                 
                 
                 //runTest_ckey();
@@ -130,7 +130,7 @@ public class Test {
                 
                 //runTest_standard_time(connection, t.getSchema());
                 
-                //runTest_standard_nominal(connection, t.getSchema());
+                runTest_standard_nominal(connection, t.getSchema());
                 
                 //connection.close();
 	}
@@ -665,7 +665,7 @@ public class Test {
             
             ResultSet rs = null;
             
-            /*
+            
             rs = pa.SQLquery_grid(PreAggregate.AGGR_COUNT, iv_first_obj, count);
             while(rs.next()){
                     System.out.println(rs.getInt(1)+"|"+rs.getLong(2) + "|" + rs.getLong(3));
@@ -673,7 +673,7 @@ public class Test {
             rs.close();
 
             System.exit(0);
-            */
+            
             
             
             

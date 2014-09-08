@@ -60,8 +60,8 @@ public class Runner {
     protected void runAll (String[] args) throws IOException, ClassNotFoundException, SQLException, PrepareMR.PrepareException, RunMR.RunException, InterruptedException, FinishMR.FinishException {
         logger.info("Running ALL phases");
                  
-        if (args.length != 6 && args.length != 7) {
-            System.err.println("Usage: all <database.properties> <config.xml> <jobPath> <axis_to_split> <chunk_size> [-delete-job]");
+        if (args.length < 6 || args.length > 8) {
+            System.err.println("Usage: all <database.properties> <config.xml> <jobPath> <axis_to_split> <chunk_size> [-delete-job] [<yarn.ip.address>]");
             System.exit(2);
         }
         
@@ -92,8 +92,27 @@ public class Runner {
         
         if (chunkSize < 1) throw new IllegalArgumentException("Invalid chunksize specified; must be larger than 0"); 
         
-        boolean deleteJob = (args.length == 7 && args[6].equalsIgnoreCase("-delete-job"));
-        
+        boolean deleteJobData = false;
+        String yarnSite = null;
+        if (args.length == 7) {
+            deleteJobData = (args.length == 7 && args[6].equalsIgnoreCase("-delete-job"));
+            
+            // if not -delete-job arg then it is the yarn site IP
+            if (deleteJobData == false) {
+                yarnSite = args[6];                
+            }
+        } else if (args.length == 8) {
+            if (args[6].equalsIgnoreCase("-delete-job")) {
+                deleteJobData = true;
+                yarnSite = args[7];
+            } else if (args[7].equalsIgnoreCase("-delete-job")) {
+                deleteJobData = true;
+                yarnSite = args[6];
+            } else {
+                throw new IllegalArgumentException("Unable to differentiate last 2 optional arguments.");
+            }
+        }
+                
         logger.info("Running PREPARE phase...");
         PrepareMR prepare = PrepareMRFactory.getPrepareMR(conf, dbInfo, conn, config);
         prepare.setFS(fs);
@@ -103,13 +122,13 @@ public class Runner {
         logger.info("Running MAPREDUCE phase...");
         RunMR run = new RunMR(conf);
         run.setFS(fs);
-        long runTime = run.doJob(jobPath);
+        long runTime = run.doJob(jobPath, yarnSite);
         logger.info("Finished MAPREDUCE phase in " + runTime + " ms");
         
         logger.info("Running FINISH phase...");
         FinishMR finish = FinishMRFactory.getFinishMR(conf, dbInfo, conn);
         finish.setFS(fs);
-        long finishTime = finish.doFinish(jobPath, deleteJob);
+        long finishTime = finish.doFinish(jobPath, deleteJobData);
         logger.info("Finished FINISH phase in " + finishTime + " ms");
         
         logger.info("Finished ALL phases");
@@ -145,16 +164,21 @@ public class Runner {
     protected void runJob(String[] args) throws RunMR.RunException, IOException, ClassNotFoundException, InterruptedException {
         logger.info("Running MAPREDUCE phase");
                 
-        if (args.length != 2) {
-            System.err.println("Usage: run <jobPath>");
+        if (args.length != 2 && args.length != 3) {
+            System.err.println("Usage: run <jobPath> [<yarn.ip.address>]");
             System.exit(2);
         }
                
         String jobPath = args[1];
+        String yarnSite = null;
+        
+        if (args.length == 3) {
+            yarnSite = args[2];
+        }
         
         RunMR run = new RunMR(conf);
         run.setFS(fs);
-        long execTime = run.doJob(jobPath);
+        long execTime = run.doJob(jobPath, yarnSite);
                 
         logger.info("Finished MAPREDUCE phase");
         logger.info("Total time: " + execTime + " ms");

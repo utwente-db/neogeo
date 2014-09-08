@@ -23,11 +23,12 @@ After successfull completion of this phase the full dataset will be loaded onto 
 ### RUN phase
 The run phase is a standard MapReduce job and creates the actual PreAggregate index. This phase can be executed with the following command:
 
-`hadoop jar "neogeo-mapreduce-0.0.1-SNAPSHOT-jar-with-dependencies.jar" run <hdfs_job_path>`
+`hadoop jar "neogeo-mapreduce-0.0.1-SNAPSHOT-jar-with-dependencies.jar" run <hdfs_job_path> [<yarn.site.ip.address>]`
 
 This command has the following options:
 
 - **hdfs_job_path:** specifies the path on your HDFS filesystem where all the data of the index creation will be stored. This directory will be automatically created by the PREPARE utility.
+- **yarn.site.ip.address:** *(Optional)* specify the IP address of host name of the server that runs the Yarn ResourceManager and SchedulingManager. In some cases this may be necessary to be able to run Hadoop/MapReduce.
 
 After succesfull completion of this phase the index will have been created and will be located (in possibly several parts) on the HDFS filesystem, ready to be located back into your database.
 
@@ -42,10 +43,14 @@ This command has the following options:
 - **hdfs_job_path:** specifies the path on your HDFS filesystem where all the data of the index creation will be stored. This directory will be automatically created by the PREPARE utility.
 - **-delete-job:** *(Optional)* this switch is used to indicate that all the job data must be deleted from the HDFS filesystem
 
-After succesfull completeion of this phase the PreAggregate index will be properly loaded back into your database and will also have been registered with the PreAggregate repository. You can now use it for PreAggregate grid/cell queries.
+After succesfull completion of this phase the PreAggregate index will be properly loaded back into your database and will also have been registered with the PreAggregate repository. You can now use it for PreAggregate grid/cell queries.
+
+### Run ALL phases
+It is also possible to run ALL three phases in a single command by executing the following command:
+
+`yarn jar neogeo-mapreduce-0.0.1-SNAPSHOT-jar-with-dependencies.jar all <database.properties><preaggregate.config.xml> <hdfs_job_path> <axis_to_split> <chunksize> [<yarn.site.ip.address>] [-delete-job]`
+
+The parameters are exactly the same as the identically-named parameters from the previous sub-sections. This command will execute all 3 phases after one another unless an error occurs during a phase.
 
 ## JAR compilation
-TODO: write how to proper compile JAR for use with Hadoop from source. Not sure yet how this fully works.
-
-## Further notes
-None at this moment.
+Compile a complete JAR, including the libraries, by running the Maven command-line command: `mvn clean package`. This will generate a `-with-dependencies` JAR, which you must upload to the server that runs your Yarn ResourceManager and from there you will be able to run the commands, as outlined in the previous section.

@@ -30,8 +30,7 @@ public class PreAggregate {
 	 */
         public static final boolean     showAxisAndKey          = true;
 	public static final boolean	doResultCorrection	= true;
-	public static final boolean	serversideStairwalk	= true;
-        //public static final boolean	serversideStairwalk	= false;
+        public static final boolean     DEFAULT_SERVERSIDE_STAIRWALK = false;
         
         public static final boolean executeQueriesDirectly      = true;
 	public static final char	DEFAULT_KD			= AggrKeyDescriptor.KD_CROSSPRODUCT_LONG;
@@ -87,6 +86,8 @@ public class PreAggregate {
 	protected String schema;
 	protected String table;
 	protected String label;
+        
+        protected boolean serversideStairwalk = DEFAULT_SERVERSIDE_STAIRWALK;
 
 	AggrKeyDescriptor kd = null;
 	String indexPrefix = "_ipfx_"; // incomplete, should be unique in database
@@ -127,6 +128,10 @@ public class PreAggregate {
 			throw new SQLException("No PreAggregate " + label + " for table " + schema + "."
 					+ table);
 	}
+        
+        public void enableServersideStairwalk(boolean val) {
+            this.serversideStairwalk = val;
+        }
         
         /**
          * Checks if the geometry_columns table exists and if a table/column has been properly registered
@@ -1035,16 +1040,32 @@ public class PreAggregate {
 			} else {
 				// it must be Nominal
 				NominalAxis nax = (NominalAxis)axis[i];
-				if ( ! (iv_first_obj[i][RMIN] instanceof String ) || ! (iv_first_obj[i][RMAX] instanceof String ) )
-					throw new SQLException(
-							"bad String bound on dimension " + i);
-				iv_first[i] = nax.getWordIndex((String)iv_first_obj[i][RMIN]);
+                                
+                                if (iv_first_obj[i][RMIN] instanceof Integer && iv_first_obj[i][RMAX] instanceof Integer) {
+                                    iv_first[i] = ((Integer)iv_first_obj[i][RMIN]).intValue();
+                                                                        
+                                    if (iv_first[i] != ((Integer)iv_first_obj[i][RMAX]).intValue()) {
+                                        throw new SQLException("Nominal Integer bounds must be equal on dimension " + i);
+                                    }
+                                } else if (iv_first_obj[i][RMIN] instanceof String && iv_first_obj[i][RMAX] instanceof String) {
+                                    // check if NominalAxis has word list and is therefore able to convert String bounds into Integer index bounds
+                                    if (nax.fromFIELDstore().equals(NominalAxis.WORDLISTNOMINAL) == false) {
+                                        throw new SQLException("String bounds specified on dimension " + i + " but no WordList available");
+                                    }
+                                    
+                                    iv_first[i] = nax.getWordIndex((String)iv_first_obj[i][RMIN]);
+                                    
+                                    if ( iv_first[i] != nax.getWordIndex((String)iv_first_obj[i][RMAX]) ) {
+					throw new SQLException("Nominal String bounds must be equal on dimension " + i);
+                                    }
+                                } else {
+                                    throw new SQLException("Bad bounds on dimension " + i + ", must be either Integer or String");
+                                }
+                                
 				if ( iv_first[i] < 0 )
 					throw new SQLException(
 							"unknown word "+iv_first_obj[i][RMIN]+" dimension " + i);
-				if ( iv_first[i] != nax.getWordIndex((String)iv_first_obj[i][RMAX]) )
-					throw new SQLException(
-							"Nominal String bounds must be equal on dimension " + i);
+				
 				iv_last[i] = iv_first[i] + 1;
 				iv_size[i] = 1;
 			}
@@ -1064,7 +1085,7 @@ public class PreAggregate {
 				} else {
 				}
 				prev_dimsize *= iv_count[i];
-			}
+			} 
 			StringBuilder sqlaggr = new StringBuilder();
                         
                         if (SqlUtils.dbType(c) == DbType.MONETDB) {

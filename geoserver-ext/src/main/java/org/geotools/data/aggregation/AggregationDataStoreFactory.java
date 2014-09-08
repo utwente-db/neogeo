@@ -49,6 +49,8 @@ public class AggregationDataStoreFactory implements DataStoreFactorySpi {
     public static final Param MIN_AGG_PARAM = new Param("minimum", Boolean.class, "output min aggregate", true, false);
     public static final Param MAX_AGG_PARAM = new Param("maximum", Boolean.class, "output maxt aggregate", true, false);
     
+    public static final Param SERVERSIDE_STAIRWALK_PARAM = new Param("Enable server-side Stairwalk", Boolean.class, "Use server-side Stairwalk algorithm functionality", true, false);
+    
     public static final Param LOG_PARAM = new Param("enable query logging", Boolean.class, "Enable grid query logging?", true, false);
     
      /** parameter for namespace of the datastore */
@@ -69,7 +71,7 @@ public class AggregationDataStoreFactory implements DataStoreFactorySpi {
     {
         return (new Param[] {
             TYPE_PARAM, DBTYPE_PARAM, HOSTNAME_PARAM, PORT_PARAM, SCHEMA_PARAM, DATABASE_PARAM, USERNAME_PARAM, PASSWORD_PARAM, NAMESPACE_PARAM,
-            X_SIZE_PARAM,Y_SIZE_PARAM,TIME_SIZE_PARAM,CNT_AGG_PARAM,SUM_AGG_PARAM,MIN_AGG_PARAM,MAX_AGG_PARAM, LOG_PARAM
+            X_SIZE_PARAM,Y_SIZE_PARAM,TIME_SIZE_PARAM,CNT_AGG_PARAM,SUM_AGG_PARAM,MIN_AGG_PARAM,MAX_AGG_PARAM, SERVERSIDE_STAIRWALK_PARAM, LOG_PARAM
         });
     }
 
@@ -165,13 +167,17 @@ public class AggregationDataStoreFactory implements DataStoreFactorySpi {
         boolean min = ((Boolean)MAX_AGG_PARAM.lookUp(params)).booleanValue();
         boolean max = ((Boolean)MIN_AGG_PARAM.lookUp(params)).booleanValue();
         boolean enableLogging = ((Boolean)LOG_PARAM.lookUp(params)).booleanValue();
+        boolean enableServersideStairwalk = ((Boolean)SERVERSIDE_STAIRWALK_PARAM.lookUp(params)).booleanValue();
         
         int mask =  cnt ? PreAggregate.AGGR_COUNT:0;
         mask += sum ? PreAggregate.AGGR_SUM:0;
         mask += min ? PreAggregate.AGGR_MIN:0;
         mask += max ? PreAggregate.AGGR_MAX:0;
         
-        AggregationDataStore dataStore = new AggregationDataStore(dbType, hostname, port, schema, database, username, password, xSize, ySize, timeSize, mask, enableLogging);
+        AggregationDataStore dataStore = new AggregationDataStore(
+                dbType, hostname, port, schema, database, username, password, 
+                xSize, ySize, timeSize, mask, enableServersideStairwalk, enableLogging
+        );
         
         String namespace = (String) NAMESPACE_PARAM.lookUp(params);
         

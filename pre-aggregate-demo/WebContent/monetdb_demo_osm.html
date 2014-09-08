@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Twitter MonetDB/Geoserver Demo for dataset OSM POI NL</title>
+<link rel="stylesheet" href="theme/default/style.css" type="text/css">
+<link rel="stylesheet" href="css/style.css" type="text/css">
+<script src="http://maps.google.com/maps/api/js?v=3&amp;sensor=false"></script>
+<script src="js/OpenLayers.js"></script>
+<script src="js/map.js"></script>
+<script src="js/osm_data.js"></script>
+<script type="text/javascript">
+	var MAP_CENTER = new OpenLayers.LonLat(5.0010084, 52.1220219).transform('EPSG:4326', 'EPSG:3857');
+	var MAP_ZOOM = 7;
+
+	var AGGREGATE_TITLE = 'Points-of-Interest';
+	var AGGREGATE_URL = 'http://farm12.ewi.utwente.nl:8080/geoserver/nurc/wms';
+	var AGGREGATE_LAYER = 'nurc:aggregate_osm_poi_nl___myAggregate';
+
+	var TWEETS_TITLE = 'Tweets';
+	var TWEETS_URL = false;
+	var TWEETS_LAYER = false;
+</script>
+
+
+<style type="text/css">
+#wrapper {
+	width: 640px;
+}
+
+#location {
+	float: right;
+}
+    .panel .sfItemInactive {
+        background:url(http://robert.szczepanek.pl/icon/0.1/identify.png) no-repeat;
+        opacity: 0.2;
+        width: 24px;
+        height: 24px;
+    }
+
+    .panel .sfItemActive {
+        background:url(http://robert.szczepanek.pl/icon/0.1/identify.png) no-repeat;
+        width: 24px;
+        height: 24px;
+    }
+
+/* Styles used by the default GetFeatureInfo output, added to make IE happy */
+table.featureInfo,table.featureInfo td,table.featureInfo th {
+	border: 1px solid #ddd;
+	border-collapse: collapse;
+	margin: 0;
+	padding: 0;
+	font-size: 90%;
+	padding: .2em .1em;
+}
+
+table.featureInfo th {
+	padding: .2em .2em;
+	font-weight: bold;
+	background: #eee;
+}
+
+table.featureInfo td {
+	background: #fff;
+}
+
+table.featureInfo tr.odd td {
+	background: #eee;
+}
+
+table.featureInfo caption {
+	text-align: left;
+	font-size: 100%;
+	font-weight: bold;
+	padding: .2em .2em;
+}
+</style>
+</head>
+<body onload="init()">
+<h1 id="title">Twitter MonetDB/Geoserver Demo for OpenStreetMap POI NL</h1>
+<div id="tags">Twitter, MonetDB, Geoserver, Aggregation index</div>
+<p id="shortdesc">Demonstration of the use of the aggregation index for OSM POI data with MonetDB.</p>
+<div id="map" class="smallmap"></div>
+<div id="wrapper">
+<div id="location">location</div>
+<div id="scale"></div>
+</div>
+
+<br /><br />
+
+<p>This demonstration shows how the PreAggregate index enables visual exploration of Points&#8209;of&#8209;Interest data, extracted from OpenStreetMap data (downloaded from <a href="http://www.geofabrik.de/">Geofabrik.de</a>).</p>
+
+<br />
+
+<p>Use the two selection boxes below to filter the Points&#8209;of&#8209;Interest on the type and related sub-type of points.</p>
+
+<br />
+
+<table class="styled">
+	<tr>
+		<th>Point type:</th>
+		<td><select id="tagkey"><select></td>
+	</tr>
+	<tr>
+		<th>Point sub-type:</th>
+		<td><select id="tagvalue"></select></td>
+	</tr>
+</table>
+
+<script type="text/javascript">
+	var tagKeyEl = document.getElementById("tagkey");
+	var tagValueEl = document.getElementById("tagvalue");
+
+	var updateTag = function () {
+		var keyId = tagKeyEl.value;
+		var valueId = tagValueEl.value;
+
+		var viewparams = "axis2_start:" + keyId;
+		viewparams += ";axis3_start:" + valueId;
+
+		update_viewparams(viewparams);
+	};
+
+	var updateValues = function () {
+		var keyId = tagKeyEl.value;
+		var values = OSM_TAG_VALUES[keyId];
+		
+		tagValueEl.innerHTML = '';
+		for(var i=0; values.length; i++) {
+			if (typeof(values[i]) == 'undefined') break;
+
+			var opt = document.createElement("option");
+			opt.value = values[i][0];
+			opt.innerHTML = values[i][1];
+
+			tagValueEl.appendChild(opt);
+		}
+	};
+
+	
+	tagKeyEl.addEventListener("change", function (e) {
+		updateValues();
+		updateTag();
+	}, false);
+
+	tagValueEl.addEventListener("change", function (e) {
+		updateTag();
+	}, false);
+
+	for(var i=0; i < OSM_TAG_KEYS.length; i++) {
+		var opt = document.createElement("option");
+		opt.value = OSM_TAG_KEYS[i][0];
+		opt.innerHTML = OSM_TAG_KEYS[i][1];
+
+		tagKeyEl.appendChild(opt);
+	}
+
+	updateValues();
+</script>
+        
+</body>
+</html>
