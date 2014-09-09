@@ -136,8 +136,32 @@ public class AggregationDataStore extends ContentDataStore {
 	 * @return
 	 */
 	public Connection getConnection(){
-		if(con==null)
+		if(con==null) {
 			con = _getConnection();
+                } else {
+                    try {
+                        if (con.isClosed()) {
+                            con = _getConnection();
+                        }                        
+                    } catch (SQLException ex) {
+                        Logger.getLogger(AggregationDataStore.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                
+                // verify connection is still active
+                if (con != null) {
+                    Statement q;
+                    try {
+                        q = con.createStatement();
+                        q.execute("SELECT 1");
+                        q.close();
+                    } catch (SQLException ex) {
+                        // try to finally create a new connection once more
+                        LOGGER.warning("Connection failed, trying 1 final time to create new connection");
+                        con = _getConnection();
+                    }
+                }
+                                                
 		return con;
 	}
 
