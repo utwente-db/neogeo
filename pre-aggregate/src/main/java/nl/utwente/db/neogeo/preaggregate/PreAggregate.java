@@ -1323,7 +1323,7 @@ public class PreAggregate {
                                 }
                                 cols.append(") AS " + colKey);
                                 sqlgkey.append(colKey + "*" + factor + "+");
-                                sqlgroupby.append(colKey + ",");
+                                
                             } else {
                                 sqlgkey.append("floor( (").append(axis[i].columnExpression()).append("/").append(divideBy).append(")");
                                 if (startIndex > 0) {
@@ -1333,13 +1333,14 @@ public class PreAggregate {
                                 }                                    
                                 sqlgkey.append(")*").append(factor).append("+");
 
-                                sqlgroupby.append("floor( (").append(axis[i].columnExpression()).append("/").append(divideBy).append(")");
+                                cols.append(", floor( (").append(axis[i].columnExpression()).append("/").append(divideBy).append(")");
                                 if (startIndex > 0) {
-                                    sqlgroupby.append(" - ").append(startIndex);
+                                    cols.append(" - ").append(startIndex);
                                 } else if (startIndex < 0) {
-                                    sqlgroupby.append(" + ").append(Math.abs(startIndex));
+                                    cols.append(" + ").append(Math.abs(startIndex));
                                 }    
-                                sqlgroupby.append("),");
+                                cols.append(") AS " + colKey);
+                                sqlgroupby.append(colKey + ",");
                             }
 
                             sqlwhere.append( " and "+axis[i].columnExpression()+">="+ start);
@@ -1372,15 +1373,18 @@ public class PreAggregate {
                             throw new UnsupportedOperationException("MetricAxis with indexer of type " + indexer.getClass().getCanonicalName() + " not supported");
                         }
                     } else if (axis[i] instanceof NominalAxis) {
-                        // nominal dimension filter
-                        if (!(iv_first_obj[i][0] instanceof String)) {
-                            throw new SQLException("NominalAxis only works with String objects as start/end");
-                        }
-                        
+                         // nominal dimension filter
                         NominalAxis nominalAxis = (NominalAxis) axis[i];
+                        int wordIndex = -1;
                         
-                        // convert actual word to its index
-                        int wordIndex = nominalAxis.getWordIndex((String)iv_first_obj[i][0]);
+                        if (iv_first_obj[i][0] instanceof Integer) {
+                            wordIndex = ((Integer)iv_first_obj[i][0]).intValue();
+                        } else if (iv_first_obj[i][0] instanceof String) {
+                            // convert actual word to its index
+                            wordIndex = nominalAxis.getWordIndex((String)iv_first_obj[i][0]);
+                        } else {
+                            throw new SQLException("NominalAxis only works with String or Integer objects as start/end");
+                        }
 
                         // add filter to query
                         sqlwhere.append(" AND ").append(nominalAxis.columnExpression()).append(" = ").append(wordIndex);

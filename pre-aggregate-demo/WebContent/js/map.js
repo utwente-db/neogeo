@@ -263,6 +263,7 @@ function init() {
 				transparent: 'true',
 					//time: '2002-09-01T00:00:00.0Z/2002-10-01T23:59:59.999Z',
 					//styleMap: new OpenLayers.StyleMap(style)
+				viewparams: (typeof(AGGREGATE_VIEW_PARAMS) != 'undefined') ? AGGREGATE_VIEW_PARAMS : ''
 			}, {
 				singleTile: true,
 				ratio: 1,
