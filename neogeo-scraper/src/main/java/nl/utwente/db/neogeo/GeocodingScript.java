@@ -1,3 +1,5 @@
+package nl.utwente.db.neogeo;
+
 import java.util.Arrays;
 import java.util.List;
 
