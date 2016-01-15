@@ -1,0 +1,95 @@
+In this section, some pointers will be given to important sections of code
+in terms of processing pre-aggregate indexes which are used by the
+GeoServer extension.
+
+%MvK: ???
+%During the development of Stairwalker, the developers project of GeoServer,
+%the source code used is available to download on the GeoServer website.
+Using the source code GeoServer and running it from an IDE, provides useful
+information for troubleshooting, as logging information is printed directly
+to the console, and for constant redeployment a new WAR file does not have
+to be remade every time. The source code of the Stairwalker project is
+available on GitHib\footnote{\url{https://github.com/utwente-db/neogeo}}.
+The two important packages from this project are \lstinline|geoserver-ext|
+and \lstinline|pre-aggregate|. The first is the extension used in GeoServer
+to handle pre-aggregation indexes as data sources and the second is the
+package which is used to create the pre-aggregate index.
+
+\subsubsection{Creating Pre-Aggregate Index from Source}
+
+%\todo[inline, size=\small]{This subsection is still superficial in some aspects. I am unsure how extensive an explanation is required here and if it is even necessary.}
+
+Creating a pre-aggregate index can be done using a tool as shown in
+\Fref{sec:preaggtool}. It is also possible to create a new method in the
+\lstinline|Test.java| of \lstinline|pre-aggregate| in which the steps for
+creating the pre-agggregation index can be done manually. In the
+\lstinline|main| of this class configuration file
+\lstinline|database.properties| is read, which contains login information
+about the database which contains the dataset, and connection is made to
+said database. Next a pre-aggregate index is made using the custom made
+method which describes the pre-aggregation. How to set up such a method is
+described in this subsection.
+
+Firstly for each axis on which the dataset will be split an
+\lstinline|AggregateAxis| variable will be defined. Next these variables
+should be initiated with a axis type (\lstinline|metric| or
+\lstinline|nominal|), in the case of \lstinline|nominal| also a word list
+(which contains the words on which the dataset will be split) should be
+created. The constructors of both axis types are as follows:
+
+\begin{lstlisting}
+public MetricAxis(String columnExpression,
+	String type, Object BASEBLOCKSIZE, short N);
+	
+public NominalAxis(String word_collection_column, 
+	String word_index_column, String wordlist_str, 
+	String name);
+\end{lstlisting}
+
+Once all axes have been initialized, an array containing all axes should be
+created which will be used as input for the \lstinline|PreAggregate|
+variable created in the next. The next step is to create a pre-aggregate
+index by creating and initiating a \lstinline|PreAggregate| variable. The
+constructor of \lstinline|PreAggregate| is as follows:
+
+\begin{lstlisting}
+public PreAggregate(Connection c, String schema,
+	String table, String override_name,
+	String label, AggregateAxis axis[],
+	String aggregateColumn, String aggregateType,
+	int aggregateMask, int axisToSplit,
+	long chunkSize, Object[][] newRange);
+\end{lstlisting}
+
+Afterwards the connection to the database should be closed. A method
+containing these components is created and it can be statically run in the
+main. Note that with the \lstinline|NominalAxis|, some prepossessing maybe
+required on the dataset. In order to do this, the help method
+\lstinline|tagWordIds2Table| is used. On \lstinline|NominalAxis| the
+\lstinline|tagWordIds2Table| method has the following arguments:
+
+\begin{lstlisting}
+public void tagWordIds2Table(Connection c, 
+		String schema, String org_table, 
+		String new_table);
+\end{lstlisting}
+
+\subsubsection{Filtering Words for Nominal Axis}
+\label{sec:filtering}
+
+In the package \lstinline|geoserver-ext|, specifically the class
+\lstinline|AggregationFeatureSource| creates the SQL query which requests
+data from the pre-aggregated index for which GeoServer is built. If the
+pre-aggregated index contains a \lstinline|Nominal| axis, then it is
+possible to pass along words to filter the axis in GeoServer using
+\lstinline|VIEWPARAMS| (see \Fref{sec:previewlayer}). In order to include
+this filter parameter, the method \lstinline|getReaderInternal| and possibly
+\lstinline|reformulateQuery| should be extended.
+
+In the method \lstinline|getReaderInternal|, the layer request sent to
+GeoServer is parsed including the \lstinline|VIEWPARAMS|, so a variable
+should be created in the method which matches the word which should be
+filtered given by \lstinline|<TYPE>:<VALUE>|. This variable can then be
+passed to the \lstinline|reformulateQuery| method. It is then possible in
+\lstinline|reformulateQuery| for a specific \lstinline|AggregateAxis| to
+split on the variable passed along in \lstinline|getReaderInternal|.

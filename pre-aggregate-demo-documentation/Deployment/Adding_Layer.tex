@@ -1,0 +1,74 @@
+%Now we have a source and have a style to use, it is time to setup a layer to display this style. 
+%\begin{enumerate}
+%	\item Go to Configuration $\rightarrow$ Layers and press the button on top, A drop down menu should appear in where the database has to be selected.  Once a database has been selected there should be a couple of options of which data should be displayed.
+%	\item Select the data you want and press Publish. Fill in all these fields in order to get the layer to work. Important are the projections. In our layers we use Projection of Source, EPSG:4326, and Given Projection, EPSG:3857. And set handling of the projection to use the given projection. Then for Boundary Rectangles let them be calculated based on sourceprojection. And then all fields should be filled in, do not press save yet however. 
+%	\item On top select publish. Select the style which should display your data, select the style that has been made in the last step here. If there is no style that can be displayed, something went wrong and the last steps should be repeated.
+%	\item Once this is done press save and the layer should be added.
+%\end{enumerate}
+
+In GeoServer, a layer refers to raster or vector data that contains
+geographic features. Layers represent each feature (axis in the
+pre-aggregate index) of a dataset that needs to be represented. All layers
+much have a source of the data which in this case was setup in
+\Fref{sec:addingsource}. More information about layers can be found in the
+\href{http://docs.geoserver.org/stable/en/user/webadmin/data/layers.html}{GeoServer
+User Manual}. 
+
+Creating a layer for a pre-aggregate index dataset can be done as follows:
+
+\begin{enumerate}
+	\item Navigate to \lstinline|Layers| by clicking on the \lstinline|Layers| link under the \lstinline|Data| section in the navigator on the left hand side of the web administration interface homepage.
+	\item On the \lstinline|Layers| page select the option \lstinline|Add a new resource| located at the top of the page.
+	\item This leads to a new page where the \lstinline|Store| which contains the layer needs be chosen from a drop-down list. If there are no \lstinline|Store|s available make sure one was added, see \Fref{sec:addingsource} 
+	\item Choose the \lstinline|Store| in which the aggregation index is stored.
+	\item Once a \lstinline|Store| is selected a list of resources contained in the \lstinline|Store| is given. These resources are the different aggregated indexes in the database which was linked to a \lstinline|Store| in \Fref{sec:addingsource}.
+	\item Select the pre-aggregate index which should be visualized in a layer by clicking the \lstinline|Publish| link corresponding to the \lstinline|Layer name| of the aggregate index.
+\end{enumerate}
+
+\noindent At this point a layer has been selected to be published. This
+layer will be a visual representation of the data from the aggregation
+index created in \Fref{sec:preaggtool}. In order to make sure the correct
+geographical location is used in GeoServer and to give the layer a fitting
+style the following steps have to be taken in on the \lstinline|Edit Layer|
+page.
+
+\begin{enumerate}[resume]
+	\item In the \lstinline|Data| tab the following sections and fields should be filled in.
+	\begin{enumerate}
+		\item In the \lstinline|Basic Resource Info| there are some labeling fields. Standard the \lstinline|Name| and \lstinline|Title| are \lstinline|<aggregation-index-tablename>| followed by \lstinline|___myAggregate|. These can both changed to whatever is desired. However make sure the that the \lstinline|Enabled| box is ticked in this section.
+		\item In the \lstinline|Coordinate Reference Systems| section there are three fields.
+			\begin{enumerate}
+				\item \lstinline|Native SRS| should be \lstinline|EPSG:4326|.
+				\item \lstinline|Declared SRS| should be \lstinline|ESPG:3857|. This coordinate system is used since it is what is usually used for tile based map representation.
+				\item \lstinline|SRS handling| should be \lstinline|Reproject native to declared|.
+			\end{enumerate}
+		\item In the \lstinline|Bounding Boxes| the coordinates corresponding to the data from the aggregation index is calculated for GeoServer. For \lstinline|Native Bounding Box| click \lstinline|Compute from data| and for \lstinline|Lat/Lon Bounding Box| click \lstinline|Compute from native bounds|.
+		\item All other sections in this tab are of little importance in a basic deployment.
+	\end{enumerate}
+	%Some very ugly things happen with \lstinline here to make things fit nicely on the page. Sorry =(
+	\item Next in the \lstinline|Publishing| tab a style can be added to the layer, the default style of a layer is \lstinline|polygon|. In the section \lstinline|WMS Settings| the field \lstinline|Default| \lstinline|Style| can be changed by selecting the desired style from the drop-down menu. For more about styles and creating styles see \Fref{sec:addingstyle} and \Fref{sec:visualization}.
+\end{enumerate}
+
+\noindent If the aggregation index does not contain a time dimension the
+setup of the layer is now complete and can be saved. However if the
+aggregation index does have a time dimension some additional adjustments
+need to be made which are described below.
+
+\begin{enumerate}[resume]
+	\item Select the \lstinline|Dimensions| tab.
+	\begin{enumerate}
+		\item Enable the the \lstinline|Time| dimension.
+		\item As \lstinline|Attribute| select \lstinline|starttime|.
+		\item Do not set an \lstinline|End Attribute|.
+		\item As \lstinline|Presentation| select \lstinline|Continuous interval|.
+	\end{enumerate}
+	\item Save the layer.
+\end{enumerate}
+
+The layer which represents the dataset with a style created in
+\Fref{sec:addingstyle} has now been created and is ready for use. A layer
+can be edited once it has been created so if changes need to be made a new
+layer should not be created. \Fref{sec:previewlayer} shows how to preview a
+layer and \Fref{sec:clientsidedev} discusses how to use a GeoServer layer
+with OpenLayers\footnote{\url{http://openlayers.org/}} to a geospacial
+visualization of the data on a web page.

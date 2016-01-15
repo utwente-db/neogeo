@@ -1,0 +1,48 @@
+%Now in order to see the layer go to view, here it should display the layer that has been made (with the added name) with a drop-down menu. Select PNG/JPEG or something similar to show a basecase of the data. A new window should open and here it should show your data in a weird graph. If this is not the case, its likely a mistake in the style. It is also possible to adjust your view in the images by adding a VIEWPARAM to the url. To do so just add: \&VIEWPARAMS=$<$Type$>$:$<$Value$>$ to the url and the image should change.
+
+In GeoServer it is possible to get a preview of layer such as the one
+created in \Fref{sec:addinglayers}. Previewing a layer can be done as
+follows:
+
+\begin{enumerate}
+	\item Navigate to \lstinline|Layer Preview| by clicking \lstinline|Layer Preview| link under the \lstinline|Data| section in the navigator on the left hand side of the web administration interface homepage.
+	\item The \lstinline|Layer Preview| page will have a list of all configured layers with can be previewed in various formats.
+	\item Locate the layer which should be shown and from the \lstinline|All Formats| column choice any \lstinline|WMS| format.
+	\item After selecting a format to view the layer a new page will open with a visual representation of the top most layer of dataset.
+\end{enumerate}
+
+Note that other preview formats should also be possible. For example it is
+possible to use the OpenLayers preview format which allows one to navigate
+the geospatial data. In section \Fref{sec:clientsidedev} OpenLayers will
+also be used to visualize the dataset on a web page. One drawback is that
+for every movement in the preview a new query has to be calculated. When
+server side stairwalker (\Fref{sec:serversideextension}) is not setup
+calculating can be time consuming. Therefore during development of the
+pre-aggregation index and testing it is adviced to use a static preview and
+only once everything works as desired to use a dynamic preview.
+
+If the layer contains a nominal axis it is possible to alter the value of
+the nominal with which the data is filtered. This is done by adding a
+parameter in the request made to the GeoServer extension. By extending the
+\lstinline|HTML| request sent to GeoServer with
+\lstinline|&VIEWPARAMS=<TYPE>:<VALUE>;| the nominal axis filter is used.
+Currently the extension only supports the nominal type \lstinline|keyword|.
+If the pre-aggregate index was created using a nominal axis (splitting on
+\lstinline|VALUE|s) then using \lstinline|&VIEWPARAMS| will split the
+visualization on a give \lstinline|VALUE|. \lstinline|&VIEWPARAMS| can
+accept more \lstinline|<TYPE>:<VALUE>;| tuples, however parsing type will
+need to be extended on in the code. For more information see
+\Fref{sec:filtering}.
+
+It may be that a preview fails to load, this can be due to two reasons. The
+first is an error in the style, in this case the style needs to be tested
+which can be done by validating the style in GeoServer. For more
+information about styles see \Fref{sec:visualization}. The second reason is
+an error is creating an SQL query for the pre-aggregated index. If no
+mistakes where made during setup and in creating a pre-aggregate index
+there will be a need to dive into the code where detailed logging is done.
+
+%\todo[inline, size=\small]{This would be a good point to reference the
+%logging done in the code however i cannot find where this log file is
+%located, debugging is also possible using the console in an IDE.}
+

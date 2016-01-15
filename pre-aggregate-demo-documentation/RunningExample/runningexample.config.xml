@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<preaggregate>
+	<table>runningexample</table>
+	<column>len</column>
+	<label>myAggregate</label>
+	<type>bigint</type>
+	<mask>ALL</mask>
+	<axislist>
+		<axis class="MetricAxis" column="ST_X(coordinates)" type="double" baseblocksize="0.0010" n="4"  />
+		<axis class="MetricAxis" column="ST_Y(coordinates)" type="double" baseblocksize="0.0010" n="4"  />
+	</axislist>
+</preaggregate>

@@ -1,0 +1,75 @@
+\subsubsection{Obtaining GeoServer and Aggregate Extension}
+
+GeoServer\footnote{GeoServer: \url{http://www.geoserver.org}} is used to
+visually display collected data pre-aggregated with the pre-aggregate
+index. An extension has been written for
+GeoServer which needs to be included in the web application. This is done
+by including the JAR files of the extension in the \lstinline|WEB-INF| of
+the GeoServer WAR file. A step by step guide is given below in
+\Fref{sec:InstallExtension}. However before following these instructions
+the necessary JAR and WAR files need to be obtained.
+
+The GeoServer WAR file can be downloaded from the
+\href{http://www.geoserver.org/download/}{\textsf{GeoServer website}}. The
+custom Java extension files should be built using the source code. The
+extension consists of the \lstinline|pre-aggregate| and
+\lstinline|geoserver-ext| projects in the \lstinline|neogeo| project. Note
+that first the JAR file of \lstinline|pre-aggregate| should be created as
+it is a dependency of \lstinline|geoserver-ext|. The JARs can be built
+using the command line or in an IDE such as Eclipse or Netbeans: using the
+\lstinline|clean and build| command on a project in Netbeans should build
+\lstinline|<project-name>-0.0.1-SNAPSHOT.jar| which can be found in the
+\lstinline|target| directory of the respective project.
+
+\subsubsection{Installing Extension}
+\label{sec:InstallExtension}
+
+The following instructions assume the geoserver extention files are located
+in the directory \lstinline|/data/upload/| and the
+\lstinline|geoserver.war| file is located in the directory
+\mbox{\lstinline|/data/tmp/tmp_war|}. If this is not the case, the file
+paths in the instructions below should be changed accordingly.
+
+\noindent \textit{Unpack the WAR file}
+\begin{enumerate}
+	\item \lstinline|jar -xvf geoserver.war|
+\end{enumerate}
+\textit{Copy the JAR files of the extension into \lstinline|WEB-INF/lib| directory of the GeoServer unpacked WAR file}
+\begin{enumerate}[noitemsep,resume]
+	\item \lstinline|cp /data/upload/pre-aggregate-0.0.1-SNAPSHOT.jar /data/tmp/tmp_war/WEB-INF/lib|
+	\item \lstinline|cp /data/upload/geoserver-ext-0.0.1-SNAPSHOT.jar /data/tmp/tmp_war/WEB-INF/lib|
+\end{enumerate}
+\textit{Recreate the GeoServer WAR file}
+\begin{enumerate}[noitemsep,resume]
+	\item \lstinline|jar -cvf geoserver.war META-INF/ WEB-INF/ index.html data/|
+\end{enumerate}
+The GeoServer WAR with the stairwalker extension should now be ready for
+deployment.
+
+\subsubsection{Deploying GeoServer}
+\label{sec:geotomcat}
+
+After the GeoServer WAR file has been repacked with the aggregate extension
+included, it is ready to be deployed in a web server. \Fref{sec:tomcat}
+describes how to set up a Tomcat web server. Once the server is
+running, it can be accessed locally with
+\href{http://localhost:8080/}{\lstinline|http://localhost:8080/|} assuming
+default installation configuration were used, otherwise the port number
+might be different. In the case that the Tomcat server is installed on a
+different machine, the web server can be accessed by replacing
+\lstinline|localhost| with the name or IP address of that machine.
+
+From the Tomcat homepage, it should be possible to access the Tomcat manager
+webapp. With the default setup it should be possible to login with the
+following credentials:\\
+\indent \textbf{username:} manager \\
+\indent \textbf{password:} tcmanager \\
+
+In the Tomcat manager webapp under the \lstinline|deploy| section, it is
+possible to upload a WAR file to be deployed. Select the repacked WAR file
+from \Fref{sec:InstallExtension} and deploy the application. Once the
+application is deployed it will be displayed in the \lstinline|application|
+section of the Tomcat manager webapp. From there, it is possible to follow
+the path given for the GeoServer application or, if the default
+configuration was used to go to
+\mbox{\lstinline|http://<Tomcat-IPaddress>:8080/geoserver/web/|}.

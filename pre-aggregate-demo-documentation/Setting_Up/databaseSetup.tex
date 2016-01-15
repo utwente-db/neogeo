@@ -1,0 +1,112 @@
+Currently the Stairwalker program only works with the
+PostgreSQL\footnote{PostgreSQL: \url{http://www.postgresql.org}} and
+MonetDB\footnote{MonteDB: \url{http://www.monetdb.org}} database management
+systems. This manual will only concern itself with PostgreSQL. Any further
+reference to a database implies a PostgreSQL database.
+
+In this section, we give a walk through explaining the steps needed to
+setup PostgreSQL along with PostGIS\footnote{PostGIS:
+\url{http://www.postgis.net}} and the database extension for
+Stairwalker on an Ubuntu Linux operating system.
+
+\subsubsection{PostgreSQL Database Manager Setup}
+\label{sec:postgresql}
+
+Installing Postgres on Linux should be straightforward. Search and install
+the desired version of PostgreSQL. Below the commands used to search and
+install version 9.1 of Postgres are shown.
+
+\begin{enumerate}[noitemsep]
+	\item \lstinline|aptitude search postgresql|
+	\item \lstinline|apt-get install postgresql-9.1|
+\end{enumerate}
+
+For further information or if there are difficulties with the installation
+more details can be found on the installation page of the
+\href{http://www.postgresql.org/download/}{PostgreSQL website}.  
+
+\subsubsection{PostgreSQL Configuration}
+
+Once Postgres is installed on Linux two alterations will need to be made to
+the configuration files so that the database can be accessed from outside
+and by other users.
+
+First, in the \lstinline|Postgresql.conf| file the
+\lstinline|listen_addresses| need to be changed from \lstinline|localhost|
+to \lstinline|all|. Assuming version 9.1 of Postgres this can be done as
+follows.
+
+\begin{enumerate}[noitemsep]
+	\item \lstinline|cd /etc/postgresql/9.1/main|
+	\item \lstinline|vi postgresql.conf|
+	\item \textit{change} \lstinline|listen_addresses = `localhost'| \textit{to} \lstinline|listen_addresses = `*'|
+	\item \textit{save and close}
+\end{enumerate}
+
+Secondly in the file \lstinline|pg_hba.conf| a line needs to be added to allow other users in Linux to access Postgres. This can be done as follows:
+
+\begin{enumerate}[noitemsep,resume]
+	\item \lstinline|vi pg_hba.conf|
+	\item \textit{Add} \lstinline|host all all 0.0.0.0/0 password|
+	\item \textit{save and close}
+	\item \lstinline|/etc/init.d/postgresql restart|
+\end{enumerate}
+
+\noindent It should now be possible to create a database user and database
+in PostgreSQL. In the sequel, we assume a database `\texttt{geonames}' is
+created and used. More information about how this is done can be found on the
+\href{http://www.postgresql.org/docs/manuals/}{\textsf{PostgreSQL manuals
+webpage}}.
+
+\subsubsection{PostGIS Configuration in PostgreSQL}
+\label{sec:postgis}
+
+The next step is to extend PostgreSQL with the PostGIS database expansion.
+This again should be straightforward: first search for PostGIS and then
+choose the version that goes with PostgreSQL to install. Note in order to do
+the install root privileges are required. Below the commands to search and
+install PostGIS for PostgreSQL-9.1 are shown.
+
+\begin{enumerate}[noitemsep]
+	\item \lstinline|aptitude search postgis|
+	\item \lstinline|apt-get install postgresql-9.1-postgis|
+\end{enumerate} 
+
+\noindent More information about installing PostGIS can be found on the
+\href{http://www.postgis.net/install}{\textsf{PostGIS website}}.
+
+Once PostGIS is installed some extra configuration is required to add
+PostGIS functionality to the used database (in our case
+`\texttt{geonames}). This needs to be done as postgres user. The commands
+are as follows.
+\begin{enumerate}[noitemsep]
+	\item \lstinline|createlang plpgsql geonames|
+	\item \lstinline|psql -f `find/usr/share/postgresql/ -name postgis.sql -print' -d geonames|
+	\item \lstinline|psql -f `find/usr/share/postgresql/ -name spatial_ref_sys.sql -print' -d geonames|
+	\item \lstinline|psql -f `find/usr/share/postgresql/ -name postgis_comments.sql -print' -d geonames|
+\end{enumerate}
+
+\subsubsection{Serverside Stairwalker Extension in PostgreSQL}
+\label{sec:serversideextension}
+
+Stairwalker is a database extension written in C.  The extension has to be
+compiled and installed in the PostgreSQL database. The extension can be
+found in the directory
+\lstinline|neogeo/pre-aggregate/src/db-extensions/postgres/pa_grid|.
+
+The extension can be installed on Linux using the following commands.
+\begin{enumerate}[noitemsep]
+	\item \textit{go to the pa\_grid\ directory}
+	\item \lstinline|make| \\ \textit{this creates the dynamic library}
+	\item \lstinline|make install| \\ \textit{this installs the library in
+		the PostgreSQL installation}
+	\item \lstinline|make sql| \\ \textit{declare the module in the desired
+		database}
+\end{enumerate}
+
+\noindent\textbf{Note} the extension has to be installed specifically for
+the database which will be used for pre-aggregation. In the makefile (also
+in the \lstinline|pa_grid| folder) there is a \lstinline|DATABASE| macro
+which should be set to the desired database.
+
+%\todo[inline, size=\small]{Installing the extension also requires root access. Why was this again?}

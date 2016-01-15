@@ -1,0 +1,102 @@
+In this section, a concrete example is given to show how to use Stairwalker.
+The example runs from creating a pre-aggregation index from a given dataset
+to geospacially representing the data using GeoServer. For the example, a
+dataset is provided in terms of a .csv file. It concerns an exported list
+of tweets sent in the UK and which carry a GPS coordinate.
+
+The result expected in this example can be seen in \Fref{fig:result}.
+Different colors represent the number of tweets in a region. The result
+only shows the highest granularity. Each tile shows how many tweets are
+sent from a location within the tile.  If this layer is combined with a
+map, it would be clear that the region of this figure is directly above the
+UK.
+
+\subsection{Requirements}
+Before showing how to create the given example, all necessary installations
+should have been completed and the required files obtained.
+The following programs should be installed:
+\begin{enumerate}
+	\item PostgreSQL (\Fref{sec:postgresql})
+	\item PosgGIS for a PostgreSQL database (\Fref{sec:postgis})
+	\item Tomcat or another web service server (\Fref{sec:tomcat})
+	\item GeoServer with extension (\Fref{sec:geoserverinstall})
+\end{enumerate}
+Also the following files should be at the ready:\footnote{The files can be
+found in the \lstinline|RunningExample| directory in the same Git as this
+manual.}
+\begin{enumerate}
+	\item The tool to make a pre-aggregate index: Pre-Aggregate-Index tool
+		(\Fref{sec:preaggtool})
+	\item Configuration file for the tool: \lstinline|runningexample.config.xml|
+	\item Sample dataset: \lstinline|RunningExample.csv|
+	\item Sample SLD file: \lstinline|RunningExamplSLD.xml|
+\end{enumerate}
+Furthermore it is useful to have a frontend tool in which the PostgreSQL
+database can be managed. During development the tool
+pgAdmin\footnote{\url{http://www.pgadmin.org/}} was used.
+
+\subsection{Example Table Setup}
+
+The first step of the process is to have a dataset which to be
+aggregated. For this example, a dataset is supplied in the form of a
+\lstinline|.csv| file. In order to import this, first create the table in
+the database. This can be done with the following SQL query:
+
+\subsubsection{Creating the database}
+
+\begin{lstlisting}
+CREATE TABLE runningexample (
+	id_str character varying(25),
+	tweet text,
+	user_name text,
+	place_name text,
+	time timestamp with time zone,
+	reply_to text,
+	place_id bigint,
+	len bigint,
+	coordinates geometry,
+	CONSTRAINT enforce_dims_coordinates CHECK ((st_ndims(coordinates) = 2)),
+	CONSTRAINT enforce_geotype_coordinates CHECK (((geometrytype(coordinates) = 'POINT'::text) OR (coordinates IS NULL))),
+	CONSTRAINT enforce_srid_coordinates CHECK ((st_srid(coordinates) = 4326))
+);
+\end{lstlisting}
+
+Once the table is created, import the \lstinline|.csv| file into the table.
+
+Note that \lstinline|RunningExample.csv| contains column headers, uses
+\lstinline|;| as column seperators and \lstinline|"| as quote seperators.
+After the import is done, a pre-aggregate index can be created.
+
+\subsubsection{Creating the Pre-Aggregate Index}
+\label{sec:examplePreAggIndex}
+
+An in depth discussion of the use of the pre-aggregate index tool is given
+in \Fref{sec:preaggtool}. In the example, only commands will be given with
+only brief explanations.
+
+First the pre-aggregate index creation tool needs to be compiled, which can
+be done with the command below executed in the
+\lstinline|pre-aggregate-tools| directory.
+\begin{lstlisting}
+mvn package appassembler:assemble
+\end{lstlisting}
+The next step is to put the pre-aggreate tool config file in the
+\lstinline|pre-aggregate-tools| directory. Once this is done, the tool can
+be called with the following command. Note some variables need to be set
+in the listing below. These are
+\lstinline|<database>, <host>, <port>, <pass>, <user>|,
+which should be filled according to how PostgreSQL was
+set up.
+\begin{lstlisting}
+target\appassembler\bin\create-pa-index -config runningexample.config.xml -d <database> -dbtype postgresql -h <host> -p <port> -password <pass> -s public -u <user>
+\end{lstlisting}
+This creates a pre-aggregate index of the dataset. In the database
+three new tables are created: The pre-aggregate index named
+\lstinline|runningexample_pa| and two help tables which keep track of the
+indexes and the axes used by those indexes. All the work on the side of the
+database is now done, and the next step is to visualize the dataset using
+GeoServer.
+
+\subsection{GeoServer Setup}
+\label{sec:exampleGeoServer}
+\input{Example/geoserver_setup}

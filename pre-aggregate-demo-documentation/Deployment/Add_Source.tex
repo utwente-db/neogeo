@@ -1,0 +1,53 @@
+%Once the webapplication has logged in, then start by adding the source of the database. 
+%\begin{enumerate}
+%	\item On the left side there should be a menu with all kinds of options, but in order to add a source, go to Configuration $\rightarrow$ Sources. 
+%	\item At the top there should be an add source button. 
+%	\item Now under vectortypes there should be a list of types. Select what kind of source you want to add. In order to get the Stairwalker program running there should be a NeoGeo Aggregate - NeoGeo aggregation index query. If this is not the case something went wrong with deploying the geoserver and the last steps in this manual should be done again. 
+%	\item If it is here, click on it and a new menu will open. A new screen should open where all information for your source has to be filled in. There is also an option on what aggregation type the program should use, this should have been defined before so use what has been used before (count/sum/minimum/maximum). 
+%	\item Once everything is filled in all, the source should have been added to the Geoserver. This can be checked by going to sources again and then it should display the source that has just been added.
+%\end{enumerate}
+
+Once logged in to the web administration interface, it is possible to add a
+new data store to GeoServer. Below are instructions of how to add a new
+\lstinline|NeoGeo Aggregate| vector data source which contains the
+aggregate index created in \Fref{sec:preaggtool} to the stores in
+GeoServer.
+
+\begin{enumerate}
+	\item Navigate to \lstinline|Stores| by clicking on \lstinline|Stores| link under the \lstinline|Data| section in the navigator on the left hand side of the web administration interface homepage.
+	\item On the \lstinline|Stores| page select the option \lstinline|Add new Store| located at the top of the page. This leads to a page titled \lstinline|New Store chooser|.
+	\item In the list of \lstinline|Vector Data Sources| the option \lstinline|NeoGeo Aggregate| should be present, choose this format for the data source.  
+\end{enumerate}
+
+\noindent If the option \lstinline|NeoGeo Aggregate| is not available, it
+means the GeoServer extension from \Fref{sec:InstallExtension} was not done
+correctly.
+
+\begin{enumerate}[resume]
+	\item Clicking \lstinline|NeoGeo Aggregate| will open a new page titled \lstinline|New Vector Data Source| in which several fields have to be filled out, explanation of mandatory fields can be found in the list below.
+	\item For an express setup the fields which have already been filled can remain the same.
+	\item Once all the required fields are filled, click the \lstinline|Save| button.
+	\item A new \lstinline|NeoGeo Aggregate| source is now created and can be viewed and edited in \lstinline|Sources|.
+	\item After saving, GeoServer opens the page \lstinline|New Layer| on which new layers can be created using the \lstinline|Data Source|. How this is done is discussed in \Fref{sec:addinglayers}.
+\end{enumerate}
+
+\noindent Below a list is presented with all mandatory fields on the
+\lstinline|New Vector Data Source| page with explanation.
+
+\begin{itemize}\label{list:manditory}
+	\item \textbf{Data Source Name} - An arbitrary name which will be assigned to the store.
+	\item \textbf{Database type} - The type of underlying database, either PostgreSQL or MonetDB.
+	\item \textbf{Hostname} - Hostname of the database server where the aggregation index is maintained.
+	\item \textbf{Port} - Port number of the database.
+	\item \textbf{Schema} - Name of the schema where the aggregation index is maintained.
+	\item \textbf{database} - Name of the database where the aggregation index is maintained.
+	\item \textbf{Username} - Username of the used database.
+	\item \textbf{Password} - Password of the used database.
+	\item \textbf{xSize, ySize, timeSize} - Specifies the dimensions of the grid which is created for every view of the map to calculate the aggregates per cell. The higher the number of cells the more detailed the information. \\
+	%\todo[inline, size=\small]{Are the xSize, ySize, timeSize dimensions not already set in the source? What happens when timeSize $> 1$?}
+	\item \textbf{count, sum, minimum, maximum} - Select the boxes of the
+	aggregates which will be used in the visualization. Note that from these basic aggregates more aggregates such as mean can can be derived.
+	\item \textbf{Enable server-side Stairwalker} - Selecting this causes the data source to rely on the use of the database plugins to use the Pre-Aggregate index. For performance reasons it is highly recommended to use this option. See \Fref{sec:serversideextension} for more details.
+%	\todo[inline, size=\small]{The Enable server-side Stairwalker ooption is no longer available? Remove?}
+	\item \textbf{Enable query logging} - Selecting this will turn on the logging of all Pre-Aggregate queries into a separate table called \lstinline|pre_aggregate_logging|.
+\end{itemize}

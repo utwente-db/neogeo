@@ -1,0 +1,106 @@
+\documentclass{article}
+
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+\usepackage{todonotes}
+\usepackage{listings}
+\usepackage{color}
+\usepackage[plain]{fancyref}
+\usepackage{subfigure}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{graphicx}
+%\usepackage{marginnote}
+%REMOVE BELOW COMMAND TO GET NORMAL VIEW
+%\usepackage[top=1.5cm, bottom=1.5cm, outer=5cm, inner=2cm, heightrounded, marginparwidth=2.5cm, marginparsep=2cm]{geometry}
+
+\definecolor{light-gray}{gray}{0.95}
+\lstset{mathescape,
+		basicstyle=\ttfamily,
+		backgroundcolor=\color{light-gray}
+		}
+\lstset{numbers=right, 
+                numberstyle=\tiny,
+                escapechar=\&,
+                breaklines=true,
+                backgroundcolor=\color{light-gray},
+                %xleftmargin=\parindent,
+                %xleftmargin=1cm,
+                %xrightmargin=\parindent,
+                numbersep=5pt}
+
+%\newcommand*{\UTlogo}{\fbox{$\mathcal{UT}$}}
+\newcommand*{\UTlogo}{\includegraphics{Figures/utlogo.png}}
+
+%---------------------------------------------------------------------------
+%	TITLE PAGE
+%	Page taken from: http://www.latextemplates.com/template/vertical-line-title-page
+%---------------------------------------------------------------------------
+\newcommand*{\titleGM}{\begingroup
+\hbox{
+\hspace*{0.2\textwidth}
+\rule{1pt}{\textheight}
+\hspace*{0.05\textwidth}
+\parbox[b]{0.75\textwidth}{
+
+%{\noindent\LARGE \textit{Note: Margin notes version!} \\ \textit{Note: Spell check should be done!} } \\[2\baselineskip]
+{\noindent\Huge\bfseries Stairwalker \\[0.5\baselineskip] User Manual}\\[1\baselineskip]
+%{\large \textit{We could write something here}}\\[4\baselineskip]
+{\large Document authors: \\[0.2\baselineskip]
+ \Large \textsc{- Dennis Muller (UT)} \\[0.25\baselineskip]
+ \Large \textsc{- Jochem Elsinga (UT)} \\[0.25\baselineskip]
+ \Large \textsc{- Maurice van Keulen (UT)} \\[0.4\baselineskip]
+ \large Software developers: \\[0.2\baselineskip]
+ \Large \textsc{- Andreas Wombacher (UT)} \\[0.25\baselineskip]
+ \Large \textsc{- Jan Flokstra (UT)} \\[0.25\baselineskip]
+ \Large \textsc{- Henke Pons (Arcadis)} \\[0.25\baselineskip]
+ \Large \textsc{- Niek de Vries (Arcadis)} \\[0.25\baselineskip]
+}
+
+\vspace{0.05\textheight}
+{\noindent\fbox{\includegraphics{COMMIT_logo_RGB.pdf}}}
+
+\vspace{0.2\textheight}
+{21 December 2015}\\[0.5\baselineskip]
+{\noindent \UTlogo}\\[\baselineskip]
+}}
+\endgroup}
+
+%---------------------------------------------------------------------------
+%	DOCUMENT
+%---------------------------------------------------------------------------
+\begin{document}
+
+\pagestyle{empty}
+
+\titleGM
+
+\tableofcontents
+\pagebreak
+\pagestyle{plain}
+%---------------------------------------------------------------------------
+%	Sections
+%---------------------------------------------------------------------------
+
+\section{Introduction}
+\input{Introduction/Intro}
+\pagebreak
+\section{Set Up}
+\label{sec:setup}
+\input{Setting_Up/setup}
+
+\pagebreak
+\section{Deployment}
+\label{sec:deployment}
+\input{Deployment/deployment}
+
+\pagebreak
+\section{Development}
+\label{sec:development}
+\input{Development/development}
+
+\pagebreak
+\section{Running Example}
+\input{Example/example}
+
+\end{document}

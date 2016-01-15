@@ -1,0 +1,39 @@
+%The next step is to make a style in which you want your data to be shown. A style has to be made in SLD/XML, there are a lot of options which can be used to make a style. First navigate to the style tab, Configuration $\rightarrow$ Style here you can add a new style with the button on top. Here you need to add your code (or file) for your style.
+%\newline
+%\newline http://docs.geoserver.org/2.5.x/en/user/styling/sld-cookbook/index.html contains a lot of information regarding styles, it is a lot of trial and error to get a nice working style. The next few steps however should give a short setup on how to start making your own style.
+%\begin{enumerate}
+%	\item Decide what data should be shown, in our example we’re using the count of the aggregated data.
+%	\item Decide what kind of representation should be used, you can either use Polygonsymbolizer, pointsymbolizer or linesymbolizer. All of these have their own advantages and disadvantages, incase it isn't clear what to use, start off with a Polygonsymbolizer.
+%	\item Add all filters, for instance if the data should how a lighter color if the amount is lower. Or make a tile red once the data exceed a certain maximum (for instance if there were too many orders in a timerange).
+%	\item Add colors to the layers representing it better and giving it a nice layout.
+%	\item Make sure the positioning of the label and all filters are working.
+%	\item Finish the layer by adding the last details (Halo behind the text for example).
+%\end{enumerate}
+%
+%This is just a basic manual on how to add a style, for more information or more explanation on how to make a style, check out the development chapter in this manual. In that section there are far more details on how to make a style.
+%
+
+In GeoServer, styles are used to render, or make available, geospatial data.
+Styles are used to visually represent the aggregation index which is
+represented in a layer. In GeoServer layers are written in Styled Layer
+Descriptor (SLD) which is a subset of XML. GeoServer comes setup with
+several different styles, however, to get the most out of the dataset it is
+best to develop a style specific to the layer which represents that data.
+
+In this section only instructions on how to add new styles to GeoServer are
+given. For information on how to edit styles, see \Fref{sec:visualization}
+or the GeoServer user
+manual\footnote{\url{http://docs.geoserver.org/stable/en/user/styling/index.html\#styling}}
+which gives an in depth guide on developing styles.
+
+\begin{enumerate}
+	\item Navigate to \lstinline|Styles| by clicking on the \lstinline|Styles| link under the \lstinline|Data| section in the navigator on the left hand side of the web administration interface homepage.
+	\item On the \lstinline|Styles| page select the option \lstinline|Add a new style| located at the top of the page.
+	\item A new page titled \lstinline|New Style| should open. There are now two possibilities, either a new style can be developed completely in the browser or a SLD file can be imported.
+	\item To import an already created SLD file scroll to the bottom of the page and press the \lstinline|Choose File| button.
+	\item Select the style which should be imported and then press \lstinline|Upload...| in the browser.
+	\item This fills in the \lstinline|Name| field with the name of the file and the SLD editor with the content of the file.
+	\item It is possible to check the syntax of the SLD code by pressing the \lstinline|Validate| button at the bottom of the page. At the top the page GeoServer will give feedback on the SLD code, either error messages or a no validation errors message.
+	\item Finally the style can be saved by pressing the \lstinline|Submit| button at the bottom of the page.
+\end{enumerate}
+%\todo[inline, size=\small]{We should maybe mention something about the workspace? What does \lstinline|nurc| represent? It is even important to choose a workspace?}

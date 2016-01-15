@@ -1,0 +1,69 @@
+Stairwalker Readme
+by. Jochem Elsinga & Dennis Muller
+
+	Table of Contents
+-D	DONE	1. Introduction
+			2. Setting up
+J-	DONE		2.1. Database setup
+J-	DONE			2.1.1. Postgres database
+J-	DONE			2.1.2. Postgres configuration
+J-	DONE			2.1.3. postgis configuration in postgres database
+J-	DONE			2.1.4. serverside stairwalker extention in postgres database
+	75%			2.2. Pre-aggregation database table
+J-	DONE			2.2.1. Discription of process
+J-	DONE			2.2.2. Pre-aggreation tool
+	TODO			2.2.3. Current status support of datatypes
+-D	DONE			2.2.4. Current status support of aggregation types
+J-  DONE		2.3. Tomcat server setup
+					2.3.1. Reference tomcat or other service hosting application
+J-	DONE		2.4. Geoserver deployment on tomcat
+J-	X				2.4.1. Obtaining geoserver
+J-	X				2.4.2. preparing geoserver with aggregation index extension
+J-	X					2.4.2.1. Functionality of aggregation index extension
+J-	X				2.4.3. Deploying geoserver
+-D 	DONE	3. Deployment
+-D	DONE		3.1. Add Source
+-D	DONE		3.2. Setup Style
+-D	DONE		3.3. Adding Layer
+-D	DONE		3.4. On Clint Link Geoserver + Layer
+			4. Development
+				4.1. Code Developement
+					4.1.1. Axis Expansion
+					4.1.2. Aggregation Types 	(??)
+					4.1.3. Polygon Building		(??)
+				4.2. Troubleshooting
+				4.3. Geoserver Visualization
+				4.4. Client Side Developement	(??)
+			5. Conclusion
+
+TODO 17-10-14
+	- Fix up section 3.4 (Jochem)
+	- Finish section 4.3 (Dennis)
+	- Running Example (create section 5)
+	- References
+	- Spell checker
+	- Fix up some other details...
+
+TODO 20-10-14
+	- Read through (spell + consistancy) check
+	- Reference section 5 in section 2 and 3
+	- Fix up intro peices in section 5
+	- Add text peices where necassary in section 3
+	- Write at least an outline about section 4.1
+	- Add some notes to section 4.2
+	
+Column	;
+Quote	"
+	
+Vragen:
+	1. Hoe verwijzen wij naar de code? Via GitHub?						A: GitHub
+	2. Hoe noemen wij het bestand? Guide, Manual, ReadMe?				A: Manual
+	3. Hoe noemen wij het geheel (program)? Stairwalker, NeoGeo?		A: Stairwalker
+			
+	2. Verschil:
+		Pre-aggregate
+		Pre-aggregation
+		Pre-aggregate index
+		aggregation
+		aggregate index
+		

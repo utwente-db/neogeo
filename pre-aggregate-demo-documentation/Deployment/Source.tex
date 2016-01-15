@@ -1,0 +1,9 @@
+In order to add a source to Geoserver you first need to be logged into the Geoserver webapplication. http://localhost:8080/geoserver/web is the link to the webapplication of Geoserver. The standard login and password for this are:
+\newline
+\newline
+Username: admin
+
+\noindent Password: geoserver
+\newline
+\newline
+Once you're logged in we can start by adding the source of our database. On the left side you should see a menu with all kinds of options, but in order to add a source, you go to Configuration $\rightarrow$ Sources. In the top you should see an add source button. Now under vectortypes you should be able to select what kind of source you want to add. In here there should be a NeoGeo Aggregate - NeoGeo aggregation index query. If this is not the case something went wrong with deploying the geoserver and you should redo the last steps in this readme. If it is here, click on it and a new menu will open. Here you need to fill in all information for your source. Here you can also select what type you're using (count/sum/minimum/maximum). Once you filled in all information correctly you should have adding your source and this should now be viewable in your sources.

@@ -1,0 +1,181 @@
+This section discusses most of the possibilities that GeoServer has to
+offer when it comes to the visualization of the data. The GeoServer manual
+has some information on this subject, which can be found on:
+\url{http://docs.geoserver.org/2.5.x/en/user/styling/sld-reference/index.html}.
+
+In the following, more information on what the differences are between the
+certain options and some ways to implement these options. This section uses
+some of the examples used in our demo to give some more insight what can be
+done and hopefully making it easier to realize what is desired. Most
+information can be found on the website, below a discussion is given on
+what types are best used when, but also some more information on how to
+make them work properly.
+
+\subsubsection{Symbolizers}
+
+In SLD, there are three different symbolizers, a linesymbolizer, a
+pointsymbolizer and a polygonsymbolizer. A pointsymbolizer is used when the
+data that has to be represented is best shown as points. It does exactly
+what it says, you'll get a map with points on it and each point will
+represent a data-object from your dataset. This symbolizer can be really
+handy in certain situations. For example when you want to show all
+locations where a rare species of a bird has been found, it will show a map
+with all points where a bird has been reported.
+
+A linesymbolizer is used when the data that has to be displayed is best
+shown in lines. This symbolizer is best used to display roads for example.
+It isn't a symbolizer that can be used to represent data very well, but it
+is more used for pre-defined data, such as rivers, roads etc.
+
+A polygonsymbolizer is used when the data that you want to represent has to
+be displayed in two-dimensional objects. There are many possibilities in a
+polygonsymbolizer. It is possible to make a simple square but it also has
+the option to make circles or triangles. It is one of the most commonly
+used symbolizers.  A good example where a polygonsymbolizer is used, is to
+display the amount of people living in cities. This can be done with a
+circle polygon and that the circle will get bigger when more people live in
+a city.
+
+\subsubsection{Filters}
+
+Filters are the most important function when it comes to making a custom
+style. A filter is basically the basis of a fancy layer. What a filter does
+is that it makes a ruling and if that ruling is met, the color, labeling
+etc will be done. In SLD, it is possible to have an unlimited amount of
+filters so the possibilities are many. The following filter expression
+can be used:
+
+\begin{itemize}
+	\item \lstinline|$<$PropertyIsEqualTo$>$|
+	\item \lstinline|$<$PropertyIsNotEqualTo$>$|
+	\item \lstinline|$<$PropertyIsLessThan$>$|
+	\item \lstinline|$<$PropertyIsLessThanOrEqualTo$>$|
+	\item \lstinline|$<$PropertyIsGreaterThan$>$|
+	\item \lstinline|$<$PropertyIsGreaterThanOrEqualTo$>$|
+\end{itemize}
+An example on how a single filter can be used is the following:
+\begin{lstlisting}
+<ogc:Filter>
+  <ogc:PropertyIsLessThan>
+    <ogc:PropertyName>testvalue</ogc:PropertyName>
+    <ogc:Literal>200</ogc:Literal>
+  </ogc:PropertyIsLessThan>
+</ogc:Filter>
+\end{lstlisting}
+
+This example tests if \lstinline|testvalue| is less than \lstinline|200|.
+If this is the case, one can specify what the filter should do. Below is
+the complete example that does something with this filters.
+
+\begin{lstlisting}
+<Rule>
+  <Name>SmallPop</Name>
+  <Title>Less Than 100</Title>
+  <ogc:Filter>
+    <ogc:PropertyIsLessThan>
+      <ogc:PropertyName>testvalue</ogc:PropertyName>
+      <ogc:Literal>100</ogc:Literal>
+    </ogc:PropertyIsLessThan>
+  </ogc:Filter>
+  <PolygonSymbolizer>
+    <Fill>
+      <CssParameter name="fill">#38FF19
+      </CssParameter>
+      <CssParameter name="fill-opacity">1.0
+      </CssParameter>
+    </Fill>
+    <Stroke>
+      <CssParameter name="stroke">#000000
+      </CssParameter>
+      <CssParameter name="stroke-width">1.0
+      </CssParameter>
+    </Stroke>
+  </PolygonSymbolizer>
+</Rule>
+\end{lstlisting}
+
+What this example does is that if the \lstinline|testvalue| is below
+\lstinline|100|, it will fill a polygon with the color:
+\lstinline|#38FF19|. If this is not the case, it will go to the next rule
+(if there is one; otherwise it does nothing). The image shows a graph of
+the implementation we made for our data. The image has different kind of
+colors for the amount of data in a tile. If the amount is high, the color
+will become more red, and if there is little data, the tile will be green.
+
+\subsubsection{Additional Options}
+
+GeoGerver SLD has a lot of options when it comes to customizing the data
+display that you've made. Below are some of the important features that are
+commonly used in GeoServer.
+
+\textbf{Halo:} A halo gives a glow behind the current label. It should
+always be used in a textsymbolizer, since this is the only place where you
+can add a halo. To use a halo is very simple: you include
+\lstinline|<Halo></Halo>| and in between it is possible to add
+\lstinline|<Radius>| and \lstinline|<Fill>|. For more information on how to
+use a \lstinline|<Fill>| we refer to the GeoServer SLD cookbook.
+
+\textbf{Anchorpoint:} An anchor point is a handy tool to place your label
+in a possible position. It is used as shown below. Important to note is
+that you can set where the anchor point is (for example, above the point)
+and that you can move it based on the anchor point, for instance make it go
+all the way to left (negative X placement) or all the way to the right
+(positive X placement)
+\begin{lstlisting}
+<PointPlacement>
+  <AnchorPoint>
+    <AnchorPointX>0.5</AnchorPointX>
+    <AnchorPointY>0.0</AnchorPointY>
+  </AnchorPoint>
+  <Displacement>
+    <DisplacementX>0</DisplacementX>
+    <DisplacementY>25</DisplacementY>
+  </Displacement>
+  <Rotation>-45</Rotation>
+</PointPlacement>
+\end{lstlisting}
+
+\textbf{Opacity:} Opacity is the transparency of either a label, point,
+polygon or line. It can be used to paint layers over each other (setting
+Opacity to 0). It is often used in cases where multiple data sets have to be
+displayed in the same tile (used in our example as well). The way you use
+it is the following:
+\begin{lstlisting}
+<Opacity>0.3</Opacity>
+\end{lstlisting}
+
+\textbf{Rotation:} Rotation is the function that is used to turn shapes and
+labels in SLD. It is handy if you want to turn tiles or make labels line up
+with lines better. The way to use it is simply in the section that has to
+be rotated just add the following code:
+\lstinline|<Rotation>-45</Rotation>| for a negative 45 degree turn.
+
+\textbf{Graphic Fill:} A graphic fill is used in case a picture/image has
+to be shown in a layer. It has a lot of possibilities since every
+picture/image can be added in this way. The implementation is a little
+more complex; below is an example of a graphic fill. 
+\begin{lstlisting}
+<FeatureTypeStyle>
+  <Rule>
+    <PolygonSymbolizer>
+      <Fill>
+        <GraphicFill>
+          <Graphic>
+            <ExternalGraphic>
+              <OnlineResource
+              xlink:type="simple"
+              xlink:href="colorblocks.png" />
+              <Format>image/png</Format>
+            </ExternalGraphic>
+            <Size>93</Size>
+          </Graphic>
+        </GraphicFill>
+      </Fill>
+    </PolygonSymbolizer>
+  </Rule>
+</FeatureTypeStyle>
+\end{lstlisting}
+More options and information can be found in the SLD cookbook on the
+GeoServer website. This section was meant to give some more insight about 
+commonly used functions.
+  

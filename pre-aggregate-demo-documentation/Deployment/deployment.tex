@@ -1,0 +1,35 @@
+This section gives a detailed description of how to import an
+aggregated database table into GeoServer to get a visual representation of
+the dataset. First instructions will be given on how to link the database
+table to GeoServer. Next, creating styles and layers for data representation
+will be discussed. The final section discusses how to view the data
+using GeoServer.  For this section it is assumed that all the initial
+preparation discussed in \Fref{sec:setup} has been completed.
+
+GeoServer should already be deployed on a web server (see
+\Fref{sec:geotomcat}), and can then be accessed with
+\lstinline|http://<Tomcat-IPaddress>:8080/geoserver/web/|. It is required
+to login in to the GeoServer web administration interface. When using the
+default setup of GeoServer the login credentials are: \\
+\indent \textbf{username:} admin \\
+\indent \textbf{password:} geoserver
+
+\noindent A concrete example of how to fully deploy a pre-aggregated index
+can be found in \Fref{sec:exampleGeoServer}.
+
+\subsection{Add Source}
+\label{sec:addingsource}
+\input{Deployment/Add_Source}
+\pagebreak
+
+\subsection{Setup Style}
+\label{sec:addingstyle}
+\input{Deployment/Setup_Style}
+
+\subsection{Adding Layer}
+\label{sec:addinglayers}
+\input{Deployment/Adding_Layer}
+
+\subsection{Viewing and Using Layer}
+\label{sec:previewlayer}
+\input{Deployment/Link_Geoserver_Layer}
